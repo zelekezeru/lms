@@ -1,11 +1,19 @@
 <script>
+import { Link } from '@inertiajs/vue3'; // Import the Link component
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
+
 export default {
+    components: {
+        Link, // Register the Link component
+        Dropdown,
+        DropdownLink,
+    },
     methods: {
         // Add any methods you need here
     }
 }
 </script>
-
 
 <template>
     <!-- Sidebar -->
@@ -35,10 +43,10 @@ export default {
                 <ul class="nav nav-secondary">
                     <!-- Dashboard Link -->
                     <li class="nav-item active">
-                        <a :href="route('dashboard')">
+                        <Link :href="route('dashboard')">
                             <i class="fas fa-home"></i>
                             <p>Dashboard</p>
-                        </a>
+                        </Link>
                     </li>
 
                     <!-- Section Title -->
@@ -59,14 +67,14 @@ export default {
                         <div class="collapse" id="students">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a >
+                                    <Link >
                                         Add Student
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a >
+                                    <Link >
                                         Manage Students
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -82,14 +90,14 @@ export default {
                         <div class="collapse" id="courses">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a >
+                                    <Link >
                                         Add Course
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a >
+                                    <Link >
                                         Manage Courses
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -105,14 +113,14 @@ export default {
                         <div class="collapse" id="teachers">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a >
+                                    <Link >
                                         Add Teacher
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a >
+                                    <Link >
                                         Manage Teachers
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -128,14 +136,14 @@ export default {
                         <div class="collapse" id="attendance">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a >
+                                    <Link >
                                         Take Attendance
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a >
+                                    <Link >
                                         View Attendance
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -151,14 +159,14 @@ export default {
                         <div class="collapse" id="exams">
                             <ul class="nav nav-collapse">
                                 <li>
-                                    <a >
+                                    <Link >
                                         Schedule Exam
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a >
+                                    <Link >
                                         Manage Exams
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -166,10 +174,10 @@ export default {
 
                     <!-- Profile Link -->
                     <li class="nav-item">
-                        <a :href="route('profile.edit')">
+                        <Link :href="route('profile.edit')">
                             <i class="fas fa-user"></i>
                             <p>My Profile</p>
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </div>
@@ -177,4 +185,3 @@ export default {
     </div>
     <!-- End Sidebar -->
 </template>
-

@@ -15,7 +15,7 @@ export default {
 
 
 <template>
-    <div>
+    <div class="wrapper">
         <Navigation />
         <Sidebar />
         <main>

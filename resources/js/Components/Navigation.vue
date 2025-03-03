@@ -1,3 +1,13 @@
+<script>
+export default {
+    methods: {
+        logout() {
+            this.$inertia.post(route('logout'));
+        }
+    }
+}
+</script>
+
 <template>
     <div class="main-panel">
         <div class="main-header">
@@ -300,16 +310,3 @@
     </div>
 </template>
 
-<script>
-export default {
-    methods: {
-        logout() {
-            this.$inertia.post(route('logout'));
-        }
-    }
-}
-</script>
-
-<style scoped>
-/* Add your custom styles here */
-</style>

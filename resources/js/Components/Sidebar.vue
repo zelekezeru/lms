@@ -49,8 +49,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.students" class="submenu">
-                            <DropdownLink>Add Student</DropdownLink>
-                            <DropdownLink>Manage Students</DropdownLink>
+                            <DropdownLink class="submenu-item">Add Student</DropdownLink>
+                            <DropdownLink class="submenu-item">Manage Students</DropdownLink>
                         </div>
                     </li>
                     
@@ -62,8 +62,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.courses" class="submenu">
-                            <DropdownLink>Add Course</DropdownLink>
-                            <DropdownLink>Manage Courses</DropdownLink>
+                            <DropdownLink class="submenu-item">Add Course</DropdownLink>
+                            <DropdownLink class="submenu-item">Manage Courses</DropdownLink>
                         </div>
                     </li>
                     
@@ -75,8 +75,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.teachers" class="submenu">
-                            <DropdownLink>Add Teacher</DropdownLink>
-                            <DropdownLink>Manage Teachers</DropdownLink>
+                            <DropdownLink class="submenu-item">Add Teacher</DropdownLink>
+                            <DropdownLink class="submenu-item">Manage Teachers</DropdownLink>
                         </div>
                     </li>
                     
@@ -88,8 +88,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.attendance" class="submenu">
-                            <DropdownLink>Take Attendance</DropdownLink>
-                            <DropdownLink>View Attendance</DropdownLink>
+                            <DropdownLink class="submenu-item">Take Attendance</DropdownLink>
+                            <DropdownLink class="submenu-item">View Attendance</DropdownLink>
                         </div>
                     </li>
                     
@@ -101,8 +101,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.exams" class="submenu">
-                            <DropdownLink>Schedule Exam</DropdownLink>
-                            <DropdownLink>Manage Exams</DropdownLink>
+                            <DropdownLink class="submenu-item">Schedule Exam</DropdownLink>
+                            <DropdownLink class="submenu-item">Manage Exams</DropdownLink>
                         </div>
                     </li>
                     
@@ -118,4 +118,49 @@ const toggleDropdown = (key) => {
     </div>
 </template>
 
-
+<style scoped>
+.sidebar {
+    width: 260px;
+    background: #27293d;
+    color: #fff;
+    height: 100vh;
+    position: fixed;
+}
+.nav {
+    list-style: none;
+    padding: 0;
+}
+.nav-item {
+    transition: background 0.3s;
+}
+.nav-item.active, .nav-item:hover {
+    background: #1f2235;
+}
+.nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    gap: 10px;
+}
+.nav-link i {
+    font-size: 16px;
+}
+.submenu {
+    padding-left: 20px;
+    background: #1f2235;
+    display: flex;
+    flex-direction: column;
+}
+.submenu-item {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.submenu-item:hover {
+    color: #f0f0f0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+</style>

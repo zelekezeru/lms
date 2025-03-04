@@ -20,12 +20,12 @@ const toggleDropdown = (key) => {
     <div class="sidebar" data-background-color="dark">
         <div class="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="user">
+                <div class="user content-center">
                     <img src="/img/logo.png" alt="Logo" class="user-logo" />
                     <div class="info">
                         <a class="collapsed" data-toggle="collapse" href="#profileMenu">
                             <span>
-                                <span class="user-level">Administrator</span>
+                                <span class="user-level">Admin</span>
                             </span>
                         </a>
                     </div>
@@ -167,5 +167,11 @@ const toggleDropdown = (key) => {
     height: 50px;
     border-radius: 50%;
     margin-bottom: 10px;
+}
+.user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 </style>

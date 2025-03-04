@@ -1,9 +1,6 @@
 <script>
 import Navigation from '@/Components/Navigation.vue';
 import Sidebar from '@/Components/Sidebar.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import { Link } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -15,11 +12,19 @@ export default {
 
 
 <template>
-    <div class="wrapper">
-        <Navigation />
+    <div class="wrapper flex h-screen">
         <Sidebar />
-        <main>
-            <slot />
-        </main>
+        <div class="flex flex-col flex-1">
+            <div class="flex justify-end">
+                <Navigation />
+            </div>
+            <main class="flex-1 p-4 overflow-y-auto">
+                <slot />
+            </main>
+        </div>
     </div>
 </template>
+
+<style scoped>
+/* No additional styles needed as Tailwind CSS is used */
+</style>

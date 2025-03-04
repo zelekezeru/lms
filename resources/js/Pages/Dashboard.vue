@@ -14,8 +14,8 @@ import { Head } from '@inertiajs/vue3';
                 Dashboard
             </h2>
         </template>
-
-        <div class="py-12">
+        
+        <div class="flex justify-center items-center min-h-screen py-12" style="padding-top: 4rem; padding-left: 16rem;"> <!-- Adjust padding to avoid overlapping -->
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg"

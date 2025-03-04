@@ -120,7 +120,6 @@ const toggleDropdown = (key) => {
 
 <style scoped>
 .sidebar {
-    width: 260px;
     background: #27293d;
     color: #fff;
     height: 100vh;

@@ -123,18 +123,44 @@ const toggleDropdown = (key) => {
     background: #27293d;
     color: #fff;
     height: 100vh;
+    width: 250px; /* Adjust width if needed */
     position: fixed;
+    overflow: hidden; /* Prevents the whole sidebar from scrolling */
+    display: flex;
+    flex-direction: column;
 }
+
+.sidebar-wrapper {
+    flex-grow: 1;
+    padding: 15px;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+/* Hide scrollbar in Chrome, Edge, Safari */
+.sidebar-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* Hides scrollbar in Chrome, Safari, Edge */
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+/* Ensure navigation items fit well */
 .nav {
     list-style: none;
     padding: 0;
 }
+
 .nav-item {
     transition: background 0.3s;
 }
-.nav-item.active, .nav-item:hover {
+
+.nav-item.active,
+.nav-item:hover {
     background: #1f2235;
 }
+
 .nav-link {
     display: flex;
     align-items: center;
@@ -143,35 +169,43 @@ const toggleDropdown = (key) => {
     font-size: 14px;
     gap: 10px;
 }
+
 .nav-link i {
     font-size: 16px;
 }
+
 .submenu {
     padding-left: 20px;
     background: #1f2235;
     display: flex;
     flex-direction: column;
 }
+
 .submenu-item {
     color: #ccc;
     text-decoration: none;
     transition: color 0.3s;
 }
+
 .submenu-item:hover {
     color: #f0f0f0;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
 }
+
+/* User Info */
 .user-logo {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     margin-bottom: 10px;
 }
+
 .user {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
+
 </style>

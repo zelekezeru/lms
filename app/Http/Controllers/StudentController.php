@@ -16,7 +16,7 @@ class StudentController extends Controller
             // Add more student data as needed
         ];
 
-        return Inertia::render('Students/Index', ['students' => $students]);
+        return Inertia::render('Students/IndexStudents', ['students' => $students]);
     }
 
     public function create()
@@ -29,7 +29,7 @@ class StudentController extends Controller
         // Fetch student by id from the database
         $student = ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com', 'enrolled' => '2021-09-01'];
 
-        return Inertia::render('Students/Show', ['student' => $student]);
+        return Inertia::render('Students/ShowStudents', ['student' => $student]);
     }
 
     public function edit($id)
@@ -37,7 +37,7 @@ class StudentController extends Controller
         // Fetch student by id from the database
         $student = ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com', 'enrolled' => '2021-09-01'];
 
-        return Inertia::render('Students/Edit', ['student' => $student]);
+        return Inertia::render('Students/EditStudents', ['student' => $student]);
     }
 
     public function destroy($id)

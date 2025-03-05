@@ -24,8 +24,8 @@ const toggleDropdown = (key) => {
                     <img src="/img/logo.png" alt="Logo" class="user-logo" />
                     <div class="info">
                         <a class="collapsed" data-toggle="collapse" href="#profileMenu">
-                            <span>
-                                <span class="user-level">Administrator</span>
+                            <span>     
+                                <slot />
                             </span>
                         </a>
                     </div>
@@ -48,8 +48,8 @@ const toggleDropdown = (key) => {
                             <p>Students</p>
                         </a>
                         <div v-if="showingDropdowns.students" class="submenu">
-                            <DropdownLink class="submenu-item">Add Student</DropdownLink>
-                            <DropdownLink class="submenu-item">Manage Students</DropdownLink>
+                            <DropdownLink :href="route('students.create')" class="submenu-item">Add Student</DropdownLink>
+                            <DropdownLink :href="route('students.index')" class="submenu-item">Manage Students</DropdownLink>
                         </div>
                     </li>
                     

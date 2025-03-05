@@ -20,12 +20,12 @@ const toggleDropdown = (key) => {
     <div class="sidebar" data-background-color="dark">
         <div class="sidebar-wrapper">
             <div class="sidebar-content">
-                <div class="user content-center">
+                <div class="user justify-center">
                     <img src="/img/logo.png" alt="Logo" class="user-logo" />
                     <div class="info">
                         <a class="collapsed" data-toggle="collapse" href="#profileMenu">
                             <span>
-                                <span class="user-level">Admin</span>
+                                <span class="user-level">Administrator</span>
                             </span>
                         </a>
                     </div>
@@ -38,7 +38,7 @@ const toggleDropdown = (key) => {
                         </Link>
                     </li>
                     <li class="nav-section">
-                        <h4 class="text-section">College Management</h4>
+                        <h4 class="text-section">Institution Management</h4>
                     </li>
                     
                     <!-- Students -->
@@ -46,7 +46,6 @@ const toggleDropdown = (key) => {
                         <a href="#" @click.prevent="toggleDropdown('students')">
                             <i class="fas fa-users"></i>
                             <p>Students</p>
-                            <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.students" class="submenu">
                             <DropdownLink class="submenu-item">Add Student</DropdownLink>
@@ -206,6 +205,7 @@ const toggleDropdown = (key) => {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    justify-content: center;
 }
 
 </style>

@@ -8,15 +8,9 @@ import { Head } from '@inertiajs/vue3';
 
     <AppLayout>
         <template #header>
-            <div class="flex flex-col items-center justify-center pt-2 pb-4">
-                <div class="text-center">
-                    <h3 class="font-bold mb-3">SITS Performance Management System</h3>
-                    <h6 class="opacity-70 mb-2">Shiloh International Theological Seminary performance overview</h6>
-                </div>
-            </div>
-            <!-- <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Dashboard
-            </h2> -->
+            </h2>
         </template>
         
         <div class="flex justify-center items-center min-h-screen py-12" style="padding-top: 4rem; padding-left: 16rem;"> <!-- Adjust padding to avoid overlapping -->

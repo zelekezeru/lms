@@ -2,48 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Student;
+use App\Http\Requests\StudentRequest;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        // Fetch students from the database
-        $students = [
-            ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com', 'enrolled' => '2021-09-01'],
-            ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com', 'enrolled' => '2021-09-01'],
-            // Add more student data as needed
-        ];
-
-        return Inertia::render('Students/IndexStudents', ['students' => $students]);
+        $students = Student::latest()->paginate(10);
+        return Inertia::render('Students/Index', compact('students'));
     }
 
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('Students/Create');
     }
-
-    public function show($id)
+    
+    public function show(Student $student)
     {
-        // Fetch student by id from the database
-        $student = ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com', 'enrolled' => '2021-09-01'];
-
-        return Inertia::render('Students/ShowStudents', ['student' => $student]);
+        return Inertia::render('Students/Show', [
+            'student' => $student
+        ]);
+    }
+    
+    public function store(StudentRequest $request)
+    {
+        Student::create($request->validated());
+        return redirect()->route('students.index')->with('success', 'Student added successfully.');
     }
 
-    public function edit($id)
+    public function edit(Student $student): Response
     {
-        // Fetch student by id from the database
-        $student = ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com', 'enrolled' => '2021-09-01'];
-
-        return Inertia::render('Students/EditStudents', ['student' => $student]);
+        return Inertia::render('Students/Edit', compact('student'));
     }
 
-    public function destroy($id)
+    public function update(StudentRequest $request, Student $student)
     {
-        // Add logic to delete the student from the database
+        $student->update($request->validated());
+        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+    }
 
-        return redirect()->route('students.index');
+    public function destroy(Student $student)
+    {
+        $student->delete();
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 }

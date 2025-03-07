@@ -33,9 +33,7 @@ export default {
 
                                 <div class="flex justify-center">
                                     <div class="w-full">
-                                        <!-- The main Slot Here -->
                                         <slot />
-                                        <!-- The main Slot Here -->
                                     </div>
                                 </div>
                             </div>

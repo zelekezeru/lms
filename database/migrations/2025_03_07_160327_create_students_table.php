@@ -13,26 +13,24 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year', 10);
-            $table->string('semester', 20);
-            $table->string('student_id', 20);
-            $table->string('program', 50);
-            $table->string('year_of_study', 10);
             $table->string('student_name', 100);
             $table->string('father_name', 100);
-            $table->string('grand_father_name', 100);
-            $table->string('home_phone', 15)->nullable();
+            $table->string('grand_father_name', 100)->nullable();
             $table->string('mobile_phone', 15)->nullable();
             $table->string('office_phone', 15)->nullable();
-            $table->date('date_of_birth');
-            $table->string('marital_status', 10);
-            $table->char('sex', 1);
+            $table->date('date_of_birth')->nullable();
+            $table->string('marital_status', 10)->nullable();
+            $table->char('sex', 6);
+            $table->string('academic_year', 10);
+            $table->string('semester', 20)->nullable();
+            $table->string('student_id', 20);
+            $table->string('program', 50)->nullable();
+            $table->string('year_of_study', 10)->nullable();
             $table->string('pastor_name', 100)->nullable();
             $table->string('address_1', 200)->nullable();
-            $table->string('address_2', 200)->nullable();
             $table->string('position_denomination', 100)->nullable();
-            $table->integer('total_credit_hours');
-            $table->decimal('total_amount_paid', 10, 2);
+            $table->integer('total_credit_hours')->nullable();
+            $table->decimal('total_amount_paid', 10, 2)->nullable();
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
             $table->timestamps();

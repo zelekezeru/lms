@@ -30,6 +30,7 @@ class StudentController extends Controller
     public function store(StudentRequest $request)
     {
         Student::create($request->validated());
+
         return redirect()->route('students.index')->with('success', 'Student added successfully.');
     }
 
@@ -41,6 +42,7 @@ class StudentController extends Controller
     public function update(StudentRequest $request, Student $student)
     {
         $student->update($request->validated());
+        
         return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
 

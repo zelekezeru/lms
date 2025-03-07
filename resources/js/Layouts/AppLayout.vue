@@ -19,14 +19,12 @@ export default {
                 <Navigation />
             </div>
             
-            
             <main class="flex-1 p-4 overflow-y-auto">        
-                <div class="flex justify-center items-center min-h-screen py-12" style="padding-top: 1rem; padding-left: 16rem;"> <!-- Adjust padding to avoid overlapping -->
+                <div class="flex justify-center items-center" style="padding-top: 6rem; padding-left: 16rem;">
+                    <slot name="header" />
+                </div>
+                <div class="justify-center items-center min-h-screen py-12" style="padding-top: 1rem; padding-left: 16rem;">
                     
-                    <div class="pt-4 px-4">
-                        <slot name="header" />
-                    </div>
-
                     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                         <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                             <div class="p-6 text-gray-900">

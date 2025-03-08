@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Http\Requests\StudentRequest;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
@@ -29,7 +31,13 @@ class StudentController extends Controller
     
     public function store(StudentRequest $request)
     {
-        Student::create($request->validated());
+        $student = Student::create($request->validated());
+        
+        $tenant = 'SITS';
+
+        $student_id = $this->student_id($tenant, $student->program);
+
+        $student->update(['student_id' => $student_id]);
 
         return redirect()->route('students.index')->with('success', 'Student added successfully.');
     }
@@ -50,5 +58,34 @@ class StudentController extends Controller
     {
         $student->delete();
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+        $students = Student::where('student_name', 'like', "%$search%")
+            ->orWhere('student_id', 'like', "%$search%")
+            ->latest()
+            ->paginate(10);
+        return Inertia::render('Students/Index', compact('students'));
+    }
+
+    public function student_id($tenant, $program)
+    {
+        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+
+        if($program == 'Regular') {
+            $program_ref = 'RG';
+        } elseif($program == 'Online') {
+            $program_ref = 'OL';
+        } elseif($program == 'Distance') {
+            $program_ref = 'DS';
+        }else {
+            return  'Invalid program';
+        }
+
+        $student_id = $tenant . '/' . $program_ref . ' ' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+
+        return $student_id;
     }
 }

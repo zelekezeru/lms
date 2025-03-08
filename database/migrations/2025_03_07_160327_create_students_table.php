@@ -25,9 +25,13 @@ return new class extends Migration
             $table->string('semester', 20)->nullable();
             $table->string('student_id', 20);
             $table->string('program', 50)->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('address_1', 200)->nullable();
             $table->string('year_of_study', 10)->nullable();
             $table->string('pastor_name', 100)->nullable();
-            $table->string('address_1', 200)->nullable();
+            $table->string('pastor_phone', 100)->nullable();
+            $table->string('church_name', 100)->nullable();
+            $table->string('church_address', 200)->nullable();
             $table->string('position_denomination', 100)->nullable();
             $table->integer('total_credit_hours')->nullable();
             $table->decimal('total_amount_paid', 10, 2)->nullable();

@@ -11,10 +11,10 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Create Student" />
+    <Head title="Register Student" />
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">Create Student</h2>
+            <h2 class="text-xl font-semibold text-gray-800">Register Student</h2>
         </template>
         <Form :form="form" @submit="submit" />
     </AppLayout>

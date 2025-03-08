@@ -105,6 +105,19 @@ const toggleDropdown = (key) => {
                         </div>
                     </li>
                     
+                    <!-- Roles permissions -->
+                    <li class="nav-item">
+                        <a href="#" @click.prevent="toggleDropdown('permissions')">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>Permissions</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div v-if="showingDropdowns.permissions" class="submenu">
+                            <DropdownLink class="submenu-item">Manage Roles</DropdownLink>
+                            <DropdownLink class="submenu-item">Manage Permissions</DropdownLink>
+                        </div>
+                    </li>
+                    
                     <li class="nav-item">
                         <Link :href="route('profile.edit')">
                             <i class="fas fa-user"></i>

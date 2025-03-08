@@ -26,19 +26,17 @@ const deleteStudent = (id) => {
                     <tr>
                         <th class="p-2">ID</th>
                         <th class="p-2">Student ID</th>
-                        <th class="p-2">Name</th>
+                        <th class="p-2">Full Name</th>
                         <th class="p-2">Program</th>
-                        <th class="p-2">Year</th>
                         <th class="p-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="student in students.data" :key="student.id">
-                        <td class="p-2">{{ student.id }}</td>
+                    <tr v-for="(student, index) in students.data" :key="student.id">
+                        <td class="p-2">{{ index + 1 }}</td>
                         <td class="p-2">{{ student.student_id }}</td>
-                        <td class="p-2">{{ student.student_name }}</td>
+                        <td class="p-2">{{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}</td>
                         <td class="p-2">{{ student.program }}</td>
-                        <td class="p-2">{{ student.year_of_study }}</td>
                         <td class="p-2">
                             <Link :href="route('students.show', student.id)" class="text-green-500">View</Link> |
                             <Link :href="route('students.edit', student.id)" class="text-blue-500">Edit</Link> |

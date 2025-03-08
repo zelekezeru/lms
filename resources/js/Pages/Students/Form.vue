@@ -23,10 +23,10 @@ const emit = defineEmits(['submit']);
                 <label class="block text-gray-700">Grandfather's Name</label>
                 <input v-model="form.grand_father_name" class="w-full border rounded p-2" placeholder="Grandfather's Name" />
             </div>
-            <!-- <div class="w-1/2 pl-2">
+            <div class="w-1/2 pl-2">
                 <label class="block text-gray-700">Student ID</label>
                 <input v-model="form.student_id" class="w-full border rounded p-2" placeholder="Unique ID" />
-            </div> -->
+            </div>
         </div>
 
         <div class="flex mb-4">
@@ -79,12 +79,7 @@ const emit = defineEmits(['submit']);
             </div>
             <div class="w-1/2 pl-2">
                 <label class="block text-gray-700">Program</label>
-                <select v-model="form.program" class="w-full border rounded p-2">
-                    <option value="Choose" disabled selected>Select Program</option>
-                    <option value="Regular">Regular</option>
-                    <option value="Online">Online</option>
-                    <option value="Destance">Destance</option>
-                </select>
+                <input v-model="form.program" class="w-full border rounded p-2" placeholder="e.g., Degree" />
             </div>
         </div>
 

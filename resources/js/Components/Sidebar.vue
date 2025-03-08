@@ -9,6 +9,7 @@ const showingDropdowns = ref({
     teachers: false,
     attendance: false,
     exams: false,
+    permissions: false,
 });
 
 const toggleDropdown = (key) => {
@@ -113,8 +114,8 @@ const toggleDropdown = (key) => {
                             <span class="caret"></span>
                         </a>
                         <div v-if="showingDropdowns.permissions" class="submenu">
-                            <DropdownLink class="submenu-item">Manage Roles</DropdownLink>
-                            <DropdownLink class="submenu-item">Manage Permissions</DropdownLink>
+                            <DropdownLink :href="route('roles.index')" class="submenu-item">Manage Roles</DropdownLink>
+                            <DropdownLink :href="route('permissions.index')" class="submenu-item">Manage Permissions</DropdownLink>
                         </div>
                     </li>
                     

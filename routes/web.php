@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,4 +30,17 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('students', StudentController::class);
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('roles', RoleController::class);
+    Route::get('/roles/{role}/permissions', [RoleController::class, 'assign'])->name('roles.permissions');
+    Route::put('/roles/{role}/permissions', [RoleController::class, 'attach'])->name('roles.attach');
+    Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->name('roles.detach');       
+    
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('permissions', PermissionController::class);
+});
+
 require __DIR__.'/auth.php';

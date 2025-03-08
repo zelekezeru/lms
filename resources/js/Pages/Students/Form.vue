@@ -3,10 +3,25 @@ import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({ form: Object });
 const emit = defineEmits(['submit']);
+
+const getYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = 2000; year <= currentYear; year++) {
+        years.push(year);
+    }
+    return years;
+};
 </script>
 
 <template>
     <form @submit.prevent="emit('submit')" class="bg-white p-4 shadow rounded">
+
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">Personal Informations</h2>
+            <hr class="my-4" />
+        </div>
+        
         <div class="flex mb-4">
             <div class="w-1/2 pr-2">
                 <label class="block text-gray-700">Student Name</label>
@@ -23,9 +38,9 @@ const emit = defineEmits(['submit']);
                 <label class="block text-gray-700">Grandfather's Name</label>
                 <input v-model="form.grand_father_name" class="w-full border rounded p-2" placeholder="Grandfather's Name" />
             </div>
-            <div class="w-1/2 pl-2">
-                <label class="block text-gray-700">Student ID</label>
-                <input v-model="form.student_id" class="w-full border rounded p-2" placeholder="Unique ID" />
+            <div class="w-1/2 pr-2">
+                <label class="block text-gray-700">Email</label>
+                <input v-model="form.email" class="w-full border rounded p-2" placeholder="Email address" />
             </div>
         </div>
 
@@ -37,17 +52,6 @@ const emit = defineEmits(['submit']);
             <div class="w-1/2 pl-2">
                 <label class="block text-gray-700">Office Phone</label>
                 <input v-model="form.office_phone" class="w-full border rounded p-2" placeholder="Office Phone Number" />
-            </div>
-        </div>
-
-        <div class="flex mb-4">
-            <div class="w-1/2 pr-2">
-                <label class="block text-gray-700">Email</label>
-                <input v-model="form.email" class="w-full border rounded p-2" placeholder="Email address" />
-            </div>
-            <div class="w-1/2 pl-2">
-                <label class="block text-gray-700">Date of Birth</label>
-                <input v-model="form.date_of_birth" type="date" class="w-full border rounded p-2" />
             </div>
         </div>
 
@@ -73,39 +77,75 @@ const emit = defineEmits(['submit']);
         </div>
 
         <div class="flex mb-4">
-            <div class="w-1/2 pr-2">
-                <label class="block text-gray-700">Academic Year</label>
-                <input v-model="form.academic_year" class="w-full border rounded p-2" placeholder="e.g., 2024" />
+            <div class="w-1/2 pl-2">
+                <label class="block text-gray-700">Date of Birth</label>
+                <input v-model="form.date_of_birth" type="date" class="w-full border rounded p-2" />
             </div>
             <div class="w-1/2 pl-2">
-                <label class="block text-gray-700">Program</label>
-                <input v-model="form.program" class="w-full border rounded p-2" placeholder="e.g., Degree" />
+                <label class="block text-gray-700">Address</label>
+                <input v-model="form.address_1" class="w-full border rounded p-2" placeholder="e.g., Hawassa, Sidama, Ethiopia" />
             </div>
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700">Year of Study</label>
-            <input v-model="form.year_of_study" class="w-full border rounded p-2" placeholder="e.g., First" />
+            <h2 class="text-xl font-semibold text-gray-800">Academic Informations</h2>
+            <hr class="my-4" />
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Pastor's Name</label>
-            <input v-model="form.pastor_name" class="w-full border rounded p-2" placeholder="Pastor's Full Name" />
+
+        <div class="flex mb-4">
+            <div class="w-1/2 pr-2">
+                <label class="block text-gray-700">Academic Year</label>
+                <select v-model="form.academic_year" class="w-full border rounded p-2">
+                    <option value="" disabled>Select Year</option>
+                    <option v-for="year in getYears()" :key="year" :value="year">{{ year }}</option>
+                </select>
+            </div>
+            <div class="w-1/2 pl-2">
+                <label class="block text-gray-700">Program</label>
+                <select v-model="form.program" class="w-full border rounded p-2">
+                    <option value="" disabled>Select Program</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Online">Online</option>
+                    <option value="Distance">Distance</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
         </div>
+
         <div class="mb-4">
-            <label class="block text-gray-700">Pastor's Phone</label>
-            <input v-model="form.pastor_phone" class="w-full border rounded p-2" placeholder="Pastor Phone Number" />
+            <h2 class="text-xl font-semibold text-gray-800">Church Informations</h2>
+            <hr class="my-4" />
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Address</label>
-            <input v-model="form.address_1" class="w-full border rounded p-2" placeholder="Primary Address" />
+
+        <div class="flex mb-4">
+            <div class="w-1/2 pr-2">
+                <label class="block text-gray-700">Church Name</label>
+                <input v-model="form.church_name" class="w-full border rounded p-2" placeholder="e.g., Kalehiwot" />
+            </div>
+            <div class="w-1/2 pl-2">
+                <label class="block text-gray-700">Church Address</label>
+                <input v-model="form.church_address" class="w-full border rounded p-2" placeholder="e.g., Hawassa, Sidama" />
+            </div>
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Position/Denomination</label>
-            <input v-model="form.position_denomination" class="w-full border rounded p-2" placeholder="e.g., Title/Denomination" />
+        <div class="flex mb-4">
+            <div class="w-1/2 pl-2">
+                <label class="block text-gray-700">Pastor's Name</label>
+                <input v-model="form.pastor_name" class="w-full border rounded p-2" placeholder="Pastor's Full Name" />
+            </div>
+            <div class="w-1/2 pr-2">
+                <label class="block text-gray-700">Pastor's Phone</label>
+                <input v-model="form.pastor_phone" class="w-full border rounded p-2" placeholder="Pastor Phone Number" />
+            </div>
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Office Use Notes</label>
-            <textarea v-model="form.office_use_notes" class="w-full border rounded p-2" placeholder="Internal Notes"></textarea>
+        <div class="flex mb-4">
+            <div class="w-1/2 pr-2">
+                <label class="block text-gray-700">Position/Denomination</label>
+                <input v-model="form.position_denomination" class="w-full border rounded p-2" placeholder="e.g., Title/Denomination" />
+            </div>
+            <div class="w-1/2 pl-2">
+                <label class="block text-gray-700">Office Use Notes</label>
+                <textarea v-model="form.office_use_notes" class="w-full border rounded p-2" placeholder="Internal Notes"></textarea>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>

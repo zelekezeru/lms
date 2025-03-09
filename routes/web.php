@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RoleController;
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('students', StudentController::class);
+    Route::resource('departments', DepartmentController::class);
 });
 
 Route::middleware(['auth'])->group(function () {

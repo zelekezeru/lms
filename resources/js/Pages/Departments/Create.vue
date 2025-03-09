@@ -1,0 +1,195 @@
+<script setup>
+import AppLayout from "@/Layouts/AppLayout.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputError from "@/Components/InputError.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { router, useForm } from "@inertiajs/vue3";
+
+// Define the props for this component
+defineProps({
+    units: {
+        type: Object,
+    },
+});
+
+// Initialize the form with the department fields
+const form = useForm({
+    name: "",
+    code: "",
+    description: "",
+    established_year: "",
+    contact_email: "",
+    phone: "",
+    location: "",
+});
+
+const submit = () => {
+    form.post(route("departments.store")); // Assuming this is the correct route for storing the department
+};
+</script>
+
+<template>
+    <AppLayout>
+        <div class="flex justify-center">
+            <div
+                class="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-md p-6 max-w-lg w-full"
+            >
+                <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
+                    Department Creation Form
+                </h2>
+                <form @submit.prevent="submit">
+                    <!-- Department Name Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="name"
+                            value="Department Name"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="name"
+                            type="text"
+                            v-model="form.name"
+                            required
+                            autofocus
+                            autocomplete="name"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.name"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Department Code Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="code"
+                            value="Department Code"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="code"
+                            type="text"
+                            v-model="form.code"
+                            required
+                            autocomplete="code"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.code"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="description"
+                            value="Description"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="description"
+                            type="text"
+                            v-model="form.description"
+                            autocomplete="description"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.description"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Established Year Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="established_year"
+                            value="Established Year"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="established_year"
+                            type="number"
+                            v-model="form.established_year"
+                            autocomplete="established_year"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.established_year"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Contact Email Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="contact_email"
+                            value="Contact Email"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="contact_email"
+                            type="email"
+                            v-model="form.contact_email"
+                            autocomplete="contact_email"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.contact_email"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Phone Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="phone"
+                            value="Phone"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="phone"
+                            type="text"
+                            v-model="form.phone"
+                            autocomplete="phone"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.phone"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Location Field -->
+                    <div class="mb-4">
+                        <InputLabel
+                            for="location"
+                            value="Location"
+                            class="block mb-1 dark:text-gray-200"
+                        />
+                        <TextInput
+                            id="location"
+                            type="text"
+                            v-model="form.location"
+                            autocomplete="location"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        />
+                        <InputError
+                            :message="form.errors.location"
+                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                        />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <PrimaryButton
+                        v-if="!form.processing"
+                        class="w-full dark:bg-gray-200 dark:text-gray-800"
+                        >Submit</PrimaryButton
+                    >
+                </form>
+            </div>
+        </div>
+    </AppLayout>
+</template>

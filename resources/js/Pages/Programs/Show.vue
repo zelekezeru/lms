@@ -75,58 +75,36 @@ const deleteprogram = (id) => {
                         >
                     </div>
 
-                    <!-- program Code -->
+                    <!-- program Language -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Code</span
+                            >Language</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.code }}</span
+                            >{{ program.language }}</span
                         >
                     </div>
 
-                    <!-- Established Year -->
+                    <!-- Study -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Established Year</span
+                            >Study</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.established_year }}</span
+                            >{{ program.study }}</span
                         >
                     </div>
 
-                    <!-- Contact Email -->
+                    <!-- Description -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Contact Email</span
+                            >Description</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.contact_email }}</span
-                        >
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Phone</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.phone }}</span
-                        >
-                    </div>
-
-                    <!-- Location -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Location</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.location }}</span
+                            >{{ program.description }}</span
                         >
                     </div>
                 </div>

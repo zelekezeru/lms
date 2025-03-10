@@ -18,7 +18,7 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = ProgramResource::collection(Program::paginate(10));
+        $programs = ProgramResource::collection(Program::with('studyModes', 'department')->paginate(10));
 
         return inertia('Programs/Index', [
             'programs' => $programs,
@@ -31,21 +31,21 @@ class ProgramController extends Controller
     public function create()
     {
         $departments = DepartmentResource::collection(Department::all());
-
+        
         return  inertia('Programs/Create', [
             'departments' => $departments,
         ]);
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
-
+        
         $program = Program::create($fields);
-
+        
         foreach ($request->studyModes as $studyMode) {
             $studyMode = StudyMode::create([
                 'program_id' => $program->id,
@@ -54,10 +54,10 @@ class ProgramController extends Controller
                 'fees' => $studyMode['fees']
             ]);
         }
-
+        
         return redirect(route('programs.index'));
     }
-
+    
     /**
      * Display the specified resource.
      */
@@ -73,8 +73,12 @@ class ProgramController extends Controller
      */
     public function edit(Program $program)
     {
+        $departments = DepartmentResource::collection(Department::all());
+        $program->load('department', 'studyModes');
+
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
+            'departments' => $departments,
         ]);
     }
 

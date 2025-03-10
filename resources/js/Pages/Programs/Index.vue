@@ -3,7 +3,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 
 defineProps({
     programs: {
@@ -26,11 +27,7 @@ const deleteprogram = (id) => {
         if (result.isConfirmed) {
             router.delete(route("programs.destroy", { program: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The program has been deleted.",
-                        "success"
-                    );
+                    Swal.fire("Deleted!", "The program has been deleted.", "success");
                 },
             });
         }
@@ -40,25 +37,40 @@ const deleteprogram = (id) => {
 
 <template>
     <AppLayout>
-        <!-- Add New program Button -->
-        <Link
-            :href="route('programs.create')"
-            class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 mb-3"
-        >
-            Add New program
-        </Link>
-
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+        <!-- Page Title -->
+        <div class="my-6 text-center">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Programs
+            </h1>
+        </div>
+        
+        <!-- Header Toolbar -->
+        <div class="flex justify-between items-center mb-3">
+            <Link
+                :href="route('programs.create')"
+                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
+                Add New Program
+            </Link>
+            <button
+                @click="router.visit(route('programs.index'), { only: ['programs'] })"
+                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                title="Refresh Data"
+            >
+                <ArrowPathIcon class="w-5 h-5 mr-2" />
+                Refresh Data
+            </button>
+        </div>
+
+        <!-- Programs Table -->
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">program Name</th>
+                        <th scope="col" class="px-6 py-3">Program Name</th>
                         <th scope="col" class="px-6 py-3">Language</th>
-                        <th scope="col" class="px-6 py-3">Study</th>
+                        <th scope="col" class="px-6 py-3">Department</th>
+                        <th scope="col" class="px-6 py-3">Study Modes</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
                 </thead>
@@ -72,37 +84,34 @@ const deleteprogram = (id) => {
                             scope="row"
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
-                            <Link
-                                :href="
-                                    route('programs.show', {
-                                        program: program.id,
-                                    })
-                                "
-                                >{{ program.name }}</Link
-                            >
+                            <Link :href="route('programs.show', { program: program.id })">
+                                {{ program.name }}
+                            </Link>
                         </th>
                         <td class="px-6 py-4">{{ program.language }}</td>
-                        <td class="px-6 py-4">{{ program.study }}</td>
-                        <td class="px-6 py-4 flex space-x-2">
+                        <td class="px-6 py-4">{{ program.department.name }}</td>
+                        <td class="px-1 w-14 py-4">
+                            <span
+                                v-for="studyMode in program.studyModes"
+                                :key="studyMode.id"
+                                class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
+                                :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
+                            >
+                                {{ studyMode.mode }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 flex justify-between">
                             <Link
-                                :href="
-                                    route('programs.show', {
-                                        program: program.id,
-                                    })
-                                "
+                                :href="route('programs.show', { program: program.id })"
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
-                                :href="
-                                    route('programs.edit', {
-                                        program: program.id,
-                                    })
-                                "
+                                :href="route('programs.edit', { program: program.id })"
                                 class="text-green-500 hover:text-green-700"
                             >
-                                <PencilIcon class="w-5 h-5" />
+                                <PencilSquareIcon class="w-5 h-5" />
                             </Link>
                             <button
                                 @click="deleteprogram(program.id)"
@@ -133,3 +142,4 @@ const deleteprogram = (id) => {
         </div>
     </AppLayout>
 </template>
+

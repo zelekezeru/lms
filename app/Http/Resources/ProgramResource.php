@@ -19,7 +19,8 @@ class ProgramResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'language' => $this->language,
-            'study' => $this->study,
+            'studyModes' => StudyModeResource::collection($this->whenLoaded('studyModes')),
+            'department' => new DepartmentResource($this->whenLoaded('department')),
         ];
     }
 }

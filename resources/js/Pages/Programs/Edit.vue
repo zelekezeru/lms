@@ -15,6 +15,10 @@ defineProps({
         type: Object,
         required: true,
     },
+    departments: {
+        type: Object,
+        required: true,
+    },
 });
 
 console.log(usePage().props.program.name);
@@ -23,7 +27,7 @@ const form = useForm({
     name: usePage().props.program.name,
     language: usePage().props.program.language,
     description: usePage().props.program.description,
-    study: usePage().props.program.study,
+    department_id: usePage().props.program.department.id,
 });
 
 // Submit form function
@@ -112,25 +116,37 @@ const submit = (id) => {
                             class="mt-2 text-sm text-red-600 dark:text-red-400"
                         />
                     </div>
-                    <!-- Phone Field -->
-                    <div class="mb-4">
+
+                    <div>
                         <InputLabel
-                            for="study"
-                            value="Study"
+                            for="department"
+                            value="Change Department"
                             class="block mb-1 dark:text-gray-200"
                         />
-                        <TextInput
-                            id="study"
-                            type="text"
-                            v-model="form.study"
-                            autocomplete="study"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
+                        <select
+                            id="department"
+                            v-model="form.department_id"
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                        >
+                            <option disabled value="">Select Department</option>
+                            <option
+                                v-for="department in departments"
+                                :selected="department.id == program.department.id"
+                                :key="department.id"
+                                :value="department.id"
+                                class="dark:text-gray-200"
+                            >
+                                {{ department.name }}
+                            </option>
+                        </select>
                         <InputError
-                            :message="form.errors.study"
+                            :message="form.errors.department_id"
                             class="mt-2 text-sm text-red-600 dark:text-red-400"
                         />
                     </div>
+
+                    
                     <!-- Submit Button -->
                     <PrimaryButton
                         v-if="!form.processing"

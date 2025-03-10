@@ -17,4 +17,9 @@ class Program extends Model
     {
         return $this->hasMany(StudyMode::class);
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

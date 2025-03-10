@@ -28,7 +28,7 @@ import {
 const isMobile = ref(window.innerWidth < 768);
 const sidebarVisible = ref(!isMobile.value);
 const sidebarHovered = ref(false);
-const openMenus = ref({ userPages: false, departmentsMenu: false , studentssMenu: false });
+const openMenus = ref({ userPages: false, departmentsMenu: false, studentsMenu: false, coursesMenu: false, teachersMenu: false, attendanceMenu: false, examsMenu: false, permissionsMenu: false });
 
 // Dark mode handling
 const isDarkMode = useDark();
@@ -97,13 +97,7 @@ onUnmounted(() => {
             @mouseleave="handleAsideHover"
             class="transition-width duration-300 ease-in-out flex flex-col bg-[#1a2035] dark:bg-gray-900 text-[#a2a4ab] dark:text-gray-200"
         >
-            <div
-                class="h-[70px] flex"
-                :class="{
-                    'justify-between': isMobile,
-                    'justify-center': !isMobile,
-                }"
-            >
+            <div class="h-[70px] flex" :class="{'justify-between': isMobile, 'justify-center': !isMobile}">
                 <div class="flex gap-4 items-center justify-center h-full">
                     <img
                         src="/img/logo.png"
@@ -132,75 +126,21 @@ onUnmounted(() => {
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-[#00000029] dark:hover:bg-gray-700"
                 >
                     <HomeIcon class="w-8 h-8 text-[#a2a4ab] p-1 rounded-full" />
-                    <span
-                        class="transition-all duration-300"
-                        v-if="sidebarVisible || sidebarHovered"
+                    <span class="transition-all duration-300" v-if="sidebarVisible || sidebarHovered"
                         >Dashboard</span
                     >
                 </Link>
 
                 <div class="transition-all duration-300">
                     <h2 class="font-bold px-4">Menu</h2>
+                    
+                    <!-- Students Navigation Item -->
                     <button
-                        @click="
-                            openMenus.departmentsMenu =
-                                !openMenus.departmentsMenu
-                        "
+                        @click="openMenus.studentsMenu = !openMenus.studentsMenu"
                         class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
                     >
                         <div class="flex departments-center space-x-3">
-                            <DocumentIcon class="w-7 p-1" />
-                            <span v-if="sidebarVisible || sidebarHovered"
-                                >Departments</span
-                            >
-                        </div>
-                        <component
-                            :is="
-                                openMenus.departmentsMenu
-                                    ? ChevronUpIcon
-                                    : ChevronDownIcon
-                            "
-                            class="w-5 h-5"
-                        />
-                    </button>
-                    <transition name="fade">
-                        <div
-                            v-if="
-                                openMenus.departmentsMenu &&
-                                (sidebarVisible || sidebarHovered)
-                            "
-                            class="space-y-2 rounded-md p-2"
-                        >
-                            <Link
-                                :href="route('departments.index')"
-                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-                            >
-                                <ClipboardDocumentListIcon
-                                    class="w-4 h-5 mr-2"
-                                />
-                                Manage Departments
-                            </Link>
-                            <Link
-                                :href="route('departments.create')"
-                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-                            >
-                                <PlusIcon class="w-4 h-5 mr-2" /> Add
-                                Departments
-                            </Link>
-                        </div>
-                    </transition>
-                </div>
-
-                <div class="transition-all duration-300">
-                    <button
-                        @click="
-                            openMenus.studentsMenu =
-                                !openMenus.studentsMenu
-                        "
-                        class="w-full flex students-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
-                    >
-                        <div class="flex students-center space-x-3">
-                            <DocumentIcon class="w-7 p-1" />
+                            <UsersIcon class="w-7 p-1" />
                             <span v-if="sidebarVisible || sidebarHovered"
                                 >Students</span
                             >
@@ -223,23 +163,263 @@ onUnmounted(() => {
                             class="space-y-2 rounded-md p-2"
                         >
                             <Link
+                                :href="route('students.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add Student
+                            </Link>
+                            <Link
                                 :href="route('students.index')"
-                                class="flex students-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
                             >
                                 <ClipboardDocumentListIcon
                                     class="w-4 h-5 mr-2"
                                 />
                                 Manage Students
                             </Link>
-                            <Link
-                                :href="route('students.create')"
-                                class="flex students-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                        </div>
+                    </transition>
+
+                    <!-- Courses Navigation Item -->
+                    <button
+                        @click="openMenus.coursesMenu = !openMenus.coursesMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <TableCellsIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Courses</span
                             >
-                                <PlusIcon class="w-4 h-5 mr-2" /> Add
-                                Students
+                        </div>
+                        <component
+                            :is="
+                                openMenus.coursesMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.coursesMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('courses.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add Course
+                            </Link>
+                            <Link
+                                :href="route('courses.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Courses
                             </Link>
                         </div>
                     </transition>
+
+                    <!-- Teachers Navigation Item -->
+                    <button
+                        @click="openMenus.teachersMenu = !openMenus.teachersMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <BuildingStorefrontIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Teachers</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.teachersMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.teachersMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('teachers.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add Teacher
+                            </Link>
+                            <Link
+                                :href="route('teachers.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Teachers
+                            </Link>
+                        </div>
+                    </transition>
+
+                    <!-- Attendance Navigation Item -->
+                    <button
+                        @click="openMenus.attendanceMenu = !openMenus.attendanceMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <ChartBarIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Attendance</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.attendanceMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.attendanceMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('attendance.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Take Attendance
+                            </Link>
+                            <Link
+                                :href="route('attendance.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                View Attendance
+                            </Link>
+                        </div>
+                    </transition>
+
+                    <!-- Exams Navigation Item -->
+                    <button
+                        @click="openMenus.examsMenu = !openMenus.examsMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <DocumentTextIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Exams</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.examsMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.examsMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('exams.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Schedule Exam
+                            </Link>
+                            <Link
+                                :href="route('exams.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Exams
+                            </Link>
+                        </div>
+                    </transition>
+
+                    <!-- Permissions Navigation Item -->
+                    <button
+                        @click="openMenus.permissionsMenu = !openMenus.permissionsMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <Cog6ToothIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Permissions</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.permissionsMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.permissionsMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('roles.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Roles
+                            </Link>
+                            <Link
+                                :href="route('permissions.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Manage Permissions
+                            </Link>
+                        </div>
+                    </transition>
+
+                    <!-- Profile Navigation Item -->
+                    <Link
+                        :href="route('profile.edit')"
+                        class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <UsersIcon class="w-8 h-8 text-[#a2a4ab] p-1 rounded-full" />
+                        <span class="transition-all duration-300" v-if="sidebarVisible || sidebarHovered"
+                            >My Profile</span
+                        >
+                    </Link>
                 </div>
             </nav>
         </aside>
@@ -255,8 +435,8 @@ onUnmounted(() => {
         <div
             class="flex-1 flex flex-col transition-margin duration-300"
             :class="{
-                'ml-64': !isMobile && sidebarVisible,
-                'ml-20': !isMobile && !sidebarVisible,
+                'ml-64': !isMobile && (sidebarVisible),
+                'ml-20': !isMobile && (!sidebarVisible),
             }"
         >
             <!-- Navbar -->
@@ -324,7 +504,9 @@ onUnmounted(() => {
             </nav>
 
             <!-- Page Content -->
-            <main class="flex-1 p-6 bg-gray dark:bg-[#1a2035]">
+            <main
+                class="flex-1 p-6 bg-gray dark:bg-[#1a2035]"
+            >
                 <slot />
             </main>
         </div>

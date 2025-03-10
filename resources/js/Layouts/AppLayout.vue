@@ -88,7 +88,7 @@ onUnmounted(() => {
             :class="{
                 '-translate-x-full': !sidebarVisible && isMobile,
                 'translate-x-0': sidebarVisible && isMobile,
-                'w-64 fixed top-0 bottom-0': sidebarVisible || sidebarHovered,
+                'w-64 fixed top-0 bottom-0': sidebarVisible || sidebarHovered || isMobile,
                 'w-20 fixed top-0 bottom-0': !sidebarVisible && !isMobile,
                 'fixed inset-y-0 left-0 transform z-50 transition-all duration-300 ease-in-out':
                     isMobile,
@@ -518,7 +518,7 @@ onUnmounted(() => {
         <!-- Mobile Sidebar Overlay -->
         <div
             v-if="isMobile && sidebarVisible"
-            class="fixed inset-0 bg-black bg-opacity-50 z-40"
+            class="fixed inset-0 bg-black-100 bg-opacity-50 z-40"
             @click="sidebarVisible = false"
         ></div>
 

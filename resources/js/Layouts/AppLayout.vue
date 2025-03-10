@@ -28,7 +28,7 @@ import {
 const isMobile = ref(window.innerWidth < 768);
 const sidebarVisible = ref(!isMobile.value);
 const sidebarHovered = ref(false);
-const openMenus = ref({ userPages: false, departmentsMenu: false});
+const openMenus = ref({ userPages: false, departmentsMenu: false , studentssMenu: false });
 
 // Dark mode handling
 const isDarkMode = useDark();
@@ -97,7 +97,13 @@ onUnmounted(() => {
             @mouseleave="handleAsideHover"
             class="transition-width duration-300 ease-in-out flex flex-col bg-[#1a2035] dark:bg-gray-900 text-[#a2a4ab] dark:text-gray-200"
         >
-            <div class="h-[70px] flex" :class="{'justify-between': isMobile, 'justify-center': !isMobile}">
+            <div
+                class="h-[70px] flex"
+                :class="{
+                    'justify-between': isMobile,
+                    'justify-center': !isMobile,
+                }"
+            >
                 <div class="flex gap-4 items-center justify-center h-full">
                     <img
                         src="/img/logo.png"
@@ -126,7 +132,9 @@ onUnmounted(() => {
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-[#00000029] dark:hover:bg-gray-700"
                 >
                     <HomeIcon class="w-8 h-8 text-[#a2a4ab] p-1 rounded-full" />
-                    <span class="transition-all duration-300" v-if="sidebarVisible || sidebarHovered"
+                    <span
+                        class="transition-all duration-300"
+                        v-if="sidebarVisible || sidebarHovered"
                         >Dashboard</span
                     >
                 </Link>
@@ -134,7 +142,10 @@ onUnmounted(() => {
                 <div class="transition-all duration-300">
                     <h2 class="font-bold px-4">Menu</h2>
                     <button
-                        @click="openMenus.departmentsMenu = !openMenus.departmentsMenu"
+                        @click="
+                            openMenus.departmentsMenu =
+                                !openMenus.departmentsMenu
+                        "
                         class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
                     >
                         <div class="flex departments-center space-x-3">
@@ -173,7 +184,59 @@ onUnmounted(() => {
                                 :href="route('departments.create')"
                                 class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
                             >
-                                <PlusIcon class="w-4 h-5 mr-2" /> Add Departments
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add
+                                Departments
+                            </Link>
+                        </div>
+                    </transition>
+                </div>
+
+                <div class="transition-all duration-300">
+                    <button
+                        @click="
+                            openMenus.studentsMenu =
+                                !openMenus.studentsMenu
+                        "
+                        class="w-full flex students-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex students-center space-x-3">
+                            <DocumentIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Students</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.studentsMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.studentsMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('students.index')"
+                                class="flex students-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Students
+                            </Link>
+                            <Link
+                                :href="route('students.create')"
+                                class="flex students-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add
+                                Students
                             </Link>
                         </div>
                     </transition>
@@ -192,8 +255,8 @@ onUnmounted(() => {
         <div
             class="flex-1 flex flex-col transition-margin duration-300"
             :class="{
-                'ml-64': !isMobile && (sidebarVisible),
-                'ml-20': !isMobile && (!sidebarVisible),
+                'ml-64': !isMobile && sidebarVisible,
+                'ml-20': !isMobile && !sidebarVisible,
             }"
         >
             <!-- Navbar -->
@@ -261,9 +324,7 @@ onUnmounted(() => {
             </nav>
 
             <!-- Page Content -->
-            <main
-                class="flex-1 p-6 bg-gray dark:bg-[#1a2035]"
-            >
+            <main class="flex-1 p-6 bg-gray dark:bg-[#1a2035]">
                 <slot />
             </main>
         </div>

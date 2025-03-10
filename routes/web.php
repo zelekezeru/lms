@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProgramController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('students', StudentController::class);
     Route::resource('departments', DepartmentController::class);
+    Route::resource('programs', ProgramController::class);
 });
 
 Route::middleware(['auth'])->group(function () {

@@ -37,8 +37,6 @@ class ProgramController extends Controller
     {
         $fields = $request->validated();
 
-        dd($fields);
-
         $program = Program::create($fields);
 
         return redirect(route('programs.index'));
@@ -69,7 +67,11 @@ class ProgramController extends Controller
      */
     public function update(ProgramUpdateRequest $request, Program $program)
     {
-        //
+        $fields = $request->validated();
+
+        $program->update($fields);
+
+        return redirect(route('programs.index'));
     }
 
     /**

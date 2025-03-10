@@ -11,7 +11,7 @@ class ProgramUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class ProgramUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string'],
+            'language' => ['required', 'string'],
+            'description' => ['required'],
+            'study' => ['required', 'string']
         ];
     }
 }

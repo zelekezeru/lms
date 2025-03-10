@@ -21,12 +21,9 @@ console.log(usePage().props.program.name);
 
 const form = useForm({
     name: usePage().props.program.name,
-    code: usePage().props.program.code,
+    language: usePage().props.program.language,
     description: usePage().props.program.description,
-    established_year: usePage().props.program.establishedYear,
-    contact_email: usePage().props.program.contactEmail,
-    phone: usePage().props.program.phone,
-    location: usePage().props.program.location,
+    study: usePage().props.program.study,
 });
 
 // Submit form function

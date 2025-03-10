@@ -410,6 +410,52 @@ onUnmounted(() => {
                         </div>
                     </transition>
 
+                    <!-- Departments Navigation Item -->
+                    <button
+                        @click="openMenus.departmentsMenu = !openMenus.departmentsMenu"
+                        class="w-full flex departments-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+                    >
+                        <div class="flex departments-center space-x-3">
+                            <DocumentIcon class="w-7 p-1" />
+                            <span v-if="sidebarVisible || sidebarHovered"
+                                >Departments</span
+                            >
+                        </div>
+                        <component
+                            :is="
+                                openMenus.departmentsMenu
+                                    ? ChevronUpIcon
+                                    : ChevronDownIcon
+                            "
+                            class="w-5 h-5"
+                        />
+                    </button>
+                    <transition name="fade">
+                        <div
+                            v-if="
+                                openMenus.departmentsMenu &&
+                                (sidebarVisible || sidebarHovered)
+                            "
+                            class="space-y-2 rounded-md p-2"
+                        >
+                            <Link
+                                :href="route('departments.index')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <ClipboardDocumentListIcon
+                                    class="w-4 h-5 mr-2"
+                                />
+                                Manage Departments
+                            </Link>
+                            <Link
+                                :href="route('departments.create')"
+                                class="flex departments-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+                            >
+                                <PlusIcon class="w-4 h-5 mr-2" /> Add Departments
+                            </Link>
+                        </div>
+                    </transition>
+
                     <!-- Profile Navigation Item -->
                     <Link
                         :href="route('profile.edit')"

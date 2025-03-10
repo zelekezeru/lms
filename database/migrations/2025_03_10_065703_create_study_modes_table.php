@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('programs', function (Blueprint $table) {
+        Schema::create('study_modes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('language');
-            $table->longText('description');
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('program_id')->constrained()->onDelete('CASCADE');
+            $table->enum('mode', ['REGULAR', 'EXTENSION', 'DISTANCE']);
+            $table->integer('duration');// Duration In Years
+            $table->float('fees');
+            $table->string('schedule')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('programs');
+        Schema::dropIfExists('study_modes');
     }
 };

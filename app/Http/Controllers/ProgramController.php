@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\ProgramResource;
+use App\Models\Department;
 use App\Models\Program;
+use App\Models\StudyMode;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
@@ -18,7 +21,7 @@ class ProgramController extends Controller
         $programs = ProgramResource::collection(Program::paginate(10));
 
         return inertia('Programs/Index', [
-            'programs' => $programs
+            'programs' => $programs,
         ]);
     }
 
@@ -27,7 +30,11 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        return  inertia('Programs/Create');
+        $departments = DepartmentResource::collection(Department::all());
+
+        return  inertia('Programs/Create', [
+            'departments' => $departments,
+        ]);
     }
 
     /**
@@ -38,6 +45,15 @@ class ProgramController extends Controller
         $fields = $request->validated();
 
         $program = Program::create($fields);
+
+        foreach ($request->studyModes as $studyMode) {
+            $studyMode = StudyMode::create([
+                'program_id' => $program->id,
+                'mode' => $studyMode['mode'],
+                'duration' => $studyMode['duration'],
+                'fees' => $studyMode['fees']
+            ]);
+        }
 
         return redirect(route('programs.index'));
     }
@@ -51,7 +67,7 @@ class ProgramController extends Controller
             'program' => new ProgramResource($program),
         ]);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */

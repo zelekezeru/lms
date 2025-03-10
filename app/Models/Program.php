@@ -8,9 +8,13 @@ class Program extends Model
 {
     protected $fillable = [
         'name',
-        'study',
         'language',
+        'department_id',
         'description'
     ];
 
+    public function studyModes()
+    {
+        return $this->hasMany(StudyMode::class);
+    }
 }

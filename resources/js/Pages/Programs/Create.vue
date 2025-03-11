@@ -46,6 +46,7 @@ const submit = () => {
 
 <template>
     <AppLayout>
+<<<<<<< Updated upstream
         <div class="max-w-5xl mx-auto p-6">
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
@@ -59,6 +60,13 @@ const submit = () => {
 
             <!-- Form Card -->
             <div class="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-md p-6">
+=======
+        <div class="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-md">
+            <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
+                Program Creation Form
+            </h2>
+            <div class="max-w-5xl mx-auto p-6">
+>>>>>>> Stashed changes
                 <form @submit.prevent="submit">
                     <!-- Two-column grid layout -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

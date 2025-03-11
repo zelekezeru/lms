@@ -14,7 +14,9 @@ const submit = () => {
     <Head title="Register Student" />
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">Register Student</h2>
+            
+            <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">Register Student</h2>
+
         </template>
         <Form :form="form" @submit="submit" />
     </AppLayout>

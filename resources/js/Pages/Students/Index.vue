@@ -3,6 +3,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import Swal from "sweetalert2"; // Ensure this line is uncommented
+import "sweetalert2/dist/sweetalert2.min.css";
+import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({ students: Object });
 
@@ -19,10 +22,22 @@ const deleteStudent = (id) => {
         <template #header>
             <h2 class="text-xl font-semibold text-gray-800">Students</h2>
         </template>
+        
         <div class="p-4">
-            <Link :href="route('students.create')" class="btn btn-primary mb-4">Add Student</Link>
-            <table class="w-full bg-white shadow-md rounded">
-                <thead>
+            <Link
+                :href="route('students.create')"
+                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 mb-3">
+                Add Student
+            </Link>
+        </div>
+
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+            <table
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+            >
+                <thead
+                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                >
                     <tr>
                         <th class="p-2">ID</th>
                         <th class="p-2">Student ID</th>

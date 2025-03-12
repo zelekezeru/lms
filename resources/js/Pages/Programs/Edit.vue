@@ -46,20 +46,24 @@ const submit = (id) => {
 
 <template>
     <AppLayout>
-        <div class="flex justify-center">
+        <div class="flex justify-center min-h-screen items-center">
             <div
-                class="dark:bg-gray-800 shadow-lg rounded-md p-6 max-w-lg w-full"
+                class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 max-w-lg w-full"
             >
-                <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
-                    Edit "{{ program.name }}"
+                <h2
+                    class="text-3xl font-extrabold text-gray-800 dark:text-gray-800 mb-6 text-center tracking-wide"
+                >
+                    Edit Program
                 </h2>
-                <form @submit.prevent="submit(program.id)">
-                    <!-- program Name Field -->
-                    <div class="mb-4">
+
+                <!-- Form -->
+                <form @submit.prevent="submit(program.id)" class="space-y-6">
+                    <!-- Program Name -->
+                    <div>
                         <InputLabel
                             for="name"
-                            value="program Name"
-                            class="block mb-1 dark:text-gray-200"
+                            value="Program Name"
+                            class="block mb-1 text-gray-700 dark:text-gray-200"
                         />
                         <TextInput
                             id="name"
@@ -68,7 +72,7 @@ const submit = (id) => {
                             required
                             autofocus
                             autocomplete="name"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                         />
                         <InputError
                             :message="form.errors.name"
@@ -76,12 +80,12 @@ const submit = (id) => {
                         />
                     </div>
 
-                    <!-- program Code Field -->
-                    <div class="mb-4">
+                    <!-- Program Language -->
+                    <div>
                         <InputLabel
                             for="language"
-                            value="program Language"
-                            class="block mb-1 dark:text-gray-200"
+                            value="Program Language"
+                            class="block mb-1 text-gray-700 dark:text-gray-200"
                         />
                         <TextInput
                             id="language"
@@ -89,7 +93,7 @@ const submit = (id) => {
                             v-model="form.language"
                             required
                             autocomplete="language"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                         />
                         <InputError
                             :message="form.errors.language"
@@ -97,19 +101,19 @@ const submit = (id) => {
                         />
                     </div>
 
-                    <!-- Description Field -->
-                    <div class="mb-4">
+                    <!-- Description -->
+                    <div>
                         <InputLabel
                             for="description"
                             value="Description"
-                            class="block mb-1 dark:text-gray-200"
+                            class="block mb-1 text-gray-700 dark:text-gray-200"
                         />
                         <TextInput
                             id="description"
                             type="text"
                             v-model="form.description"
                             autocomplete="description"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                         />
                         <InputError
                             :message="form.errors.description"
@@ -117,25 +121,28 @@ const submit = (id) => {
                         />
                     </div>
 
+                    <!-- Department Selection -->
                     <div>
                         <InputLabel
                             for="department"
                             value="Change Department"
-                            class="block mb-1 dark:text-gray-200"
+                            class="block mb-1 text-gray-700 dark:text-gray-200"
                         />
                         <select
                             id="department"
                             v-model="form.department_id"
                             required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                         >
                             <option disabled value="">Select Department</option>
                             <option
                                 v-for="department in departments"
-                                :selected="department.id == program.department.id"
                                 :key="department.id"
                                 :value="department.id"
-                                class="dark:text-gray-200"
+                                class="text-gray-900 dark:text-gray-200"
+                                :selected="
+                                    department.id == program.department.id
+                                "
                             >
                                 {{ department.name }}
                             </option>
@@ -146,13 +153,16 @@ const submit = (id) => {
                         />
                     </div>
 
-                    
                     <!-- Submit Button -->
-                    <PrimaryButton
-                        v-if="!form.processing"
-                        class="w-full dark:bg-gray-200 dark:text-gray-800"
-                        >Submit</PrimaryButton
-                    >
+                    <div class="flex justify-center">
+                        <PrimaryButton
+                            :disabled="form.processing"
+                            class="w-56 px-10 py-4 text-xl font-bold text-center bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition rounded-lg flex items-center justify-center"
+                        >
+                            <span v-if="!form.processing">Submit</span>
+                            <span v-else>Submitting...</span>
+                        </PrimaryButton>
+                    </div>
                 </form>
             </div>
         </div>

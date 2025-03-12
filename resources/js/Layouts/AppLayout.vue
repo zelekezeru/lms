@@ -32,6 +32,7 @@ const openMenus = ref({
   userPages: false,
   departmentsMenu: false,
   programsMenu: false,
+  employeesMenu: false,
   studentsMenu: false,
   coursesMenu: false,
   teachersMenu: false,
@@ -533,6 +534,51 @@ const afterLeave = (el) => {
                 class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
               >
                 <PlusIcon class="w-4 h-5 mr-2" /> Add Programs
+              </Link>
+            </div>
+          </transition>
+          <!-- Employees Navigation Item -->
+          <button
+            @click="openMenus.employeesMenu = !openMenus.employeesMenu"
+            :class="{
+                'border-l-4 border-blue-700 box-border': openMenus.employeesMenu
+            }"
+            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+          >
+            <div class="flex items-center space-x-3">
+              <DocumentIcon class="w-7 p-1" />
+              <transition name="fade">
+                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
+                  Employees
+                </span>
+              </transition>
+            </div>
+            <component :is="openMenus.employeesMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
+          </button>
+          <transition
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @after-enter="afterEnter"
+            @before-leave="beforeLeave"
+            @leave="leave"
+            @after-leave="afterLeave"
+          >
+            <div
+              v-if="openMenus.employeesMenu && (sidebarVisible || sidebarHovered)"
+              class="space-y-2 rounded-md p-2"
+            >
+              <Link
+                :href="route('employees.index')"
+                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+              >
+                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
+                Manage Employees
+              </Link>
+              <Link
+                :href="route('employees.create')"
+                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
+              >
+                <PlusIcon class="w-4 h-5 mr-2" /> Add Employees
               </Link>
             </div>
           </transition>

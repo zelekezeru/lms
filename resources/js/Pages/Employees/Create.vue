@@ -63,7 +63,7 @@ const submit = () => {
                 </p>
             </div>
 
-            <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6">
+            <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
                 <form @submit.prevent="submit" enctype="multipart/form-data">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- User Details -->
@@ -111,7 +111,7 @@ const submit = () => {
                                     id="role"
                                     v-model="form.role_name"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Role
@@ -179,7 +179,7 @@ const submit = () => {
                                     id="department_id"
                                     v-model="form.department_id"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Department
@@ -223,7 +223,7 @@ const submit = () => {
                                     id="employment_type"
                                     v-model="form.employment_type"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Type

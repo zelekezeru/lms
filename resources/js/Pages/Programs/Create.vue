@@ -59,7 +59,7 @@ const submit = () => {
 
             <!-- Form Card -->
             <div
-                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
+                class="dark:bg-gray-900 bg-slate-50 shadow-lg rounded-lg p-6 transition"
             >
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -16,14 +16,15 @@ const props = defineProps({
 
 // Initialize form data
 const form = useForm({
-  name: props.employee.name || "",
-  email: props.employee.email || "",
-  department_id: props.employee.department.id || "",
-  role_name: props.employee.userRole || "",
-  job_position: props.employee.jobPosition || "",
-  employment_type: props.employee.employmentType || "",
-  office_hours: props.employee.officeHours || "",
-  profile_img: null,
+    name: props.employee.name || "",
+    email: props.employee.email || "",
+    department_id: props.employee.department.id || "",
+    role_name: props.employee.userRole || "",
+    job_position: props.employee.jobPosition || "",
+    employment_type: props.employee.employmentType || "",
+    office_hours: props.employee.officeHours || "",
+    profile_img: null,
+    _method: "PATCH",
 });
 
 // Ref to hold the image preview
@@ -46,7 +47,7 @@ const handleFileChange = (e) => {
 
 // Submit the form
 const submit = (id) => {
-    form.put(route("employees.update", {'employee': id}));
+    form.post(route("employees.update", { employee: id }));
 };
 </script>
 
@@ -62,8 +63,11 @@ const submit = (id) => {
                 </p>
             </div>
 
-            <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6">
-                <form @submit.prevent="submit(employee.id)" enctype="multipart/form-data">
+            <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
+                <form
+                    @submit.prevent="submit(employee.id)"
+                    enctype="multipart/form-data"
+                >
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- User Details -->
                         <section class="space-y-6">
@@ -97,7 +101,7 @@ const submit = (id) => {
                                     id="role"
                                     v-model="form.role_name"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Role
@@ -165,7 +169,7 @@ const submit = (id) => {
                                     id="department_id"
                                     v-model="form.department_id"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Department
@@ -209,7 +213,7 @@ const submit = (id) => {
                                     id="employment_type"
                                     v-model="form.employment_type"
                                     required
-                                    class="w-full px-3 py-2 border rounded-md"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
                                         Select Type

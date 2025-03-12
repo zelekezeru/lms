@@ -67,7 +67,7 @@ const deleteemployee = (id) => {
                     ></div>
                     <img
                         v-show="imageLoaded"
-                        class="rounded-full w-44"
+                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
                         :src="employee.profileImg"
                         :alt="`profile image of ` + employee.name"
                         @load="handleImageLoad"

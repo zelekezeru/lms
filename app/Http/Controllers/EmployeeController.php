@@ -106,7 +106,34 @@ class EmployeeController extends Controller
      */
     public function update(EmployeeUpdateRequest $request, Employee $employee)
     {
-        dd($request);
+        $fields = $request->validated();
+        $image = $fields['profile_img'] ?? null;
+        $user = $employee->user;
+        if ($image) {
+            if ($user->profile_img) {
+                Storage::disk('public')->delete($user->profile_img);
+            }
+            $profile_path = $image->store('profile-images', 'public');
+        }
+        
+        $user->update([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'profile_img' => $profile_path ?? $user->profile_img,
+        ]);
+
+        $employee->update([
+            'department_id' => $fields['department_id'],
+            'job_position' => $fields['job_position'],
+            'employment_type' => $fields['employment_type'],
+            'office_hours' => $fields['office_hours'],
+        ]);
+        
+        if (!empty($fields['role_name'])) {
+            $user->syncRoles([$fields['role_name']]);
+        }
+
+        return redirect(route('employees.show', $employee));
     }
 
     /**
@@ -114,7 +141,12 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        $user = $employee->user;
+        if ($user->profile_img) {
+            Storage::disk('public')->delete($user->profile_img);
+        }
+
+        $employee->delete();
     }
 
     public function university_id($role)

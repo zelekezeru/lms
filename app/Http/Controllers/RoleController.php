@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use App\Http\Requests\RoleRequest;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
-use App\Models\Permission;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -18,7 +18,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::latest()->paginate(10);
+        $roles = Role::paginate(10);
 
         return Inertia::render('Roles/Index', compact('roles'));
     }
@@ -38,12 +38,7 @@ class RoleController extends Controller
     
     public function show(Role $role)
     {
-        // Fetch entries in 'role_has_permissions' table having the ID of this role
-        $rolePermissions = DB::table('role_has_permissions')
-            ->join('permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-            ->where('role_has_permissions.role_id', $role->id)
-            ->select('permissions.name')
-            ->get();
+        $rolePermissions = $role->permissions;
 
         return Inertia::render('Roles/Show', [
             'role' => $role,
@@ -80,17 +75,12 @@ class RoleController extends Controller
 
     // Assign permissions to a role
 
-    public function assign(Request $request, $roleId)
+    public function assign(Request $request, Role $role)
     {
-        $role = Role::findOrFail($roleId);
-
-        $permissions = Permission::latest()->get();
+        $permissions = Permission::get();
 
         // Fetch existing attached permissions
-        $attachedPermissions = DB::table('role_has_permissions')
-            ->where('role_id', $roleId)
-            ->pluck('permission_id')
-            ->toArray();
+        $attachedPermissions = $role->permissions()->get()->pluck('id');
 
         return Inertia::render('Roles/Assign', compact('role', 'permissions', 'attachedPermissions'));
     }
@@ -98,21 +88,22 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
+        
+        $role->syncPermissions($request['permissions']);
+        // foreach ($request->permissions as $permissionId) {
+        //     // Check if the permission is already attached to the role
+        //     $exists = DB::table('role_has_permissions')
+        //         ->where('role_id', $roleId)
+        //         ->where('permission_id', $permissionId)
+        //         ->exists();
 
-        foreach ($request->permissions as $permissionId) {
-            // Check if the permission is already attached to the role
-            $exists = DB::table('role_has_permissions')
-                ->where('role_id', $roleId)
-                ->where('permission_id', $permissionId)
-                ->exists();
-
-            if (!$exists) {
-                DB::table('role_has_permissions')->insert([
-                    'role_id' => $roleId,
-                    'permission_id' => $permissionId,
-                ]);
-            }
-        }
+        //     if (!$exists) {
+        //         DB::table('role_has_permissions')->insert([
+        //             'role_id' => $roleId,
+        //             'permission_id' => $permissionId,
+        //         ]);
+        //     }
+        // }
 
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');
     }

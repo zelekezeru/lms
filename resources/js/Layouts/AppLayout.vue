@@ -7,6 +7,7 @@ import {
   TableCellsIcon,
   ChartBarIcon,
   DocumentTextIcon,
+  DocumentIcon,
   FolderIcon,
   Cog6ToothIcon,
   Bars3Icon,
@@ -20,7 +21,6 @@ import {
   ChevronDownIcon,
   PlusIcon,
   ClipboardDocumentListIcon,
-  DocumentIcon,
   UsersIcon,
 } from "@heroicons/vue/24/outline";
 
@@ -66,14 +66,12 @@ const goForward = () => {
 
 // Detect screen size changes
 const updateScreenSize = () => {
-  console.log("updated screen");
   isMobile.value = window.innerWidth < 768;
   sidebarVisible.value = !isMobile.value;
 };
 
 // Add event listeners
 onMounted(() => {
-  console.log("mounted");
   updateScreenSize();
   window.addEventListener("resize", updateScreenSize);
 });
@@ -134,7 +132,7 @@ const afterLeave = (el) => {
       }"
       @mouseenter="handleAsideHover"
       @mouseleave="handleAsideHover"
-      class="transition-width duration-300 ease-in-out flex flex-col bg-[#1a2035] dark:bg-gray-900 text-[#a2a4ab] dark:text-gray-200"
+      class="transition-width duration-300 ease-in-out flex flex-col overflow-y-auto text-sm bg-gray-800 dark:bg-gray-900 text-gray-300"
     >
       <div class="h-[70px] flex" :class="{'justify-between': isMobile, 'justify-center': !isMobile}">
         <div class="flex gap-4 items-center justify-center h-full">
@@ -150,459 +148,527 @@ const afterLeave = (el) => {
           </transition>
         </div>
         <button v-if="isMobile" @click="sidebarVisible = false">
-          <XMarkIcon class="w-8 h-8 text-[#a2a4ab] dark:text-gray-200 hover:text-red-500 transition" />
+          <XMarkIcon class="w-8 h-8 text-gray-200 hover:text-red-500 transition" />
         </button>
       </div>
 
-      <nav class="pt-1 font-bold">
+      <nav class="pt-1 text-sm font-medium">
+  <Link
+    href="/dashboard"
+    class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-700"
+  >
+    <HomeIcon class="w-8 h-8 p-1 rounded-full" />
+    <transition name="fade">
+      <span
+        v-if="sidebarVisible || sidebarHovered"
+        class="transition-all duration-300 truncate"
+      >
+        Dashboard
+      </span>
+    </transition>
+  </Link>
+
+  <div>
+    <h2 class="font-bold px-4 text-sm">Menu</h2>
+
+    <!-- Students Navigation Item -->
+    <button
+      @click="openMenus.studentsMenu = !openMenus.studentsMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.studentsMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <UsersIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span v-if="sidebarVisible || sidebarHovered" class="text-sm">
+            Students
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.studentsMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.studentsMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
         <Link
-          href="/dashboard"
-          class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-[#00000029] dark:hover:bg-gray-700"
+          :href="route('students.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
         >
-          <HomeIcon class="w-8 h-8 text-[#a2a4ab] p-1 rounded-full" />
-          <transition name="fade">
-            <span v-if="sidebarVisible || sidebarHovered" class="transition-all duration-300 truncate">
-              Dashboard
-            </span>
-          </transition>
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Student</span>
         </Link>
+        <Link
+          :href="route('students.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Students</span>
+        </Link>
+      </div>
+    </transition>
 
-        <div class="transition-all duration-300">
-          <h2 class="font-bold px-4">Menu</h2>
+    <!-- Courses Navigation Item -->
+    <button
+      @click="openMenus.coursesMenu = !openMenus.coursesMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.coursesMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <TableCellsIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
+          >
+            Courses
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.coursesMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.coursesMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('courses.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Course</span>
+        </Link>
+        <Link
+          :href="route('courses.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Courses</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Students Navigation Item -->
-          <button
-            @click="openMenus.studentsMenu = !openMenus.studentsMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.studentsMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Teachers Navigation Item -->
+    <button
+      @click="openMenus.teachersMenu = !openMenus.teachersMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.teachersMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <BuildingStorefrontIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <UsersIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Students
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.studentsMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.studentsMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('students.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Student
-              </Link>
-              <Link
-                :href="route('students.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Students
-              </Link>
-            </div>
-          </transition>
+            Teachers
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.teachersMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.teachersMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('teachers.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Teacher</span>
+        </Link>
+        <Link
+          :href="route('teachers.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Teachers</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Courses Navigation Item -->
-          <button
-            @click="openMenus.coursesMenu = !openMenus.coursesMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.coursesMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Attendance Navigation Item -->
+    <button
+      @click="openMenus.attendanceMenu = !openMenus.attendanceMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.attendanceMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <ChartBarIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <TableCellsIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Courses
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.coursesMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.coursesMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('courses.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Course
-              </Link>
-              <Link
-                :href="route('courses.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Courses
-              </Link>
-            </div>
-          </transition>
+            Attendance
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.attendanceMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.attendanceMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('attendance.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Take Attendance</span>
+        </Link>
+        <Link
+          :href="route('attendance.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">View Attendance</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Teachers Navigation Item -->
-          <button
-            @click="openMenus.teachersMenu = !openMenus.teachersMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.teachersMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Exams Navigation Item -->
+    <button
+      @click="openMenus.examsMenu = !openMenus.examsMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.examsMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <DocumentTextIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <BuildingStorefrontIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Teachers
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.teachersMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.teachersMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('teachers.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Teacher
-              </Link>
-              <Link
-                :href="route('teachers.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Teachers
-              </Link>
-            </div>
-          </transition>
+            Exams
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.examsMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.examsMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('exams.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Schedule Exam</span>
+        </Link>
+        <Link
+          :href="route('exams.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Exams</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Attendance Navigation Item -->
-          <button
-            @click="openMenus.attendanceMenu = !openMenus.attendanceMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.attendanceMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Permissions Navigation Item -->
+    <button
+      @click="openMenus.permissionsMenu = !openMenus.permissionsMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.permissionsMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <Cog6ToothIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <ChartBarIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Attendance
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.attendanceMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.attendanceMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('attendance.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Take Attendance
-              </Link>
-              <Link
-                :href="route('attendance.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                View Attendance
-              </Link>
-            </div>
-          </transition>
+            Permissions
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.permissionsMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.permissionsMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('roles.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Roles</span>
+        </Link>
+        <Link
+          :href="route('permissions.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Permissions</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Exams Navigation Item -->
-          <button
-            @click="openMenus.examsMenu = !openMenus.examsMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.examsMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Departments Navigation Item -->
+    <button
+      @click="openMenus.departmentsMenu = !openMenus.departmentsMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.departmentsMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <DocumentIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <DocumentTextIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Exams
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.examsMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.examsMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('exams.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Schedule Exam
-              </Link>
-              <Link
-                :href="route('exams.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Exams
-              </Link>
-            </div>
-          </transition>
+            Departments
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.departmentsMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.departmentsMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('departments.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Departments</span>
+        </Link>
+        <Link
+          :href="route('departments.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Departments</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Permissions Navigation Item -->
-          <button
-            @click="openMenus.permissionsMenu = !openMenus.permissionsMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.permissionsMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Programs Navigation Item -->
+    <button
+      @click="openMenus.programsMenu = !openMenus.programsMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.programsMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <DocumentIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <Cog6ToothIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Permissions
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.permissionsMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.permissionsMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('roles.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Roles
-              </Link>
-              <Link
-                :href="route('permissions.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Manage Permissions
-              </Link>
-            </div>
-          </transition>
+            Programs
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.programsMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.programsMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('programs.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Programs</span>
+        </Link>
+        <Link
+          :href="route('programs.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Programs</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Departments Navigation Item -->
-          <button
-            @click="openMenus.departmentsMenu = !openMenus.departmentsMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.departmentsMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
+    <!-- Employees Navigation Item -->
+    <button
+      @click="openMenus.employeesMenu = !openMenus.employeesMenu"
+      :class="{
+        'border-l-4 border-blue-700 box-border': openMenus.employeesMenu
+      }"
+      class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
+    >
+      <div class="flex items-center space-x-3">
+        <DocumentIcon class="w-7 p-1" />
+        <transition name="fade">
+          <span
+            v-if="sidebarVisible || sidebarHovered"
+            class="text-sm truncate"
           >
-            <div class="flex items-center space-x-3">
-              <DocumentIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Departments
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.departmentsMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.departmentsMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('departments.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Departments
-              </Link>
-              <Link
-                :href="route('departments.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Departments
-              </Link>
-            </div>
-          </transition>
+            Employees
+          </span>
+        </transition>
+      </div>
+      <component
+        :is="openMenus.employeesMenu ? ChevronUpIcon : ChevronDownIcon"
+        class="w-5 h-5 text-gray-200"
+      />
+    </button>
+    <transition
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <div
+        v-if="openMenus.employeesMenu && (sidebarVisible || sidebarHovered)"
+        class="space-y-2 rounded-md p-2"
+      >
+        <Link
+          :href="route('employees.index')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <ClipboardDocumentListIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Manage Employees</span>
+        </Link>
+        <Link
+          :href="route('employees.create')"
+          class="flex items-center px-4 py-2 hover:bg-gray-700 rounded"
+        >
+          <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+          <span class="text-sm">Add Employees</span>
+        </Link>
+      </div>
+    </transition>
 
-          <!-- Programs Navigation Item -->
-          <button
-            @click="openMenus.programsMenu = !openMenus.programsMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.programsMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
-          >
-            <div class="flex items-center space-x-3">
-              <DocumentIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Programs
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.programsMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.programsMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('programs.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Programs
-              </Link>
-              <Link
-                :href="route('programs.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Programs
-              </Link>
-            </div>
-          </transition>
-          <!-- Employees Navigation Item -->
-          <button
-            @click="openMenus.employeesMenu = !openMenus.employeesMenu"
-            :class="{
-                'border-l-4 border-blue-700 box-border': openMenus.employeesMenu
-            }"
-            class="w-full flex items-center justify-between px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700"
-          >
-            <div class="flex items-center space-x-3">
-              <DocumentIcon class="w-7 p-1" />
-              <transition name="fade">
-                <span v-if="sidebarVisible || sidebarHovered" class="truncate">
-                  Employees
-                </span>
-              </transition>
-            </div>
-            <component :is="openMenus.employeesMenu ? ChevronUpIcon : ChevronDownIcon" class="w-5 h-5" />
-          </button>
-          <transition
-            @before-enter="beforeEnter"
-            @enter="enter"
-            @after-enter="afterEnter"
-            @before-leave="beforeLeave"
-            @leave="leave"
-            @after-leave="afterLeave"
-          >
-            <div
-              v-if="openMenus.employeesMenu && (sidebarVisible || sidebarHovered)"
-              class="space-y-2 rounded-md p-2"
-            >
-              <Link
-                :href="route('employees.index')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <ClipboardDocumentListIcon class="w-4 h-5 mr-2" />
-                Manage Employees
-              </Link>
-              <Link
-                :href="route('employees.create')"
-                class="flex items-center px-4 py-2 hover:bg-[#00000029] dark:hover:bg-gray-700 rounded"
-              >
-                <PlusIcon class="w-4 h-5 mr-2" /> Add Employees
-              </Link>
-            </div>
-          </transition>
+    <!-- Profile Navigation Item -->
+    <Link
+      :href="route('profile.edit')"
+      class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
+    >
+      <UsersIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />
+      <transition name="fade">
+        <span
+          v-if="sidebarVisible || sidebarHovered"
+          class="transition-all duration-300 truncate text-sm"
+        >
+          My Profile
+        </span>
+      </transition>
+    </Link>
+  </div>
+</nav>
 
-          <!-- Profile Navigation Item -->
-          <Link
-            :href="route('profile.edit')"
-            class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-[#00000029] dark:hover:bg-gray-700"
-          >
-            <UsersIcon class="w-8 h-8 text-[#a2a4ab] p-1 rounded-full" />
-            <transition name="fade">
-              <span v-if="sidebarVisible || sidebarHovered" class="transition-all duration-300 truncate">
-                My Profile
-              </span>
-            </transition>
-          </Link>
-        </div>
-      </nav>
     </aside>
 
     <!-- Mobile Sidebar Overlay -->
     <div
       v-if="isMobile && sidebarVisible"
-      class="fixed inset-0 bg-black-100 bg-opacity-50 z-40"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40"
       @click="sidebarVisible = false"
     ></div>
 
@@ -616,35 +682,35 @@ const afterLeave = (el) => {
     >
       <!-- Navbar -->
       <nav
-        class="border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-[#1a2035] text-[#a2a4ab] dark:bg-gray-800"
+        class="border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-gray-800 text-gray-200"
       >
         <div class="flex items-center gap-3">
           <!-- Back Button -->
           <button
             @click="goBack"
-            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+            class="p-2 hover:bg-gray-700 rounded-md"
           >
-            <ArrowLeftIcon class="w-6 h-6 text-[#a2a4ab] dark:text-gray-200" />
+            <ArrowLeftIcon class="w-6 h-6 text-gray-200" />
           </button>
 
           <!-- Forward Button -->
           <button
             @click="goForward"
-            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md"
+            class="p-2 hover:bg-gray-700 rounded-md"
           >
-            <ArrowRightIcon class="w-6 h-6 text-[#a2a4ab] dark:text-gray-200" />
+            <ArrowRightIcon class="w-6 h-6 text-gray-200" />
           </button>
 
           <!-- Sidebar Toggler -->
           <button @click="sidebarVisible = !sidebarVisible">
-            <Bars3Icon class="w-6 h-6 text-[#a2a4ab] dark:text-gray-200" />
+            <Bars3Icon class="w-6 h-6 text-gray-200" />
           </button>
         </div>
 
         <!-- Other Navbar Content -->
         <div class="flex items-center gap-4 ml-auto">
           <!-- User Info -->
-          <div class="text-sm font-medium text-[#a2a4ab] dark:text-gray-200 flex items-center gap-2">
+          <div class="text-sm font-medium text-gray-200 flex items-center gap-2">
             <img src="images/mlane.jpg" alt="Avatar" class="w-10 h-10 rounded-full" />
             <div>
               <div class="text-base">{{ $page.props.auth.user.name }}</div>
@@ -653,21 +719,20 @@ const afterLeave = (el) => {
           </div>
           <!-- Theme Toggle Button -->
           <button @click="toggleTheme" class="p-2">
-            <MoonIcon v-if="!isDarkMode" class="w-6 h-6 text-gray-600" />
+            <MoonIcon v-if="!isDarkMode" class="w-6 h-6 text-gray-200" />
             <SunIcon v-else class="w-6 h-6 text-gray-200" />
           </button>
         </div>
       </nav>
 
       <!-- Page Content -->
-      <main class="flex-1 p-6 bg-gray dark:bg-[#1a2035]">
+      <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
         <slot />
       </main>
     </div>
   </div>
 </template>
 
-<!-- Scoped Styles for Fade Transition on Text -->
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {

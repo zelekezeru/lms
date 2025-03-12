@@ -6,17 +6,8 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="icon" href="{{ asset('img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
-        <!-- Fonts and icons -->
         <script src="{{ asset('js/plugin/webfont/webfont.min.js') }}"></script>
-        <!-- CSS Files -->
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('css/plugins.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('css/kaiadmin.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('css/fonts.min.css') }}"/>
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 

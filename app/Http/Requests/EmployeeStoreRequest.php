@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class EmployeeStoreRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            // User table validations
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'sometimes|required|string|min:8|confirmed',
+            'role_name'   => 'required|exists:roles,name',
+            // Employee table validations
+            'profile_img'   => 'nullable|image:jpeg,jpg,png',
+            'department_id'  => 'required|exists:departments,id',
+            'job_position'   => 'required|string|max:255',
+            'employment_type'=> 'required|in:FULL_TIME,PART_TIME,CONTRACT',
+            'office_hours'   => 'nullable|string|max:255',
+        ];
+    }
+}

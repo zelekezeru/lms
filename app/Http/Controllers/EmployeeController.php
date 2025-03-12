@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\EmployeeStoreRequest;
+use App\Http\Requests\EmployeeUpdateRequest;
+use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\EmployeeResource;
+use App\Models\Department;
+use App\Models\Employee;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
+
+class EmployeeController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $employees = EmployeeResource::collection(Employee::with('department')->paginate(10));
+
+        return inertia('Employees/Index', [
+            'employees' => $employees
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $departments = DepartmentResource::collection(Department::all());
+        $roles = Role::all();
+        return inertia('Employees/Create', [
+            'departments' => $departments,
+            'roles' => $roles,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(EmployeeStoreRequest $request)
+    {
+        $fields = $request->validated();
+        $image = $fields['profile_img'] ?? null;
+        $university_id = $this->university_id($fields['role_name']);
+        
+        if ($image) {
+            $profile_path = $image->store('profile-images', 'public');
+        }
+        
+        $user = User::create([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'profile_img' => $profile_path,
+            'university_id' => $university_id,
+            'password' => Hash::make('pwd@default'),
+        ]);
+
+        $employee = Employee::create([
+            'department_id' => $fields['department_id'],
+            'user_id' => $user->id,
+            'job_position' => $fields['job_position'],
+            'employment_type' => $fields['employment_type'],
+            'office_hours' => $fields['office_hours'],
+        ]);
+        
+        $user->assignRole($fields['role_name']);
+        
+        return redirect(route('employees.show', $employee));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Employee $employee)
+    {
+        return inertia('Employees/Show', [
+            'employee' => new EmployeeResource($employee->load('department'))
+        ]);
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Employee $employee)
+    {
+        $departments = DepartmentResource::collection(Department::all());
+        $roles = Role::all();
+
+        return inertia('Employees/Edit', [
+            'employee' => new EmployeeResource($employee->load('department')),
+            'departments' => $departments,
+            'roles' => $roles,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(EmployeeUpdateRequest $request, Employee $employee)
+    {
+        dd($request);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Employee $employee)
+    {
+        //
+    }
+
+    public function university_id($role)
+    {
+        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+
+        $university_id = substr($role, 0, 3) . '/' . str_pad(Employee::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+
+        return $university_id;
+    }
+}

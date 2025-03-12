@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('university_id')->nullable(); // only for testing phase(this should be unique and required)
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('profile_img')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('password_changed')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

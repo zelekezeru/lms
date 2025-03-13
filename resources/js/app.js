@@ -22,21 +22,21 @@ createInertiaApp({
 
         // Define a global computed property for authUser so that it is easily accessible everywhere
         app.config.globalProperties.authUser = computed(() => props.initialPage.props.auth?.user || null);
-
+        
         // CHECK FOR PERMISSIONS
 
         // Check for the existence of ONLY one permission in the auth.user permissions list
-        app.config.globalProperties.can = (permission) => {
+        app.config.globalProperties.userCan = (permission) => {
             return props.initialPage.props.auth?.user.permissions.includes(permission);
         };
         
         // Check for the existence of AT LEAST ONE permission in the auth.user permissions list from a given lists of permissions
-        app.config.globalProperties.canAny = (permissions) => {
+        app.config.globalProperties.userCanAny = (permissions) => {
             return permissions.some(permission => props.initialPage.props.auth?.user.permissions.includes(permission));
         };
         
         // Check for the existence of ALL permission in the auth.user permissions list from a given lists of permissions
-        app.config.globalProperties.canAll = (permissions) => {
+        app.config.globalProperties.userCanAll = (permissions) => {
             return permissions.every(permission => props.initialPage.props.auth?.user.permissions.includes(permission));
         };
 

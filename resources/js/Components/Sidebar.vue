@@ -1,225 +1,259 @@
 <script setup>
 import { ref } from "vue";
 import { Link } from "@inertiajs/vue3";
-import DropdownLink from "@/Components/DropdownLink.vue";
+import {
+    HomeIcon,
+    XMarkIcon,
+    PlusIcon,
+    CogIcon,
+    UsersIcon,
+    BriefcaseIcon,
+    KeyIcon,
+    AcademicCapIcon,
+    BuildingOffice2Icon,
+} from "@heroicons/vue/24/outline";
+import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
+import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
 
-const showingDropdowns = ref({
-    students: false,
-    courses: false,
-    teachers: false,
-    attendance: false,
-    exams: false,
-    permissions: false,
+const props = defineProps({
+    sidebarVisible: {
+        type: Boolean,
+        required: true,
+    },
+    sidebarHovered: {
+        type: Boolean,
+        required: true,
+    },
+    isMobile: {
+        type: Boolean,
+        required: true,
+    },
+    handleAsideHover: {
+        type: Function,
+        required: true,
+    },
 });
 
-const toggleDropdown = (key) => {
-    showingDropdowns.value[key] = !showingDropdowns.value[key];
+const openMenus = ref({
+    userPages: false,
+    departmentsMenu: false,
+    programsMenu: false,
+    employeesMenu: false,
+    studentsMenu: false,
+    coursesMenu: false,
+    teachersMenu: false,
+    attendanceMenu: false,
+    examsMenu: false,
+    permissionsMenu: false,
+});
+
+// Custom Transition Hooks for Smooth Height Animation
+const beforeEnter = (el) => {
+    el.style.height = "0";
+    el.style.opacity = "0";
+};
+
+const enter = (el) => {
+    el.style.transition = "all 0.1s ease";
+    el.style.height = el.scrollHeight + "px";
+    el.style.opacity = "1";
+};
+
+const afterEnter = (el) => {
+    el.style.height = "auto";
+};
+
+const beforeLeave = (el) => {
+    el.style.height = el.scrollHeight + "px";
+    el.style.opacity = "1";
+};
+
+const leave = (el) => {
+    el.style.transition = "all 0.1s ease";
+    // Force reflow to ensure the transition occurs
+    void el.offsetHeight;
+    el.style.height = "0";
+    el.style.opacity = "0";
+};
+
+const afterLeave = (el) => {
+    el.style.height = "";
 };
 </script>
 
 <template>
-    <div class="sidebar" data-background-color="dark">
-        <div class="sidebar-wrapper">
-            <div class="sidebar-content">
-                <div class="user justify-center">
-                    <img src="/img/logo.png" alt="Logo" class="user-logo" />
-                    <div class="info">
-                        <a class="collapsed" data-toggle="collapse" href="#profileMenu">
-                            <span>     
-                                <slot />
-                            </span>
-                        </a>
-                    </div>
-                </div>
-                <ul class="nav">
-                    <li class="nav-item active">
-                        <Link :href="route('dashboard')">
-                            <i class="fas fa-home"></i>
-                            <p>Dashboard</p>
-                        </Link>
-                    </li>
-                    <li class="nav-section">
-                        <h4 class="text-section">Institution Management</h4>
-                    </li>
-                    
-                    <!-- Students -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('students')">
-                            <i class="fas fa-users"></i>
-                            <p>Students</p>
-                        </a>
-                        <div v-if="showingDropdowns.students" class="submenu">
-                            <DropdownLink :href="route('students.create')" class="submenu-item">Add Student</DropdownLink>
-                            <DropdownLink :href="route('students.index')" class="submenu-item">Manage Students</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <!-- Courses -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('courses')">
-                            <i class="fas fa-book"></i>
-                            <p>Courses</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div v-if="showingDropdowns.courses" class="submenu">
-                            <DropdownLink class="submenu-item">Add Course</DropdownLink>
-                            <DropdownLink class="submenu-item">Manage Courses</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <!-- Teachers -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('teachers')">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                            <p>Teachers</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div v-if="showingDropdowns.teachers" class="submenu">
-                            <DropdownLink class="submenu-item">Add Teacher</DropdownLink>
-                            <DropdownLink class="submenu-item">Manage Teachers</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <!-- Attendance -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('attendance')">
-                            <i class="fas fa-calendar-check"></i>
-                            <p>Attendance</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div v-if="showingDropdowns.attendance" class="submenu">
-                            <DropdownLink class="submenu-item">Take Attendance</DropdownLink>
-                            <DropdownLink class="submenu-item">View Attendance</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <!-- Exams -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('exams')">
-                            <i class="fas fa-clipboard-list"></i>
-                            <p>Exams</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div v-if="showingDropdowns.exams" class="submenu">
-                            <DropdownLink class="submenu-item">Schedule Exam</DropdownLink>
-                            <DropdownLink class="submenu-item">Manage Exams</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <!-- Roles permissions -->
-                    <li class="nav-item">
-                        <a href="#" @click.prevent="toggleDropdown('permissions')">
-                            <i class="fas fa-clipboard-list"></i>
-                            <p>Permissions</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div v-if="showingDropdowns.permissions" class="submenu">
-                            <DropdownLink :href="route('roles.index')" class="submenu-item">Manage Roles</DropdownLink>
-                            <DropdownLink :href="route('permissions.index')" class="submenu-item">Manage Permissions</DropdownLink>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <Link :href="route('profile.edit')">
-                            <i class="fas fa-user"></i>
-                            <p>My Profile</p>
-                        </Link>
-                    </li>
-                </ul>
+    <!-- Sidebar -->
+    <aside
+        :class="{
+            '-translate-x-full': !sidebarVisible && isMobile,
+            'translate-x-0': sidebarVisible && isMobile,
+            'w-64 fixed top-0 bottom-0':
+                sidebarVisible || sidebarHovered || isMobile,
+            'w-20 fixed top-0 bottom-0': !sidebarVisible && !isMobile,
+            'fixed inset-y-0 left-0 transform z-50 transition-all duration-300 ease-in-out':
+                isMobile,
+        }"
+        @mouseenter="handleAsideHover"
+        @mouseleave="handleAsideHover"
+        class="transition-width duration-300 ease-in-out flex flex-col text-sm bg-gray-800 dark:bg-gray-900 text-gray-300"
+    >
+        <div
+            class="h-[70px] flex"
+            :class="{
+                'justify-between': isMobile,
+                'justify-center': !isMobile,
+            }"
+        >
+            <div class="flex gap-4 items-center justify-center h-full">
+                <img
+                    src="/img/logo.png"
+                    class="w-[48px] rounded-full"
+                    alt="Logo"
+                />
+                <transition name="fade">
+                    <h1
+                        v-if="sidebarVisible || sidebarHovered"
+                        class="text-xl font-bold tracking-wide truncate"
+                        style="font-family: transity"
+                    >
+                        SITS
+                    </h1>
+                </transition>
             </div>
+            <button v-if="isMobile" @click="sidebarVisible = false">
+                <XMarkIcon
+                    class="w-8 h-8 text-gray-200 hover:text-red-500 transition"
+                />
+            </button>
         </div>
-    </div>
+
+        <nav class="pt-1 text-sm font-medium">
+            <Link
+                href="/dashboard"
+                class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-700"
+            >
+                <HomeIcon class="w-8 h-8 p-1 rounded-full" />
+                <transition name="fade">
+                    <span
+                        v-if="sidebarVisible || sidebarHovered"
+                        class="transition-all duration-300 truncate"
+                    >
+                        Dashboard
+                    </span>
+                </transition>
+            </Link>
+
+            <div
+                class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+            >
+                <h2 class="font-bold px-4 text-sm">Menu</h2>
+                <!-- Employees Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Employees'"
+                    :icon="BriefcaseIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-employees', 'create-employees'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('create-employees')" :href="route('employees.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Employee</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-employees')" :href="route('employees.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Employee</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Students Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Students'"
+                    :icon="UsersIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-students', 'create-students'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('create-students')" :href="route('students.create')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Student</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-students')" :href="route('students.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Student</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Students Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Roles And Permissions'"
+                    class="text-nowrap"
+                    :icon="KeyIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-roles', 'view-permissions'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('view-roles')" :href="route('roles.index')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Roles</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-permissions')" :href="route('permissions.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Permissions</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Departments Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Departments'"
+                    :icon="BuildingOffice2Icon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-employees', 'create-employees'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('create-departments')" :href="route('departments.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Department</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-departments')" :href="route('departments.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Department</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Programs Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Programs'"
+                    :icon="AcademicCapIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-programs', 'create-programs'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('create-programs')" :href="route('programs.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Program</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-programs')" :href="route('programs.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Program</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Profile Navigation Item -->
+                <Link
+                    :href="route('profile.edit')"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
+                >
+                    <UsersIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />
+                    <transition name="fade">
+                        <span
+                            v-if="sidebarVisible || sidebarHovered"
+                            class="transition-all duration-300 truncate text-sm"
+                        >
+                            My Profile
+                        </span>
+                    </transition>
+                </Link>
+            </div>
+        </nav>
+    </aside>
 </template>
-
-<style scoped>
-.sidebar {
-    background: #27293d;
-    color: #fff;
-    height: 100vh;
-    width: 250px; /* Adjust width if needed */
-    position: fixed;
-    overflow: hidden; /* Prevents the whole sidebar from scrolling */
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-wrapper {
-    flex-grow: 1;
-    padding: 15px;
-    scrollbar-width: none; /* Hide scrollbar in Firefox */
-}
-
-/* Hide scrollbar in Chrome, Edge, Safari */
-.sidebar-wrapper::-webkit-scrollbar {
-    display: none;
-}
-
-
-/* Hides scrollbar in Chrome, Safari, Edge */
-.sidebar::-webkit-scrollbar {
-    display: none;
-}
-/* Ensure navigation items fit well */
-.nav {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-item {
-    transition: background 0.3s;
-}
-
-.nav-item.active,
-.nav-item:hover {
-    background: #1f2235;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #fff;
-    font-size: 14px;
-    gap: 10px;
-}
-
-.nav-link i {
-    font-size: 16px;
-}
-
-.submenu {
-    padding-left: 20px;
-    background: #1f2235;
-    display: flex;
-    flex-direction: column;
-}
-
-.submenu-item {
-    color: #ccc;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.submenu-item:hover {
-    color: #f0f0f0;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-/* User Info */
-.user-logo {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.user {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-}
-
-</style>

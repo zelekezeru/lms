@@ -13,11 +13,10 @@ const submit = () => {
 <template>
     <Head title="Register Student" />
     <AppLayout>
-        <template #header>
-            
-            <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">Register Student</h2>
-
-        </template>
+        <div
+                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
+            >
         <Form :form="form" @submit="submit" />
+        </div>
     </AppLayout>
 </template>

@@ -1,65 +1,117 @@
-// resources/js/Pages/Students/Index.vue
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import Swal from "sweetalert2"; // Ensure this line is uncommented
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { Head, Link, router } from "@inertiajs/vue3";
+import { ref } from "vue";
+import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import TableZebraRows from "@/Components/TableZebraRows.vue";
 
-const props = defineProps({ students: Object });
+const props = defineProps({
+  students: {
+    type: Object,
+    required: true,
+  },
+});
 
 const deleteStudent = (id) => {
-    if (confirm('Are you sure you want to delete this student?')) {
-        router.delete(route('students.destroy', id));
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.delete(route("students.destroy", id), {
+        onSuccess: () => {
+          Swal.fire("Deleted!", "The student has been deleted.", "success");
+        },
+      });
     }
+  });
 };
 </script>
 
 <template>
-    <Head title="Students" />
-    <AppLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">Students</h2>
-        </template>
-        
-        <div class="p-4">
-            <Link
-                :href="route('students.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 mb-3">
-                Add Student
-            </Link>
-        </div>
+  <Head title="Students" />
+  <AppLayout>
+    <template #header>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Students</h2>
+    </template>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
-                    <tr>
-                        <th class="p-2">ID</th>
-                        <th class="p-2">Student ID</th>
-                        <th class="p-2">Full Name</th>
-                        <th class="p-2">Program</th>
-                        <th class="p-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(student, index) in students.data" :key="student.id">
-                        <td class="p-2">{{ index + 1 }}</td>
-                        <td class="p-2">{{ student.student_id }}</td>
-                        <td class="p-2">{{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}</td>
-                        <td class="p-2">{{ student.program }}</td>
-                        <td class="p-2">
-                            <Link :href="route('students.show', student.id)" class="text-green-500">View</Link> |
-                            <Link :href="route('students.edit', student.id)" class="text-blue-500">Edit</Link> |
-                            <button @click="deleteStudent(student.id)" class="text-red-500">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </AppLayout>
+    <div class="p-4">
+      <Link
+        :href="route('students.create')"
+        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3"
+      >
+        Add Student
+      </Link>
+    </div>
+
+    <div class="overflow-x-auto shadow-md sm:rounded-lg">
+      <Table>
+        <TableHeader>
+          <tr>
+            <th scope="col" class="px-6 py-3">Student ID</th>
+            <th scope="col" class="px-6 py-3">Full Name</th>
+            <th scope="col" class="px-6 py-3">Program</th>
+            <th scope="col" class="px-6 py-3">Actions</th>
+          </tr>
+        </TableHeader>
+        <tbody>
+          <TableZebraRows v-for="student in students.data" :key="student.id">
+            <td class="px-6 py-4">{{ student.student_id }}</td>
+            <td class="px-6 py-4">
+              {{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}
+            </td>
+            <td class="px-6 py-4">{{ student.program }}</td>
+            <td class="px-6 py-4 flex space-x-2">
+              <Link
+                :href="route('students.show', student.id)"
+                class="text-blue-500 hover:text-blue-700"
+                title="View"
+              >
+                <EyeIcon class="w-5 h-5" />
+              </Link>
+              <Link
+                :href="route('students.edit', student.id)"
+                class="text-green-500 hover:text-green-700"
+                title="Edit"
+              >
+                <PencilIcon class="w-5 h-5" />
+              </Link>
+              <button
+                @click="deleteStudent(student.id)"
+                class="text-red-500 hover:text-red-700"
+                title="Delete"
+              >
+                <TrashIcon class="w-5 h-5" />
+              </button>
+            </td>
+          </TableZebraRows>
+        </tbody>
+      </Table>
+    </div>
+
+    <!-- Pagination Links -->
+    <div class="mt-3 flex justify-center space-x-2">
+      <Link
+        v-for="link in students.links"
+        :key="link.label"
+        :href="link.url || '#'"
+        class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+        :class="{
+          'text-gray-700 dark:text-gray-400': true,
+          'cursor-not-allowed opacity-50': !link.url,
+          '!bg-gray-100 !dark:bg-gray-800': link.active,
+        }"
+        v-html="link.label"
+      />
+    </div>
+  </AppLayout>
 </template>

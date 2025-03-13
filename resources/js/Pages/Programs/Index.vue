@@ -6,6 +6,9 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import TableZebraRows from "../../Components/TableZebraRows.vue";
 
 defineProps({
     programs: {
@@ -77,8 +80,8 @@ const deleteprogram = (id) => {
 
         <!-- Programs Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <Table>
+                <TableHeader>
                     <tr>
                         <th scope="col" class="px-6 py-3">Program Name</th>
                         <th scope="col" class="px-6 py-3">Language</th>
@@ -86,12 +89,11 @@ const deleteprogram = (id) => {
                         <th scope="col" class="px-6 py-3">Study Modes</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
-                    <tr
+                    <TableZebraRows
                         v-for="program in programs.data"
                         :key="program.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                     >
                         <th
                             scope="row"
@@ -133,9 +135,9 @@ const deleteprogram = (id) => {
                                 <TrashIcon class="w-5 h-5" />
                             </button>
                         </td>
-                    </tr>
+                    </TableZebraRows>
                 </tbody>
-            </table>
+            </Table>
         </div>
 
         <!-- Pagination Links -->

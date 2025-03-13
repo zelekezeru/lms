@@ -63,28 +63,10 @@ const deleteDepartment = (id) => {
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.code }}</span>
           </div>
 
-          <!-- Established Year -->
+          <!-- Description -->
           <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Established Year</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.established_year }}</span>
-          </div>
-
-          <!-- Contact Email -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Contact Email</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.contact_email }}</span>
-          </div>
-
-          <!-- Phone -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Phone</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.phone }}</span>
-          </div>
-
-          <!-- Location -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Location</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.location }}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.description }}</span>
           </div>
         </div>
 

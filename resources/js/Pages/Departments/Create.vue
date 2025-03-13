@@ -61,27 +61,6 @@ const submit = () => {
                         />
                     </div>
 
-                    <!-- Department Code Field -->
-                    <div class="mb-4">
-                        <InputLabel
-                            for="code"
-                            value="Department Code"
-                            class="block mb-1 dark:text-gray-200"
-                        />
-                        <TextInput
-                            id="code"
-                            type="text"
-                            v-model="form.code"
-                            required
-                            autocomplete="code"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
-                        <InputError
-                            :message="form.errors.code"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
-                        />
-                    </div>
-
                     <!-- Description Field -->
                     <div class="mb-4">
                         <InputLabel
@@ -98,86 +77,6 @@ const submit = () => {
                         />
                         <InputError
                             :message="form.errors.description"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
-                        />
-                    </div>
-
-                    <!-- Established Year Field -->
-                    <div class="mb-4">
-                        <InputLabel
-                            for="established_year"
-                            value="Established Year"
-                            class="block mb-1 dark:text-gray-200"
-                        />
-                        <TextInput
-                            id="established_year"
-                            type="number"
-                            v-model="form.established_year"
-                            autocomplete="established_year"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
-                        <InputError
-                            :message="form.errors.established_year"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
-                        />
-                    </div>
-
-                    <!-- Contact Email Field -->
-                    <div class="mb-4">
-                        <InputLabel
-                            for="contact_email"
-                            value="Contact Email"
-                            class="block mb-1 dark:text-gray-200"
-                        />
-                        <TextInput
-                            id="contact_email"
-                            type="email"
-                            v-model="form.contact_email"
-                            autocomplete="contact_email"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
-                        <InputError
-                            :message="form.errors.contact_email"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
-                        />
-                    </div>
-
-                    <!-- Phone Field -->
-                    <div class="mb-4">
-                        <InputLabel
-                            for="phone"
-                            value="Phone"
-                            class="block mb-1 dark:text-gray-200"
-                        />
-                        <TextInput
-                            id="phone"
-                            type="text"
-                            v-model="form.phone"
-                            autocomplete="phone"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
-                        <InputError
-                            :message="form.errors.phone"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
-                        />
-                    </div>
-
-                    <!-- Location Field -->
-                    <div class="mb-4">
-                        <InputLabel
-                            for="location"
-                            value="Location"
-                            class="block mb-1 dark:text-gray-200"
-                        />
-                        <TextInput
-                            id="location"
-                            type="text"
-                            v-model="form.location"
-                            autocomplete="location"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-200"
-                        />
-                        <InputError
-                            :message="form.errors.location"
                             class="mt-2 text-sm text-red-600 dark:text-red-400"
                         />
                     </div>

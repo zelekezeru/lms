@@ -23,12 +23,7 @@ class DepartmentUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string|max:255|unique:departments,name,' . $this->department->id,
-            'code' => 'sometimes|string|max:50|unique:departments,code,' . $this->department->id,
             'description' => 'nullable|string',
-            'established_year' => 'nullable|digits:4|integer|min:1900|max:' . date('Y'),
-            'contact_email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'location' => 'nullable|string|max:255',
         ];
     }
 }

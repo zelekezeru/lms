@@ -16,10 +16,6 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->text('description')->nullable();
-            $table->year('established_year')->nullable();
-            $table->string('contact_email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('location')->nullable();
             $table->timestamps();
         });
     }

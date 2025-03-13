@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DepartmentStoreRequest;
 use App\Http\Requests\DepartmentUpdateRequest;
 use App\Http\Resources\DepartmentResource;
+use Carbon\Carbon;
+use Inertia\Inertia;
 use App\Models\Department;
 use Illuminate\Http\Request;
 
@@ -35,8 +37,14 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentStoreRequest $request)
     {
+        $tenant = 'SITS';
+
+        $department_id = $tenant . '/' . 'DP' .  '/' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT);
+
         $fields = $request->validated();
 
+        $fields['code'] = $department_id;
+        
         $department = Department::create($fields);
         
         
@@ -83,5 +91,15 @@ class DepartmentController extends Controller
         $department->delete();
         
         return redirect(route('departments.index'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+        $departments = Department::where('department_name', 'like', "%$search%")
+            ->orWhere('department_id', 'like', "%$search%")
+            ->latest()
+            ->paginate(10);
+        return Inertia::render('Departments/Index', compact('departments'));
     }
 }

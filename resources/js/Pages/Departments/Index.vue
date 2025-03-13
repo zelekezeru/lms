@@ -50,10 +50,7 @@ const deleteDepartment = (id) => {
                     <tr>
                         <th scope="col" class="px-6 py-3">Department Name</th>
                         <th scope="col" class="px-6 py-3">Code</th>
-                        <th scope="col" class="px-6 py-3">Established Year</th>
-                        <th scope="col" class="px-6 py-3">Contact Email</th>
-                        <th scope="col" class="px-6 py-3">Phone</th>
-                        <th scope="col" class="px-6 py-3">Location</th>
+                        <th scope="col" class="px-6 py-3">Description</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
                     </tr>
                 </thead>
@@ -67,10 +64,7 @@ const deleteDepartment = (id) => {
                             <Link :href="route('departments.show', { department: department.id })">{{ department.name }}</Link>
                         </th>
                         <td class="px-6 py-4">{{ department.code }}</td>
-                        <td class="px-6 py-4">{{ department.establishedYear }}</td>
-                        <td class="px-6 py-4">{{ department.contactEmail }}</td>
-                        <td class="px-6 py-4">{{ department.phone }}</td>
-                        <td class="px-6 py-4">{{ department.location }}</td>
+                        <td class="px-6 py-4">{{ department.description }}</td>
                         <td class="px-6 py-4 flex space-x-2">
                             <Link :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
                                 <EyeIcon class="w-5 h-5" />

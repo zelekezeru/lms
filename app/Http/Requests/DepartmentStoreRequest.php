@@ -23,12 +23,7 @@ class DepartmentStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:departments,name',
-            'code' => 'required|string|max:50|unique:departments,code',
             'description' => 'nullable|string',
-            'established_year' => 'nullable|digits:4|integer|min:1900|max:' . date('Y'),
-            'contact_email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'location' => 'nullable|string|max:255',
         ];
     }
 }

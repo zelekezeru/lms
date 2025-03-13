@@ -1,13 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';
 
 const props = defineProps({ role: Object });
-const form = ref({ ...props.role });
+const form = useForm({ ...props.role, _method: 'PUT' });
 const submit = () => {
-    router.put(route('roles.update', props.role.id), form.value);
+    form.post(route('roles.update', props.role.id));
 };
 </script>
 

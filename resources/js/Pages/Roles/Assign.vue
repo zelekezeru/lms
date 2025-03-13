@@ -32,12 +32,12 @@ const submit = () => {
 <template>
     <Head title="Assign Permissions" />
     <AppLayout>
-        <template #header>
+        <div>
             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
                 Assign Permissions to
                 <span class="text-info">{{ role.name }}</span> role
             </h2>
-        </template>
+        </div>
 
         <form
             @submit.prevent="submit"

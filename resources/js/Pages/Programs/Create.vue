@@ -9,7 +9,7 @@ import { ref, watch } from "vue";
 
 // Define the props for this component
 defineProps({
-    departments: {
+    users: {
         type: Object,
     },
 });
@@ -21,7 +21,7 @@ const form = useForm({
     name: "",
     description: "",
     language: "",
-    department_id: "",
+    user_id: "",
     studyModes: [],
 });
 
@@ -127,29 +127,29 @@ const submit = () => {
 
                             <div>
                                 <InputLabel
-                                    for="department_id"
-                                    value="Select Department"
+                                    for="user_id"
+                                    value="Select Program Director"
                                     class="block mb-1 text-gray-800 dark:text-gray-200"
                                 />
                                 <select
-                                    id="department_id"
-                                    v-model="form.department_id"
+                                    id="user_id"
+                                    v-model="form.user_id"
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                 >
                                     <option disabled value="">
-                                        Select Department
+                                        Select Program Director
                                     </option>
                                     <option
-                                        v-for="department in departments"
-                                        :key="department.id"
-                                        :value="department.id"
+                                        v-for="user in users"
+                                        :key="user.id"
+                                        :value="user.id"
                                     >
-                                        {{ department.name }}
+                                        {{ user.name }}
                                     </option>
                                 </select>
                                 <InputError
-                                    :message="form.errors.department_id"
+                                    :message="form.errors.user_id"
                                     class="mt-2 text-sm text-red-500"
                                 />
                             </div>
@@ -193,6 +193,17 @@ const submit = () => {
                                             class="form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600"
                                         />
                                         <span class="ml-2">DISTANCE</span>
+                                    </label>
+                                    <label
+                                        class="inline-flex items-center transition-colors duration-200 text-gray-900 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-indigo-400"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            value="ONLINE"
+                                            v-model="selectedModes"
+                                            class="form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600"
+                                        />
+                                        <span class="ml-2">ONLINE</span>
                                     </label>
                                 </div>
 

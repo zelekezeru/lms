@@ -92,7 +92,7 @@ const deleteprogram = (id) => {
                 <tr>
                     <th scope="col" class="px-6 py-3">Program Name</th>
                     <th scope="col" class="px-6 py-3">Language</th>
-                    <th scope="col" class="px-6 py-3">Department</th>
+                    <th scope="col" class="px-6 py-3">User</th>
                     <th scope="col" class="px-6 py-3">Study Modes</th>
                     <th scope="col" class="px-6 py-3">Action</th>
                 </tr>
@@ -115,7 +115,7 @@ const deleteprogram = (id) => {
                         </Link>
                     </th>
                     <td class="px-6 py-4">{{ program.language }}</td>
-                    <td class="px-6 py-4">{{ program.department.name }}</td>
+                    <td class="px-6 py-4">{{ program.user.name }}</td>
                     <td class="px-1 w-14 py-4">
                         <span
                             v-for="studyMode in program.studyModes"

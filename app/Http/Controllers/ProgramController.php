@@ -6,7 +6,9 @@ use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\UserResource;
 use App\Models\Department;
+use App\Models\User;
 use App\Models\Program;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
@@ -18,7 +20,7 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = ProgramResource::collection(Program::with('studyModes', 'department')->paginate(10));
+        $programs = ProgramResource::collection(Program::with('studyModes')->paginate(10));
 
         return inertia('Programs/Index', [
             'programs' => $programs,
@@ -30,10 +32,10 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        $departments = DepartmentResource::collection(Department::all());
+        $users = UserResource::collection(User::all());
         
         return  inertia('Programs/Create', [
-            'departments' => $departments,
+            'users' => $users,
         ]);
     }
     

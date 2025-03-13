@@ -11,23 +11,20 @@ import { router, useForm, usePage } from "@inertiajs/vue3";
 
 // Define props for the program and units (though units may not be needed for programs)
 defineProps({
-    program: {
+    users: {
         type: Object,
-        required: true,
-    },
-    departments: {
-        type: Object,
-        required: true,
     },
 });
 
-console.log(usePage().props.program.name);
+const selectedModes = ref([]);
 
+// Initialize the form with the program fields
 const form = useForm({
-    name: usePage().props.program.name,
-    language: usePage().props.program.language,
-    description: usePage().props.program.description,
-    department_id: usePage().props.program.department.id,
+    name: "",
+    description: "",
+    language: "",
+    user_id: "",
+    studyModes: [],
 });
 
 // Submit form function
@@ -121,35 +118,32 @@ const submit = (id) => {
                         />
                     </div>
 
-                    <!-- Department Selection -->
                     <div>
                         <InputLabel
-                            for="department"
-                            value="Change Department"
-                            class="block mb-1 text-gray-700 dark:text-gray-200"
+                            for="user_id"
+                            value="Select Program Director"
+                            class="block mb-1 text-gray-800 dark:text-gray-200"
                         />
                         <select
-                            id="department"
-                            v-model="form.department_id"
+                            id="user_id"
+                            v-model="form.user_id"
                             required
-                            class="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                         >
-                            <option disabled value="">Select Department</option>
+                            <option disabled value="">
+                                Select Program Director
+                            </option>
                             <option
-                                v-for="department in departments"
-                                :key="department.id"
-                                :value="department.id"
-                                class="text-gray-900 dark:text-gray-200"
-                                :selected="
-                                    department.id == program.department.id
-                                "
+                                v-for="user in users"
+                                :key="user.id"
+                                :value="user.id"
                             >
-                                {{ department.name }}
+                                {{ user.name }}
                             </option>
                         </select>
                         <InputError
-                            :message="form.errors.department_id"
-                            class="mt-2 text-sm text-red-600 dark:text-red-400"
+                            :message="form.errors.user_id"
+                            class="mt-2 text-sm text-red-500"
                         />
                     </div>
 

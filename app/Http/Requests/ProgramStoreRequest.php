@@ -25,7 +25,7 @@ class ProgramStoreRequest extends FormRequest
             'name' => ['required', 'string'],
             'language' => ['required', 'string'],
             'description' => ['required'],
-            'department_id' => ['required', 'exists:departments,id'],
+            'user_id' => ['sometimes', 'exists:users,id'],
             'studyModes' => ['required', 'array']
         ];
     }

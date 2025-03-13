@@ -193,7 +193,7 @@ const afterLeave = (el) => {
                     v-show="userCanAny(['view-roles', 'view-permissions'])"
                 >
                     <SidebarDrowpdownLink v-show="userCan('view-roles')" :href="route('roles.index')">
-                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Roles</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink v-show="userCan('view-permissions')" :href="route('permissions.index')">

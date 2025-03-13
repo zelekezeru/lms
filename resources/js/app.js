@@ -27,33 +27,37 @@ createInertiaApp({
 
         // Check for the existence of ONLY one permission in the auth.user permissions list
         app.config.globalProperties.userCan = (permission) => {
-            return props.initialPage.props.auth?.user.permissions.includes(permission);
+            return props.initialPage.props.auth?.user?.permissions?.includes(permission) || false;
         };
         
-        // Check for the existence of AT LEAST ONE permission in the auth.user permissions list from a given lists of permissions
         app.config.globalProperties.userCanAny = (permissions) => {
-            return permissions.some(permission => props.initialPage.props.auth?.user.permissions.includes(permission));
+            return props.initialPage.props.auth?.user?.permissions 
+                ? permissions.some(permission => props.initialPage.props.auth.user.permissions.includes(permission))
+                : false;
         };
         
-        // Check for the existence of ALL permission in the auth.user permissions list from a given lists of permissions
         app.config.globalProperties.userCanAll = (permissions) => {
-            return permissions.every(permission => props.initialPage.props.auth?.user.permissions.includes(permission));
+            return props.initialPage.props.auth?.user?.permissions 
+                ? permissions.every(permission => props.initialPage.props.auth.user.permissions.includes(permission))
+                : false;
         };
-
-        // Check for the existence of ONLY one ROLE in the auth.user ROLEs list
+        
         app.config.globalProperties.hasRole = (role) => {
-            return props.initialPage.props.auth?.user.roles.includes(role);
+            return props.initialPage.props.auth?.user?.roles?.includes(role) || false;
         };
-
-        // Check for the existence of AT LEAST ONE ROLE in the auth.user ROLEs list from a given lists of ROLEs
+        
         app.config.globalProperties.hasAnyRole = (roles) => {
-            return roles.some(role => props.initialPage.props.auth?.user.roles.includes(role));
+            return props.initialPage.props.auth?.user?.roles 
+                ? roles.some(role => props.initialPage.props.auth.user.roles.includes(role))
+                : false;
         };
-
-        // Check for the existence of AT LEAST ONE ROLE in the auth.user ROLEs list from a given lists of ROLEs
+        
         app.config.globalProperties.hasAllRoles = (roles) => {
-            return roles.every(role => props.initialPage.props.auth?.user.roles.includes(role));
+            return props.initialPage.props.auth?.user?.roles 
+                ? roles.every(role => props.initialPage.props.auth.user.roles.includes(role))
+                : false;
         };
+        
 
         return app.mount(el);
     },  

@@ -7,6 +7,10 @@ import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import TableZebraRows from "../../Components/TableZebraRows.vue";
+
 defineProps({
     roles: {
         type: Object,
@@ -84,64 +88,54 @@ const deleterole = (id) => {
         </div>
 
         <!-- Roles Table -->
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Role Name</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="role in roles.data"
-                        :key="role.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
+        <Table>
+            <TableHeader>
+                <tr>
+                    <th scope="col" class="px-6 py-3">Role Name</th>
+                    <th scope="col" class="px-6 py-3">Action</th>
+                </tr>
+            </TableHeader>
+            <tbody>
+                <TableZebraRows v-for="role in roles.data" :key="role.id">
+                    <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        <Link :href="route('roles.show', { role: role.id })">
+                            {{ role.name }}
+                        </Link>
+                    </th>
+                    <td class="py-4 flex items-center justify-around">
+                        <Link
+                            :href="
+                                route('roles.permissions', { role: role.id })
+                            "
+                            class="inline-flex items-center rounded-md border border-transparent bg-green-800 text-white dark:bg-green-700 dark:text-green-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 dark:hover:bg-green-600 focus:bg-green-700 dark:focus:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
-                            <Link
-                                :href="route('roles.show', { role: role.id })"
-                            >
-                                {{ role.name }}
-                            </Link>
-                        </th>
-                        <td class="px-6 py-4 flex justify-between">
-                            <Link
-                                :href="route('roles.permissions', {role: role.id})"
-                                class="inline-flex items-center rounded-md border border-transparent bg-green-800 text-white dark:bg-green-700 dark:text-green-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 dark:hover:bg-green-600 focus:bg-green-700 dark:focus:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                Manage Permissions
-                            </Link>
-                            <Link
-                                :href="route('roles.show', { role: role.id })"
-                                class="text-blue-500 hover:text-blue-700"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                            </Link>
-                            <Link
-                                :href="route('roles.edit', { role: role.id })"
-                                class="text-green-500 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                @click="deleterole(role.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                            Manage Permissions
+                        </Link>
+                        <Link
+                            :href="route('roles.show', { role: role.id })"
+                            class="text-blue-500 hover:text-blue-700"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            :href="route('roles.edit', { role: role.id })"
+                            class="text-green-500 hover:text-green-700"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                        <button
+                            @click="deleterole(role.id)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                        </button>
+                    </td>
+                </TableZebraRows>
+            </tbody>
+        </Table>
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">

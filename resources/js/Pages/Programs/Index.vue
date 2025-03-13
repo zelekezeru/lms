@@ -22,12 +22,13 @@ const refreshing = ref(false);
 const refreshData = () => {
     refreshing.value = true;
 
-    router.visit(route('programs.index'), { only: ['programs'], onFinish: () => {
-        refreshing.value = false;
-
-    } });
-
-}
+    router.visit(route("programs.index"), {
+        only: ["programs"],
+        onFinish: () => {
+            refreshing.value = false;
+        },
+    });
+};
 
 // Delete function with SweetAlert confirmation
 const deleteprogram = (id) => {
@@ -43,7 +44,11 @@ const deleteprogram = (id) => {
         if (result.isConfirmed) {
             router.delete(route("programs.destroy", { program: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "The program has been deleted.", "success");
+                    Swal.fire(
+                        "Deleted!",
+                        "The program has been deleted.",
+                        "success"
+                    );
                 },
             });
         }
@@ -59,7 +64,7 @@ const deleteprogram = (id) => {
                 Programs
             </h1>
         </div>
-        
+
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
@@ -73,72 +78,81 @@ const deleteprogram = (id) => {
                 class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 title="Refresh Data"
             >
-                <ArrowPathIcon class="w-5 h-5 mr-2" :class="{'animate-spin': refreshing}" />
+                <ArrowPathIcon
+                    class="w-5 h-5 mr-2"
+                    :class="{ 'animate-spin': refreshing }"
+                />
                 Refresh Data
             </button>
         </div>
 
         <!-- Programs Table -->
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <Table>
-                <TableHeader>
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Program Name</th>
-                        <th scope="col" class="px-6 py-3">Language</th>
-                        <th scope="col" class="px-6 py-3">Department</th>
-                        <th scope="col" class="px-6 py-3">Study Modes</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
-                    </tr>
-                </TableHeader>
-                <tbody>
-                    <TableZebraRows
-                        v-for="program in programs.data"
-                        :key="program.id"
+        <Table>
+            <TableHeader>
+                <tr>
+                    <th scope="col" class="px-6 py-3">Program Name</th>
+                    <th scope="col" class="px-6 py-3">Language</th>
+                    <th scope="col" class="px-6 py-3">Department</th>
+                    <th scope="col" class="px-6 py-3">Study Modes</th>
+                    <th scope="col" class="px-6 py-3">Action</th>
+                </tr>
+            </TableHeader>
+            <tbody>
+                <TableZebraRows
+                    v-for="program in programs.data"
+                    :key="program.id"
+                >
+                    <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        <Link
+                            :href="
+                                route('programs.show', { program: program.id })
+                            "
                         >
-                            <Link :href="route('programs.show', { program: program.id })">
-                                {{ program.name }}
-                            </Link>
-                        </th>
-                        <td class="px-6 py-4">{{ program.language }}</td>
-                        <td class="px-6 py-4">{{ program.department.name }}</td>
-                        <td class="px-1 w-14 py-4">
-                            <span
-                                v-for="studyMode in program.studyModes"
-                                :key="studyMode.id"
-                                class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
-                                :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
-                            >
-                                {{ studyMode.mode }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 flex justify-between">
-                            <Link
-                                :href="route('programs.show', { program: program.id })"
-                                class="text-blue-500 hover:text-blue-700"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                            </Link>
-                            <Link
-                                :href="route('programs.edit', { program: program.id })"
-                                class="text-green-500 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                @click="deleteprogram(program.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
-                        </td>
-                    </TableZebraRows>
-                </tbody>
-            </Table>
-        </div>
+                            {{ program.name }}
+                        </Link>
+                    </th>
+                    <td class="px-6 py-4">{{ program.language }}</td>
+                    <td class="px-6 py-4">{{ program.department.name }}</td>
+                    <td class="px-1 w-14 py-4">
+                        <span
+                            v-for="studyMode in program.studyModes"
+                            :key="studyMode.id"
+                            class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
+                            :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
+                        >
+                            {{ studyMode.mode }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 flex justify-between">
+                        <Link
+                            :href="
+                                route('programs.show', { program: program.id })
+                            "
+                            class="text-blue-500 hover:text-blue-700"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            :href="
+                                route('programs.edit', { program: program.id })
+                            "
+                            class="text-green-500 hover:text-green-700"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                        <button
+                            @click="deleteprogram(program.id)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                        </button>
+                    </td>
+                </TableZebraRows>
+            </tbody>
+        </Table>
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">
@@ -157,4 +171,3 @@ const deleteprogram = (id) => {
         </div>
     </AppLayout>
 </template>
-

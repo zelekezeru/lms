@@ -8,7 +8,7 @@ const props = defineProps({
         required: true,
     },
     icon: {
-        type: Object,
+        type: Function,
         required: true,
     },
     sidebarHovered: {
@@ -70,7 +70,7 @@ const afterLeave = (el) => {
             class="w-full flex items-center justify-between px-4 py-1 hover:bg-gray-700"
         >
             <div class="flex items-center space-x-3">
-                <icon class="w-7 p-1" />
+                <component :is="icon" class="w-7 p-1" />
                 <transition name="fade">
                     <span
                         v-if="sidebarVisible || sidebarHovered"

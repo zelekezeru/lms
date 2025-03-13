@@ -45,7 +45,7 @@ const submit = () => {
         >
             <div class="w-full py-5">
                 <label class="block text-gray-100 dark:text-white mb-2"
-                    >Select Permissions</label
+                    >Select Permissions For Role: <span class="text-info">"{{ role.name }}"</span></label
                 >
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"

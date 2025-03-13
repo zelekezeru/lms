@@ -127,7 +127,7 @@ onUnmounted(() => {
       </nav>
 
       <!-- Page Content -->
-      <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
+      <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
         <slot />
       </main>
     </div>

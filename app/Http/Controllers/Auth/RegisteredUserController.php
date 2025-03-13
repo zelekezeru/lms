@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,14 +14,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
-
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create()
     {
+        if (User::count() > 0) {
+            return redirect(route('employees.create'));
+        }
         return Inertia::render('Auth/Register');
     }
 
@@ -36,8 +40,11 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $userUuid = $this->userUuid('SUPER-ADMIN');
+
         $user = User::create([
             'name' => $request->name,
+            'user_uuid' => $userUuid,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -50,6 +57,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('dashboard'));
+    }
+
+    public function userUuid($role)
+    {
+        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+
+        $userUuid = substr($role, 0, 3) . '/' . str_pad(Employee::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+
+        return $userUuid;
     }
 }

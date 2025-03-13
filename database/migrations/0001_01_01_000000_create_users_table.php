@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('tenant_id')->nullable(); // only for testing phase(this should be unique and required)
+            $table->string('user_uuid')->unique(); // eg - SITS-SUP-2003-25
             $table->string('name');
             $table->string('email')->unique();
             $table->string('profile_img')->nullable();

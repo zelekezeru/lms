@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { Link, usePage } from "@inertiajs/vue3";
 import { useDark } from "@vueuse/core";
 import {
   Bars3Icon,
@@ -10,6 +10,9 @@ import {
   ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 import Sidebar from "@/Components/Sidebar.vue";
+
+// Auth User
+const user = computed(() => usePage().props.auth.user);
 
 // Sidebar state
 const isMobile = ref(window.innerWidth < 768);
@@ -59,7 +62,7 @@ const handleAsideHover = (e) => {
 onUnmounted(() => {
   window.removeEventListener("resize", updateScreenSize);
 });
-
+console.log(user.value);
 </script>
 
 <template>
@@ -112,10 +115,10 @@ onUnmounted(() => {
         <div class="flex items-center gap-4 ml-auto">
           <!-- User Info -->
           <div class="text-sm font-medium text-gray-200 flex items-center gap-2">
-            <img :src="authUser.value.profileImg || '/img/mlane.jpg'" alt="Avatar" class="w-10 h-10 rounded-full" />
+            <img :src="user.profileImg ? user.profileImg : '/img/mlane.jpg'" alt="Avatar" class="w-10 h-10 rounded-full" />
             <div>
-              <div class="text-base">{{ authUser.value.name }}</div>
-              <div class="text-xs">{{ authUser.value.email }}</div>
+              <div class="text-base">{{ user.name }}</div>
+              <div class="text-xs">{{ user.email }}</div>
             </div>
           </div>
           <!-- Theme Toggle Button -->

@@ -49,7 +49,7 @@ class EmployeeController extends Controller
     {
         $fields = $request->validated();
         $image = $fields['profile_img'] ?? null;
-        $university_id = $this->university_id($fields['role_name']);
+        $userUuid = $this->userUuid($fields['role_name']);
         
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
@@ -59,7 +59,7 @@ class EmployeeController extends Controller
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path,
-            'university_id' => $university_id,
+            'user_uuid' => $userUuid,
             'password' => Hash::make('pwd@default'),
         ]);
 
@@ -149,12 +149,12 @@ class EmployeeController extends Controller
         $employee->delete();
     }
 
-    public function university_id($role)
+    public function userUuid($role)
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-        $university_id = substr($role, 0, 3) . '/' . str_pad(Employee::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+        $userUuid = substr($role, 0, 3) . '/' . str_pad(Employee::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
 
-        return $university_id;
+        return $userUuid;
     }
 }

@@ -37,6 +37,12 @@ class RolePermissionSeeder extends Seeder
             'update-permissions',
             'delete-permissions',
 
+            // Permissions resource (CRUD)
+            'view-tenants',
+            'create-tenants',
+            'update-tenants',
+            'delete-tenants',
+
             // Students (CRUD)
             'view-students',
             'create-students',

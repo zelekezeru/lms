@@ -45,6 +45,7 @@ const openMenus = ref({
     attendanceMenu: false,
     examsMenu: false,
     permissionsMenu: false,
+    tenantsMenu: false,
 });
 
 // Custom Transition Hooks for Smooth Height Animation
@@ -129,7 +130,7 @@ const afterLeave = (el) => {
 
         <nav class="pt-1 text-sm font-medium">
             <Link
-                href="/dashboard"
+                href="/"
                 class="flex items-center space-x-3 px-4 py-2 rounded-lg hover:bg-gray-700"
             >
                 <HomeIcon class="w-8 h-8 p-1 rounded-full" />
@@ -147,6 +148,25 @@ const afterLeave = (el) => {
                 class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
                 <h2 class="font-bold px-4 text-sm">Menu</h2>
+                
+                <!-- Tenant Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Tenants'"
+                    :icon="AcademicCapIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-tenants', 'create-tenants'])"
+                >
+                    <SidebarDrowpdownLink v-show="userCan('create-tenants')" :href="route('tenants.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Tenant</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink v-show="userCan('view-tenants')" :href="route('tenants.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Tenant</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
                 <!-- Employees Navigation -->
                 <SidebarDropdownMenu
                     :label="'Employees'"

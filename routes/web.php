@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\TenantController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -37,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('departments', DepartmentController::class);
     Route::resource('programs', ProgramController::class);
     Route::resource('employees', EmployeeController::class);
+    
+    Route::resource('tenants', TenantController::class);
 });
 
 require __DIR__ . '/auth.php';

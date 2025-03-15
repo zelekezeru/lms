@@ -86,7 +86,7 @@ const deleteprogram = (id) => {
             </button>
         </div>
 
-        <!-- Programs Table -->
+{        <!-- Programs Table -->
         <Table>
             <TableHeader>
                 <tr>
@@ -115,7 +115,7 @@ const deleteprogram = (id) => {
                         </Link>
                     </th>
                     <td class="px-6 py-4">{{ program.language }}</td>
-                    <td class="px-6 py-4">{{ program.user.name }}</td>
+                    <td class="px-6 py-4">{{ program.user?.name }}</td>
                     <td class="px-1 w-14 py-4">
                         <span
                             v-for="studyMode in program.studyModes"
@@ -152,7 +152,7 @@ const deleteprogram = (id) => {
                     </td>
                 </TableZebraRows>
             </tbody>
-        </Table>
+        </Table>}
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">

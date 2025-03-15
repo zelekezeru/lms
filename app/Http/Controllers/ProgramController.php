@@ -20,7 +20,7 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = ProgramResource::collection(Program::with('studyModes')->paginate(10));
+        $programs = ProgramResource::collection(Program::with('studyModes', 'user')->paginate(10));
 
         return inertia('Programs/Index', [
             'programs' => $programs,

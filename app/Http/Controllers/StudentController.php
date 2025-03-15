@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Program;
 use App\Http\Requests\StudentRequest;
 use Carbon\Carbon;
 use Inertia\Inertia;
@@ -14,23 +15,30 @@ class StudentController extends Controller
     public function index(): Response
     {
         $students = Student::latest()->paginate(10);
+
         return Inertia::render('Students/Index', compact('students'));
     }
 
     public function create(): Response
     {
-        return Inertia::render('Students/Create');
+        $programs = Program::get();
+
+        return Inertia::render('Students/Create', [
+            'programs' => $programs
+        ]);
     }
     
     public function show(Student $student)
     {
+
         return Inertia::render('Students/Show', [
-            'student' => $student
+            'student' => $student,
         ]);
     }
     
     public function store(StudentRequest $request)
     {
+        
         $student = Student::create($request->validated());
         
         $tenant = 'SITS';

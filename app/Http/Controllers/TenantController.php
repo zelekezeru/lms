@@ -36,7 +36,6 @@ class TenantController extends Controller
      */
     public function store(TenantStoreRequest $request)
     {
-        dd($request);
         $fields = $request->validated();
         
         $tenant = Tenant::create($fields);

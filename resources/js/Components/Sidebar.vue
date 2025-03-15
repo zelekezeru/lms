@@ -148,7 +148,7 @@ const afterLeave = (el) => {
                 class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
                 <h2 class="font-bold px-4 text-sm">Menu</h2>
-                
+
                 <!-- Tenant Navigation -->
                 <SidebarDropdownMenu
                     :label="'Tenants'"
@@ -157,11 +157,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-tenants', 'create-tenants'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-tenants')" :href="route('tenants.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-tenants')"
+                        :href="route('tenants.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Tenant</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-tenants')" :href="route('tenants.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-tenants')"
+                        :href="route('tenants.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Tenant</span>
                     </SidebarDrowpdownLink>
@@ -175,11 +181,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-employees', 'create-employees'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-employees')" :href="route('employees.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-employees')"
+                        :href="route('employees.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Employee</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-employees')" :href="route('employees.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-employees')"
+                        :href="route('employees.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Employee</span>
                     </SidebarDrowpdownLink>
@@ -193,11 +205,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-students', 'create-students'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-students')" :href="route('students.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-students')"
+                        :href="route('students.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Student</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-students')" :href="route('students.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-students')"
+                        :href="route('students.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Student</span>
                     </SidebarDrowpdownLink>
@@ -212,11 +230,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-roles', 'view-permissions'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('view-roles')" :href="route('roles.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-roles')"
+                        :href="route('roles.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Roles</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-permissions')" :href="route('permissions.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-permissions')"
+                        :href="route('permissions.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Permissions</span>
                     </SidebarDrowpdownLink>
@@ -230,11 +254,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-employees', 'create-employees'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-departments')" :href="route('departments.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-departments')"
+                        :href="route('departments.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Department</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-departments')" :href="route('departments.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-departments')"
+                        :href="route('departments.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Department</span>
                     </SidebarDrowpdownLink>
@@ -248,11 +278,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-programs', 'create-programs'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-programs')" :href="route('programs.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-programs')"
+                        :href="route('programs.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Program</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-programs')" :href="route('programs.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-programs')"
+                        :href="route('programs.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Program</span>
                     </SidebarDrowpdownLink>

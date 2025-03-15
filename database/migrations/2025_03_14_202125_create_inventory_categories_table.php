@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('inventory_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
+            $table->foreignId('tenant_id')->constrained()->onDelete('SET NULL');
             $table->string('name', 100);
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

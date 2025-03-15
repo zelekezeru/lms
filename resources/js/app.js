@@ -3,7 +3,7 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createApp, h, computed } from 'vue';
+import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -20,47 +20,52 @@ createInertiaApp({
 
         app.use(plugin).use(ZiggyVue);
 
-        // Define a global computed property for authUser so that it is easily accessible everywhere
-        app.config.globalProperties.authUser = computed(() => props.initialPage.props.auth?.user || null);
-        
-        // CHECK FOR PERMISSIONS
+        // Define a global getter for authUser that always reads from the reactive $page property
+        Object.defineProperty(app.config.globalProperties, 'authUser', {
+            get() {
+                return this.$page.props.auth?.user || null;
+            },
+        });
 
-        // Check for the existence of ONLY one permission in the auth.user permissions list
-        app.config.globalProperties.userCan = (permission) => {
-            return props.initialPage.props.auth?.user?.permissions?.includes(permission) || false;
+        // Define global functions that use this.$page so they update when auth changes
+        app.config.globalProperties.userCan = function(permission) {
+            return this.$page.props.auth?.user?.permissions?.includes(permission) || false;
         };
-        
-        app.config.globalProperties.userCanAny = (permissions) => {
-            return props.initialPage.props.auth?.user?.permissions 
-                ? permissions.some(permission => props.initialPage.props.auth.user.permissions.includes(permission))
+
+        app.config.globalProperties.userCanAny = function(permissions) {
+            const userPermissions = this.$page.props.auth?.user?.permissions;
+            return userPermissions
+                ? permissions.some(permission => userPermissions.includes(permission))
                 : false;
         };
-        
-        app.config.globalProperties.userCanAll = (permissions) => {
-            return props.initialPage.props.auth?.user?.permissions 
-                ? permissions.every(permission => props.initialPage.props.auth.user.permissions.includes(permission))
+
+        app.config.globalProperties.userCanAll = function(permissions) {
+            const userPermissions = this.$page.props.auth?.user?.permissions;
+            return userPermissions
+                ? permissions.every(permission => userPermissions.includes(permission))
                 : false;
         };
-        
-        app.config.globalProperties.hasRole = (role) => {
-            return props.initialPage.props.auth?.user?.roles?.includes(role) || false;
+
+        app.config.globalProperties.hasRole = function(role) {
+            return this.$page.props.auth?.user?.roles?.includes(role) || false;
         };
-        
-        app.config.globalProperties.hasAnyRole = (roles) => {
-            return props.initialPage.props.auth?.user?.roles 
-                ? roles.some(role => props.initialPage.props.auth.user.roles.includes(role))
+
+        app.config.globalProperties.hasAnyRole = function(roles) {
+            const userRoles = this.$page.props.auth?.user?.roles;
+            return userRoles
+                ? roles.some(role => userRoles.includes(role))
                 : false;
         };
-        
-        app.config.globalProperties.hasAllRoles = (roles) => {
-            return props.initialPage.props.auth?.user?.roles 
-                ? roles.every(role => props.initialPage.props.auth.user.roles.includes(role))
+
+        app.config.globalProperties.hasAllRoles = function(roles) {
+            const userRoles = this.$page.props.auth?.user?.roles;
+            return userRoles
+                ? roles.every(role => userRoles.includes(role))
                 : false;
         };
-        
 
         return app.mount(el);
-    },  
+    },
     progress: {
         color: 'green',
     },

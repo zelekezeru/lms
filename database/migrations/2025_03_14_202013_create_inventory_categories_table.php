@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inventory_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('SET NULL');
+            $table->foreignId('tenant_id')->constrained();
             $table->string('name', 100);
             $table->timestamps();
         });

@@ -13,21 +13,24 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
+            $table->foreignId('tenant_id')          // Foreign key for tenant
+                  ->constrained('tenants')
+                  ->onDelete('cascade');
             $table->string('name', 100);
-            $table->unsignedBigInteger('category_id');
+            $table->foreignId('category_id')        // Foreign key for category
+                  ->constrained('categories')
+                  ->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2)->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->foreignId('supplier_id')        // Foreign key for supplier
+                  ->nullable()
+                  ->constrained('suppliers')
+                  ->onDelete('cascade');
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
+        
     }
 
     /**

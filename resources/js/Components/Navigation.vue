@@ -277,8 +277,8 @@ export default {
                                                 class="avatar-img rounded" />
                                         </div>
                                         <div class="u-text">
-                                            <h4 class="text-white">{{ $page.props.auth.user.name }}</h4>
-                                            <p class="text-white">hello@example.com</p>
+                                            <h4>{{ $page.props.auth.user.name }}</h4>
+                                            <p class="text-muted">info@sits.edu.et</p>
                                             <a :href="route('profile.edit')" class="btn btn-xs btn-secondary btn-sm">View
                                                 Profile</a>
                                         </div>

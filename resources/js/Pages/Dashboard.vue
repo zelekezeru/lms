@@ -3,6 +3,15 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 </script>
 
+<script>
+export default {
+    methods: {
+        logout() {
+            this.$inertia.post(route('logout'));
+        }
+    }
+}
+</script>
 <template>
     <Head title="Dashboard" />
 
@@ -12,6 +21,12 @@ import { Head } from '@inertiajs/vue3';
                 Dashboard
             </h2>
         </template>
+        
+        <form @submit.prevent="logout">
+            <button type="submit" class="dropdown-item">
+                Log Out
+            </button>
+        </form>
             <div class="flex flex-wrap">
                 <!-- <a href="{{ route('tasks.index') }}"> -->
                     <div class="w-full sm:w-1/4 p-2">

@@ -143,7 +143,7 @@ const submit = () => {
                                         <PhotoIcon class="w-5 h-5" />
                                         Upload Logo
                                     </label>
-
+                                    
                                     <input
                                         id="logo"
                                         type="file"
@@ -194,47 +194,6 @@ const submit = () => {
                             </div>
 
                         </section>
-
-                            <!-- Profile Image Upload & Preview -->
-                            <div>
-                                <InputLabel
-                                    for="profile_img"
-                                    value="Profile Image"
-                                />
-                                <div class="flex items-center gap-4">
-                                    <label
-                                        for="profile_img"
-                                        class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-                                    >
-                                        <PhotoIcon class="w-5 h-5" />
-                                        Upload Image
-                                    </label>
-
-                                    <input
-                                        id="profile_img"
-                                        type="file"
-                                        accept="image/*"
-                                        class="hidden"
-                                        @change="handleFileChange"
-                                    />
-
-                                    <!-- Image Preview -->
-                                    <div
-                                        v-if="imagePreview"
-                                        class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                                    >
-                                        <img
-                                            :src="imagePreview"
-                                            alt="Profile Preview"
-                                            class="object-cover w-full h-full"
-                                        />
-                                    </div>
-                                </div>
-                                <InputError
-                                    :message="form.errors.profile_img"
-                                />
-                            </div>
-
 
                     </div>
 

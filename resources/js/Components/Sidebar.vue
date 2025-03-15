@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import {
     HomeIcon,
     XMarkIcon,
@@ -11,9 +11,11 @@ import {
     KeyIcon,
     AcademicCapIcon,
     BuildingOffice2Icon,
+    ArrowLeftCircleIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
+import PrimaryButton from "../Components/PrimaryButton.vue";
 
 const props = defineProps({
     sidebarVisible: {
@@ -303,6 +305,21 @@ const afterLeave = (el) => {
                         </span>
                     </transition>
                 </Link>
+                <!-- Profile Navigation Item -->
+                <PrimaryButton
+                    @click="router.post(route('logout'))"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
+                >
+                    <ArrowLeftCircleIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />
+                    <transition name="fade">
+                        <span
+                            v-if="sidebarVisible || sidebarHovered"
+                            class="transition-all duration-300 truncate text-sm"
+                        >
+                            Logout
+                        </span>
+                    </transition>
+                </PrimaryButton>
             </div>
         </nav>
     </aside>

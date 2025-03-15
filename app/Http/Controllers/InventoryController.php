@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use App\Http\Requests\InventoryStoreRequest;
+use App\Http\Requests\InventoryUpdateRequest;
+use App\Http\Resources\InventoryResource;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -12,7 +15,11 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        //
+        $inventories = InventoryResource::collection(Inventory::paginate(10));
+
+        return inertia('Inventories/Index', [
+            'inventorys' => $inventories,
+        ]);
     }
 
     /**
@@ -20,15 +27,20 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        //
+
+        return  inertia('Inventories/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InventoryStoreRequest $request)
     {
-        //
+        $fields = $request->validated();
+
+        $inventory = Inventory::create($fields);
+
+        return redirect(route('inventorys.index'));
     }
 
     /**
@@ -36,7 +48,9 @@ class InventoryController extends Controller
      */
     public function show(Inventory $inventory)
     {
-        //
+        return inertia('Inventories/Show', [
+            'inventory' => new InventoryResource($inventory),
+        ]);
     }
 
     /**
@@ -44,15 +58,21 @@ class InventoryController extends Controller
      */
     public function edit(Inventory $inventory)
     {
-        //
+        return inertia('Inventories/Edit', [
+            'inventory' => new InventoryResource($inventory),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Inventory $inventory)
+    public function update(InventoryUpdateRequest $request, Inventory $inventory)
     {
-        //
+        $fields = $request->validated();
+
+        $inventory->update($fields);
+
+        return redirect(route('inventorys.index'));
     }
 
     /**
@@ -60,6 +80,9 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
-        //
+        // Later to be modified
+        $inventory->delete();
+
+        return redirect(route('inventorys.index'));
     }
 }

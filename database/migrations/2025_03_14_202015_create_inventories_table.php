@@ -14,23 +14,24 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tenant_id')
-                  ->constrained('tenants')
-                  ->onDelete('cascade');
-            $table->string('name', 100);
+                ->nullable()
+                ->constrained('tenants')
+                ->onDelete('cascade');
             $table->foreignId('category_id')
-                  ->constrained('inventory_categories')
-                  ->onDelete('cascade');
+                ->constrained('inventory_categories')
+                ->onDelete('cascade');
+            $table->foreignId('supplier_id')
+                ->nullable()
+                ->constrained('inventory_suppliers')
+                ->onDelete('cascade');
+
+            $table->string('name', 100);
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2)->nullable();
-            $table->foreignId('supplier_id')
-                  ->nullable()
-                  ->constrained('inventory_suppliers')
-                  ->onDelete('cascade');
             $table->text('description')->nullable();
-            $table->enum('status', ['active', 'inactive']);
+            $table->enum('status', ['ACTIVE', 'IN_ACTIVE']);
             $table->timestamps();
         });
-        
     }
 
     /**

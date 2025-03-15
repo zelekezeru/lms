@@ -148,6 +148,7 @@ const afterLeave = (el) => {
                 class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
                 <h2 class="font-bold px-4 text-sm">Menu</h2>
+                
                 <!-- Tenant Navigation -->
                 <SidebarDropdownMenu
                     :label="'Tenants'"

@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('inventory_suppliers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
+            $table->foreignId('tenant_id')->nullable()->constrained();
             $table->string('name', 100);
             $table->string('contact', 50);
             $table->string('email', 100);
             $table->text('address');
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
         });
     }
 

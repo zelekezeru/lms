@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryCategory;
+use App\Http\Requests\InventoryCategoryStoreRequest;
+use App\Http\Requests\InventoryCategoryUpdateRequest;
+use App\Http\Resources\InventoryCategoryResource;
 use Illuminate\Http\Request;
 
 class InventoryCategoryController extends Controller
@@ -12,7 +15,11 @@ class InventoryCategoryController extends Controller
      */
     public function index()
     {
-        //
+        $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::paginate(10));
+
+        return inertia('InventoryCategories/Index', [
+            'inventoryCategories' => $inventoryCategories,
+        ]);
     }
 
     /**
@@ -20,15 +27,20 @@ class InventoryCategoryController extends Controller
      */
     public function create()
     {
-        //
+
+        return  inertia('InventoryCategories/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InventoryCategoryStoreRequest $request)
     {
-        //
+        $fields = $request->validated();
+
+        $inventoryCategory = InventoryCategory::create($fields);
+
+        return redirect(route('inventoryCategories.index'));
     }
 
     /**
@@ -36,7 +48,9 @@ class InventoryCategoryController extends Controller
      */
     public function show(InventoryCategory $inventoryCategory)
     {
-        //
+        return inertia('InventoryCategories/Show', [
+            'inventoryCategory' => new InventoryCategoryResource($inventoryCategory),
+        ]);
     }
 
     /**
@@ -44,15 +58,21 @@ class InventoryCategoryController extends Controller
      */
     public function edit(InventoryCategory $inventoryCategory)
     {
-        //
+        return inertia('InventoryCategories/Edit', [
+            'inventoryCategory' => new InventoryCategoryResource($inventoryCategory),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, InventoryCategory $inventoryCategory)
+    public function update(InventoryCategoryUpdateRequest $request, InventoryCategory $inventoryCategory)
     {
-        //
+        $fields = $request->validated();
+
+        $inventoryCategory->update($fields);
+
+        return redirect(route('inventoryCategories.index'));
     }
 
     /**
@@ -60,6 +80,9 @@ class InventoryCategoryController extends Controller
      */
     public function destroy(InventoryCategory $inventoryCategory)
     {
-        //
+        // Later to be modified
+        $inventoryCategory->delete();
+
+        return redirect(route('inventoryCategories.index'));
     }
 }

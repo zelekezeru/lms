@@ -27,22 +27,22 @@ class InventorySupplierController extends Controller
      */
     public function create()
     {
-        
+
         return  inertia('InventorySuppliers/Create');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(InventorySupplierStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $inventorySupplier = InventorySupplier::create($fields);
-        
+
         return redirect(route('inventorySuppliers.index'));
     }
-    
+
     /**
      * Display the specified resource.
      */

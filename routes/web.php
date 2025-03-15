@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InventorySupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('programs', ProgramController::class);
     Route::resource('employees', EmployeeController::class);
     Route::resource('inventorySuppliers', InventorySupplierController::class);
+    Route::resource('inventoryCategories', InventoryCategoryController::class);
     
     Route::resource('tenants', TenantController::class);
 });

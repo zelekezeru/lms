@@ -14,6 +14,7 @@ import {
     ArrowLeftCircleIcon,
     ArchiveBoxArrowDownIcon,
     HandRaisedIcon,
+    FolderIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -297,7 +298,7 @@ const afterLeave = (el) => {
                     :icon="ArchiveBoxArrowDownIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-inventory-suppliers'])"
+                    v-show="userCanAny(['view-inventory-suppliers', 'view-inventory-categories'])"
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-inventory-suppliers')"
@@ -305,6 +306,13 @@ const afterLeave = (el) => {
                     >
                         <HandRaisedIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Inventory Suppliers</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-inventory-categories')"
+                        :href="route('inventoryCategories.index')"
+                    >
+                        <FolderIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Inventory Categories</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

@@ -6,8 +6,8 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 import Form from "./Form.vue";
 
 defineProps({
-    departments: { type: Object, required: true },
-    roles: { type: Object, required: true },
+    inventoryCategories: { type: Object, required: true },
+    inventorySuppliers: { type: Object, required: true },
 });
 
 // Initialize form data
@@ -15,6 +15,7 @@ const form = useForm({
     name: "",
     quantity: "",
     decimal: "",
+    status: "",
     description: "",
     tenant_id: "",
     category_id: "",
@@ -23,7 +24,7 @@ const form = useForm({
 
 // Submit the form
 const submit = () => {
-    form.post(route("inventorys.store"));
+    form.post(route("inventories.store"));
 };
 </script>
 
@@ -40,7 +41,7 @@ const submit = () => {
             </div>
 
             <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
-                <Form :form="form" @submit="submit" />
+                <Form :form="form" :inventoryCategories="inventoryCategories" :inventorySuppliers="inventorySuppliers" @submit="submit" />
             </div>
         </div>
     </AppLayout>

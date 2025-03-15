@@ -23,13 +23,13 @@ class InventoryStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'quantity' => 'required|number',
-            'decimal' => 'nullable|number',
+            'quantity' => 'required|numeric',
+            'unit_price' => 'nullable|numeric',
             'description' => 'nullable|string',
             'status' => 'required|string|in:ACTIVE,IN_ACTIVE',
             'tenant_id' => 'nullable|exists:tenants',
-            'category_id' => 'nullable|exists:inventory_categories',
-            'supplier_id' => 'nullable|exists:inventory_s',
+            'category_id' => 'required|exists:inventory_categories,id',
+            'supplier_id' => 'nullable|exists:inventory_suppliers,id',
         ];
     }
 }

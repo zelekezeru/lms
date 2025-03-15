@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -27,15 +28,15 @@ class RoleController extends Controller
     {
         return Inertia::render('Roles/Create');
     }
-    
+
     public function store(RoleRequest $request)
     {
-        
+
         $role = Role::create($request->validated());
 
         return redirect()->route('roles.index')->with('success', 'Role added successfully.');
     }
-    
+
     public function show(Role $role)
     {
         $rolePermissions = $role->permissions;
@@ -54,7 +55,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role)
     {
         $role->update($request->validated());
-        
+
         return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
     }
 
@@ -88,8 +89,20 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
-        
+
         $role->syncPermissions($request['permissions']);
+
+        cache()->forget("user_roles_" . Auth::id());
+        cache()->forget("user_permissions_" . Auth::id());
+
+        cache()->remember("user_roles_" . Auth::id(), now()->addMinutes(10), function () {
+            return Auth::user()->getRoleNames();
+        });
+
+        cache()->remember("user_permissions_" . Auth::id(), now()->addMinutes(10), function () {
+            return Auth::user()->getAllPermissions()->pluck('name');
+        });
+
         // foreach ($request->permissions as $permissionId) {
         //     // Check if the permission is already attached to the role
         //     $exists = DB::table('role_has_permissions')

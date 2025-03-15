@@ -305,6 +305,13 @@ const afterLeave = (el) => {
                     v-show="userCanAny(['view-inventory-suppliers', 'view-inventory-categories'])"
                 >
                     <SidebarDrowpdownLink
+                        v-show="userCan('view-inventories')"
+                        :href="route('inventories.index')"
+                    >
+                        <HandRaisedIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">All Inventories</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
                         v-show="userCan('view-inventory-suppliers')"
                         :href="route('inventorySuppliers.index')"
                     >

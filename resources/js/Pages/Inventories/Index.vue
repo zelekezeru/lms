@@ -8,7 +8,7 @@ import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
 defineProps({
-    inventorys: {
+    inventories: {
         type: Object,
         required: true,
     },
@@ -20,8 +20,8 @@ const refreshData = () => {
     refreshing.value = true;
     router.flush("/inventories", { method: "get" });
 
-    router.visit(route("inventorys.index"), {
-        only: ["inventorys"],
+    router.visit(route("inventories.index"), {
+        only: ["inventories"],
         onFinish: () => {
             refreshing.value = false;
         },
@@ -40,7 +40,7 @@ const deleteinventory = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("inventorys.destroy", { inventory: id }), {
+            router.delete(route("inventories.destroy", { inventory: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
@@ -59,14 +59,14 @@ const deleteinventory = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                inventorys
+                inventories
             </h1>
         </div>
 
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
-                :href="route('inventorys.create')"
+                :href="route('inventories.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
                 Add New inventory
@@ -84,7 +84,7 @@ const deleteinventory = (id) => {
             </button>
         </div>
 
-        <!-- inventorys Table -->
+        <!-- inventories Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <table
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -102,7 +102,7 @@ const deleteinventory = (id) => {
                 </thead>
                 <tbody>
                     <tr
-                        v-for="inventory in inventorys.data"
+                        v-for="inventory in inventories.data"
                         :key="inventory.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                     >
@@ -112,7 +112,7 @@ const deleteinventory = (id) => {
                         >
                             <Link
                                 :href="
-                                    route('inventorys.show', {
+                                    route('inventories.show', {
                                         inventory: inventory.id,
                                     })
                                 "
@@ -130,7 +130,7 @@ const deleteinventory = (id) => {
                         <td class="px-6 py-4 flex justify-between">
                             <Link
                                 :href="
-                                    route('inventorys.show', {
+                                    route('inventories.show', {
                                         inventory: inventory.id,
                                     })
                                 "
@@ -140,7 +140,7 @@ const deleteinventory = (id) => {
                             </Link>
                             <Link
                                 :href="
-                                    route('inventorys.edit', {
+                                    route('inventories.edit', {
                                         inventory: inventory.id,
                                     })
                                 "
@@ -163,7 +163,7 @@ const deleteinventory = (id) => {
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">
             <Link
-                v-for="link in inventorys.meta.links"
+                v-for="link in inventories.meta.links"
                 :key="link.label"
                 :href="link.url || '#'"
                 class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"

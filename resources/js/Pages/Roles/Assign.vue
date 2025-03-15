@@ -22,7 +22,7 @@ const togglePermission = (permissionId) => {
         selectedPermissions.value.push(permissionId);
     }
 };
-console.log(selectedPermissions.value);
+
 const submit = () => {
     form.value.permissions = selectedPermissions.value;
     router.put(route("roles.attach", props.role.id), form.value);

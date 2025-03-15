@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use App\Http\Requests\InventoryStoreRequest;
 use App\Http\Requests\InventoryUpdateRequest;
+use App\Http\Resources\InventoryCategoryResource;
 use App\Http\Resources\InventoryResource;
+use App\Http\Resources\InventorySupplierResource;
+use App\Models\InventoryCategory;
+use App\Models\InventorySupplier;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -18,7 +22,7 @@ class InventoryController extends Controller
         $inventories = InventoryResource::collection(Inventory::paginate(10));
 
         return inertia('Inventories/Index', [
-            'inventorys' => $inventories,
+            'inventories' => $inventories,
         ]);
     }
 
@@ -27,8 +31,9 @@ class InventoryController extends Controller
      */
     public function create()
     {
-
-        return  inertia('Inventories/Create');
+        $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::all());
+        $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::all());
+        return  inertia('Inventories/Create', compact('inventoryCategories', 'inventorySuppliers'));
     }
 
     /**
@@ -37,10 +42,10 @@ class InventoryController extends Controller
     public function store(InventoryStoreRequest $request)
     {
         $fields = $request->validated();
-
+        
         $inventory = Inventory::create($fields);
 
-        return redirect(route('inventorys.index'));
+        return redirect(route('inventories.index'));
     }
 
     /**
@@ -72,7 +77,7 @@ class InventoryController extends Controller
 
         $inventory->update($fields);
 
-        return redirect(route('inventorys.index'));
+        return redirect(route('inventories.index'));
     }
 
     /**
@@ -83,6 +88,6 @@ class InventoryController extends Controller
         // Later to be modified
         $inventory->delete();
 
-        return redirect(route('inventorys.index'));
+        return redirect(route('inventories.index'));
     }
 }

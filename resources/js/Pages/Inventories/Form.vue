@@ -7,9 +7,8 @@ import { ref } from "vue";
 
 const props = defineProps({
   form: Object,
-  tenants: Array,
-  categories: Array,
-  suppliers: Array,
+  inventoryCategories: { type: Object, required: true },
+  inventorySuppliers: { type: Object, required: true },
 });
 
 const emits = defineEmits(["submit"]);
@@ -80,7 +79,8 @@ const statusOptions = ref([
 
             <!-- Additional Details -->
             <section class="space-y-6">
-                <div>
+                <!-- removed tenants for now -->
+                <!-- <div>
                     <InputLabel for="tenant_id" value="Tenant (Optional)" />
                     <select
                         id="tenant_id"
@@ -93,33 +93,33 @@ const statusOptions = ref([
                         </option>
                     </select>
                     <InputError :message="form.errors.tenant_id" />
-                </div>
+                </div> -->
 
                 <div>
-                    <InputLabel for="category_id" value="Category (Optional)" />
+                    <InputLabel for="inventoryCategory_id" value="InventoryCategory (Optional)" />
                     <select
-                        id="category_id"
+                        id="inventoryCategory_id"
                         v-model="form.category_id"
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
-                        <option disabled value="">Select Category</option>
-                        <option v-for="category in categories" :key="category.id" :value="category.id">
-                            {{ category.name }}
+                        <option disabled value="">Select InventoryCategory</option>
+                        <option v-for="inventoryCategory in inventoryCategories" :key="inventoryCategory.id" :value="inventoryCategory.id">
+                            {{ inventoryCategory.name }}
                         </option>
                     </select>
                     <InputError :message="form.errors.category_id" />
                 </div>
 
                 <div>
-                    <InputLabel for="supplier_id" value="Supplier (Optional)" />
+                    <InputLabel for="inventorySupplier_id" value="InventorySupplier (Optional)" />
                     <select
-                        id="supplier_id"
+                        id="inventorySupplier_id"
                         v-model="form.supplier_id"
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
-                        <option disabled value="">Select Supplier</option>
-                        <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">
-                            {{ supplier.name }}
+                        <option disabled value="">Select InventorySupplier</option>
+                        <option v-for="inventorySupplier in inventorySuppliers" :key="inventorySupplier.id" :value="inventorySupplier.id">
+                            {{ inventorySupplier.name }}
                         </option>
                     </select>
                     <InputError :message="form.errors.supplier_id" />

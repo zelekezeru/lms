@@ -12,6 +12,8 @@ import {
     AcademicCapIcon,
     BuildingOffice2Icon,
     ArrowLeftCircleIcon,
+    ArchiveBoxArrowDownIcon,
+    HandRaisedIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -287,6 +289,22 @@ const afterLeave = (el) => {
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Program</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                    :label="'Inventory'"
+                    :icon="ArchiveBoxArrowDownIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-inventory-suppliers'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-inventory-suppliers')"
+                        :href="route('inventorySuppliers.index')"
+                    >
+                        <HandRaisedIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Inventory Suppliers</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

@@ -14,14 +14,6 @@ defineProps({
     },
 });
 
-const imageLoaded = ref(false);
-
-const handleImageLoad = () => {
-    console.log("hello");
-
-    imageLoaded.value = true;
-};
-
 // Delete function with SweetAlert confirmation
 const deleteinventorySupplier = (id) => {
     Swal.fire({
@@ -57,25 +49,12 @@ const deleteinventorySupplier = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                inventorySupplier Details
+                inventory Supplier Details
             </h1>
 
             <div
                 class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
             >
-                <div class="flex justify-center mb-8">
-                    <div
-                        v-if="!imageLoaded"
-                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
-                    ></div>
-                    <img
-                        v-show="imageLoaded"
-                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="inventorySupplier.profileImg"
-                        :alt="`profile image of ` + inventorySupplier.name"
-                        @load="handleImageLoad"
-                    />
-                </div>
                 <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
                     <!-- inventorySupplier ID -->
                     <div class="flex flex-col">
@@ -113,33 +92,22 @@ const deleteinventorySupplier = (id) => {
                     <!-- Department -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Department</span
+                            >Contact</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ inventorySupplier.department.name }}</span
+                            >{{ inventorySupplier.contact }}</span
                         >
                     </div>
 
-                    <!-- Employment Type -->
+                    <!-- Address -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Employment Type</span
+                            >Address</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ inventorySupplier.employmentType }}</span
-                        >
-                    </div>
-
-                    <!-- Job Position -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Job Position</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ inventorySupplier.jobPosition }}</span
+                            >{{ inventorySupplier.address }}</span
                         >
                     </div>
                 </div>

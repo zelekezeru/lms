@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <Link prefetch="mount" class="flex text-nowrap items-center px-4 py-2 hover:bg-gray-700 rounded" :href="href">
+  <Link prefetch="hover" class="flex text-nowrap items-center px-4 py-2 hover:bg-gray-700 rounded" :href="href">
     <slot />
   </Link>
 </template>

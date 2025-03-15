@@ -66,10 +66,10 @@ const deleteDepartment = (id) => {
                         <td class="px-6 py-4">{{ department.code }}</td>
                         <td class="px-6 py-4">{{ department.description }}</td>
                         <td class="px-6 py-4 flex space-x-2">
-                            <Link :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
+                            <Link prefetch="hover" cache-for="3"  :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link :href="route('departments.edit', { department: department.id })" class="text-green-500 hover:text-green-700">
+                            <Link prefetch="hover" cache-for="3" :href="route('departments.edit', { department: department.id })" class="text-green-500 hover:text-green-700">
                                 <PencilIcon class="w-5 h-5" />
                             </Link>
                             <button @click="deleteDepartment(department.id)" class="text-red-500 hover:text-red-700">

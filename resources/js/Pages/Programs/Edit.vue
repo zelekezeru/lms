@@ -16,7 +16,7 @@ defineProps({
     },
 });
 
-const selectedModes = ref([]);
+// const selectedModes = ref([]);
 
 // Initialize the form with the program fields
 const form = useForm({

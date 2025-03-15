@@ -90,6 +90,11 @@ console.log(user.value);
         class="border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-gray-800 text-gray-200"
       >
         <div class="flex items-center gap-3">
+          
+          <!-- Sidebar Toggler -->
+          <button @click="sidebarVisible = !sidebarVisible">
+            <Bars3Icon class="w-6 h-6 text-gray-200" />
+          </button>
           <!-- Back Button -->
           <button
             @click="goBack"
@@ -104,11 +109,6 @@ console.log(user.value);
             class="p-2 hover:bg-gray-700 rounded-md"
           >
             <ArrowRightIcon class="w-6 h-6 text-gray-200" />
-          </button>
-
-          <!-- Sidebar Toggler -->
-          <button @click="sidebarVisible = !sidebarVisible">
-            <Bars3Icon class="w-6 h-6 text-gray-200" />
           </button>
         </div>
 

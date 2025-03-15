@@ -21,6 +21,7 @@ const refreshing = ref(false);
 
 const refreshData = () => {
     refreshing.value = true;
+    router.flush("/programs", { method: "get" });
 
     router.visit(route("programs.index"), {
         only: ["programs"],
@@ -86,7 +87,7 @@ const deleteprogram = (id) => {
             </button>
         </div>
 
-{        <!-- Programs Table -->
+        <!-- Programs Table -->
         <Table>
             <TableHeader>
                 <tr>
@@ -152,7 +153,7 @@ const deleteprogram = (id) => {
                     </td>
                 </TableZebraRows>
             </tbody>
-        </Table>}
+        </Table>
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">

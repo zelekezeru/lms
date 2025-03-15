@@ -38,8 +38,16 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'profileImg' => $request->user()->profile_img ? Storage::url($request->user()->profile_img) : null,
-                    'roles' => $request->user()->getRoleNames(),
-                    'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+                    'roles' => cache()->remember(
+                        "user_roles_{$request->user()->id}", 
+                        now()->addMinutes(10), 
+                        fn() => $request->user()->getRoleNames()
+                    ),
+                    'permissions' => cache()->remember(
+                        "user_permissions_{$request->user()->id}", 
+                        now()->addMinutes(10), 
+                        fn() => $request->user()->getAllPermissions()->pluck('name')
+                    ),
                 ] : null,
             ],
         ];

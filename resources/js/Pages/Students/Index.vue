@@ -8,6 +8,7 @@ import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
+import { ArrowPathIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
   students: {
@@ -15,6 +16,20 @@ const props = defineProps({
     required: true,
   },
 });
+
+const refreshing = ref(false);
+
+const refreshData = () => {
+    refreshing.value = true;
+    router.flush("/students", { method: "get" });
+
+    router.visit(route("students.index"), {
+        only: ["students"],
+        onFinish: () => {
+            refreshing.value = false;
+        },
+    });
+};
 
 const deleteStudent = (id) => {
   Swal.fire({
@@ -43,15 +58,26 @@ const deleteStudent = (id) => {
     <template #header>
       <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Students</h2>
     </template>
-
-    <div class="p-4">
-      <Link
-        :href="route('students.create')"
-        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3"
-      >
-        Add Student
-      </Link>
-    </div>
+        <!-- Header Toolbar -->
+        <div class="flex justify-between items-center mb-3">
+            <Link
+                :href="route('students.create')"
+                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+                Add New student
+            </Link>
+            <button
+                @click="refreshData"
+                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                title="Refresh Data"
+            >
+                <ArrowPathIcon
+                    class="w-5 h-5 mr-2"
+                    :class="{ 'animate-spin': refreshing }"
+                />
+                Refresh Data
+            </button>
+        </div>
 
     <div class="overflow-x-auto shadow-md sm:rounded-lg">
       <Table>

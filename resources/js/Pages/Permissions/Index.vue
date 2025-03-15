@@ -22,6 +22,7 @@ const refreshing = ref(false);
 
 const refreshData = () => {
     refreshing.value = true;
+    router.flush("/permissions", { method: "get" });
 
     router.visit(route("permissions.index"), {
         only: ["permissions"],
@@ -96,24 +97,41 @@ const deletepermission = (id) => {
                 </tr>
             </TableHeader>
             <tbody>
-                <TableZebraRows v-for="permission in permissions.data" :key="permission.id">
+                <TableZebraRows
+                    v-for="permission in permissions.data"
+                    :key="permission.id"
+                >
                     <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        <Link :href="route('permissions.show', { permission: permission.id })">
+                        <Link
+                            :href="
+                                route('permissions.show', {
+                                    permission: permission.id,
+                                })
+                            "
+                        >
                             {{ permission.name }}
                         </Link>
                     </th>
                     <td class="py-4 flex items-center justify-around">
                         <Link
-                            :href="route('permissions.show', { permission: permission.id })"
+                            :href="
+                                route('permissions.show', {
+                                    permission: permission.id,
+                                })
+                            "
                             class="text-blue-500 hover:text-blue-700"
                         >
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
-                            :href="route('permissions.edit', { permission: permission.id })"
+                            :href="
+                                route('permissions.edit', {
+                                    permission: permission.id,
+                                })
+                            "
                             class="text-green-500 hover:text-green-700"
                         >
                             <PencilSquareIcon class="w-5 h-5" />

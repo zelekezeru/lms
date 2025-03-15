@@ -53,6 +53,10 @@ const openMenus = ref({
     tenantsMenu: false,
 });
 
+const logout = () => {
+    router.flushAll;
+    router.post(route('logout'));
+}
 // Custom Transition Hooks for Smooth Height Animation
 const beforeEnter = (el) => {
     el.style.height = "0";
@@ -333,7 +337,7 @@ const afterLeave = (el) => {
                 </Link>
                 <!-- Profile Navigation Item -->
                 <PrimaryButton
-                    @click="router.post(route('logout'))"
+                    @click="logout"
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
                 >
                     <ArrowLeftCircleIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />

@@ -22,6 +22,7 @@ const refreshing = ref(false);
 
 const refreshData = () => {
     refreshing.value = true;
+    router.flush("/roles", { method: "get" });
 
     router.visit(route("roles.index"), {
         only: ["roles"],

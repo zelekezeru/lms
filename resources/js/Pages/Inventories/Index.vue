@@ -18,6 +18,7 @@ const refreshing = ref(false);
 
 const refreshData = () => {
     refreshing.value = true;
+    router.flush("/inventories", { method: "get" });
 
     router.visit(route("inventorys.index"), {
         only: ["inventorys"],

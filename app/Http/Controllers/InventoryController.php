@@ -20,7 +20,7 @@ class InventoryController extends Controller
     public function index()
     {
         $inventories = InventoryResource::collection(Inventory::paginate(10));
-
+        
         return inertia('Inventories/Index', [
             'inventories' => $inventories,
         ]);
@@ -63,9 +63,10 @@ class InventoryController extends Controller
      */
     public function edit(Inventory $inventory)
     {
-        return inertia('Inventories/Edit', [
-            'inventory' => new InventoryResource($inventory),
-        ]);
+        $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::all());
+        $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::all());
+        $inventory = new InventoryResource($inventory);
+        return inertia('Inventories/Edit', compact('inventoryCategories', 'inventorySuppliers', 'inventory'));
     }
 
     /**

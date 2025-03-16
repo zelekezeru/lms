@@ -49,15 +49,15 @@ const statusOptions = ref([
                 </div>
 
                 <div>
-                    <InputLabel for="decimal" value="Decimal (Optional)" />
+                    <InputLabel for="unit_price" value="Unit price (Optional)" />
                     <TextInput
-                        id="decimal"
+                        id="unit_price"
                         type="number"
                         step="0.01"
-                        v-model="form.decimal"
+                        v-model="form.unit_price"
                         class="w-full"
                     />
-                    <InputError :message="form.errors.decimal" />
+                    <InputError :message="form.errors.unit_price" />
                 </div>
 
                 <div>

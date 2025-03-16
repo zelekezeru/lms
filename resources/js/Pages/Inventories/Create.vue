@@ -14,8 +14,8 @@ defineProps({
 const form = useForm({
     name: "",
     quantity: "",
-    decimal: "",
     status: "",
+    unit_price: "",
     description: "",
     tenant_id: "",
     category_id: "",

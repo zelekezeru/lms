@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Http\Requests\TenantStoreRequest;
 use App\Http\Requests\TenantUpdateRequest;
 use App\Http\Resources\TenantResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TenantController extends Controller
@@ -15,7 +16,7 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants = TenantResource::collection(Tenant::with('studyModes')->paginate(10));
+        $tenants = TenantResource::collection(Tenant::paginate(10));
 
         return inertia('Tenants/Index', [
             'tenants' => $tenants,
@@ -37,6 +38,12 @@ class TenantController extends Controller
     public function store(TenantStoreRequest $request)
     {
         $fields = $request->validated();
+
+        $fields['password'] = 'tenant@' . $request->name;
+
+        $year = substr(Carbon::now()->year, -2);
+
+        $fields['code'] = 'Tenant/'. str_pad(Tenant::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
         
         $tenant = Tenant::create($fields);
         

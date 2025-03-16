@@ -20,7 +20,7 @@ const form = useForm({
     address: "",
     contact_person: "",
     contact_phone: "",
-    addrement: "",
+    aggrement: "",
     aggrement_image: null,
     password: "aez@tenant",
     password_confirmation: "aez@tenant",
@@ -63,180 +63,130 @@ const submit = () => {
             </div>
 
             <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
-                <form @submit.prevent="submit" enctype="multipart/form-data">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <!-- Tenant Details -->
-                        <section class="space-y-6">
-                            <div>
-                                <InputLabel for="name" value="Institution Name" />
-                                <TextInput
-                                    id="name"
-                                    type="text"
-                                    v-model="form.name"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.name" />
-                            </div>
+                <form @submit.prevent="submit" enctype="multipart/form-data">                    
 
-                            <div>
-                                <InputLabel for="email" value="Email" />
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    v-model="form.email"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.email" />
-                            </div>
-
-                            <div>
-                                <InputLabel for="password" value="Password" />
-                                <TextInput
-                                    id="password"
-                                    type="text"
-                                    v-model="form.password"
-                                    value="aez@tenant (Default Password)"
-                                    readonly
-                                    class="w-full bg-gray-200"
-                                />
-                                <InputError :message="form.errors.password" />
-                            </div>
-                            
-                            <div>
-                                <InputLabel for="phone" value="Institution Phone" />
-                                <TextInput
-                                    id="phone"
-                                    type="text"
-                                    v-model="form.phone"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.phone" />
-                            </div>
-                            
-                            <div>
-                                <InputLabel for="address" value="Institution Address" />
-                                <TextInput
-                                    id="address"
-                                    type="text"
-                                    v-model="form.address"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.address" />
-                            </div>
-
-                            <!-- Institution Logo -->
-                            <div>
-                                <InputLabel
-                                    for="logo"
-                                    value="Institution Logo"
-                                />
-                                <div class="flex items-center gap-4">
-                                    <label
-                                        for="logo"
-                                        class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-                                    >
-                                        <PhotoIcon class="w-5 h-5" />
-                                        Upload Logo
-                                    </label>
-
-                                    <input
-                                        id="logo"
-                                        type="file"
-                                        accept="image/*"
-                                        class="hidden"
-                                        @change="handleFileChange"
-                                    />
-
-                                    <!-- Image Preview -->
-                                    <div
-                                        v-if="imagePreview"
-                                        class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                                    >
-                                        <img
-                                            :src="imagePreview"
-                                            alt="Logo Preview"
-                                            class="object-cover w-full h-full"
-                                        />
-                                    </div>
-                                </div>
-                                <InputError
-                                    :message="form.errors.logo"
-                                />
-                            </div>
-                            
-                            <div>
-                                <InputLabel for="contact_person" value="Representative's Name" />
-                                <TextInput
-                                    id="contact_person"
-                                    type="text"
-                                    v-model="form.contact_person"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.contact_person" />
-                            </div>
-                            
-                            <div>
-                                <InputLabel for="contact_phone" value="Representative's Phone" />
-                                <TextInput
-                                    id="contact_phone"
-                                    type="text"
-                                    v-model="form.contact_phone"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.contact_phone" />
-                            </div>
-
-                        </section>
-
-                            <!-- Profile Image Upload & Preview -->
-                            <div>
-                                <InputLabel
-                                    for="profile_img"
-                                    value="Profile Image"
-                                />
-                                <div class="flex items-center gap-4">
-                                    <label
-                                        for="profile_img"
-                                        class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-                                    >
-                                        <PhotoIcon class="w-5 h-5" />
-                                        Upload Image
-                                    </label>
-
-                                    <input
-                                        id="profile_img"
-                                        type="file"
-                                        accept="image/*"
-                                        class="hidden"
-                                        @change="handleFileChange"
-                                    />
-
-                                    <!-- Image Preview -->
-                                    <div
-                                        v-if="imagePreview"
-                                        class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                                    >
-                                        <img
-                                            :src="imagePreview"
-                                            alt="Profile Preview"
-                                            class="object-cover w-full h-full"
-                                        />
-                                    </div>
-                                </div>
-                                <InputError
-                                    :message="form.errors.profile_img"
-                                />
-                            </div>
-
-
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>                        
+                        <InputLabel for="name" value="Institution Name" />
+                        <TextInput
+                            id="name"
+                            type="text"
+                            v-model="form.name"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.name" />
                     </div>
+
+                    <div>
+                        <InputLabel for="email" value="Email" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            v-model="form.email"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.email" />
+                    </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
+                    <div> 
+                        <InputLabel for="phone" value="Institution Phone" />
+                        <TextInput
+                            id="phone"
+                            type="text"
+                            v-model="form.phone"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.phone" />
+                    </div>     
+                    
+
+                    <!-- Institution Logo -->
+                    <div>
+                        <InputLabel
+                            for="logo"
+                            value="Institution Logo"
+                        />
+                        <div class="flex items-center gap-4 mt-4">
+                            <label
+                                for="logo"
+                                class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
+                            >
+                                <PhotoIcon class="w-5 h-5" />
+                                Upload Logo
+                            </label>
+
+                            <input
+                                id="logo"
+                                type="file"
+                                accept="image/*"
+                                class="hidden"
+                                @change="handleFileChange"
+                            />
+
+                            <!-- Image Preview -->
+                            <div
+                                v-if="imagePreview"
+                                class="w-16 h-16 rounded-full border shadow overflow-hidden"
+                            >
+                                <img
+                                    :src="imagePreview"
+                                    alt="Logo Preview"
+                                    class="object-cover w-full h-full"
+                                />
+                            </div>
+                        </div>
+                        <InputError
+                            :message="form.errors.logo"
+                        />
+                    </div>                           
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <InputLabel for="address" value="Institution Address" />
+                        <TextInput
+                            id="address"
+                            type="text"
+                            v-model="form.address"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.address" />
+                    </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <InputLabel for="contact_person" value="Representative's Name" />
+                        <TextInput
+                            id="contact_person"
+                            type="text"
+                            v-model="form.contact_person"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_person" />
+                    </div>
+                    
+                    <div>
+                        <InputLabel for="contact_phone" value="Representative's Phone" />
+                        <TextInput
+                            id="contact_phone"
+                            type="text"
+                            v-model="form.contact_phone"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_phone" />
+                    </div>
+                    </div>
+
 
                     <div class="mt-6 flex justify-center">
                         <PrimaryButton :disabled="form.processing">

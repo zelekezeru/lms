@@ -22,20 +22,13 @@ class TenantUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required', 'string',
             'name' => 'required', 'string',
             'email' => 'required', 'email',
-            'code' => 'required', 'string',
-            // 'password'  => 'sometimes|required|string|min:8|confirmed',
-            'phone' => 'required',
-            'address' => 'required', 'string',
-            'contact_person' => 'required', 'string',
-            'contact_phone' => 'required', 'string',
-            'aggrement' => 'required', 'string',
-            'aggrement_image' => 'nullable|image:jpeg,jpg,png',
-            'status' => 'required', 'boolean',
-            'allowed' => 'required', 'boolean',
-            'paid' => 'required', 'boolean',
+            'code' => 'sometimes', 'string',
+            'phone' => 'sometimes',
+            'address' => 'sometimes', 'string',
+            'contact_person' => 'sometimes', 'string',
+            'contact_phone' => 'sometimes', 'string',
         ];
     }
 }

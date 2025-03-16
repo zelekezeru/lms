@@ -24,15 +24,12 @@ class TenantStoreRequest extends FormRequest
         return [
             'name' => 'required', 'string',
             'email' => 'required', 'email',
-            'code' => 'required', 'string',
-            // 'password'  => 'sometimes|required|string|min:8|confirmed',
+            'code' => 'sometimes', 'string',
             'phone' => 'required',
             'address' => 'required', 'string',
             'user_id' => ['sometimes', 'exists:users,id'],
             'contact_person' => 'required', 'string',
             'contact_phone' => 'required', 'string',
-            'aggrement' => 'required', 'string',
-            'aggrement_image' => 'nullable|image:jpeg,jpg,png',
         ];
     }
 }

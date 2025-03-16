@@ -11,24 +11,24 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     departments: { type: Object, required: true },
     roles: { type: Object, required: true },
-    employee: { type: Object, required: true },
+    tenant: { type: Object, required: true },
 });
 
 // Initialize form data
 const form = useForm({
-    name: props.employee.name || "",
-    email: props.employee.email || "",
-    department_id: props.employee.department.id || "",
-    role_name: props.employee.userRole || "",
-    job_position: props.employee.jobPosition || "",
-    employment_type: props.employee.employmentType || "",
-    office_hours: props.employee.officeHours || "",
-    profile_img: null,
+    name: props.tenant.name || "",
+    email: props.tenant.email || "",
+    code: props.tenant.code || "",
+    phone: props.tenant.phone || "",
+    address: props.tenant.address || "",
+    contact_person: props.tenant.contact_person || "",
+    contact_phone: props.tenant.contact_phone || "",
+    logo: props.tenant.logo || "",
     _method: "PATCH",
 });
 
 // Ref to hold the image preview
-const imagePreview = ref(props.employee.profileImg);
+const imagePreview = ref(props.tenant.profileImg);
 
 // Handle profile image selection and preview
 const handleFileChange = (e) => {
@@ -47,7 +47,7 @@ const handleFileChange = (e) => {
 
 // Submit the form
 const submit = (id) => {
-    form.post(route("employees.update", { employee: id }));
+    form.post(route("tenants.update", { tenant: id }));
 };
 </script>
 
@@ -56,193 +56,136 @@ const submit = (id) => {
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Create Employee
+                    Create tenant
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Fill in the details to add a new employee.
+                    Fill in the details to add a new tenant.
                 </p>
             </div>
 
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
-                <form
-                    @submit.prevent="submit(employee.id)"
-                    enctype="multipart/form-data"
-                >
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- User Details -->
-                        <section class="space-y-6">
-                            <div>
-                                <InputLabel for="name" value="Full Name" />
-                                <TextInput
-                                    id="name"
-                                    type="text"
-                                    v-model="form.name"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.name" />
-                            </div>
+                <form @submit.prevent="submit(tenant.id)" enctype="multipart/form-data">             
 
-                            <div>
-                                <InputLabel for="email" value="Email" />
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    v-model="form.email"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError :message="form.errors.email" />
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>                        
+                        <InputLabel for="name" value="Institution Name" />
+                        <TextInput
+                            id="name"
+                            type="text"
+                            v-model="form.name"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.name" />
+                    </div>
 
-                            <div>
-                                <InputLabel for="role" value="Select Role" />
-                                <select
-                                    id="role"
-                                    v-model="form.role_name"
-                                    required
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                                >
-                                    <option disabled value="">
-                                        Select Role
-                                    </option>
-                                    <option
-                                        v-for="role in roles"
-                                        :key="role.id"
-                                        :value="role.name"
-                                    >
-                                        {{ role.name }}
-                                    </option>
-                                </select>
-                                <InputError :message="form.errors.role" />
-                            </div>
+                    <div>
+                        <InputLabel for="email" value="Email" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            v-model="form.email"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.email" />
+                    </div>
+                    </div>
 
-                            <!-- Profile Image Upload & Preview -->
-                            <div>
-                                <InputLabel
-                                    for="profile_img"
-                                    value="Profile Image"
-                                />
-                                <div class="flex items-center gap-4">
-                                    <label
-                                        for="profile_img"
-                                        class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-                                    >
-                                        <PhotoIcon class="w-5 h-5" />
-                                        Upload Image
-                                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
-                                    <input
-                                        id="profile_img"
-                                        type="file"
-                                        accept="image/*"
-                                        class="hidden"
-                                        @change="handleFileChange"
-                                    />
+                    <div> 
+                        <InputLabel for="phone" value="Institution Phone" />
+                        <TextInput
+                            id="phone"
+                            type="text"
+                            v-model="form.phone"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.phone" />
+                    </div> 
+                    
 
-                                    <!-- Image Preview -->
-                                    <div
-                                        v-if="imagePreview"
-                                        class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                                    >
-                                        <img
-                                            :src="imagePreview"
-                                            alt="Profile Preview"
-                                            class="object-cover w-full h-full"
-                                        />
-                                    </div>
-                                </div>
-                                <InputError
-                                    :message="form.errors.profile_img"
+                    <!-- Institution Logo -->
+                    <div>
+                        <InputLabel
+                            for="logo"
+                            value="Institution Logo"
+                        />
+                        <div class="flex items-center gap-4 mt-4">
+                            <label
+                                for="logo"
+                                class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
+                            >
+                                <PhotoIcon class="w-5 h-5" />
+                                Upload Logo
+                            </label>
+
+                            <input
+                                id="logo"
+                                type="file"
+                                accept="image/*"
+                                class="hidden"
+                                @change="handleFileChange"
+                            />
+
+                            <!-- Image Preview -->
+                            <div
+                                v-if="imagePreview"
+                                class="w-16 h-16 rounded-full border shadow overflow-hidden"
+                            >
+                                <img
+                                    :src="imagePreview"
+                                    alt="Logo Preview"
+                                    class="object-cover w-full h-full"
                                 />
                             </div>
-                        </section>
+                        </div>
+                        <InputError
+                            :message="form.errors.logo"
+                        />
+                    </div>                               
+                    </div>
 
-                        <!-- Employee Details -->
-                        <section class="space-y-6">
-                            <div>
-                                <InputLabel
-                                    for="department_id"
-                                    value="Department"
-                                />
-                                <select
-                                    id="department_id"
-                                    v-model="form.department_id"
-                                    required
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                                >
-                                    <option disabled value="">
-                                        Select Department
-                                    </option>
-                                    <option
-                                        v-for="department in departments"
-                                        :key="department.id"
-                                        :value="department.id"
-                                    >
-                                        {{ department.name }}
-                                    </option>
-                                </select>
-                                <InputError
-                                    :message="form.errors.department_id"
-                                />
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <InputLabel for="address" value="Institution Address" />
+                        <TextInput
+                            id="address"
+                            type="text"
+                            v-model="form.address"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.address" />
+                    </div>
+                    </div>
 
-                            <div>
-                                <InputLabel
-                                    for="job_position"
-                                    value="Job Position"
-                                />
-                                <TextInput
-                                    id="job_position"
-                                    type="text"
-                                    v-model="form.job_position"
-                                    required
-                                    class="w-full"
-                                />
-                                <InputError
-                                    :message="form.errors.job_position"
-                                />
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <InputLabel for="contact_person" value="Representative's Name" />
+                        <TextInput
+                            id="contact_person"
+                            type="text"
+                            v-model="form.contact_person"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_person" />
+                    </div>
 
-                            <div>
-                                <InputLabel
-                                    for="employment_type"
-                                    value="Employment Type"
-                                />
-                                <select
-                                    id="employment_type"
-                                    v-model="form.employment_type"
-                                    required
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                                >
-                                    <option disabled value="">
-                                        Select Type
-                                    </option>
-                                    <option value="FULL_TIME">Full-time</option>
-                                    <option value="PART_TIME">Part-time</option>
-                                    <option value="CONTRACT">Contract</option>
-                                </select>
-                                <InputError
-                                    :message="form.errors.employment_type"
-                                />
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="office_hours"
-                                    value="Office Hours"
-                                />
-                                <TextInput
-                                    id="office_hours"
-                                    type="text"
-                                    v-model="form.office_hours"
-                                    class="w-full"
-                                />
-                                <InputError
-                                    :message="form.errors.office_hours"
-                                />
-                            </div>
-                        </section>
+                    <div>
+                        <InputLabel for="contact_phone" value="Representative's Phone" />
+                        <TextInput
+                            id="contact_phone"
+                            type="text"
+                            v-model="form.contact_phone"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_phone" />
+                    </div>
                     </div>
 
                     <div class="mt-6 flex justify-center">

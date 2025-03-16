@@ -10,6 +10,7 @@ import {
     BriefcaseIcon,
     KeyIcon,
     AcademicCapIcon,
+    UserIcon,
     BuildingOffice2Icon,
     ArrowLeftCircleIcon,
     ArchiveBoxArrowDownIcon,
@@ -55,8 +56,8 @@ const openMenus = ref({
 
 const logout = () => {
     router.flushAll;
-    router.post(route('logout'));
-}
+    router.post(route("logout"));
+};
 // Custom Transition Hooks for Smooth Height Animation
 const beforeEnter = (el) => {
     el.style.height = "0";
@@ -157,7 +158,7 @@ const afterLeave = (el) => {
                 class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
                 <h2 class="font-bold px-4 text-sm">Menu</h2>
-                
+
                 <!-- Tenant Navigation -->
                 <SidebarDropdownMenu
                     :label="'Tenants'"
@@ -166,11 +167,17 @@ const afterLeave = (el) => {
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-tenants', 'create-tenants'])"
                 >
-                    <SidebarDrowpdownLink v-show="userCan('create-tenants')" :href="route('tenants.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-tenants')"
+                        :href="route('tenants.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Tenant</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink v-show="userCan('view-tenants')" :href="route('tenants.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-tenants')"
+                        :href="route('tenants.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Tenant</span>
                     </SidebarDrowpdownLink>
@@ -273,6 +280,28 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
+                <!-- instructor -->
+                
+                <SidebarDropdownMenu
+                    :label="'Instructors'"
+                    :icon="UserIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                >
+                    <SidebarDrowpdownLink
+                        :href="route('instructors.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Instructor</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        :href="route('instructors.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Instructors</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
                 <!-- Programs Navigation -->
                 <SidebarDropdownMenu
                     :label="'Programs'"
@@ -296,13 +325,20 @@ const afterLeave = (el) => {
                         <span class="text-sm">Manage Program</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
-
+                
+               <!-- Inventory -->
+                
                 <SidebarDropdownMenu
                     :label="'Inventory'"
                     :icon="ArchiveBoxArrowDownIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-inventory-suppliers', 'view-inventory-categories'])"
+                    v-show="
+                        userCanAny([
+                            'view-inventory-suppliers',
+                            'view-inventory-categories',
+                        ])
+                    "
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-inventories')"
@@ -347,7 +383,9 @@ const afterLeave = (el) => {
                     @click="logout"
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
                 >
-                    <ArrowLeftCircleIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />
+                    <ArrowLeftCircleIcon
+                        class="w-8 h-8 text-gray-200 p-1 rounded-full"
+                    />
                     <transition name="fade">
                         <span
                             v-if="sidebarVisible || sidebarHovered"

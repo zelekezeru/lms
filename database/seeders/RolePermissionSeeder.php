@@ -84,6 +84,12 @@ class RolePermissionSeeder extends Seeder
             'create-inventories',
             'update-inventories',
             'delete-inventories',
+
+            // // Instructor (CRUD)
+            // 'view-instructors',
+            // 'create-instructors',
+            // 'update-instructors',
+            // 'delete-instructors',
         ];
 
         // Create all permissions

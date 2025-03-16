@@ -18,8 +18,6 @@ const refreshing = ref(false);
 
 const refreshData = () => {
     refreshing.value = true;
-    router.flush("/inventories", { method: "get" });
-
     router.visit(route("inventories.index"), {
         only: ["inventories"],
         onFinish: () => {
@@ -28,8 +26,7 @@ const refreshData = () => {
     });
 };
 
-// Delete function with SweetAlert confirmation
-const deleteinventory = (id) => {
+const deleteInventory = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -42,11 +39,7 @@ const deleteinventory = (id) => {
         if (result.isConfirmed) {
             router.delete(route("inventories.destroy", { inventory: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The inventory has been deleted.",
-                        "success"
-                    );
+                    Swal.fire("Deleted!", "The inventory has been deleted.", "success");
                 },
             });
         }
@@ -56,102 +49,58 @@ const deleteinventory = (id) => {
 
 <template>
     <AppLayout>
-        <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                inventories
+                Inventories
             </h1>
         </div>
 
-        <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
                 :href="route('inventories.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                Add New inventory
+                Add New Inventory
             </Link>
             <button
                 @click="refreshData"
                 class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 title="Refresh Data"
             >
-                <ArrowPathIcon
-                    class="w-5 h-5 mr-2"
-                    :class="{ 'animate-spin': refreshing }"
-                />
+                <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
                 Refresh Data
             </button>
         </div>
 
-        <!-- inventories Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-6 py-3">ID</th>
                         <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Contact</th>
-                        <th scope="col" class="px-6 py-3">Address</th>
+                        <th scope="col" class="px-6 py-3">Quantity</th>
+                        <th scope="col" class="px-6 py-3">Unit Price</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        v-for="inventory in inventories.data"
-                        :key="inventory.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
-                    >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                            <Link
-                                :href="
-                                    route('inventories.show', {
-                                        inventory: inventory.id,
-                                    })
-                                "
-                            >
+                    <tr v-for="inventory in inventories.data" :key="inventory.id" class="border-b dark:border-gray-700">
+                        <td class="px-6 py-4">{{ inventory.id }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                            <Link :href="route('inventories.show', { inventory: inventory.id })">
                                 {{ inventory.name }}
                             </Link>
-                        </th>
-                        <td class="px-6 py-4">{{ inventory.email }}</td>
-                        <td class="px-6 py-4">
-                            {{ inventory.contact }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ inventory.address }}
-                        </td>
-                        <td class="px-6 py-4 flex justify-between">
-                            <Link
-                                :href="
-                                    route('inventories.show', {
-                                        inventory: inventory.id,
-                                    })
-                                "
-                                class="text-blue-500 hover:text-blue-700"
-                            >
+                        <td class="px-6 py-4">{{ inventory.quantity }}</td>
+                        <td class="px-6 py-4">{{ inventory.unitPrice ? '$' + inventory.unitPrice: 'N/A'}}</td>
+                        <td class="px-6 py-4 flex space-x-3">
+                            <Link :href="route('inventories.show', { inventory: inventory.id })" class="text-blue-500 hover:text-blue-700">
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link
-                                :href="
-                                    route('inventories.edit', {
-                                        inventory: inventory.id,
-                                    })
-                                "
-                                class="text-green-500 hover:text-green-700"
-                            >
+                            <Link :href="route('inventories.edit', { inventory: inventory.id })" class="text-green-500 hover:text-green-700">
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button
-                                @click="deleteinventory(inventory.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
+                            <button @click="deleteInventory(inventory.id)" class="text-red-500 hover:text-red-700">
                                 <TrashIcon class="w-5 h-5" />
                             </button>
                         </td>
@@ -160,7 +109,6 @@ const deleteinventory = (id) => {
             </table>
         </div>
 
-        <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">
             <Link
                 v-for="link in inventories.meta.links"

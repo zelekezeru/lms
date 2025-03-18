@@ -298,6 +298,24 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
+                <!-- Acadamic Document -->
+
+                <SidebarDropdownMenu
+                    :label="'Academic Documents'"
+                    :icon="AcademicCapIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                >
+                    <SidebarDrowpdownLink :href="route('academic-documents.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Academic</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink :href="route('academic-documents.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Academic </span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
                 <!-- Programs Navigation -->
                 <SidebarDropdownMenu
                     :label="'Programs'"

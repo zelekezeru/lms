@@ -25,7 +25,8 @@ class ProgramUpdateRequest extends FormRequest
             'name' => ['required', 'string'],
             'language' => ['required', 'string'],
             'description' => ['required'],
-            'user_id' => ['sometimes', 'exists:users,id']
+            'user_id' => ['sometimes', 'exists:users,id'],
+            'tenant_id' => ['sometimes', 'exists:tenants,id'],
         ];
     }
 }

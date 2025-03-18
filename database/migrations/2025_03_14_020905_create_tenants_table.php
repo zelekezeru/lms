@@ -16,10 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('code')->nullable();
+            $table->string('logo')->nullable();
             $table->string('phone', 15)->nullable();
             $table->string('address');
             $table->string('contact_person');
             $table->string('contact_phone', 15)->nullable();
+            $table->string('contact_email')->nullable();
             $table->longText('aggrement')->nullable();
             $table->foreignId('user_id')->constrained()->nullable();
             $table->boolean('status')->default(false);
@@ -28,6 +30,7 @@ return new class extends Migration
             
             $table->string('password');
             $table->boolean('password_changed')->default(false);
+            $table->string('default_password')->nullable();
             $table->timestamps();
         });
     }

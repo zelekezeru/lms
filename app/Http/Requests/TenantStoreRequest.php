@@ -27,9 +27,11 @@ class TenantStoreRequest extends FormRequest
             'code' => 'sometimes', 'string',
             'phone' => 'required',
             'address' => 'required', 'string',
-            'user_id' => ['sometimes', 'exists:users,id'],
+            'user_id' => ['sometimes', 'exists:users,id'],             
             'contact_person' => 'required', 'string',
             'contact_phone' => 'required', 'string',
+            'contact_email' => 'required', 'string',
+            'logo' => 'sometimes', 'file',      
         ];
     }
 }

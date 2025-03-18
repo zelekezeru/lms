@@ -113,5 +113,6 @@ const deleteStudent = (id) => {
         v-html="link.label"
       />
     </div>
+
   </AppLayout>
 </template>

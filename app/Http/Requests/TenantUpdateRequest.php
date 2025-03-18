@@ -29,6 +29,8 @@ class TenantUpdateRequest extends FormRequest
             'address' => 'sometimes', 'string',
             'contact_person' => 'sometimes', 'string',
             'contact_phone' => 'sometimes', 'string',
+            'contact_email' => 'required', 'string',
+            'logo' => 'sometimes', 'file',
         ];
     }
 }

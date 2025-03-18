@@ -60,19 +60,20 @@ const deletetenant = (id) => {
             <div
                 class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
             >
-                <!-- <div class="flex justify-center mb-8">
+                <div class="flex justify-center mb-8">
                     <div
                         v-if="!imageLoaded"
                         class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                     ></div>
+                    
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="tenant.profileImg"
-                        :alt="`profile image of ` + tenant.name"
+                        :src="`/storage/${tenant.logo}`"
+                        :alt="`Logo of ` + tenant.name"
                         @load="handleImageLoad"
                     />
-                </div> -->
+                </div>
                 <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
                     <!-- Tenant Code -->
                     <div class="flex flex-col">
@@ -147,8 +148,14 @@ const deletetenant = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ tenant.status }}</span
-                        >
+                            >
+                            <div v-if="tenant.status == 0" class="text-red-500">
+                                Inactive
+                            </div>
+                            <div v-else class="text-green-500">
+                                Active
+                            </div>
+                        </span>
                     </div>
                     
                     <!-- Payment -->
@@ -158,21 +165,27 @@ const deletetenant = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ tenant.allowed }}</span
+                            >
+                            <div v-if="tenant.paid == 0" class="text-red-500">
+                                Not Paid
+                            </div>
+                            <div v-else class="text-green-500">
+                                Paid
+                            </div></span
                         >
                     </div>
                     
                     <!-- Password -->
-                    <div class="flex flex-col">
+                    <div v-if="tenant.password_changed === 0" class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Password</span
+                            >Default Password</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ tenant.password }}</span
+                            >{{ tenant.default_password }}</span
                         >
                     </div>
-                    
+                                                      
                     <!-- Aggrement -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"

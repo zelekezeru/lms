@@ -21,7 +21,7 @@ const form = useForm({
     name: "",
     description: "",
     language: "",
-    user_id: "",
+    user_id: null, // Allow null value for optional field
     studyModes: [],
 });
 
@@ -125,33 +125,31 @@ const submit = () => {
                                 />
                             </div>
 
+                            <!-- Program Director Dropdown -->
                             <div>
-                                <InputLabel
-                                    for="user_id"
-                                    value="Select Program Director"
-                                    class="block mb-1 text-gray-800 dark:text-gray-200"
-                                />
-                                <select
-                                    id="user_id"
-                                    v-model="form.user_id"
-                                    required
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                            <InputLabel
+                                for="user_id"
+                                value="Select Program Director"
+                                class="block mb-1 text-gray-800 dark:text-gray-200"
+                            />
+                            <select
+                                id="user_id"
+                                v-model="form.user_id"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                            >
+                                <option value="">Select Program Director</option>
+                                <option
+                                v-for="user in users"
+                                :key="user.id"
+                                :value="user.id"
                                 >
-                                    <option disabled value="">
-                                        Select Program Director
-                                    </option>
-                                    <option
-                                        v-for="user in users"
-                                        :key="user.id"
-                                        :value="user.id"
-                                    >
-                                        {{ user.name }}
-                                    </option>
-                                </select>
-                                <InputError
-                                    :message="form.errors.user_id"
-                                    class="mt-2 text-sm text-red-500"
-                                />
+                                {{ user.name }}
+                                </option>
+                            </select>
+                            <InputError
+                                :message="form.errors.user_id"
+                                class="mt-2 text-sm text-red-500"
+                            />
                             </div>
 
                             <div>

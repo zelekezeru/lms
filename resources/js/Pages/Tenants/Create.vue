@@ -20,7 +20,9 @@ const form = useForm({
     address: "",
     contact_person: "",
     contact_phone: "",
+    contact_email: "",
     aggrement: "",
+    logo: null,
     aggrement_image: null,
     password: "aez@tenant",
     password_confirmation: "aez@tenant",
@@ -40,9 +42,10 @@ const handleFileChange = (e) => {
         };
         reader.readAsDataURL(file);
     } else {
-        imagePreview.value = null;
+        imagePreview.value = props.document?.logo || null;
     }
 };
+
 
 // Submit the form
 const submit = () => {
@@ -105,14 +108,10 @@ const submit = () => {
                         <InputError :message="form.errors.phone" />
                     </div>     
                     
-
-                    <!-- Institution Logo -->
-                    <div>
-                        <InputLabel
-                            for="logo"
-                            value="Institution Logo"
-                        />
-                        <div class="flex items-center gap-4 mt-4">
+                    <!-- Institution Logo Upload -->
+                    <div class="mt-4">
+                        <InputLabel for="logo" value="Logo" />
+                        <div class="flex items-center gap-4">
                             <label
                                 for="logo"
                                 class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
@@ -120,7 +119,7 @@ const submit = () => {
                                 <PhotoIcon class="w-5 h-5" />
                                 Upload Logo
                             </label>
-
+                            
                             <input
                                 id="logo"
                                 type="file"
@@ -130,21 +129,12 @@ const submit = () => {
                             />
 
                             <!-- Image Preview -->
-                            <div
-                                v-if="imagePreview"
-                                class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                            >
-                                <img
-                                    :src="imagePreview"
-                                    alt="Logo Preview"
-                                    class="object-cover w-full h-full"
-                                />
+                            <div v-if="imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
+                                <img :src="imagePreview" alt="Profile Preview" class="object-cover w-full h-full" />
                             </div>
                         </div>
-                        <InputError
-                            :message="form.errors.logo"
-                        />
-                    </div>                           
+                        <InputError :message="form.errors.logo" />
+                    </div>                    
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -159,9 +149,7 @@ const submit = () => {
                         />
                         <InputError :message="form.errors.address" />
                     </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
                     <div>
                         <InputLabel for="contact_person" value="Representative's Name" />
                         <TextInput
@@ -173,6 +161,9 @@ const submit = () => {
                         />
                         <InputError :message="form.errors.contact_person" />
                     </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     
                     <div>
                         <InputLabel for="contact_phone" value="Representative's Phone" />
@@ -184,6 +175,18 @@ const submit = () => {
                             class="w-full"
                         />
                         <InputError :message="form.errors.contact_phone" />
+                    </div>
+                    
+                    <div>
+                        <InputLabel for="contact_email" value="Representative's Email" />
+                        <TextInput
+                            id="contact_email"
+                            type="text"
+                            v-model="form.contact_email"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_email" />
                     </div>
                     </div>
 

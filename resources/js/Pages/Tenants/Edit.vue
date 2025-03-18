@@ -23,6 +23,7 @@ const form = useForm({
     address: props.tenant.address || "",
     contact_person: props.tenant.contact_person || "",
     contact_phone: props.tenant.contact_phone || "",
+    contact_email: props.tenant.contact_email || "",
     logo: props.tenant.logo || "",
     _method: "PATCH",
 });
@@ -33,7 +34,7 @@ const imagePreview = ref(props.tenant.profileImg);
 // Handle profile image selection and preview
 const handleFileChange = (e) => {
     const file = e.target.files[0];
-    form.profile_img = file; // Assign file to form
+    form.logo = file; // Assign file to form
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -41,7 +42,7 @@ const handleFileChange = (e) => {
         };
         reader.readAsDataURL(file);
     } else {
-        imagePreview.value = null;
+        imagePreview.value = props.document?.logo || null;
     }
 };
 
@@ -104,16 +105,12 @@ const submit = (id) => {
                             class="w-full"
                         />
                         <InputError :message="form.errors.phone" />
-                    </div> 
+                    </div>    
                     
-
-                    <!-- Institution Logo -->
-                    <div>
-                        <InputLabel
-                            for="logo"
-                            value="Institution Logo"
-                        />
-                        <div class="flex items-center gap-4 mt-4">
+                    <!-- Institution Logo Upload -->
+                    <div class="mt-4">
+                        <InputLabel for="logo" value="Logo" />
+                        <div class="flex items-center gap-4">
                             <label
                                 for="logo"
                                 class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
@@ -121,7 +118,7 @@ const submit = (id) => {
                                 <PhotoIcon class="w-5 h-5" />
                                 Upload Logo
                             </label>
-
+                            
                             <input
                                 id="logo"
                                 type="file"
@@ -131,21 +128,12 @@ const submit = (id) => {
                             />
 
                             <!-- Image Preview -->
-                            <div
-                                v-if="imagePreview"
-                                class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                            >
-                                <img
-                                    :src="imagePreview"
-                                    alt="Logo Preview"
-                                    class="object-cover w-full h-full"
-                                />
+                            <div v-if="imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
+                                <img :src="imagePreview" alt="Profile Preview" class="object-cover w-full h-full" />
                             </div>
                         </div>
-                        <InputError
-                            :message="form.errors.logo"
-                        />
-                    </div>                               
+                        <InputError :message="form.errors.logo" />
+                    </div>                    
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -160,9 +148,7 @@ const submit = (id) => {
                         />
                         <InputError :message="form.errors.address" />
                     </div>
-                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div>
                         <InputLabel for="contact_person" value="Representative's Name" />
                         <TextInput
@@ -174,6 +160,9 @@ const submit = (id) => {
                         />
                         <InputError :message="form.errors.contact_person" />
                     </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
                     <div>
                         <InputLabel for="contact_phone" value="Representative's Phone" />
@@ -185,6 +174,18 @@ const submit = (id) => {
                             class="w-full"
                         />
                         <InputError :message="form.errors.contact_phone" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="contact_email" value="Representative's Email" />
+                        <TextInput
+                            id="contact_email"
+                            type="text"
+                            v-model="form.contact_email"
+                            required
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.contact_email" />
                     </div>
                     </div>
 

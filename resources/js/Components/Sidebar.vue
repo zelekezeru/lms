@@ -281,22 +281,18 @@ const afterLeave = (el) => {
                 </SidebarDropdownMenu>
 
                 <!-- instructor -->
-                
+
                 <SidebarDropdownMenu
                     :label="'Instructors'"
                     :icon="UserIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                 >
-                    <SidebarDrowpdownLink
-                        :href="route('instructors.create')"
-                    >
+                    <SidebarDrowpdownLink :href="route('instructors.create')">
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Instructor</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        :href="route('instructors.index')"
-                    >
+                    <SidebarDrowpdownLink :href="route('instructors.index')">
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Instructors</span>
                     </SidebarDrowpdownLink>
@@ -325,9 +321,9 @@ const afterLeave = (el) => {
                         <span class="text-sm">Manage Program</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
-                
-               <!-- Inventory -->
-                
+
+                <!-- Inventory -->
+
                 <SidebarDropdownMenu
                     :label="'Inventory'"
                     :icon="ArchiveBoxArrowDownIcon"
@@ -379,22 +375,25 @@ const afterLeave = (el) => {
                     </transition>
                 </Link>
                 <!-- Profile Navigation Item -->
-                <PrimaryButton
-                    @click="logout"
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
-                >
-                    <ArrowLeftCircleIcon
-                        class="w-8 h-8 text-gray-200 p-1 rounded-full"
-                    />
-                    <transition name="fade">
-                        <span
-                            v-if="sidebarVisible || sidebarHovered"
-                            class="transition-all duration-300 truncate text-sm"
-                        >
-                            Logout
-                        </span>
-                    </transition>
-                </PrimaryButton>
+                <div class="absolute bottom-0 left-0 w-full px-4">
+                    <hr>
+                    <PrimaryButton
+                        @click="logout"
+                        class="flex items-center space-x-3  rounded-lg hover:bg-gray-700 w-full"
+                    >
+                        <ArrowLeftCircleIcon
+                            class="w-8 h-8 text-gray-200 rounded-full"
+                        />
+                        <transition name="fade">
+                            <span
+                                v-if="sidebarVisible || sidebarHovered"
+                                class="transition-all text-center duration-300 truncate text-sm"
+                            >
+                                Logout
+                            </span>
+                        </transition>
+                    </PrimaryButton>
+                </div>
             </div>
         </nav>
     </aside>

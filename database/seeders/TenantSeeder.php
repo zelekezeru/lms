@@ -14,11 +14,12 @@ class TenantSeeder extends Seeder
     public function run(): void
     {
         DB::table('tenants')->insert([
-            'id' => 1, 'name' => 'SITS', 'email' => 'sitsethiopia@gmail.com', 'code' => 'Tenant/0001/25',
-            'phone' => '0911274565', 'address' => 'Weldeamanuel Avenue, Hawassa, Sidama, Ethiopia',
-            'contact_person' => 'Endale Sebsibe', 'contact_phone' => '0975210097', 'aggrement' => null,
-            'user_id' => 1, 'status' => 1, 'allowed' => 1, 'paid' => 1, 'password' => 'tenant@SITS',
-            'password_changed' => 0, 'created_at' => '2025-03-16 08:02:43', 'updated_at' => '2025-03-16 08:02:43',
+            'id' => 1, 'name' => 'SITS',
+            'email' => 'sitsethiopia@gmail.com', 'code' => 'Tenant/0001/25','phone' => '0911274565',            'address' => 'Weldeamanuel Avenue, Hawassa, Sidama, Ethiopia',            'logo' => 'logo/B532heVzz5Azgj7RzfBmP3UhgYT0bD4nExcxBSWH.png',            'contact_person' => 'Endale Sebsibe',
+            'contact_phone' => '0975210098', 'contact_email' => 'esebsibe@gmail.com',
+            'aggrement' => '', 'default_password' => '4565@lms', 'user_id' => 1, 'status' => 1,
+            'allowed' => 1, 'paid' => 1, 'password' => '$2y$12$AWt5c9Tzfpr5hEFRihd8Beee5Vb/de3IGv3vlVxw41AihrIOOpodu',
+            'password_changed' => 0, 'created_at' => '2025-03-16 05:02:43', 'updated_at' => '2025-03-18 15:53:34',
         ]);
     }
 }

@@ -47,6 +47,7 @@ class RegisteredUserController extends Controller
         $userUuid = $this->userUuid('SUPER-ADMIN');
 
         $user = User::create([
+            'id' => 1,
             'name' => $request->name,
             'user_uuid' => $userUuid,
             'email' => $request->email,

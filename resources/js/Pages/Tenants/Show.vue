@@ -6,9 +6,9 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
-// Define the props for the employee
+// Define the props for the tenant
 defineProps({
-    employee: {
+    tenant: {
         type: Object,
         required: true,
     },
@@ -23,7 +23,7 @@ const handleImageLoad = () => {
 };
 
 // Delete function with SweetAlert confirmation
-const deleteemployee = (id) => {
+const deletetenant = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -34,11 +34,11 @@ const deleteemployee = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("employees.destroy", { employee: id }), {
+            router.delete(route("tenants.destroy", { tenant: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The employee has been deleted.",
+                        "The tenant has been deleted.",
                         "success"
                     );
                 },
@@ -54,7 +54,7 @@ const deleteemployee = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                Employee Details
+                Tenant Details
             </h1>
 
             <div
@@ -65,78 +65,135 @@ const deleteemployee = (id) => {
                         v-if="!imageLoaded"
                         class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                     ></div>
+                    
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="employee.profileImg"
-                        :alt="`profile image of ` + employee.name"
+                        :src="`/storage/${tenant.logo}`"
+                        :alt="`Logo of ` + tenant.name"
                         @load="handleImageLoad"
                     />
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
-                    <!-- employee ID -->
+                    <!-- Tenant Code -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >ID</span
+                            >Code</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.id }}</span
+                            >{{ tenant.code }}</span
                         >
                     </div>
 
-                    <!-- employee Name -->
+                    <!-- Tenant Name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Name</span
+                            >Institution Name</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.name }}</span
+                            >{{ tenant.name }}</span
                         >
                     </div>
 
-                    <!-- employee Email -->
+                    <!-- Tenant Email -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Email</span
+                            >Institution Email</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.email }}</span
+                            >{{ tenant.email }}</span
                         >
                     </div>
 
-                    <!-- Department -->
+                    <!-- Tenant Phone -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Department</span
+                            >Institution Phone</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.department.name }}</span
+                            >{{ tenant.phone }}</span
                         >
                     </div>
 
-                    <!-- Employment Type -->
+                    <!-- Representative Name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Employment Type</span
+                            >Representative Name</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.employmentType }}</span
+                            >{{ tenant.contact_person }}</span
+                        >
+                    </div>
+
+                    <!-- Representative Phone -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Representative Phone</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ tenant.contact_phone }}</span
                         >
                     </div>
                     
-                    <!-- Job Position -->
+                    <!-- Status -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Job Position</span
+                            >Status</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.jobPosition }}</span
+                            >
+                            <div v-if="tenant.status == 0" class="text-red-500">
+                                Inactive
+                            </div>
+                            <div v-else class="text-green-500">
+                                Active
+                            </div>
+                        </span>
+                    </div>
+                    
+                    <!-- Payment -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Payment</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >
+                            <div v-if="tenant.paid == 0" class="text-red-500">
+                                Not Paid
+                            </div>
+                            <div v-else class="text-green-500">
+                                Paid
+                            </div></span
+                        >
+                    </div>
+                    
+                    <!-- Password -->
+                    <div v-if="tenant.password_changed === 0" class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Default Password</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ tenant.default_password }}</span
+                        >
+                    </div>
+                                                      
+                    <!-- Aggrement -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Aggrement</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ tenant.aggrement }}</span
                         >
                     </div>
                 </div>
@@ -145,14 +202,14 @@ const deleteemployee = (id) => {
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link
                         :href="
-                            route('employees.edit', { employee: employee.id })
+                            route('tenants.edit', { tenant: tenant.id })
                         "
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
-                        @click="deleteemployee(employee.id)"
+                        @click="deletetenant(tenant.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->nullable()->constrained();
+            
             $table->string('name');
             $table->string('language');
             $table->longText('description');

@@ -9,22 +9,18 @@ import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { router, useForm, usePage } from "@inertiajs/vue3";
 
-// Define props for the program and units (though units may not be needed for programs)
-defineProps({
-    users: {
-        type: Object,
-    },
+const props = defineProps({
+    program: { type: Object, required: true },
+    users: { type: Object, required: true },
 });
 
-// const selectedModes = ref([]);
-
-// Initialize the form with the program fields
+// Initialize form data
 const form = useForm({
-    name: "",
-    description: "",
-    language: "",
-    user_id: "",
-    studyModes: [],
+    name: props.program.name || "",
+    language: props.program.language || "",
+    description: props.program.description || "",
+    address: props.program.address || "",
+    _method: "PATCH",
 });
 
 // Submit form function
@@ -127,7 +123,6 @@ const submit = (id) => {
                         <select
                             id="user_id"
                             v-model="form.user_id"
-                            required
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                         >
                             <option disabled value="">

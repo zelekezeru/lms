@@ -11,7 +11,10 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Program;
 use App\Models\StudyMode;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class ProgramController extends Controller
 {
@@ -26,7 +29,7 @@ class ProgramController extends Controller
             'programs' => $programs,
         ]);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -76,11 +79,15 @@ class ProgramController extends Controller
     public function edit(Program $program)
     {
         $departments = DepartmentResource::collection(Department::all());
+
+        $users = UserResource::collection(User::all());
+
         $program->load('department', 'studyModes');
 
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
             'departments' => $departments,
+            'users' => $users,
         ]);
     }
 

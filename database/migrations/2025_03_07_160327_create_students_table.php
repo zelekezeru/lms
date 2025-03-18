@@ -38,6 +38,8 @@ return new class extends Migration
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
             $table->string('profile_image')->nullable();
+            
+            $table->foreignId('tenant_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

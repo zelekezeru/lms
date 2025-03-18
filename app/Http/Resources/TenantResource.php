@@ -21,13 +21,17 @@ class TenantResource extends JsonResource
             'code' => $this->code,
             'phone' => $this->phone,
             'address' => $this->address,
+            'logo' => $this->logo,
+            'password_changed' => $this->password_changed,
+            'default_password' => $this->default_password,
             'password' => $this->password,
             'contact_person' => $this->contact_person,
             'contact_phone' => $this->contact_phone,
+            'contact_email' => $this->contact_email,
             'aggrement' => $this->aggrement,
             'status' => $this->status,
             'allowed' => $this->allowed,
-            'paid' => $this->active,
+            'paid' => $this->paid,
         ];
     }
 }

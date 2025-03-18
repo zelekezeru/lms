@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'tenant_id',
         'profile_img',
         'password',
         'user_uuid',
@@ -57,5 +58,10 @@ class User extends Authenticatable
     public function program()
     {
         return $this->hasOne(Program::class);
-    }   
+    } 
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

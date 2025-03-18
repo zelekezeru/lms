@@ -107,6 +107,17 @@ const deleteprogram = (id) => {
                             >{{ program.description }}</span
                         >
                     </div>
+
+                    <!-- Program Director -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Program Director</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ program.user_id }}</span
+                        >
+                    </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->

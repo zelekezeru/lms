@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -21,10 +22,13 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        if (User::count() > 0) {
+        if(User::where('id', 1)->exists()){
             return redirect(route('employees.create'));
         }
-        return Inertia::render('Auth/Register');
+        else
+        {
+            return Inertia::render('Auth/Register');
+        }
     }
 
     /**
@@ -49,7 +53,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        if (User::count() === 1) {
+        if(!(User::where('id', 1)->exists())){
             $user->assignRole('SUPER-ADMIN');
         }
 

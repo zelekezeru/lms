@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('contact_phone', 15)->nullable();
             $table->string('contact_email')->nullable();
             $table->longText('aggrement')->nullable();
-            $table->foreignId('user_id')->constrained()->nullable();
             $table->boolean('status')->default(false);
             $table->boolean('allowed')->default(false);
             $table->boolean('paid')->default(false);

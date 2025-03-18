@@ -35,6 +35,15 @@ class ProgramController extends Controller
      */
     public function create()
     {
+        if (request()->user()->hasRole('SUPER-ADMIN')) {
+            $tenants = Tenant::get();
+        }
+        elseif (request()->user()->hasRole('TENANT-ADMIN')) {
+            $tenants = Tenant::where('id', Auth::user()->tenant_id)->get();
+        }else {
+            $tenants = Tenant::where('id', Auth::user()->tenant_id)->get();
+        }
+        dd($tenants);
         $users = UserResource::collection(User::all());
         
         return  inertia('Programs/Create', [

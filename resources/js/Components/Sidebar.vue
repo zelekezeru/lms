@@ -301,7 +301,7 @@ const afterLeave = (el) => {
                 <!-- Acadamic Document -->
 
                 <SidebarDropdownMenu
-                    :label="'Academic Documents'"
+                    :label="'Academic Documents'"   
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"

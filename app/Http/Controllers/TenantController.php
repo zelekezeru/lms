@@ -107,7 +107,6 @@ class TenantController extends Controller
             $logo_path = $image->store('logo', 'public');
 
             $fields['logo'] = $logo_path;
-            dd('hit');
         }else{   
             $fields['logo'] = null;
         }

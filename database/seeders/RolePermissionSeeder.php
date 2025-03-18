@@ -86,10 +86,10 @@ class RolePermissionSeeder extends Seeder
             'delete-inventories',
 
             // // Instructor (CRUD)
-            // 'view-instructors',
-            // 'create-instructors',
-            // 'update-instructors',
-            // 'delete-instructors',
+            'view-instructors',
+            'create-instructors',
+            'update-instructors',
+            'delete-instructors',
         ];
 
         // Create all permissions
@@ -100,6 +100,7 @@ class RolePermissionSeeder extends Seeder
         // Define roles (formatted as requested)
         $roles = [
             'SUPER-ADMIN',
+            'TENANT-ADMIN',
             'ADMIN',
             'PRESIDENT',
             'CAMPUS-DEAN',
@@ -115,8 +116,31 @@ class RolePermissionSeeder extends Seeder
         // Create roles and assign all permissions to SUPER-ADMIN and ADMIN
         foreach ($roles as $roleName) {
             $role = Role::firstOrCreate(['name' => $roleName]);
-            if (in_array($roleName, ['SUPER-ADMIN', 'ADMIN'])) {
+            if (in_array($roleName, ['SUPER-ADMIN'])) {
                 $role->syncPermissions($permissions);
+            } 
+            elseif (in_array($roleName, ['TENANT-ADMIN', 'ADMIN'])) {
+                $tenantAdminPermissions = array_diff($permissions, [
+                    'view-roles', 
+                    'create-roles', 
+                    'update-roles', 
+                    'delete-roles',  
+
+                    'assign-permissions-roles', 
+                    'attach-permissions-roles', 
+                    'detach-permissions-roles', 
+
+                    'view-permissions',
+                    'create-permissions',
+                    'update-permissions',
+                    'delete-permissions',
+                    
+                    'view-tenants',
+                    'create-tenants',
+                    'update-tenants',
+                    'delete-tenants',
+                ]);
+                $role->syncPermissions($tenantAdminPermissions);
             }
         }
     }

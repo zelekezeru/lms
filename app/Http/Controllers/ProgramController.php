@@ -43,7 +43,7 @@ class ProgramController extends Controller
         }else {
             $tenants = Tenant::where('id', Auth::user()->tenant_id)->get();
         }
-        dd($tenants);
+        
         $users = UserResource::collection(User::all());
         
         return  inertia('Programs/Create', [

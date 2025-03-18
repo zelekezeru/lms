@@ -12,6 +12,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\AcademicDocumentController;
 use App\Http\Controllers\InstructorController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -46,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('inventorySuppliers', InventorySupplierController::class);
     Route::resource('inventoryCategories', InventoryCategoryController::class);
     Route::resource('instructors', InstructorController::class);
-    
+    Route::resource('academic-documents', AcademicDocumentController::class);
     Route::resource('tenants', TenantController::class);
 });
 

@@ -68,16 +68,16 @@ const deletepermission = (id) => {
         </div>
 
         <!-- Header Toolbar -->
-        <div class="flex justify-between items-center mb-3">
+        <div class="flex justify-between permissions-center mb-3">
             <Link
                 :href="route('permissions.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                class="inline-flex permissions-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
                 Add New Permission
             </Link>
             <button
                 @click="refreshData"
-                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                class="inline-flex permissions-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 title="Refresh Data"
             >
                 <ArrowPathIcon
@@ -90,73 +90,45 @@ const deletepermission = (id) => {
 
         <!-- Permissions Table -->
         <Table>
-        <TableHeader>
-            <tr>
-                <th scope="col" class="px-6 py-3">ID</th>
-                <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3">Category</th>
-                <th scope="col" class="px-6 py-3">Status</th>
-                <th scope="col" class="px-6 py-3">Actions</th>
-            </tr>
-        </TableHeader>
-        <tbody>
-            <TableZebraRows v-for="item in items" :key="item.id">
-                <td class="px-6 py-4">{{ item.id }}</td>
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    <Link
-                        :href="route('items.show', { item: item.id })"
-                        class="hover:underline"
+            <TableHeader>
+                <tr>
+                    <th scope="col" class="px-6 py-3">Permission Name</th>
+                    <th scope="col" class="px-6 py-3">Action</th>
+                </tr>
+            </TableHeader>
+            <tbody>
+                <TableZebraRows v-for="permission in permissions.data" :key="permission.id">
+                    <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        {{ item.name }}
-                    </Link>
-                </td>
-                <td class="px-6 py-4">
-                    <span
-                        class="px-3 py-1 rounded-full text-sm font-medium"
-                        :class="{
-                            'bg-blue-100 text-blue-800': item.category === 'Electronics',
-                            'bg-green-100 text-green-800': item.category === 'Clothing',
-                            'bg-gray-100 text-gray-800': !item.category,
-                        }"
-                    >
-                        {{ item.category || "N/A" }}
-                    </span>
-                </td>
-                <td class="px-6 py-4">
-                    <span
-                        class="px-3 py-1 rounded-full text-xs font-semibold"
-                        :class="{
-                            'bg-green-200 text-green-800': item.status === 'Active',
-                            'bg-red-200 text-red-800': item.status === 'Inactive',
-                            'bg-gray-200 text-gray-800': item.status === 'Pending',
-                        }"
-                    >
-                        {{ item.status }}
-                    </span>
-                </td>
-                <td class="py-4 flex items-center justify-around">
-                    <Link
-                        :href="route('items.show', { item: item.id })"
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <EyeIcon class="w-5 h-5" />
-                    </Link>
-                    <Link
-                        :href="route('items.edit', { item: item.id })"
-                        class="text-green-500 hover:text-green-700"
-                    >
-                        <PencilSquareIcon class="w-5 h-5" />
-                    </Link>
-                    <button
-                        @click="deleteItem(item.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                    </button>
-                </td>
-            </TableZebraRows>
-        </tbody>
-    </Table>
+                        <Link :href="route('permissions.show', { permission: permission.id })">
+                            {{ permission.name }}
+                        </Link>
+                    </th>
+                    <td class="py-4 flex items-center justify-around">
+                        <Link
+                            :href="route('permissions.show', { permission: permission.id })"
+                            class="text-blue-500 hover:text-blue-700"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            :href="route('permissions.edit', { permission: permission.id })"
+                            class="text-green-500 hover:text-green-700"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                        <button
+                            @click="deletepermission(permission.id)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                        </button>
+                    </td>
+                </TableZebraRows>
+            </tbody>
+        </Table>
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-2">

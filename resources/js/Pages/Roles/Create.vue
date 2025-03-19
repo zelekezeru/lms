@@ -18,7 +18,7 @@ const submit = () => {
                 class="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-md p-6 max-w-lg w-full"
             >
                 <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
-                    Department Creation Form
+                    Role Creation Form
                 </h2>
                 
                 <Form :form="form" @submit="submit" />

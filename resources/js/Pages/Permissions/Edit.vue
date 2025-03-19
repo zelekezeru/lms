@@ -1,13 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';
 
 const props = defineProps({ permission: Object });
-const form = ref({ ...props.permission });
+const form = useForm({ ...props.permission, _method: 'PUT' });
 const submit = () => {
-    router.put(route('permissions.update', props.permission.id), form.value);
+    form.post(route('permissions.update', props.permission.id));
 };
 </script>
 

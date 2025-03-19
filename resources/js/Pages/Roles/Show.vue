@@ -46,7 +46,7 @@ const deleterole = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                Role {{ role.name }} Details
+                 {{ role.name }} Role
             </h1>
 
             <div

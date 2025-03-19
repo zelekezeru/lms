@@ -62,17 +62,18 @@ const deleteinventorySupplier = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                inventorySuppliers
+                Inventory Suppliers
             </h1>
         </div>
 
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
+                v-if="userCan('create-inventory-suppliers')"
                 :href="route('inventorySuppliers.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                Add New inventorySupplier
+                Add New Inventory Supplier
             </Link>
             <button
                 @click="refreshData"
@@ -87,7 +88,7 @@ const deleteinventorySupplier = (id) => {
             </button>
         </div>
 
-        <!-- inventorySuppliers Table -->
+        <!-- Inventory Suppliers Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <table
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -131,32 +132,36 @@ const deleteinventorySupplier = (id) => {
                             {{ inventorySupplier.address }}
                         </td>
                         <td class="px-6 py-4 flex justify-between">
+                            <!-- View Button -->
                             <Link
                                 :href="
                                     route('inventorySuppliers.show', {
                                         inventorySupplier: inventorySupplier.id,
                                     })
                                 "
+                                v-if="userCan('view-inventory-suppliers')"
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
+                            
+                            <!-- Edit Button -->
                             <Link
                                 :href="
                                     route('inventorySuppliers.edit', {
                                         inventorySupplier: inventorySupplier.id,
                                     })
                                 "
+                                v-if="userCan('update-inventory-suppliers')"
                                 class="text-green-500 hover:text-green-700"
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
+                            
+                            <!-- Delete Button -->
                             <button
-                                @click="
-                                    deleteinventorySupplier(
-                                        inventorySupplier.id
-                                    )
-                                "
+                                @click="deleteInventorySupplier(inventorySupplier.id)"
+                                v-if="userCan('delete-inventory-suppliers')"
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />

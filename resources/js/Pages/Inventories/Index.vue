@@ -56,7 +56,9 @@ const deleteInventory = (id) => {
         </div>
 
         <div class="flex justify-between items-center mb-3">
+            <!-- Add New Inventory Button with permission check -->
             <Link
+                v-if="userCan('create-inventories')" 
                 :href="route('inventories.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
@@ -92,15 +94,30 @@ const deleteInventory = (id) => {
                             </Link>
                         </td>
                         <td class="px-6 py-4">{{ inventory.quantity }}</td>
-                        <td class="px-6 py-4">{{ inventory.unitPrice ? '$' + inventory.unitPrice: 'N/A'}}</td>
+                        <td class="px-6 py-4">{{ inventory.unitPrice ? '$' + inventory.unitPrice : 'N/A' }}</td>
                         <td class="px-6 py-4 flex space-x-3">
-                            <Link :href="route('inventories.show', { inventory: inventory.id })" class="text-blue-500 hover:text-blue-700">
+                            <!-- Show Button with permission check -->
+                            <Link 
+                                v-if="userCan('view-inventories')" 
+                                :href="route('inventories.show', { inventory: inventory.id })" 
+                                class="text-blue-500 hover:text-blue-700"
+                            >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link :href="route('inventories.edit', { inventory: inventory.id })" class="text-green-500 hover:text-green-700">
+                            <!-- Edit Button with permission check -->
+                            <Link 
+                                v-if="userCan('update-inventories')" 
+                                :href="route('inventories.edit', { inventory: inventory.id })" 
+                                class="text-green-500 hover:text-green-700"
+                            >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button @click="deleteInventory(inventory.id)" class="text-red-500 hover:text-red-700">
+                            <!-- Delete Button with permission check -->
+                            <button 
+                                v-if="userCan('delete-inventories')" 
+                                @click="deleteInventory(inventory.id)" 
+                                class="text-red-500 hover:text-red-700"
+                            >
                                 <TrashIcon class="w-5 h-5" />
                             </button>
                         </td>

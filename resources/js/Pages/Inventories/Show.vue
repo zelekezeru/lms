@@ -57,12 +57,22 @@ const deleteinventory = (id) => {
                     </div>
                 </div>
 
-                <!-- Edit and Delete Buttons -->
+                <!-- Edit and Delete Buttons with permission check -->
                 <div class="flex justify-end mt-6 space-x-2">
-                    <Link :href="route('inventories.edit', { inventory: inventory.id })" class="text-blue-500 hover:text-blue-700">
+                    <!-- Edit button -->
+                    <Link 
+                        v-if="userCan('update-inventories')" 
+                        :href="route('inventories.edit', { inventory: inventory.id })" 
+                        class="text-blue-500 hover:text-blue-700"
+                    >
                         <PencilIcon class="w-5 h-5" />
                     </Link>
-                    <button @click="deleteinventory(inventory.id)" class="text-red-500 hover:text-red-700">
+                    <!-- Delete button -->
+                    <button 
+                        v-if="userCan('delete-inventories')" 
+                        @click="deleteInventory(inventory.id)" 
+                        class="text-red-500 hover:text-red-700"
+                    >
                         <TrashIcon class="w-5 h-5" />
                     </button>
                 </div>

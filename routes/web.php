@@ -66,13 +66,11 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware("can:view-$route")->get("$route/{{$singularToLower}}", [$controller, 'show'])->name("$route.show");
         
         Route::middleware("can:update-$route")->put("$route/{{$singularToLower}}", [$controller, 'update'])->name("$route.update");
+        Route::middleware("can:update-$route")->patch("$route/{{$singularToLower}}", [$controller, 'update'])->name("$route.update");
         Route::middleware("can:update-$route")->get("$route/{{$singularToLower}}/edit", [$controller, 'edit'])->name("$route.edit");
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singularToLower}}", [$controller, 'destroy'])->name("$route.destroy");
     }
-
-    Route::resource('tenants', TenantController::class)->except(['create', 'edit']);
-    Route::resource('programs', ProgramController::class)->except(['create', 'edit']);
 });
 
 

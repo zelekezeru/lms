@@ -205,20 +205,26 @@ const deleteStudent = (id) => {
 
         <!-- Action Buttons -->
         <div class="flex justify-end mt-6 space-x-2">
-          <Link
-            :href="route('students.edit', student.id)"
-            class="text-blue-500 hover:text-blue-700"
-            title="Edit"
-          >
-            <PencilIcon class="w-5 h-5" />
-          </Link>
-          <button
-            @click="deleteStudent(student.id)"
-            class="text-red-500 hover:text-red-700"
-            title="Delete"
-          >
-            <TrashIcon class="w-5 h-5" />
-          </button>
+          <!-- Edit Button -->
+          <div v-if="userCan('update-students')">
+            <Link
+              :href="route('students.edit', student.id)"
+              class="text-blue-500 hover:text-blue-700"
+              title="Edit"
+            >
+              <PencilIcon class="w-5 h-5" />
+            </Link>
+          </div>
+          <!-- Delete Button -->
+          <div v-if="userCan('delete-students')">
+            <button
+              @click="deleteStudent(student.id)"
+              class="text-red-500 hover:text-red-700"
+              title="Delete"
+            >
+              <TrashIcon class="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <!-- Back to List Button -->

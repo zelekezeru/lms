@@ -40,12 +40,18 @@ const deleteStudent = (id) => {
 <template>
   <Head title="Students" />
   <AppLayout>
-    <template #header>
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Students</h2>
-    </template>
+            <!-- Page Title -->
+            <div class="my-6 text-center">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Students
+            </h1>
+        </div>
+
 
     <div class="p-4">
+      <!-- Add Student Button (only visible if user has create-students permission) -->
       <Link
+        v-if="userCan('create-students')"
         :href="route('students.create')"
         class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3"
       >
@@ -71,6 +77,7 @@ const deleteStudent = (id) => {
             </td>
             <td class="px-6 py-4">{{ student.program }}</td>
             <td class="px-6 py-4 flex space-x-2">
+              <!-- View Button (always visible) -->
               <Link
                 :href="route('students.show', student.id)"
                 class="text-blue-500 hover:text-blue-700"
@@ -78,14 +85,20 @@ const deleteStudent = (id) => {
               >
                 <EyeIcon class="w-5 h-5" />
               </Link>
+
+              <!-- Edit Button (only visible if user has update-students permission) -->
               <Link
+                v-if="userCan('update-students')"
                 :href="route('students.edit', student.id)"
                 class="text-green-500 hover:text-green-700"
                 title="Edit"
               >
                 <PencilIcon class="w-5 h-5" />
               </Link>
+
+              <!-- Delete Button (only visible if user has delete-students permission) -->
               <button
+                v-if="userCan('delete-students')"
                 @click="deleteStudent(student.id)"
                 class="text-red-500 hover:text-red-700"
                 title="Delete"

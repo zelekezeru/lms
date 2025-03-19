@@ -14,7 +14,6 @@ class InstructorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'tenant_id' => 'required|exists:tenants,id',
             // 'user_id' => 'required|exists:users,id',
             'department_id' => 'required|exists:departments,id',
             'specialization' => 'required|string|max:255',

@@ -9,7 +9,6 @@ return new class extends Migration {
     {
         Schema::create('academic_documents', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             // $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('description')->nullable();

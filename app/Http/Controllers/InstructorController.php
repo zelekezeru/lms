@@ -15,7 +15,7 @@ class InstructorController extends Controller
     public function index(): Response
     {
         return Inertia::render('Instructors/Index', [
-            'instructors' => Instructor::with(['tenant', 'user', 'department'])->latest()->paginate(10),
+            'instructors' => Instructor::with(['tenant', 'department'])->latest()->paginate(10),
         ]);
     }
 
@@ -37,6 +37,8 @@ class InstructorController extends Controller
     public function store(InstructorRequest $request)
     {
         $data = $request->validated();
+
+        $data['tenant_id'] = 1; // Hardcoded tenant ID for now
 
         // Handle profile image upload
         if ($request->hasFile('profile_image')) {

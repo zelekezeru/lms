@@ -35,4 +35,9 @@ class Instructor extends Model
     {
         return $this->belongsTo(Department::class);
     }
+    
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

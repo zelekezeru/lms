@@ -183,6 +183,103 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
+                <!-- Permission Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Roles And Permissions'"
+                    class="text-nowrap"
+                    :icon="KeyIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-roles', 'view-permissions'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-roles')"
+                        :href="route('roles.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Roles</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-permissions')"
+                        :href="route('permissions.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Permissions</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Programs Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Programs'"
+                    :icon="AcademicCapIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-programs', 'create-programs'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-programs')"
+                        :href="route('programs.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Program</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-programs')"
+                        :href="route('programs.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Program</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Departments Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Departments'"
+                    :icon="BuildingOffice2Icon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-employees', 'create-employees'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-departments')"
+                        :href="route('departments.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Department</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-departments')"
+                        :href="route('departments.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Department</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Courses Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Courses'"
+                    :icon="BriefcaseIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-courses', 'create-courses'])">
+                    
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-courses')"
+                        :href="route('courses.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Course</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-courses')"
+                        :href="route('courses.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Course</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
                 <!-- Employees Navigation -->
                 <SidebarDropdownMenu
                     :label="'Employees'"
@@ -231,55 +328,6 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
-                <!-- Students Navigation -->
-                <SidebarDropdownMenu
-                    :label="'Roles And Permissions'"
-                    class="text-nowrap"
-                    :icon="KeyIcon"
-                    :sidebar-hovered="sidebarHovered"
-                    :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-roles', 'view-permissions'])"
-                >
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-roles')"
-                        :href="route('roles.index')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Roles</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-permissions')"
-                        :href="route('permissions.index')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Permissions</span>
-                    </SidebarDrowpdownLink>
-                </SidebarDropdownMenu>
-
-                <!-- Departments Navigation -->
-                <SidebarDropdownMenu
-                    :label="'Departments'"
-                    :icon="BuildingOffice2Icon"
-                    :sidebar-hovered="sidebarHovered"
-                    :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-employees', 'create-employees'])"
-                >
-                    <SidebarDrowpdownLink
-                        v-show="userCan('create-departments')"
-                        :href="route('departments.create')"
-                    >
-                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Department</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-departments')"
-                        :href="route('departments.index')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Department</span>
-                    </SidebarDrowpdownLink>
-                </SidebarDropdownMenu>
-
                 <!-- instructor -->
 
                 <SidebarDropdownMenu
@@ -313,30 +361,6 @@ const afterLeave = (el) => {
                     <SidebarDrowpdownLink :href="route('academic-documents.index')">
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Academic </span>
-                    </SidebarDrowpdownLink>
-                </SidebarDropdownMenu>
-
-                <!-- Programs Navigation -->
-                <SidebarDropdownMenu
-                    :label="'Programs'"
-                    :icon="AcademicCapIcon"
-                    :sidebar-hovered="sidebarHovered"
-                    :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-programs', 'create-programs'])"
-                >
-                    <SidebarDrowpdownLink
-                        v-show="userCan('create-programs')"
-                        :href="route('programs.create')"
-                    >
-                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Program</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-programs')"
-                        :href="route('programs.index')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Program</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

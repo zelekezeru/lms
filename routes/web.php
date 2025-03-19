@@ -5,6 +5,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -46,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
         'departments' => 'Department',
         'students' => 'Student',
         'programs' => 'Program',
+        'courses' => 'Course',
         'employees' => 'Employee',
         'inventories' => 'Inventory',
         'inventorySuppliers' => 'InventorySupplier',

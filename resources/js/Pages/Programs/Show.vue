@@ -93,7 +93,7 @@ const deleteprogram = (id) => {
                         </span>
                     </div>
                 </div>
-
+                
                 <!-- Departments -->
                 <div class="mt-10">
                     <div class="text-center">

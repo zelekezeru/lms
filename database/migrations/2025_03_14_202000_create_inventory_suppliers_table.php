@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('inventory_suppliers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->nullable()->constrained();
             $table->string('name', 100);
             $table->string('contact', 50);
             $table->string('email', 100);

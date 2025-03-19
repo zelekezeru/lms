@@ -139,6 +139,11 @@ class RolePermissionSeeder extends Seeder
                     'create-tenants',
                     'update-tenants',
                     'delete-tenants',
+                    
+                    'view-courses',
+                    'create-courses',
+                    'update-courses',
+                    'delete-courses',
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);
             }

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('item_id');
             $table->unsignedBigInteger('user_id');
             $table->enum('transaction_type', ['issue', 'return'])->nullable();
@@ -24,7 +23,6 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('inventories')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

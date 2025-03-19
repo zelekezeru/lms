@@ -22,7 +22,15 @@ class CourseUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255|unique:courses,name',
+            'credit_hours' => 'required|integer|min:1',  // Assuming credit hours must be a positive integer
+            'duration' => 'sometimes|integer|min:1',  // Assuming duration is an integer greater than or equal to 1
+            'description' => 'sometimes|string',
+            'is_training' => 'sometimes|boolean',  // Assuming it is either 0 or 1 (boolean)
+            'status' => 'sometimes|boolean',  // Assuming status is a boolean value (active/inactive)
+            
+            'department_id' => 'required|exists:departments,id',  // Must exist in the departments table
+            'instructor_id' => 'sometimes|exists:users,id',  // Optional, must exist in the users table
         ];
     }
 }

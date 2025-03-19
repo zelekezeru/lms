@@ -8,9 +8,9 @@ class Tenant extends Model
 {
     protected $guarded = [];
 
-    public function tenant()
+    public function programs()
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->hasMany(Program::class);
     }
 
 }

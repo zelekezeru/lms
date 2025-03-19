@@ -9,7 +9,7 @@ const props = defineProps({
 // Initialize form data
 const form = useForm({
     name: props.inventoryCategory.name || "",
-    _method: "PATCH",
+    _method: "PUT",
 });
 
 // Submit the form

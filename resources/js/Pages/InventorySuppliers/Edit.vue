@@ -13,7 +13,7 @@ const form = useForm({
     contact: props.inventorySupplier.contact|| "",
     address: props.inventorySupplier.address || "",
     tenant_id: props.inventorySupplier.tenant_id || "",
-    _method: "PATCH",
+    _method: "PUT",
 });
 
 // Submit the form

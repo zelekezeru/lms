@@ -54,7 +54,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        if(!(User::where('id', 1)->exists())){
+        if($user->id == 1){
             $user->assignRole('SUPER-ADMIN');
         }
 

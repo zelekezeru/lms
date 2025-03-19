@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\ProgramController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -68,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singularToLower}}", [$controller, 'destroy'])->name("$route.destroy");
     }
+
+    Route::resource('tenants', TenantController::class)->except(['create', 'edit']);
+    Route::resource('programs', ProgramController::class)->except(['create', 'edit']);
 });
 
 

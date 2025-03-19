@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->text('description')->nullable();
+            $table->integer('duration')->nullable();
+            
+            $table->foreignId('tenant_id')->nullable()->constrained();
+            $table->foreignId('program_id')->constrained()->nullable();
             $table->timestamps();
         });
     }

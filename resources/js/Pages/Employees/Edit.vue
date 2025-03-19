@@ -24,7 +24,7 @@ const form = useForm({
     employment_type: props.employee.employmentType || "",
     office_hours: props.employee.officeHours || "",
     profile_img: null,
-    _method: "PATCH",
+    _method: "PUT",
 });
 
 // Ref to hold the image preview

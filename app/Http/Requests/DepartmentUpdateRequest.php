@@ -24,6 +24,9 @@ class DepartmentUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:255|unique:departments,name,' . $this->department->id,
             'description' => 'nullable|string',
+            'duration' => 'nullable|intiger',
+            
+            'program_id' => ['sometimes|exists:programs,id'],
         ];
     }
 }

@@ -23,14 +23,16 @@ class StudentRequest extends FormRequest
             'date_of_birth' => 'nullable|date',
             'email' => 'nullable|string|max:100',
             'marital_status' => 'nullable|string|max:10',
-            'sex' => 'required|in:M,F',
-            'academic_year' => 'nullable|max:10',
+            'sex' => 'required|in:M,F',            
             'address_1' => 'required|string|max:200',
+
             //Academic Information
+            'academic_year' => 'nullable|max:10',
             'semester' => 'nullable|string|max:20',
             'program_id' => 'sometimes', 'exists:programs,id',
             'total_credit_hours' => 'nullable|integer',
             'total_amount_paid' => 'nullable|numeric',
+            
             //Church Information
             'pastor_name' => 'nullable|string|max:100',
             'pastor_phone' => 'nullable|string|max:100',

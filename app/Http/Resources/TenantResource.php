@@ -29,8 +29,8 @@ class TenantResource extends JsonResource
             'contact_phone' => $this->contact_phone,
             'contact_email' => $this->contact_email,
             'aggrement' => $this->aggrement,
-            'status' => $this->status,
             'allowed' => $this->allowed,
+            'status' => $this->status,
             'paid' => $this->paid,
         ];
     }

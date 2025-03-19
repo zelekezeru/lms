@@ -20,12 +20,13 @@ const form = useForm({
     language: props.program.language || "",
     description: props.program.description || "",
     address: props.program.address || "",
-    _method: "PATCH",
+    user_id: props.program.user_id || "",
+    _method: "PUT", // Change to PUT
 });
 
 // Submit form function
 const submit = (id) => {
-    form.patch(route("programs.update", { program: id }), {
+    form.post(route("programs.update", { program: id }), {
         onSuccess: () => {
             Swal.fire(
                 "Updated",

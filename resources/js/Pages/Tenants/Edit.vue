@@ -25,7 +25,9 @@ const form = useForm({
     contact_phone: props.tenant.contact_phone || "",
     contact_email: props.tenant.contact_email || "",
     logo: props.tenant.logo || "",
-    _method: "PATCH",
+    status: props.tenant.status,
+    paid: props.tenant.paid,
+    _method: "PUT",
 });
 
 // Ref to hold the image preview
@@ -57,7 +59,7 @@ const submit = (id) => {
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Create tenant
+                    Edit Tenant
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Fill in the details to add a new tenant.
@@ -188,6 +190,37 @@ const submit = (id) => {
                         <InputError :message="form.errors.contact_email" />
                     </div>
                     </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
+                    <div>
+                        
+                        <InputLabel for="status" value="status" />
+                        <select
+                            id="status"
+                            v-model="form.status"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                        >
+                            <option value="0">Inactive</option>
+                            <option value="1">Active</option>
+                        </select>
+                        <InputError :message="form.errors?.status" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="paid" value="paid" />
+                        <select
+                            id="paid"
+                            v-model="form.paid"
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                        >
+                            <option value="0">Not Paid</option>
+                            <option value="1">Paid</option>
+                        </select>
+                        <InputError :message="form.errors?.paid" class="mt-2" />
+                    </div>
+                    </div>
+
 
                     <div class="mt-6 flex justify-center">
                         <PrimaryButton :disabled="form.processing">

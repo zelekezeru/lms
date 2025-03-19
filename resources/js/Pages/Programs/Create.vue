@@ -12,6 +12,9 @@ defineProps({
     users: {
         type: Object,
     },
+    tenant: {
+        type: Object,
+    },
 });
 
 const selectedModes = ref([]);
@@ -175,11 +178,11 @@ const submit = () => {
                                     >
                                         <input
                                             type="checkbox"
-                                            value="EXTENSION"
+                                            value="ONLINE"
                                             v-model="selectedModes"
                                             class="form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600"
                                         />
-                                        <span class="ml-2">EXTENSION</span>
+                                        <span class="ml-2">ONLINE</span>
                                     </label>
                                     <label
                                         class="inline-flex items-center transition-colors duration-200 text-gray-900 dark:text-gray-200 hover:text-indigo-500 dark:hover:text-indigo-400"
@@ -197,14 +200,17 @@ const submit = () => {
                                     >
                                         <input
                                             type="checkbox"
-                                            value="ONLINE"
+                                            value="EXTENSION"
                                             v-model="selectedModes"
                                             class="form-checkbox h-4 w-4 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600"
                                         />
-                                        <span class="ml-2">ONLINE</span>
+                                        <span class="ml-2">EXTENSION</span>
                                     </label>
                                 </div>
-
+                                <InputError
+                                    :message="form.errors.studyModes"
+                                    class="mt-2 text-sm text-red-500"
+                                />
                                 <InputError
                                     :message="form.errors.studyModes"
                                     class="mt-2 text-sm text-red-500"
@@ -214,7 +220,7 @@ const submit = () => {
 
                         <!-- Right Column: Study Mode Details -->
                         <section class="space-y-6">
-                            <div class="max-h-[400px] overflow-y-auto">
+                            <div class="max-h-[500px] overflow-y-auto">
                                 <div
                                     v-if="selectedModes.length === 0"
                                     class="p-4 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md border border-gray-300 dark:border-gray-700"

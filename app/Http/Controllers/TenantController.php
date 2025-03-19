@@ -30,8 +30,7 @@ class TenantController extends Controller
      */
     public function create()
     {
-        
-        return  inertia('Tenants/Create');
+        return inertia('Tenants/Create');
     }
     
     /**
@@ -40,15 +39,11 @@ class TenantController extends Controller
     public function store(TenantStoreRequest $request)
     {
         $fields = $request->validated();
-
-        // Logo of Institution
-        $image = $fields['logo'] ?? null;
         
-        if ($image) {
-            $logo_path = $image->store('logo', 'public');
-
-            $fields['logo'] = $logo_path;
-        }else{   
+        // Logo of Institution
+        if ($request->hasFile('logo')) {
+            $fields['logo'] = $request->file('logo')->store('tenants', 'public');
+        }else{
             $fields['logo'] = null;
         }
 
@@ -61,11 +56,11 @@ class TenantController extends Controller
 
         $tenant_password = $phone_end . '@lms';
 
-        $fields['password'] = Hash::make( $tenant_password );
+        $fields['password'] = Hash::make($tenant_password);
 
         $fields['default_password'] = $tenant_password;
 
-        //Creating Tenant representative User
+        // Creating Tenant representative User
         $tenant = Tenant::create($fields);
 
         $this->tenant_representative($fields, $tenant->id);
@@ -101,19 +96,15 @@ class TenantController extends Controller
         $fields = $request->validated();
         
         // Logo of Institution
-        $image = $fields['logo'] ?? null;
-        
-        if ($image) {
-            $logo_path = $image->store('logo', 'public');
-
-            $fields['logo'] = $logo_path;
-        }else{   
-            $fields['logo'] = null;
+        if ($request->hasFile('logo')) {
+            $fields['logo'] = $request->file('logo')->store('tenants', 'public');
         }
         
         $tenant->update($fields);
 
-        return redirect(route('tenants.index'));
+        return inertia('Tenants/Show', [
+            'tenant' => new TenantResource($tenant),
+        ]);
     }
 
     /**
@@ -139,7 +130,7 @@ class TenantController extends Controller
 
         $representative_id = 'ADMIN/' . '0001/'  .$fields['name'] .  '/' . $year;
 
-        // Creating Representstive as ADMIN user for the Tenant
+        // Creating Representative as ADMIN user for the Tenant
 
         $user = User::create([
             'name' => $fields['contact_person'],
@@ -152,7 +143,6 @@ class TenantController extends Controller
         $user->assignRole('ADMIN');
 
         return $user;
-        
     }
 
     public function representative_id($tenant)

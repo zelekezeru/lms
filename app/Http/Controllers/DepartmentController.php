@@ -9,6 +9,9 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Models\Program;
+use App\Http\Resources\ProgramResource;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -28,8 +31,12 @@ class DepartmentController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        return inertia('Departments/Create');
+    {        
+        $programs = ProgramResource::collection(Program::all());
+
+        return inertia('Departments/Create', [
+            'programs' => $programs,
+        ]);
     }
 
     /**
@@ -37,8 +44,11 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentStoreRequest $request)
     {
-        $tenant = 'SITS';
+        $fields = $request->validated();
 
+        $fields['tenant_id'] = Auth::user()->tenant_id;
+
+        dd($fields);
         $department_id = $tenant . '/' . 'DP' .  '/' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT);
 
         $fields = $request->validated();

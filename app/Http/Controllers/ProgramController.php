@@ -35,19 +35,13 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        if (request()->user()->hasRole('SUPER-ADMIN')) {
-            $tenants = Tenant::get();
-        }
-        elseif (request()->user()->hasRole('TENANT-ADMIN')) {
-            $tenants = Tenant::where('id', Auth::user()->tenant_id)->get();
-        }else {
-            $tenants = Tenant::where('id', Auth::user()->tenant_id)->get();
-        }
+        $tenant = Tenant::first();            
         
         $users = UserResource::collection(User::all());
         
         return  inertia('Programs/Create', [
             'users' => $users,
+            'tenant' => $tenant,
         ]);
     }
     
@@ -57,6 +51,8 @@ class ProgramController extends Controller
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
+
+        $fields['tenant_id'] = Auth::user()->tenant_id;
         
         $program = Program::create($fields);
         
@@ -69,7 +65,9 @@ class ProgramController extends Controller
             ]);
         }
         
-        return redirect(route('programs.index'));
+        return inertia('Programs/Show', [
+            'program' => new ProgramResource($program),
+        ]);
     }
     
     /**

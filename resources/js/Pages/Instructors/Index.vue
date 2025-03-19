@@ -82,6 +82,7 @@ const deleteInstructor = (id) => {
             <Link
                 :href="route('instructors.create')"
                 class="inline-flex items-center rounded-md bg-gray-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest hover:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
+                v-if="userCan('create-instructors')"
             >
                 Add New Instructor
             </Link>
@@ -137,6 +138,7 @@ const deleteInstructor = (id) => {
                         <td class="px-6 py-4">{{ instructor.status }}</td>
                         <td class="px-6 py-4 flex space-x-3">
                             <Link
+                                v-if="userCan('update-instructors')"
                                 :href="
                                     route('instructors.edit', {
                                         instructor: instructor.id,
@@ -147,6 +149,7 @@ const deleteInstructor = (id) => {
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
                             <button
+                                v-if="userCan('delete-instructors')"
                                 @click="deleteInstructor(instructor.id)"
                                 class="text-red-500 hover:text-red-700"
                             >

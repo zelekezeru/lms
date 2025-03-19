@@ -8,8 +8,18 @@ class Department extends Model
 {
     protected $guarded = [];
 
-    public function programs()
+    public function program()
     {
-        return $this->hasMany(Program::class);
+        return $this->belongsTo(Program::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
     }
 }

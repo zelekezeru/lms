@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Models\Program;
 use App\Http\Resources\ProgramResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class DepartmentController extends Controller
 {
@@ -31,10 +33,13 @@ class DepartmentController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {        
-        $programs = ProgramResource::collection(Program::all());
+    {   
+        $users = UserResource::collection(User::all());
 
+        $programs = ProgramResource::collection(Program::all());
+        
         return inertia('Departments/Create', [
+            'users' => $users,
             'programs' => $programs,
         ]);
     }
@@ -45,13 +50,10 @@ class DepartmentController extends Controller
     public function store(DepartmentStoreRequest $request)
     {
         $fields = $request->validated();
+        
+        $year = substr(Carbon::now()->year, -2);
 
-        $fields['tenant_id'] = Auth::user()->tenant_id;
-
-        dd($fields);
-        $department_id = $tenant . '/' . 'DP' .  '/' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT);
-
-        $fields = $request->validated();
+        $department_id = 'DP' .  '/' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
 
         $fields['code'] = $department_id;
         
@@ -66,8 +68,11 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
+        $department = (Department::with('program')->find($department->id));
+
         return inertia('Departments/Show', [
-            'department' => new DepartmentResource($department),
+            'department' => $department,
+
         ]);
     }
 
@@ -76,8 +81,13 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
+        $department->load('program');
+
         return inertia('Departments/Edit', [
             'department' => new DepartmentResource($department),
+
+            'users' => UserResource::collection(User::all()),
+            'programs' => ProgramResource::collection(Program::all()),
         ]);
     }
 

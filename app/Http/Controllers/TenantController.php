@@ -43,8 +43,12 @@ class TenantController extends Controller
         // Logo of Institution
         if ($request->hasFile('logo')) {
             $fields['logo'] = $request->file('logo')->store('tenants', 'public');
+
+            //Add storage directory to Image Name
+            $fields['logo'] = '/storage/' . $fields['logo'];
         }else{
             $fields['logo'] = null;
+            
         }
 
         $year = substr(Carbon::now()->year, -2);
@@ -98,6 +102,12 @@ class TenantController extends Controller
         // Logo of Institution
         if ($request->hasFile('logo')) {
             $fields['logo'] = $request->file('logo')->store('tenants', 'public');
+
+            //Add storage directory to Image Name
+            $fields['logo'] = '/storage/' . $fields['logo'];
+        }else{
+            $fields['logo'] = $tenant->logo;
+            
         }
         
         $tenant->update($fields);

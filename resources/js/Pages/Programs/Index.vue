@@ -94,7 +94,7 @@ const deleteprogram = (id) => {
                 <tr>
                     <th scope="col" class="px-6 py-3">Program Name</th>
                     <th scope="col" class="px-6 py-3">Language</th>
-                    <th scope="col" class="px-6 py-3">User</th>
+                    <th scope="col" class="px-6 py-3">Director</th>
                     <th scope="col" class="px-6 py-3">Study Modes</th>
                     <th scope="col" class="px-6 py-3">Action</th>
                 </tr>

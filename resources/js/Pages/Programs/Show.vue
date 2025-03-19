@@ -4,7 +4,7 @@ import { defineProps } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { PencilIcon, EyeIcon, TrashIcon,  } from "@heroicons/vue/24/solid";
 
 // Define the props for the program
 defineProps({
@@ -46,7 +46,7 @@ const deleteprogram = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                Program Details
+                {{ program.name }} Program
             </h1>
 
             <div
@@ -57,7 +57,7 @@ const deleteprogram = (id) => {
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
                         <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ program.id }}
+                            {{ program.code }}
                         </span>
                     </div>
 
@@ -77,14 +77,6 @@ const deleteprogram = (id) => {
                         </span>
                     </div>
 
-                    <!-- Study -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Study</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ program.study }}
-                        </span>
-                    </div>
-
                     <!-- Description -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
@@ -97,10 +89,65 @@ const deleteprogram = (id) => {
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Program Director</span>
                         <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ program.user_id }}
+                            {{ program.user.name }}
                         </span>
                     </div>
                 </div>
+
+                <!-- Departments -->
+                <div class="mt-10">
+                    <div class="text-center">
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">Departments</span>
+                    </div>
+                    <table class="mt-2 w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b dark:border-gray-700 p-2">
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Code</th>
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Department Name</th>
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Duration</th>
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="department in program.departments" :key="department.id" class="border-b dark:border-gray-700 p-2 cursor-pointer" >
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ department.code }}</td>
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ department.name }}</td>
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ department.duration }}</td>
+                                <td>
+                                    <div v-if="userCan('view-departments')">
+                                        <Link prefetch="hover" cache-for="3" :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
+                                            <EyeIcon class="w-5 h-5" />
+                                        </Link>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Study Modes -->
+                <div class="mt-6">
+                    <div class="text-center">
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">Study Modes</span>
+                    </div>
+                    <table class="mt-2 w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b dark:border-gray-700 p-2">
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Mode</th>
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Duration</th>
+                                <th class="text-md font-medium text-gray-900 dark:text-gray-100">Fees</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="mode in program.study_modes" :key="mode.id" class="border-b dark:border-gray-700 p-2">
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ mode.mode }}</td>
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ mode.duration }}</td>
+                                <td class="text-sm text-gray-500 dark:text-gray-400">{{ mode.fees }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">

@@ -69,7 +69,7 @@ const deletetenant = (id) => {
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="`/storage/${tenant.logo}`"
+                        :src="`${tenant.logo}`"
                         :alt="`Logo of ` + tenant.name"
                         @load="handleImageLoad"
                     />

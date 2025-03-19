@@ -17,12 +17,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('profile_img')->nullable();
-            $table->foreignId('tenant_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('password_changed')->default(false);
             $table->rememberToken();
             $table->timestamps();
+
+            //Tenant ID Related to User
+            $table->foreignId('tenant_id')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

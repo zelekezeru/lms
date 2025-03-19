@@ -58,8 +58,13 @@ class User extends Authenticatable
     public function program()
     {
         return $this->hasOne(Program::class);
-    } 
-
+    }
+    
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+    
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);

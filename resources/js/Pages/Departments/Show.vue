@@ -40,27 +40,22 @@ const deleteDepartment = (id) => {
   <AppLayout>
     <div class="max-w-2xl mx-auto p-6">
       <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-        Department Details
+        {{ department.name }} Department
       </h1>
 
       <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
         <div class="grid grid-cols-2 gap-4">
-          <!-- Department ID -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.id }}</span>
-          </div>
-
-          <!-- Department Name -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.name }}</span>
-          </div>
-
+          
           <!-- Department Code -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.code }}</span>
+          </div>
+
+          <!-- Department Program -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Program</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.program.name }}</span>
           </div>
 
           <!-- Description -->
@@ -68,6 +63,13 @@ const deleteDepartment = (id) => {
             <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.description }}</span>
           </div>
+
+          <!-- Department Duration -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Duration</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ department.duration }}</span>
+          </div>
+
         </div>
 
         <!-- Edit and Delete Buttons -->

@@ -24,9 +24,10 @@ class DepartmentStoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:departments,name',
             'description' => 'nullable|string',
-            'duration' => 'nullable|intiger',
+            'duration' => 'nullable',
             
-            'program_id' => ['sometimes|exists:programs,id'],
+            'user_id' => ['sometimes', 'exists:users,id'],
+            'program_id' => ['required', 'exists:programs,id'],
         ];
     }
 }

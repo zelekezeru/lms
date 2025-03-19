@@ -9,6 +9,7 @@ class Program extends Model
     protected $fillable = [
         'name',
         'language',
+        'code',
         'user_id',
         'description'
     ];
@@ -23,13 +24,8 @@ class Program extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tenant()
+    public function departments()
     {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
+        return $this->hasMany(Department::class);
     }
 }

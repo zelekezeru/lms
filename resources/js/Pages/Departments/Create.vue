@@ -14,6 +14,9 @@ defineProps({
     programs: {
         type: Object,
     },
+    users: {
+        type: Object,
+    },
 });
 
 // Initialize the form with the department fields
@@ -21,10 +24,9 @@ const form = useForm({
     name: "",
     code: "",
     description: "",
-    established_year: "",
-    contact_email: "",
-    phone: "",
-    location: "",
+    duration: "",
+    user_id: "",
+    program_id: "",
 });
 
 const submit = () => {
@@ -42,6 +44,35 @@ const submit = () => {
                     Department Creation Form
                 </h2>
                 <form @submit.prevent="submit">
+
+
+                    <!-- Program Director Dropdown -->
+                    <div class="mb-4">
+                    <InputLabel
+                        for="program_id"
+                        value="Select Program Director"
+                        class="block mb-1 text-gray-800 dark:text-gray-200"
+                    />
+                    <select
+                        id="program_id"
+                        v-model="form.program_id"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                    >
+                        <option value="">Select Program</option>
+                        <option
+                        v-for="program in programs"
+                        :key="program.id"
+                        :value="program.id"
+                        >
+                        {{ program.name }} in {{ program.language }}
+                        </option>
+                    </select>
+                    <InputError
+                        :message="form.errors.program_id"
+                        class="mt-2 text-sm text-red-500"
+                    />
+                    </div>
+
                     <!-- Department Name Field -->
                     <div class="mb-4">
                         <InputLabel
@@ -84,29 +115,29 @@ const submit = () => {
                         />
                     </div>
 
-                    <!-- Program Director Dropdown -->
+                    <!-- user Director Dropdown -->
                     <div class="mb-4">
                     <InputLabel
-                        for="program_id"
-                        value="Select Program Director"
+                        for="user_id"
+                        value="Select Department Head"
                         class="block mb-1 text-gray-800 dark:text-gray-200"
                     />
                     <select
-                        id="program_id"
-                        v-model="form.program_id"
+                        id="user_id"
+                        v-model="form.user_id"
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
-                        <option value="">Select Program</option>
+                        <option value="">Select Head</option>
                         <option
-                        v-for="program in programs"
-                        :key="program.id"
-                        :value="program.id"
+                        v-for="user in users"
+                        :key="user.id"
+                        :value="user.id"
                         >
-                        {{ program.name }} in {{ program.language }}
+                        {{ user.name }}
                         </option>
                     </select>
                     <InputError
-                        :message="form.errors.program_id"
+                        :message="form.errors.user_id"
                         class="mt-2 text-sm text-red-500"
                     />
                     </div>

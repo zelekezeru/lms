@@ -11,10 +11,10 @@ use App\Models\Department;
 use App\Models\User;
 use App\Models\Program;
 use App\Models\StudyMode;
-use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
+use Carbon\Carbon;
 
 class ProgramController extends Controller
 {
@@ -31,17 +31,27 @@ class ProgramController extends Controller
     }
     
     /**
+     * Display the specified resource.
+     */
+    public function show(Program $program)
+    {
+        $program = (Program::with('studyModes', 'user', 'departments')->find($program->id));
+
+        return inertia('Programs/Show', [
+            'program' => $program,
+
+        ]);
+    }
+    
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $tenant = Tenant::first();            
-        
         $users = UserResource::collection(User::all());
         
         return  inertia('Programs/Create', [
             'users' => $users,
-            'tenant' => $tenant,
         ]);
     }
     
@@ -51,12 +61,17 @@ class ProgramController extends Controller
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
+        
+        $year = substr(Carbon::now()->year, -2);
 
-        $fields['tenant_id'] = Auth::user()->tenant_id;
+        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+
+        $fields['code'] = $program_id;
         
         $program = Program::create($fields);
         
         foreach ($request->studyModes as $studyMode) {
+
             $studyMode = StudyMode::create([
                 'program_id' => $program->id,
                 'mode' => $studyMode['mode'],
@@ -69,32 +84,17 @@ class ProgramController extends Controller
             'program' => new ProgramResource($program),
         ]);
     }
-    
-    /**
-     * Display the specified resource.
-     */
-    public function show(Program $program)
-    {
-        return inertia('Programs/Show', [
-            'program' => new ProgramResource($program),
-        ]);
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Program $program)
     {
-        $departments = DepartmentResource::collection(Department::all());
-
-        $users = UserResource::collection(User::all());
-
-        $program->load('department', 'studyModes');
+        $program->load('studyModes', 'departments', 'user');
 
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
-            'departments' => $departments,
-            'users' => $users,
+            'users' => UserResource::collection(User::all()),
         ]);
     }
 

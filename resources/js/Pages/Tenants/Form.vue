@@ -18,8 +18,8 @@ const form = useForm({
   contact_phone: props.tenant?.contact_phone || '',
   contact_email: props.tenant?.contact_email || '',
   logo: props.tenant?.logo || '',
-  status: props.tenant?.status || '',
-  paid: props.tenant?.paid || '',
+  status: props.tenant?.status,
+  paid: props.tenant?.paid,
   _method: props.isEdit ? 'PUT' : 'POST',
 });
 

@@ -12,9 +12,6 @@ defineProps({
     users: {
         type: Object,
     },
-    tenant: {
-        type: Object,
-    },
 });
 
 const selectedModes = ref([]);

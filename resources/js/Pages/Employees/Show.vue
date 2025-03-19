@@ -144,6 +144,7 @@ const deleteemployee = (id) => {
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link
+                        v-if="userCan('update-employees')"
                         :href="
                             route('employees.edit', { employee: employee.id })
                         "
@@ -152,7 +153,8 @@ const deleteemployee = (id) => {
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
-                        @click="deleteemployee(employee.id)"
+                        v-if="userCan('delete-employees')"
+                        @click="deleteEmployee(employee.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

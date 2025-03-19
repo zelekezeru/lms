@@ -59,17 +59,18 @@ const deleteemployee = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                employees
+                Employees
             </h1>
         </div>
 
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
+                v-if="userCan('create-employees')"
                 :href="route('employees.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                Add New employee
+                Add New Employee
             </Link>
             <button
                 @click="refreshData"
@@ -84,7 +85,7 @@ const deleteemployee = (id) => {
             </button>
         </div>
 
-        <!-- employees Table -->
+        <!-- Employees Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <table
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -139,6 +140,7 @@ const deleteemployee = (id) => {
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
+                                v-if="userCan('update-employees')"
                                 :href="
                                     route('employees.edit', {
                                         employee: employee.id,
@@ -149,7 +151,8 @@ const deleteemployee = (id) => {
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
                             <button
-                                @click="deleteemployee(employee.id)"
+                                v-if="userCan('delete-employees')"
+                                @click="deleteEmployee(employee.id)"
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />

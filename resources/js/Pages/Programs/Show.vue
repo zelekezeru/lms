@@ -46,89 +46,73 @@ const deleteprogram = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                program Details
+                Program Details
             </h1>
 
             <div
                 class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
             >
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- program ID -->
+                    <!-- Program ID -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >ID</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.id }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.id }}
+                        </span>
                     </div>
 
-                    <!-- program Name -->
+                    <!-- Program Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Name</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.name }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.name }}
+                        </span>
                     </div>
 
-                    <!-- program Language -->
+                    <!-- Program Language -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Language</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.language }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Language</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.language }}
+                        </span>
                     </div>
 
                     <!-- Study -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Study</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.study }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Study</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.study }}
+                        </span>
                     </div>
 
                     <!-- Description -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Description</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.description }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.description }}
+                        </span>
                     </div>
 
                     <!-- Program Director -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Program Director</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ program.user_id }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Program Director</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ program.user_id }}
+                        </span>
                     </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link
+                        v-if="userCan('update-programs')"
                         :href="route('programs.edit', { program: program.id })"
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
+                        v-if="userCan('delete-programs')"
                         @click="deleteprogram(program.id)"
                         class="text-red-500 hover:text-red-700"
                     >

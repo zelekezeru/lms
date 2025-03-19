@@ -69,6 +69,7 @@ const deleteprogram = (id) => {
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
+                v-if="userCan('create-programs')"
                 :href="route('programs.create')"
                 class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
@@ -129,6 +130,7 @@ const deleteprogram = (id) => {
                     </td>
                     <td class="px-6 py-4 flex justify-between">
                         <Link
+                            v-if="userCan('view-programs')"
                             :href="
                                 route('programs.show', { program: program.id })
                             "
@@ -137,6 +139,7 @@ const deleteprogram = (id) => {
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
+                            v-if="userCan('update-programs')"
                             :href="
                                 route('programs.edit', { program: program.id })
                             "
@@ -145,6 +148,7 @@ const deleteprogram = (id) => {
                             <PencilSquareIcon class="w-5 h-5" />
                         </Link>
                         <button
+                            v-if="userCan('delete-programs')"
                             @click="deleteprogram(program.id)"
                             class="text-red-500 hover:text-red-700"
                         >

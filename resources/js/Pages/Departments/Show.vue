@@ -72,12 +72,19 @@ const deleteDepartment = (id) => {
 
         <!-- Edit and Delete Buttons -->
         <div class="flex justify-end mt-6 space-x-2">
-          <Link :href="route('departments.edit', { department: department.id })" class="text-blue-500 hover:text-blue-700">
-            <PencilIcon class="w-5 h-5" />
-          </Link>
-          <button @click="deleteDepartment(department.id)" class="text-red-500 hover:text-red-700">
-            <TrashIcon class="w-5 h-5" />
-          </button>
+          <!-- Edit Button, only show if user has permission -->
+          <div v-if="userCan('update-departments')">
+            <Link :href="route('departments.edit', { department: department.id })" class="text-blue-500 hover:text-blue-700">
+              <PencilIcon class="w-5 h-5" />
+            </Link>
+          </div>
+
+          <!-- Delete Button, only show if user has permission -->
+          <div v-if="userCan('delete-departments')">
+            <button @click="confirmDelete(department.id)" class="text-red-500 hover:text-red-700">
+              <TrashIcon class="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

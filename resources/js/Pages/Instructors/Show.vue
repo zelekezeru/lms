@@ -1,25 +1,29 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
-// Define the props for the instructor
+// Define the props for the employee
 defineProps({
-    instructor: {
-        type: Object,
-        required: true,
-    },
-    user: {
+    employee: {
         type: Object,
         required: true,
     },
 });
 
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
+
 // Delete function with SweetAlert confirmation
-const deleteInstructor = (id) => {
+const deleteemployee = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -30,80 +34,129 @@ const deleteInstructor = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("instructors.destroy", { instructor: id }), {
+            router.delete(route("instructors.destroy", { employee: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "The instructor has been deleted.", "success");
+                    Swal.fire(
+                        "Deleted!",
+                        "The employee has been deleted.",
+                        "success"
+                    );
                 },
             });
         }
     });
 };
-
-// Permission check function for user roles
-const userCan = (permission) => {
-    return user.permissions.includes(permission);
-};
 </script>
 
-
 <template>
-    <AppLayout title="Instructor Details">
+    <AppLayout>
         <div class="max-w-2xl mx-auto p-6">
-            <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-                Instructor Details
+            <h1
+                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+            >
+                Employee Details
             </h1>
 
-            <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- Instructor ID -->
+            <div
+                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            >
+                <div class="flex justify-center mb-8">
+                    <div
+                        v-if="!imageLoaded"
+                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                    ></div>
+                    <img
+                        v-show="imageLoaded"
+                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                        :src="employee.profileImg"
+                        :alt="`profile image of ` + employee.name"
+                        @load="handleImageLoad"
+                    />
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
+                    <!-- Employee ID -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.id }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >ID</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.id }}</span
+                        >
                     </div>
 
-                    <!-- Instructor Name -->
+                    <!-- employee Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.user?.name || "N/A" }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Name</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.user.name }}</span
+                        >
                     </div>
 
-                    <!-- Specialization -->
+                    <!-- employee Email -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Specialization</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.specialization }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Email</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.user.email }}</span
+                        >
+                    </div>
+
+                    <!-- Department -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Department</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.department.name }}</span
+                        >
                     </div>
 
                     <!-- Employment Type -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Employment Type</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.employment_type }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Employment Type</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.employmentType }}</span
+                        >
                     </div>
-
+                    
                     <!-- Hire Date -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Hire Date</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.hire_date }}</span>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.status }}</span>
-                    </div>
-
-                    <!-- Bio -->
-                    <div class="flex flex-col col-span-2">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Bio</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.bio || "N/A" }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Hire Date</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ employee.hire_date }}</span
+                        >
                     </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">
-                    <Link :href="route('instructors.edit', { instructor: instructor.id })" class="text-blue-500 hover:text-blue-700" v-if="userCan('update-instructors')">
+                    <Link
+                        v-if="userCan('update-instructors')"
+                        :href="
+                            route('instructors.edit', { employee: employee.id })
+                        "
+                        class="text-blue-500 hover:text-blue-700"
+                    >
                         <PencilIcon class="w-5 h-5" />
                     </Link>
-                    <button @click="deleteInstructor(instructor.id)" class="text-red-500 hover:text-red-700" v-if="userCan('delete-instructors')">
+                    <button
+                        v-if="userCan('delete-instructors')"
+                        @click="deleteemployee(employee.id)"
+                        class="text-red-500 hover:text-red-700"
+                    >
                         <TrashIcon class="w-5 h-5" />
                     </button>
                 </div>

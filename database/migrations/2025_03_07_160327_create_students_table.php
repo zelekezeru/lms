@@ -39,6 +39,7 @@ return new class extends Migration
             $table->text('office_use_notes')->nullable();
             $table->string('profile_image')->nullable();
             
+            // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->timestamps();
         });

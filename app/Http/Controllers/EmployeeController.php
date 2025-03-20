@@ -22,7 +22,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = EmployeeResource::collection(Employee::with('department')->paginate(10));
+        $employees = EmployeeResource::collection(Employee::with('department')->paginate(15));
 
         return inertia('Employees/Index', [
             'employees' => $employees
@@ -96,6 +96,7 @@ class EmployeeController extends Controller
     public function edit(Employee $employee)
     {
         $departments = DepartmentResource::collection(Department::all());
+        
         $roles = Role::all();
 
         return inertia('Employees/Edit', [

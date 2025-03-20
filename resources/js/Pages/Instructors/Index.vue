@@ -3,46 +3,37 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
-import {
-    EyeIcon,
-    TrashIcon,
-    ArrowPathIcon,
-    PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
 
-const props = defineProps({
+defineProps({
     instructors: {
         type: Object,
         required: true,
-        default: () => ({ data: [], meta: { links: [] } }), // Ensure meta.links is always an array
     },
+
 });
 
-// State to track loading status
 const refreshing = ref(false);
 
-// Refresh data function
 const refreshData = () => {
     refreshing.value = true;
-    router.get(
-        route("instructors.index"),
-        {},
-        {
-            only: ["instructors"],
-            preserveScroll: true,
-            onFinish: () => {
-                refreshing.value = false;
-            },
-        }
-    );
+    router.flush("/instructors", { method: "get" });
+
+    router.visit(route("instructors.index"), {
+        only: ["instructors"],
+        onFinish: () => {
+            refreshing.value = false;
+        },
+    });
 };
 
 // Delete function with SweetAlert confirmation
-const deleteInstructor = (id) => {
+const deleteinstructor = (id) => {
     Swal.fire({
         title: "Are you sure?",
-        text: "This action cannot be undone!",
+        text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -54,13 +45,9 @@ const deleteInstructor = (id) => {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The instructor has been removed.",
+                        "The instructor has been deleted.",
                         "success"
                     );
-                },
-                onError: (errors) => {
-                    Swal.fire("Error!", "Something went wrong!", "error");
-                    console.error(errors);
                 },
             });
         }
@@ -69,7 +56,7 @@ const deleteInstructor = (id) => {
 </script>
 
 <template>
-    <AppLayout title="Instructors">
+    <AppLayout>
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
@@ -80,15 +67,15 @@ const deleteInstructor = (id) => {
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
             <Link
-                :href="route('instructors.create')"
-                class="inline-flex items-center rounded-md bg-gray-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest hover:bg-gray-700 focus:ring-2 focus:ring-indigo-500"
                 v-if="userCan('create-instructors')"
+                :href="route('instructors.create')"
+                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-                Add New Instructor
+                Add New Instructors
             </Link>
             <button
                 @click="refreshData"
-                class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest hover:bg-blue-700 focus:ring-2 focus:ring-indigo-500"
+                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 title="Refresh Data"
             >
                 <ArrowPathIcon
@@ -99,20 +86,17 @@ const deleteInstructor = (id) => {
             </button>
         </div>
 
-        <!-- Instructors Table -->
+        <!-- instructors Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <table
-                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-            >
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
+                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Specialization</th>
+                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3">Department</th>
                         <th scope="col" class="px-6 py-3">Employment Type</th>
-                        <th scope="col" class="px-6 py-3">Hire Date</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
                 </thead>
@@ -120,23 +104,33 @@ const deleteInstructor = (id) => {
                     <tr
                         v-for="instructor in instructors.data"
                         :key="instructor.id"
-                        class="odd:bg-white even:bg-gray-50 border-b dark:border-gray-700"
-                    >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                            {{ instructor.user?.name || "N/A" }}
+                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                        <th scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <Link
+                                :href="route('instructors.show', { instructor: instructor.id, })"
+                            >
+                                {{ instructor.name }}
+                            </Link>
                         </th>
+                        <td class="px-6 py-4">{{ instructor.email }}</td>
                         <td class="px-6 py-4">
-                            {{ instructor.specialization }}
+                            {{ instructor.department.name }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ instructor.employment_type }}
+                            {{ instructor.employmentType }}
                         </td>
-                        <td class="px-6 py-4">{{ instructor.hire_date }}</td>
-                        <td class="px-6 py-4">{{ instructor.status }}</td>
-                        <td class="px-6 py-4 flex space-x-3">
+                        <td class="px-6 py-4 flex justify-between">
+                            <Link
+                                :href="
+                                    route('instructors.show', {
+                                        instructor: instructor.id,
+                                    })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
+                                <EyeIcon class="w-5 h-5" />
+                            </Link>
                             <Link
                                 v-if="userCan('update-instructors')"
                                 :href="
@@ -150,7 +144,7 @@ const deleteInstructor = (id) => {
                             </Link>
                             <button
                                 v-if="userCan('delete-instructors')"
-                                @click="deleteInstructor(instructor.id)"
+                                @click="deleteinstructor(instructor.id)"
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />
@@ -161,11 +155,8 @@ const deleteInstructor = (id) => {
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div
-            v-if="instructors.meta && instructors.meta.links"
-            class="mt-3 flex justify-center space-x-2"
-        >
+        <!-- Pagination Links -->
+        <div class="mt-3 flex justify-center space-x-2">
             <Link
                 v-for="link in instructors.meta.links"
                 :key="link.label"

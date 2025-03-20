@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Instructor;
 use App\Models\Department;
+use App\Http\Resources\InstructorResource;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Requests\InstructorStoreRequest;
 use App\Http\Requests\InstructorUpdateRequest;
 use Illuminate\Http\Request;
@@ -19,15 +21,20 @@ class InstructorController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Instructors/Index', [
-            'instructors' => Instructor::with(['tenant', 'department'])->latest()->paginate(10),
+        $instructors = InstructorResource::collection(Instructor::with('department')->paginate(15));
+
+        return inertia('Instructors/Index', [
+            'instructors' => $instructors
         ]);
     }
 
-    public function show(Instructor $instructor): Response
+    /**
+     * Display the specified resource.
+     */
+    public function show(Instructor $instructor)
     {
-        return Inertia::render('Instructors/Show', [
-            'instructor' => $instructor->load(['tenant', 'user', 'department']),
+        return inertia('Instructors/Show', [
+            'instructor' => new InstructorResource($instructor->load('department'))
         ]);
     }
 
@@ -85,12 +92,18 @@ class InstructorController extends Controller
         
         return redirect(route('instructors.show', $instructor));
     }
-
-    public function edit(Instructor $instructor): Response
+    
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Instructor $instructor)
     {
-        return Inertia::render('Instructors/Form', [
-            'instructor' => $instructor->load(['tenant', 'user', 'department']),
-            'departments' => Department::all(['id', 'name']), // Pass departments
+        $roles = Role::all();
+
+        return inertia('Instructors/Edit', [
+            'instructor' => new InstructorResource($instructor->load('department')),
+            'departments' => Department::all(['id', 'name']),
+            'roles' => $roles,
         ]);
     }
 

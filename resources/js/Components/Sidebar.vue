@@ -280,27 +280,41 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
-                <!-- Employees Navigation -->
+                <!-- Acadamic Document -->
                 <SidebarDropdownMenu
-                    :label="'Employees'"
-                    :icon="BriefcaseIcon"
+                    :label="'Academic Documents'"   
+                    :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-employees', 'create-employees'])"
                 >
-                    <SidebarDrowpdownLink
-                        v-show="userCan('create-employees')"
-                        :href="route('employees.create')"
-                    >
+                    <SidebarDrowpdownLink :href="route('academic-documents.create')">
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Employee</span>
+                        <span class="text-sm">Add Academic</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-employees')"
-                        :href="route('employees.index')"
-                    >
+                    <SidebarDrowpdownLink :href="route('academic-documents.index')">
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Employee</span>
+                        <span class="text-sm">Manage Academic </span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- instructor -->
+
+                <SidebarDropdownMenu
+                    :label="'Instructors'"
+                    :icon="UserIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-instructors', 'create-instructors'])"
+                >
+                    <SidebarDrowpdownLink :href="route('instructors.create')">
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Instructor</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink 
+                        v-show="userCan('view-instructors')"
+                        :href="route('instructors.index')">
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Instructors</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
@@ -328,39 +342,27 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
-                <!-- instructor -->
-
+                <!-- Employees Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Instructors'"
-                    :icon="UserIcon"
+                    :label="'Employees'"
+                    :icon="BriefcaseIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-employees', 'create-employees'])"
                 >
-                    <SidebarDrowpdownLink :href="route('instructors.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-employees')"
+                        :href="route('employees.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Instructor</span>
+                        <span class="text-sm">Add Employee</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink :href="route('instructors.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-employees')"
+                        :href="route('employees.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Instructors</span>
-                    </SidebarDrowpdownLink>
-                </SidebarDropdownMenu>
-
-                <!-- Acadamic Document -->
-
-                <SidebarDropdownMenu
-                    :label="'Academic Documents'"   
-                    :icon="AcademicCapIcon"
-                    :sidebar-hovered="sidebarHovered"
-                    :sidebar-visible="sidebarVisible"
-                >
-                    <SidebarDrowpdownLink :href="route('academic-documents.create')">
-                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Academic</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink :href="route('academic-documents.index')">
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Academic </span>
+                        <span class="text-sm">Manage Employee</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

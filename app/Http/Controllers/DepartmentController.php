@@ -22,7 +22,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = DepartmentResource::collection(Department::paginate(10));
+        $departments = DepartmentResource::collection(Department::paginate(15));
 
         return inertia('Departments/Index', [
             'departments' => $departments
@@ -119,7 +119,7 @@ class DepartmentController extends Controller
         $departments = Department::where('department_name', 'like', "%$search%")
             ->orWhere('department_id', 'like', "%$search%")
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
         return Inertia::render('Departments/Index', compact('departments'));
     }
 }

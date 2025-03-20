@@ -14,7 +14,7 @@ class StudentController extends Controller
 {
     public function index(): Response
     {
-        $students = Student::latest()->paginate(10);
+        $students = Student::latest()->paginate(15);
 
         return Inertia::render('Students/Index', compact('students'));
     }
@@ -74,7 +74,7 @@ class StudentController extends Controller
         $students = Student::where('student_name', 'like', "%$search%")
             ->orWhere('student_id', 'like', "%$search%")
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
         return Inertia::render('Students/Index', compact('students'));
     }
 

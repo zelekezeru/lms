@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('instructors', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->unsignedBigInteger('department_id');
             $table->string('specialization', 255);
             $table->enum('employment_type', ['full-time', 'part-time', 'adjunct']);
@@ -22,9 +23,6 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->timestamps();
 
-            // Foreign key constraints;
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            // $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 

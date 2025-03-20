@@ -21,7 +21,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = CourseResource::collection(Course::paginate(10));
+        $courses = CourseResource::collection(Course::paginate(15));
         
         return inertia('Courses/Index', [
             'courses' => $courses
@@ -118,7 +118,7 @@ class CourseController extends Controller
         $courses = Course::where('course_name', 'like', "%$search%")
             ->orWhere('course_id', 'like', "%$search%")
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
         return Inertia::render('Courses/Index', compact('courses'));
     }
 }

@@ -18,7 +18,7 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants = TenantResource::collection(Tenant::paginate(10));
+        $tenants = TenantResource::collection(Tenant::paginate(15));
 
         return inertia('Tenants/Index', [
             'tenants' => $tenants,

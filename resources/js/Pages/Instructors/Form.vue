@@ -10,12 +10,16 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     instructor: { type: Object, default: null }, // For edit, instructor data is passed
     departments: { type: Array, required: true }, // Departments for dropdown
+    roles: { type: Array, required: true }, // Roles for dropdown
 });
 
 // Initialize form data (for both create & edit)
 const form = useForm({
     name: props.instructor?.name || "",
     email: props.instructor?.email || "",
+    password: "instructors@default",
+    password_confirmation: "instructors@default",
+    role_name: "",
     department_id: props.instructor?.department_id || "",
     specialization: props.instructor?.specialization || "",
     employment_type: props.instructor?.employment_type || "",
@@ -25,6 +29,7 @@ const form = useForm({
     profile_img: null, // Image upload
     _method: props.instructor ? "PATCH" : "POST", // Determines request type
 });
+
 
 // Ref for image preview
 const imagePreview = ref(props.instructor?.profile_img || null);
@@ -87,13 +92,18 @@ const submit = () => {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
-                            <InputLabel for="department_id" value="Department" />
-                            <select v-model="form.department_id" class="w-full p-2 border rounded-md">
-                                <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-                                    {{ dept.name }}
-                                </option>
+                            <InputLabel
+                                for="department_id"
+                                value="Select Department"
+                                class="block mb-1 text-gray-800 dark:text-gray-200"
+                            />
+                            <select id="department_id" v-model="form.department_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
+                                <option value="">Select Department</option>
+                                <option v-for="department in departments" :key="department.id" :value="department.id">
+                                {{ department.name }} </option>
                             </select>
-                            <InputError :message="form.errors.department_id" />
+                            <InputError :message="form.errors.department_id" class="mt-2 text-sm text-red-500"/>
+                        
                         </div>
 
                         <div>
@@ -106,7 +116,8 @@ const submit = () => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
                             <InputLabel for="employment_type" value="Employment Type" />
-                            <select v-model="form.employment_type" class="w-full p-2 border rounded-md">
+                            <select v-model="form.employment_type" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
+                                <option disabled value="">Select Employment Type</option>
                                 <option value="full-time">Full-Time</option>
                                 <option value="part-time">Part-Time</option>
                                 <option value="contract">Contract</option>
@@ -121,10 +132,31 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <InputLabel for="bio" value="Bio" />
-                        <textarea v-model="form.bio" class="w-full p-2 border rounded-md" rows="3"></textarea>
-                        <InputError :message="form.errors.bio" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <InputLabel for="password" value="Password" />
+                            <TextInput id="password" type="text" v-model="form.password" value="pwd@default (Default Password)" readonly class="w-full bg-gray-200" />
+                            <InputError :message="form.errors.password" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="role" value="Select Role" />
+                            <select id="role" v-model="form.role_name" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
+                                <option disabled value="">Select Role</option>
+                                <option v-for="role in roles" :key="role.id" :value="role.name">{{ role.name }}</option>
+                            </select>
+                            <InputError :message="form.errors.role_name" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <InputLabel for="bio" value="Bio"
+                            class="block mb-1 text-gray-800 dark:text-gray-200" />
+                        <textarea
+                            v-model="form.bio"
+                            id="bio" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition" rows="3"
+                        ></textarea>
+                        <InputError :message="form.errors.bio" class="mt-2 text-sm text-red-500"/>
                     </div>
 
                     <!-- Profile Image Upload -->

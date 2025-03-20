@@ -18,8 +18,8 @@ const form = useForm({
     id: null,
     name: "",
     email: "",
-    password: "pwd@default",
-    password_confirmation: "pwd@default",
+    password: "employee@default",
+    password_confirmation: "employee@default",
     role_name: "",
     department_id: "",
     job_position: "",
@@ -28,7 +28,7 @@ const form = useForm({
     profile_img: null,
 });
 
-const imagePreview = ref(null);
+const imagePreview = ref(props.instructor?.profile_img || null);
 
 // Watch effect to populate form if an employee object is passed
 watchEffect(() => {
@@ -95,7 +95,7 @@ const submit = () => {
 
                 <div>
                     <InputLabel for="role" value="Select Role" />
-                    <select id="role" v-model="form.role_name" required class="w-full">
+                    <select id="role" v-model="form.role_name" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
                         <option disabled value="">Select Role</option>
                         <option v-for="role in roles" :key="role.id" :value="role.name">{{ role.name }}</option>
                     </select>
@@ -122,7 +122,7 @@ const submit = () => {
             <section class="space-y-6">
                 <div>
                     <InputLabel for="department_id" value="Department" />
-                    <select id="department_id" v-model="form.department_id" required class="w-full">
+                    <select id="department_id" v-model="form.department_id" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
                         <option disabled value="">Select Department</option>
                         <option v-for="department in departments" :key="department.id" :value="department.id">{{ department.name }}</option>
                     </select>
@@ -137,7 +137,7 @@ const submit = () => {
 
                 <div>
                     <InputLabel for="employment_type" value="Employment Type" />
-                    <select id="employment_type" v-model="form.employment_type" required class="w-full">
+                    <select id="employment_type" v-model="form.employment_type" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
                         <option disabled value="">Select Type</option>
                         <option value="FULL_TIME">Full-time</option>
                         <option value="PART_TIME">Part-time</option>

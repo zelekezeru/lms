@@ -21,15 +21,10 @@ class Instructor extends Model
         'profile_image',
     ];
 
-    // public function tenant()
-    // {
-    //     return $this->belongsTo(Tenant::class);
-    // }
-
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }  
 
     public function department()
     {

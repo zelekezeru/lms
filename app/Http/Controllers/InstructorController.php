@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Instructor;
 use App\Models\Department;
-use App\Http\Requests\InstructorRequest;
+use App\Http\Requests\InstructorStoreRequest;
+use App\Http\Requests\InstructorUpdateRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class InstructorController extends Controller
 {
@@ -19,13 +24,6 @@ class InstructorController extends Controller
         ]);
     }
 
-    public function create(): Response
-    {
-        return Inertia::render('Instructors/Create', [
-            'departments' => Department::all(['id', 'name']),
-        ]);
-    }
-
     public function show(Instructor $instructor): Response
     {
         return Inertia::render('Instructors/Show', [
@@ -33,21 +31,59 @@ class InstructorController extends Controller
         ]);
     }
 
-
-    public function store(InstructorRequest $request)
+    public function create(): Response
     {
-        $data = $request->validated();
+        $roles = Role::all();
 
-        $data['tenant_id'] = 1; // Hardcoded tenant ID for now
+        return Inertia::render('Instructors/Create', [
+            'departments' => Department::all(['id', 'name']),
+            'roles' => $roles,
+        ]);
+    }
 
-        // Handle profile image upload
-        if ($request->hasFile('profile_image')) {
-            $data['profile_image'] = $request->file('profile_image')->store('instructors', 'public');
+
+    public function store(InstructorStoreRequest $request)
+    {
+
+        $fields = $request->validated();
+        
+        $year = substr(Carbon::now()->year, -2);
+
+        $instructor_id = 'IN' .  '/' . str_pad(Instructor::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+
+        $fields['tenant_id'] = 1; // Hardcoded tenant ID for now
+        
+        // Profile   of Institution
+        if ($request->hasFile('profile_img')) {
+            $fields['profile_img'] = $request->file('profile_img')->store('instructors', 'public');
+
+            //Add storage directory to Image Name
+            $fields['profile_img'] = '/storage/' . $fields['profile_img'];
+        }else{
+            $fields['profile_img'] = null;
+            
         }
+        
+        $user = User::create([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'profile_img' => $fields['profile_img'],
+            'user_uuid' => $instructor_id,
+            'password' => Hash::make('pwd@default'),
+        ]);
 
-        Instructor::create($data);
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor added successfully.');
+        $instructor = Instructor::create([
+            'department_id' => $fields['department_id'],
+            'user_id' => $user->id,
+            'specialization' => $fields['specialization'],
+            'employment_type' => $fields['employment_type'],
+            'bio' => $fields['bio'],
+            'hire_date' => $fields['hire_date'],
+        ]);
+        
+        $user->assignRole($fields['role_name']);
+        
+        return redirect(route('instructors.show', $instructor));
     }
 
     public function edit(Instructor $instructor): Response
@@ -58,7 +94,7 @@ class InstructorController extends Controller
         ]);
     }
 
-    public function update(InstructorRequest $request, Instructor $instructor)
+    public function update(InstructorUpdateRequest $request, Instructor $instructor)
     {
         $data = $request->validated();
 

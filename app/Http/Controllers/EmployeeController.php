@@ -35,7 +35,9 @@ class EmployeeController extends Controller
     public function create()
     {
         $departments = DepartmentResource::collection(Department::all());
+
         $roles = Role::all();
+        
         return inertia('Employees/Create', [
             'departments' => $departments,
             'roles' => $roles,
@@ -53,6 +55,8 @@ class EmployeeController extends Controller
         
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
+        }else{
+            $profile_path = null;
         }
         
         $user = User::create([

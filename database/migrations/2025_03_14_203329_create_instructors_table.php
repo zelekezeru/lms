@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('hire_date');
             $table->enum('status', ['active', 'inactive', 'suspended']);
             $table->text('bio')->nullable();
-            $table->string('profile_image')->nullable();
             $table->timestamps();
 
             // Foreign key constraints;

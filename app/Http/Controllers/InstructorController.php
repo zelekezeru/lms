@@ -56,7 +56,7 @@ class InstructorController extends Controller
         
         $year = substr(Carbon::now()->year, -2);
 
-        $instructor_id = 'IN' .  '/' . str_pad(Instructor::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+        $instructor_id = 'IN/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
 
         $fields['tenant_id'] = 1; // Hardcoded tenant ID for now
         
@@ -90,7 +90,7 @@ class InstructorController extends Controller
         
         $user->assignRole($fields['role_name']);
         
-        return redirect(route('instructors.show', $instructor));
+        return redirect(route('instructors.index', $instructor));
     }
     
     /**

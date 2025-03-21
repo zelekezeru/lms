@@ -7,7 +7,7 @@ import Form from './Form.vue';
 const props = defineProps({ student: Object });
 const form = ref({ ...props.student });
 const submit = () => {
-    router.put(route('students.update', props.student.id), form.value);
+    form.put(route('students.update', props.student.id), form.value);
 };
 </script>
 

@@ -11,7 +11,7 @@ class Instructor extends Model
 
     protected $fillable = [
         // 'tenant_id',
-        // 'user_id',
+        'user_id',
         'department_id',
         'specialization',
         'employment_type',

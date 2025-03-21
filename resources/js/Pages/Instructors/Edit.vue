@@ -1,23 +1,30 @@
 <script setup>
+import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
-import { usePage, useRoute } from "@inertiajs/vue3";
+import { useForm} from "@inertiajs/vue3";
 
-const { departments, roles } = usePage().props;
-const routeParams = useRoute().params;
-const instructor = ref(null);
-
-// Fetch instructor details when route changes (for editing)
-onMounted(() => {
-    axios
-        .get(route("instructors.show", routeParams.id))
-        .then((response) => {
-            instructor.value = response.data;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+const props = defineProps({
+    instructor: { type: Object, required: true },
 });
+
+// Initialize form data
+const form = useForm({
+    name: instructor?.name || "",
+    email: instructor?.email || "",
+    role_name: instructor?.role_name || "",
+    department_id: instructor?.department_id || "",
+    job_position: instructor?.job_position || "",
+    employment_type: instructor?.employment_type || "",
+    office_hours: instructor?.office_hours || "",
+    profile_img: instructor?.profile_img || "",
+    _method: 'PUT',
+});
+
+// Submit the form
+const submit = () => {
+    form.put(route("instructors.update", { instructor: form.id }));
+};
 </script>
 
 <template>
@@ -27,12 +34,14 @@ onMounted(() => {
                 Edit Instructor
             </h2>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Modify the Instructor details below.
+                Modify the instructor details below.
             </p>
             <Form
+                :form="form"
                 :departments="departments"
                 :roles="roles"
-                :instructor="instructor"
+                :instructor="form"
+                @submit="submit(instructor.id)"
             />
         </div>
     </AppLayout>

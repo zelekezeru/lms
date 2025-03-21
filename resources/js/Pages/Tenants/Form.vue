@@ -24,7 +24,7 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-  <form @submit.prevent="subgmit" enctype="multipart/form-data">
+  <form @submit.prevent="submit" enctype="multipart/form-data">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Institution Name</label>

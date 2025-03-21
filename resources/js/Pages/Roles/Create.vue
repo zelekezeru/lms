@@ -4,10 +4,15 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';
 
-const form = useForm({ name: '', guard_name: 'web' });
+const form = useForm({ 
+    name: '', 
+    guard_name: 'web' 
+});
+
 const submit = () => {
     form.post(route('roles.store'));
 };
+
 </script>
 
 <template>

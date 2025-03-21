@@ -5,7 +5,15 @@ import { useForm } from "@inertiajs/vue3";
 
 defineProps({ users: Array, programs: Array });
 
-const form = useForm({ name: "", code: "", description: "", duration: "", user_id: "", program_id: "" });
+const form = useForm({ 
+    name: "", 
+    code: "", 
+    description: "", 
+    duration: "", 
+    user_id: "", 
+    program_id: "" 
+});
+
 const submit = () => form.post(route("departments.store"));
 </script>
 

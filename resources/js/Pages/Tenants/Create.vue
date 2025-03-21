@@ -1,8 +1,29 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
-import { usePage } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
+
+
+const form = useForm({
+  name: '',
+  email: '',
+  code:  '',
+  phone: '',
+  address: '',
+  contact_person:  '',
+  contact_phone:  '',
+  contact_email:  '',
+  logo: '',
+  status: '',
+  paid: '',
+});
+
+
+const submit = (id) => {
+    form.post(route('tenants.store'));
+};
+
 </script>
 
 <template>
@@ -14,7 +35,7 @@ import { ref } from "vue";
               Fill in the details of a new tenant.
             </p>
           </div>
-          <Form :isEdit="false" />
+          <Form :form="form" @submit="submit" />
         </div>
     </AppLayout>
 </template>

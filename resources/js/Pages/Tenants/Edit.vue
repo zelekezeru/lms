@@ -1,10 +1,36 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
-import { usePage } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
-const { tenant } = usePage().props;
+const props = defineProps({
+  tenant: {
+    type: Object,
+    required: true,
+  }
+});
+
+const form = useForm({
+  name: props.tenant?.name || '',
+  email: props.tenant?.email || '',
+  code: props.tenant?.code || '',
+  phone: props.tenant?.phone || '',
+  address: props.tenant?.address || '',
+  contact_person: props.tenant?.contact_person || '',
+  contact_phone: props.tenant?.contact_phone || '',
+  contact_email: props.tenant?.contact_email || '',
+  logo: props.tenant?.logo || '',
+  status: props.tenant?.status,
+  paid: props.tenant?.paid,
+  _method: 'PUT',
+});
+
+
+const submit = (id) => {
+    form.post(route('tenants.update', { tenant: id }));
+};
+
 </script>
 
 <template>
@@ -16,7 +42,7 @@ const { tenant } = usePage().props;
               Modify the details of the tenant.
             </p>
           </div>
-          <Form :isEdit="true" :tenant="tenant" />
+          <Form :form="form" @submit="submit(tenant.id)"/>
         </div>
     </AppLayout>
 </template>

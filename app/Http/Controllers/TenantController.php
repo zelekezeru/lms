@@ -138,7 +138,7 @@ class TenantController extends Controller
         // Representative ID 
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-        $representative_id = 'ADMIN/' . '0001/'  .$fields['name'] .  '/' . $year;
+        $representative_id = 'ADMIN/' . '000'. User::count() . '/' .$fields['name'] .  '/' . $year;
 
         // Creating Representative as ADMIN user for the Tenant
 

@@ -4,23 +4,7 @@ import { ref } from 'vue';
 import { PhotoIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
-  tenant: { type: Object, required: false },
-  isEdit: { type: Boolean, default: false },
-});
-
-const form = useForm({
-  name: props.tenant?.name || '',
-  email: props.tenant?.email || '',
-  code: props.tenant?.code || '',
-  phone: props.tenant?.phone || '',
-  address: props.tenant?.address || '',
-  contact_person: props.tenant?.contact_person || '',
-  contact_phone: props.tenant?.contact_phone || '',
-  contact_email: props.tenant?.contact_email || '',
-  logo: props.tenant?.logo || '',
-  status: props.tenant?.status,
-  paid: props.tenant?.paid,
-  _method: props.isEdit ? 'PUT' : 'POST',
+  form: { type: Object, required: true },
 });
 
 const imagePreview = ref(props.tenant?.logo || null);
@@ -37,14 +21,10 @@ const handleFileChange = (e) => {
   }
 };
 
-const submit = () => {
-  const routeName = props.isEdit ? 'tenants.update' : 'tenants.store';
-  form.post(route(routeName, { tenant: props.tenant?.id }));
-};
 </script>
 
 <template>
-  <form @submit.prevent="submit" enctype="multipart/form-data">
+  <form @submit.prevent="subgmit" enctype="multipart/form-data">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Institution Name</label>

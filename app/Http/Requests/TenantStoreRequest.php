@@ -22,16 +22,15 @@ class TenantStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required', 'string',
-            'email' => 'required', 'email',
-            'code' => 'sometimes', 'string',
-            'phone' => 'required',
-            'address' => 'required', 'string',
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:tenants,email'],
+            'phone' => ['required'],
+            'address' => ['required', 'string'],
             'user_id' => ['sometimes', 'exists:users,id'],             
-            'contact_person' => 'required', 'string',
-            'contact_phone' => 'required', 'string',
-            'contact_email' => 'required', 'string',
-            'logo' => 'sometimes', 'file',      
+            'contact_person' => ['required', 'string'],
+            'contact_phone' => ['required', 'string'],
+            'contact_email' => ['required', 'string', 'unique:users,email'],
+            'logo' => ['nullable', 'file'],      
         ];
     }
 }

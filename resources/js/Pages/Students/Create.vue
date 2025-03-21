@@ -4,7 +4,13 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';
 
-const form = ref({ student_id: '', student_name: '', program: '', year_of_study: '' });
+const form = ref({ 
+    student_id: '', 
+    student_name: '', 
+    program: '', 
+    year_of_study: '' 
+});
+
 const submit = () => {
     router.post(route('students.store'), form.value);
 };

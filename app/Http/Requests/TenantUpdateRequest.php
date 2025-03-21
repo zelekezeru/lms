@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TenantUpdateRequest extends FormRequest
 {
@@ -22,17 +23,16 @@ class TenantUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required', 'string',
-            'email' => 'required', 'email',
-            'code' => 'sometimes', 'string',
-            'phone' => 'sometimes',
-            'address' => 'sometimes', 'string',
-            'contact_person' => 'sometimes', 'string',
-            'contact_phone' => 'sometimes', 'string',
-            'contact_email' => 'required', 'string',
-            'logo' => 'sometimes', 'file',
-            'status' => 'sometimes',
-            'paid' => 'sometimes',
+            'name' => ['required', 'string'],
+            'email' => ['required', 'email', Rule::unique('tenants', 'email')->ignore(request()->tenant->id)],
+            'phone' => ['sometimes'],
+            'address' => ['sometimes', 'string'],
+            'contact_person' => ['sometimes', 'string'],
+            'contact_phone' => ['sometimes', 'string'],
+            'contact_email' => ['required', 'email', Rule::unique('tenants', 'contact_email')->ignore(request()->tenant->id),],
+            'logo' => ['sometimes', 'nullable', 'file'],
+            'status' => ['sometimes'],
+            'paid' => ['sometimes'],
         ];
     }
 }

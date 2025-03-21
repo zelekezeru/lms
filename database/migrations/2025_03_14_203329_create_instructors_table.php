@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
-            $table->unsignedBigInteger('department_id');
             $table->string('specialization', 255);
             $table->enum('employment_type', ['full-time', 'part-time', 'adjunct']);
             $table->date('hire_date');

@@ -24,7 +24,7 @@ class ProgramResource extends JsonResource
             
             'studyModes' => StudyModeResource::collection($this->whenLoaded('studyModes')),
             'department' => new DepartmentResource($this->whenLoaded('department')),
-            'user' => $this->whenLoaded('user'),
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

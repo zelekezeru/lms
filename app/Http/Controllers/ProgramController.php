@@ -70,18 +70,8 @@ class ProgramController extends Controller
         
         $program = Program::create($fields);
         
-        foreach ($request->studyModes as $studyMode) {
-
-            $studyMode = StudyMode::create([
-                'program_id' => $program->id,
-                'mode' => $studyMode['mode'],
-                'duration' => $studyMode['duration'],
-                'fees' => $studyMode['fees']
-            ]);
-        }
-        
         return inertia('Programs/Show', [
-            'program' => new ProgramResource($program),
+            'program' => new ProgramResource($program->load('user')),
         ]);
     }
 

@@ -135,13 +135,13 @@ const deleteDepartment = (id) => {
               <table class="min-w-full table-auto border-collapse">
                 <thead>
                   <tr class="bg-gray-50 dark:bg-gray-700">
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                       Mode
                     </th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                       Duration
                     </th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                       Fees
                     </th>
                   </tr>
@@ -152,13 +152,13 @@ const deleteDepartment = (id) => {
                     :key="mode.id"
                     class="border-b border-gray-200 dark:border-gray-600"
                   >
-                    <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                    <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
                       {{ mode.mode }}
                     </td>
-                    <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                    <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
                       {{ mode.duration }}
                     </td>
-                    <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                    <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
                       {{ mode.fees }}
                     </td>
                   </tr>

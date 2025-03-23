@@ -67,7 +67,7 @@ class TenantController extends Controller
         // Creating Tenant representative User
         $tenant = Tenant::create($fields);
 
-        $this->tenant_representative($fields, $tenant->id);
+        $this->tenantRepresentative($fields, $tenant->id);
 
         return redirect(route('tenants.index'));
     }
@@ -128,7 +128,7 @@ class TenantController extends Controller
         return redirect(route('tenants.index'));
     }
 
-    public function tenant_representative($fields, $tenant_id)
+    public function tenantRepresentative($fields, $tenant_id)
     {
         $phone_end = substr($fields['contact_phone'], -4);
         

@@ -149,6 +149,7 @@ const handleFileChange = (e) => {
           v-model="form.status"
           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
+          <option value="">Select Status(Default Inactive)</option>
           <option value="0">Inactive</option>
           <option value="1">Active</option>
         </select>
@@ -162,6 +163,7 @@ const handleFileChange = (e) => {
           v-model="form.paid"
           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
+          <option value="">Select Paid(default Not Paid)</option>
           <option value="0">Not Paid</option>
           <option value="1">Paid</option>
         </select>

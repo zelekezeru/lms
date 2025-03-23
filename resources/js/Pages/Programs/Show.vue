@@ -15,16 +15,6 @@ const props = defineProps({
     },
 });
 
-const createMode = ref(false);
-
-const modeForm = useForm({
-    'program_id': props.program.id,
-    'mode': '',
-    'duration': '',
-    'fees': '', 
-    'schedule': '', 
-})
-
 // Delete function with SweetAlert confirmation
 const deleteprogram = (id) => {
     Swal.fire({
@@ -196,110 +186,6 @@ const deleteprogram = (id) => {
                                     </div>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Study Modes -->
-                <div class="mt-6">
-                    <div class="text-center">
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >Study Modes</span
-                        >
-                        <PlusCircleIcon
-                            class="w-8"
-                            @click="createMode = !createMode"
-                        />
-                    </div>
-                    <table class="mt-2 w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b dark:border-gray-700 p-2">
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Mode
-                                </th>
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Duration
-                                </th>
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Fees
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="mode in program.studyModes"
-                                :key="mode.id"
-                                class="border-b dark:border-gray-700 p-2"
-                            >
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ mode.mode }}
-                                </td>
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ mode.duration }}
-                                </td>
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ mode.fees }}
-                                </td>
-                            </tr>
-                            <transition
-                                enter-active-class="transition duration-300 ease-out"
-                                enter-from-class="opacity-0 -translate-y-2"
-                                enter-to-class="opacity-100 translate-y-0"
-                                leave-active-class="transition duration-200 ease-in"
-                                leave-from-class="opacity-100 translate-y-0"
-                                leave-to-class="opacity-0 -translate-y-2"
-                            >
-                                <tr
-                                    v-if="createMode"
-                                    class="border-b dark:border-gray-700"
-                                >
-                                    <td>
-                                        <input
-                                            v-model="modeForm.mode"
-                                            type="text"
-                                            placeholder="Mode"
-                                            class="w-full px-2 py-1 border rounded-md dark:bg-gray-800 dark:text-gray-100"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            v-model="modeForm.duration"
-                                            type="text"
-                                            placeholder="Duration"
-                                            class="w-full px-2 py-1 border rounded-md dark:bg-gray-800 dark:text-gray-100"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            v-model="modeForm.fees"
-                                            type="number"
-                                            placeholder="Fees"
-                                            class="w-full px-2 py-1 border rounded-md dark:bg-gray-800 dark:text-gray-100"
-                                        />
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                            @click="addMode"
-                                        >
-                                            Save
-                                        </button>
-                                    </td>
-                                </tr>
-                            </transition>
                         </tbody>
                     </table>
                 </div>

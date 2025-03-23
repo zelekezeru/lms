@@ -95,7 +95,6 @@ const deleteprogram = (id) => {
                     <th scope="col" class="px-6 py-3">Program Name</th>
                     <th scope="col" class="px-6 py-3">Language</th>
                     <th scope="col" class="px-6 py-3">Director</th>
-                    <th scope="col" class="px-6 py-3">Study Modes</th>
                     <th scope="col" class="px-6 py-3">Action</th>
                 </tr>
             </TableHeader>
@@ -118,16 +117,6 @@ const deleteprogram = (id) => {
                     </th>
                     <td class="px-6 py-4">{{ program.language }}</td>
                     <td class="px-6 py-4">{{ program.user?.name }}</td>
-                    <td class="px-1 w-14 py-4">
-                        <span
-                            v-for="studyMode in program.studyModes"
-                            :key="studyMode.id"
-                            class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
-                            :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
-                        >
-                            {{ studyMode.mode }}
-                        </span>
-                    </td>
                     <td class="px-6 py-4 flex justify-between">
                         <Link
                             v-if="userCan('view-programs')"

@@ -91,6 +91,17 @@ const deleteDepartment = (id) => {
                         </th>
                         <td class="px-6 py-4">{{ department.code }}</td>
                         <td class="px-6 py-4">{{ department.description }}</td>
+                        <!--
+                            <td class="px-1 w-14 py-4">
+                        <span
+                            v-for="studyMode in program.studyModes"
+                            :key="studyMode.id"
+                            class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
+                            :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
+                        >
+                            {{ studyMode.mode }}
+                        </span>
+                    </td> -->
                         <td class="px-6 py-4 flex space-x-2">
                             <!-- View -->
                             <div v-if="userCan('view-departments')">

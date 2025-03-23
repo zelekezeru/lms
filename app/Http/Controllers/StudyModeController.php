@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudyModeStoreRequest;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
 
@@ -26,9 +27,15 @@ class StudyModeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StudyModeStoreRequest $request)
     {
-        //
+        $fields = $request->validated();
+
+        $studyMode = StudyMode::create($fields);
+
+        $redirectTo = request()->query('redirectTo') ?? 'studyModes.index';
+        $params = request()->query('params') ?? [];
+        return redirect(route($redirectTo, $params));
     }
 
     /**

@@ -8,8 +8,8 @@ class StudyMode extends Model
 {
     protected $guarded =[];
 
-    public function Program()
+    public function department()
     {
-        return $this->belongsTo(Program::class);
+        return $this->belongsTo(Department::class);
     }
 }

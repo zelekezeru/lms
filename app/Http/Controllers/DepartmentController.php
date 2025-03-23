@@ -68,7 +68,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        $department = (Department::with('program')->find($department->id));
+        $department = new DepartmentResource($department->load('program', 'studyModes'));
 
         return inertia('Departments/Show', [
             'department' => $department,

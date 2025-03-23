@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudyModeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -55,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         'instructors' => 'Instructor',
         'academic-documents' => 'AcademicDocument',
         'tenants' => 'Tenant',
+        'studyModes' => 'StudyMode',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {
@@ -73,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singularToLower}}", [$controller, 'destroy'])->name("$route.destroy");
     }
+
 });
 
 

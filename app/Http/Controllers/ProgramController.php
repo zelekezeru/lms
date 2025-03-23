@@ -10,10 +10,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Program;
-use App\Models\StudyMode;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
 
 class ProgramController extends Controller
@@ -23,8 +19,8 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = ProgramResource::collection(Program::with('studyModes', 'user')->paginate(15));
-
+        $programs = ProgramResource::collection(Program::with('user')->paginate(15));
+        
         return inertia('Programs/Index', [
             'programs' => $programs,
         ]);
@@ -35,7 +31,7 @@ class ProgramController extends Controller
      */
     public function show(Program $program)
     {
-        $program = (Program::with('studyModes', 'user', 'departments')->find($program->id));
+        $program = (Program::with('user', 'departments')->find($program->id));
 
         return inertia('Programs/Show', [
             'program' => $program,
@@ -43,7 +39,7 @@ class ProgramController extends Controller
         ]);
     }
     
-    /**
+    /**a
      * Show the form for creating a new resource.
      */
     public function create()
@@ -80,7 +76,7 @@ class ProgramController extends Controller
      */
     public function edit(Program $program)
     {
-        $program->load('studyModes', 'departments', 'user');
+        $program->load('departments', 'user');
 
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),

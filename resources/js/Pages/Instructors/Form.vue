@@ -7,7 +7,6 @@ import { useForm } from "@inertiajs/vue3";
 import { ref, computed, watchEffect } from "vue";
 import { PhotoIcon } from "@heroicons/vue/24/outline";
 
-
 // Define the expected props
 const props = defineProps({
     form: Object,
@@ -18,7 +17,6 @@ const props = defineProps({
 const emits = defineEmits(["submit"]);
 
 const imagePreview = ref(props.instructor?.profile_img || null);
-
 
 const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -148,9 +146,12 @@ const handleFileChange = (e) => {
                         />
                         <InputError :message="form.errors.hire_date" />
                     </div>
-                    
+
                     <div>
-                        <InputLabel for="specialization" value="Specialization" />
+                        <InputLabel
+                            for="specialization"
+                            value="Specialization"
+                        />
                         <TextInput
                             id="specialization"
                             type="text"
@@ -159,7 +160,7 @@ const handleFileChange = (e) => {
                         />
                         <InputError :message="form.errors.specialization" />
                     </div>
-                    
+
                     <div>
                         <label
                             for="status"
@@ -273,10 +274,14 @@ const handleFileChange = (e) => {
                 </div>
 
                 <div class="mt-6 flex justify-center">
-                    <PrimaryButton :disabled="form.processing">
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
                         <span v-if="!form.processing">Submit</span>
-                        <span v-else>Processing...</span>
-                    </PrimaryButton>
+                        <span v-else>Submitting...</span>
+                    </button>
                 </div>
             </form>
         </div>

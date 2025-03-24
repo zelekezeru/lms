@@ -9,7 +9,6 @@ const props = defineProps({
     form: Object,
     users: Object,
 });
-
 </script>
 
 <template>
@@ -103,16 +102,15 @@ const props = defineProps({
             </div>
         </div>
 
-        <div class="mt-6">
-            <div class="flex justify-center">
-                <PrimaryButton
-                    :disabled="form.processing"
-                    class="w-56 px-10 py-4 text-xl font-bold text-center bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition rounded-lg flex items-center justify-center"
-                >
-                    <span v-if="!form.processing">Submit</span>
-                    <span v-else>Submitting...</span>
-                </PrimaryButton>
-            </div>
+        <div class="mt-6 flex justify-center">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <span v-if="!form.processing">Submit</span>
+                <span v-else>Submitting...</span>
+            </button>
         </div>
     </form>
 </template>

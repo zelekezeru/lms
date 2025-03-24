@@ -6,16 +6,16 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
 
 const props = defineProps({
-  form: Object,
-  inventoryCategories: { type: Object, required: true },
-  inventorySuppliers: { type: Object, required: true },
+    form: Object,
+    inventoryCategories: { type: Object, required: true },
+    inventorySuppliers: { type: Object, required: true },
 });
 
 const emits = defineEmits(["submit"]);
 
 const statusOptions = ref([
-  { value: "ACTIVE", label: "Active" },
-  { value: "IN_ACTIVE", label: "Inactive" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "IN_ACTIVE", label: "Inactive" },
 ]);
 </script>
 
@@ -49,7 +49,10 @@ const statusOptions = ref([
                 </div>
 
                 <div>
-                    <InputLabel for="unit_price" value="Unit price (Optional)" />
+                    <InputLabel
+                        for="unit_price"
+                        value="Unit price (Optional)"
+                    />
                     <TextInput
                         id="unit_price"
                         type="number"
@@ -69,7 +72,11 @@ const statusOptions = ref([
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
                         <option disabled value="">Select Status</option>
-                        <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                        <option
+                            v-for="option in statusOptions"
+                            :key="option.value"
+                            :value="option.value"
+                        >
                             {{ option.label }}
                         </option>
                     </select>
@@ -96,14 +103,23 @@ const statusOptions = ref([
                 </div> -->
 
                 <div>
-                    <InputLabel for="inventoryCategory_id" value="InventoryCategory (Optional)" />
+                    <InputLabel
+                        for="inventoryCategory_id"
+                        value="InventoryCategory (Optional)"
+                    />
                     <select
                         id="inventoryCategory_id"
                         v-model="form.category_id"
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
-                        <option disabled value="">Select InventoryCategory</option>
-                        <option v-for="inventoryCategory in inventoryCategories" :key="inventoryCategory.id" :value="inventoryCategory.id">
+                        <option disabled value="">
+                            Select InventoryCategory
+                        </option>
+                        <option
+                            v-for="inventoryCategory in inventoryCategories"
+                            :key="inventoryCategory.id"
+                            :value="inventoryCategory.id"
+                        >
                             {{ inventoryCategory.name }}
                         </option>
                     </select>
@@ -111,14 +127,23 @@ const statusOptions = ref([
                 </div>
 
                 <div>
-                    <InputLabel for="inventorySupplier_id" value="InventorySupplier (Optional)" />
+                    <InputLabel
+                        for="inventorySupplier_id"
+                        value="InventorySupplier (Optional)"
+                    />
                     <select
                         id="inventorySupplier_id"
                         v-model="form.supplier_id"
                         class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     >
-                        <option disabled value="">Select InventorySupplier</option>
-                        <option v-for="inventorySupplier in inventorySuppliers" :key="inventorySupplier.id" :value="inventorySupplier.id">
+                        <option disabled value="">
+                            Select InventorySupplier
+                        </option>
+                        <option
+                            v-for="inventorySupplier in inventorySuppliers"
+                            :key="inventorySupplier.id"
+                            :value="inventorySupplier.id"
+                        >
                             {{ inventorySupplier.name }}
                         </option>
                     </select>
@@ -126,7 +151,10 @@ const statusOptions = ref([
                 </div>
 
                 <div>
-                    <InputLabel for="description" value="Description (Optional)" />
+                    <InputLabel
+                        for="description"
+                        value="Description (Optional)"
+                    />
                     <textarea
                         id="description"
                         v-model="form.description"
@@ -138,11 +166,16 @@ const statusOptions = ref([
             </section>
         </div>
 
+        <
         <div class="mt-6 flex justify-center">
-            <PrimaryButton :disabled="form.processing">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
                 <span v-if="!form.processing">Submit</span>
                 <span v-else>Submitting...</span>
-            </PrimaryButton>
+            </button>
         </div>
     </form>
 </template>

@@ -5,11 +5,10 @@ import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
-  form: Object
-})
+    form: Object,
+});
 
-const emits = defineEmits(['submit']);
-
+const emits = defineEmits(["submit"]);
 </script>
 
 <template>
@@ -90,10 +89,14 @@ const emits = defineEmits(['submit']);
         </div>
 
         <div class="mt-6 flex justify-center">
-            <PrimaryButton :disabled="form.processing">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
                 <span v-if="!form.processing">Submit</span>
                 <span v-else>Submitting...</span>
-            </PrimaryButton>
+            </button>
         </div>
     </form>
 </template>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Program;
 use App\Http\Requests\StudentRequest;
+use App\Models\Department;
+use App\Http\Resources\DepartmentResource;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,10 +23,10 @@ class StudentController extends Controller
 
     public function create(): Response
     {
-        $programs = Program::get();
-
-        return Inertia::render('Students/Create', [
-            'programs' => $programs
+        $departments = DepartmentResource::collection(Department::all());
+        dd($departments);
+        return inertia('Students/Create', [
+            'departments' => $departments,
         ]);
     }
     

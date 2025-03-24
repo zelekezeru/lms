@@ -40,7 +40,7 @@ const deleteinstructor = (id) => {
   <AppLayout>
     <div class="max-w-2xl mx-auto p-6">
       <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-        {{ instructor.name }} instructor
+        {{ instructor.user.name }}
       </h1>
 
       <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
@@ -49,7 +49,7 @@ const deleteinstructor = (id) => {
           <!-- instructor Code -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.id }}</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.user.code }}</span>
           </div>
 
           <!-- instructor Full Name -->
@@ -64,10 +64,40 @@ const deleteinstructor = (id) => {
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.user.email }}</span>
           </div>
 
-          <!-- Hire Date Duration -->
+          <!-- Hire Date -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Hire Date</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.hire_date }}</span>
+          </div>
+
+          <!-- Job Position -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Job Position</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.jobPosition }}</span>
+          </div>
+
+          <!-- Employment Type -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Employment Type</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.employmentType }}</span>
+          </div>
+
+          <!-- Office Hours -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Office Hours</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.officeHours }}</span>
+          </div>
+
+          <!-- Bio -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Bio</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.bio }}</span>
+          </div>
+
+          <!-- Status -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.status }}</span>
           </div>
 
         </div>

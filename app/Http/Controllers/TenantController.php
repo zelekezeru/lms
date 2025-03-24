@@ -39,9 +39,8 @@ class TenantController extends Controller
     public function store(TenantStoreRequest $request)
     {
         $fields = $request->validated();
-
-        $fields = $request->validated();
-
+        
+        // Handle logo upload
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('tenants-logo', 'public');
             $fields['logo'] = '/storage/' . $logoPath;
@@ -49,7 +48,6 @@ class TenantController extends Controller
             unset($fields['logo']); 
         }
         
-
         // Creating Tenant Code
         $year = substr(Carbon::now()->year, -2);
 

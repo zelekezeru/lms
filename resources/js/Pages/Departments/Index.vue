@@ -3,7 +3,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { PencilIcon, EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import { ref } from "vue";
 
 defineProps({
     departments: {
@@ -11,6 +12,20 @@ defineProps({
         required: true,
     },
 });
+
+const refreshing = ref(false);
+
+const refreshData = () => {
+    refreshing.value = true;
+    router.flush("/departments", { method: "get" });
+
+    router.visit(route("departments.index"), {
+        only: ["departments"],
+        onFinish: () => {
+            refreshing.value = false;
+        },
+    });
+};
 
 // Delete function with SweetAlert confirmation
 const deleteDepartment = (id) => {
@@ -47,16 +62,28 @@ const deleteDepartment = (id) => {
         </h1>
 
         <!-- Add New Department Button -->
-        <div v-if="userCan('create-departments')">
-            <Link
+        <div class="flex justify-between items-center mb-3" >
+            <Link v-if="userCan('create-departments')"
                 :href="route('departments.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 mb-3"
+               class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
                 Add New Department
             </Link>
+
+            <button
+                @click="refreshData"
+                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                title="Refresh Data"
+            >
+                <ArrowPathIcon
+                    class="w-5 h-5 mr-2"
+                    :class="{ 'animate-spin': refreshing }"
+                />
+                Refresh Data
+            </button>
         </div>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
             <table
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
             >

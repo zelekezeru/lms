@@ -7,8 +7,27 @@ import Form from './Form.vue';
 const form = ref({ 
     student_id: '', 
     student_name: '', 
-    program: '', 
-    year_of_study: '' 
+    father_name: '', 
+    grand_father_name: '', 
+    mobile_phone: '', 
+    office_phone: '', 
+    date_of_birth: '', 
+    email: '', 
+    marital_status: '', 
+    sex: '', 
+    address_1: '', 
+    academic_year: '', 
+    semester: '', 
+    program_id: '', 
+    total_credit_hours: '', 
+    total_amount_paid: '', 
+    pastor_name: '', 
+    pastor_phone: '', 
+    position_denomination: '', 
+    church_name: '', 
+    church_address: '', 
+    student_signature: '', 
+    office_use_notes: '' 
 });
 
 const submit = () => {
@@ -19,10 +38,8 @@ const submit = () => {
 <template>
     <Head title="Register Student" />
     <AppLayout>
-        <div
-                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
-            >
-        <Form :form="form" @submit="submit" />
+        <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition">
+            <Form :form="form" @submit="submit" />
         </div>
     </AppLayout>
 </template>

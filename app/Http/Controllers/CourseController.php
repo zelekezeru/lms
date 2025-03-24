@@ -10,6 +10,7 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\CourseStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
+use App\Http\Resources\InstructorsResource;
 use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Department;
@@ -69,8 +70,11 @@ class CourseController extends Controller
     {
         $course = (Course::with('department')->find($course->id));
 
+        $instructors = InstructorsResource::collection(Course::with('')->find($course->id));
+
         return inertia('Courses/Show', [
             'course' => $course,
+            'instructors' => $instructors,
 
         ]);
     }

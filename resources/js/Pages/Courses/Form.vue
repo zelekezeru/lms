@@ -127,7 +127,7 @@ const submit = () => {
                         <select id="instructor_id" v-model="form.instructor_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
                             <option value="">Select Instructor</option>
                             <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">
-                            {{ instructor.name }} </option>
+                            {{ instructor.user.name }} </option>
                         </select>
                         <InputError :message="form.errors.instructor_id" class="mt-2 text-sm text-red-500"/>
                     

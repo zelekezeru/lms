@@ -7,7 +7,6 @@ defineProps({ users: Array, programs: Array });
 
 const form = useForm({
     name: "",
-    code: "",
     description: "",
     duration: "",
     user_id: "",

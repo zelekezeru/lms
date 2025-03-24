@@ -16,6 +16,7 @@ import {
     ArchiveBoxArrowDownIcon,
     HandRaisedIcon,
     FolderIcon,
+    ClockIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -253,6 +254,30 @@ const afterLeave = (el) => {
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Department</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- StudyModes Navigation -->
+                <SidebarDropdownMenu
+                    :label="'StudyModes'"
+                    :icon="ClockIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-employees', 'create-employees'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-studyModes')"
+                        :href="route('studyModes.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Add Study Mode</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-studyModes')"
+                        :href="route('studyModes.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Study Modes</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

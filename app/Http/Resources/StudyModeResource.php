@@ -15,8 +15,9 @@ class StudyModeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'mode' => $this->mode,
-            'program' => $this->program,
+            'department' => new DepartmentResource($this->whenLoaded('department')),
             'duration' => $this->duration,
             'fees' => $this->fees,
         ];

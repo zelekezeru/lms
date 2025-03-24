@@ -11,7 +11,7 @@ class StudyModeUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StudyModeUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'department_id' => 'sometimes | required | exists:departments,id',
+            'mode' => 'sometimes | required | in:REGULAR,EXTENSION,DISTANCE,ONLINE',
+            'duration' => 'sometimes | required | numeric',
+            'fees' => 'sometimes | required | numeric'
         ];
     }
 }

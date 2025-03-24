@@ -45,35 +45,35 @@ Route::middleware(['auth'])->group(function () {
     // ];
 
     $resourceRoutes = [
-        'departments' => 'Department',
-        'students' => 'Student',
-        'programs' => 'Program',
-        'courses' => 'Course',
-        'employees' => 'Employee',
-        'inventories' => 'Inventory',
-        'inventorySuppliers' => 'InventorySupplier',
-        'inventoryCategories' => 'InventoryCategory',
-        'instructors' => 'Instructor',
-        'academic-documents' => 'AcademicDocument',
-        'tenants' => 'Tenant',
-        'studyModes' => 'StudyMode',
+        'departments' => 'department',
+        'students' => 'student',
+        'programs' => 'program',
+        'courses' => 'course',
+        'employees' => 'employee',
+        'inventories' => 'inventory',
+        'inventorySuppliers' => 'inventorySupplier',
+        'inventoryCategories' => 'inventoryCategory',
+        'instructors' => 'instructor',
+        'academic-documents' => 'icademicDocument',
+        'tenants' => 'tenant',
+        'studyModes' => 'studyMode',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {
-        $controller = "App\\Http\\Controllers\\{$singular}Controller";
-        $singularToLower = strtolower($singular);
+        $singularCapitalized = ucfirst($singular);
+        $controller = "App\\Http\\Controllers\\{$singularCapitalized}Controller";
 
         Route::middleware("can:create-$route")->post("$route", [$controller, 'store'])->name("$route.store");
         Route::middleware("can:create-$route")->get("$route/create", [$controller, 'create'])->name("$route.create");
         
         Route::middleware("can:view-$route")->get("$route", [$controller, 'index'])->name("$route.index");
-        Route::middleware("can:view-$route")->get("$route/{{$singularToLower}}", [$controller, 'show'])->name("$route.show");
+        Route::middleware("can:view-$route")->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
         
-        Route::middleware("can:update-$route")->put("$route/{{$singularToLower}}", [$controller, 'update'])->name("$route.update");
-        Route::middleware("can:update-$route")->patch("$route/{{$singularToLower}}", [$controller, 'update'])->name("$route.update");
-        Route::middleware("can:update-$route")->get("$route/{{$singularToLower}}/edit", [$controller, 'edit'])->name("$route.edit");
+        Route::middleware("can:update-$route")->put("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
+        Route::middleware("can:update-$route")->patch("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
+        Route::middleware("can:update-$route")->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
 
-        Route::middleware("can:delete-$route")->delete("$route/{{$singularToLower}}", [$controller, 'destroy'])->name("$route.destroy");
+        Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
     }
 
 });

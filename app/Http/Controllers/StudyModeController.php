@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StudyModeStoreRequest;
+use App\Http\Requests\StudyModeUpdateRequest;
+use App\Http\Resources\StudyModeResource;
+use App\Models\Department;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
 
@@ -13,7 +16,9 @@ class StudyModeController extends Controller
      */
     public function index()
     {
-        //
+        $studyModes = StudyModeResource::collection(StudyMode::with('department')->paginate(15));
+
+        return inertia('StudyModes/Index', compact('studyModes'));
     }
 
     /**
@@ -21,9 +26,10 @@ class StudyModeController extends Controller
      */
     public function create()
     {
-        //
+        $departments = Department::all();
+        return inertia('StudyModes/Create', compact('departments'));
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -32,34 +38,44 @@ class StudyModeController extends Controller
         $fields = $request->validated();
 
         $studyMode = StudyMode::create($fields);
-
+        
         $redirectTo = request()->query('redirectTo') ?? 'studyModes.index';
         $params = request()->query('params') ?? [];
         return redirect(route($redirectTo, $params));
     }
-
+    
     /**
      * Display the specified resource.
      */
     public function show(StudyMode $studyMode)
     {
-        //
-    }
+        $studyMode = new StudyModeResource($studyMode->load('department'));
 
+        return inertia('StudyModes/Show', compact('studyMode'));
+
+    }
+    
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(StudyMode $studyMode)
     {
-        //
+        $departments = Department::all();
+        $studyMode = new StudyModeResource($studyMode->load('department'));
+
+        return inertia('StudyModes/Edit', compact('departments', 'studyMode'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, StudyMode $studyMode)
+    public function update(StudyModeUpdateRequest $request, StudyMode $studyMode)
     {
-        //
+        $fields = $request->validated();
+        
+        $studyMode->update($fields);
+
+        return redirect(route('studyModes.index'));
     }
 
     /**
@@ -67,6 +83,8 @@ class StudyModeController extends Controller
      */
     public function destroy(StudyMode $studyMode)
     {
-        //
+        $studyMode->delete();
+        
+        return redirect(route('studyModes.index'));
     }
 }

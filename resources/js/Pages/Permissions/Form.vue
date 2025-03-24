@@ -37,10 +37,15 @@ props.form.guard_name = props.form.guard_name || 'web';
         
         <input type="hidden" v-model="form.guard_name" value="web"/>
 
-        <PrimaryButton
-            v-if="!form.processing"
-            class="dark:bg-gray-700 dark:text-gray-100 m-auto"
-            >Submit</PrimaryButton
-        >
+        <div class="mt-6 flex justify-center">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <span v-if="!form.processing">Submit</span>
+                <span v-else>Submitting...</span>
+            </button>
+        </div>
     </form>
 </template>

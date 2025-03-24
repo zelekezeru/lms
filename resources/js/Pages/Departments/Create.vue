@@ -36,7 +36,7 @@ const submit = () => form.post(route("departments.store"));
             >
                 <Form
                     :form="form"
-                    :submit="() => submit(department.id)"
+                    @submit="submit"
                     :users="users"
                     :programs="programs"
                 />

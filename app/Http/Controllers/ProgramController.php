@@ -59,11 +59,15 @@ class ProgramController extends Controller
         $fields = $request->validated();
         
         $year = substr(Carbon::now()->year, -2);
-
-        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
-
-        $fields['code'] = $program_id;
         
+        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+        
+        $fields['code'] = $program_id;
+
+        // Assign the selected director the PROGRAM-DIRECTOR role
+        $user = User::where('id', $fields['user_id'])->first();
+        $user->assignRole('PROGRAM-DIRECTOR');
+
         $program = Program::create($fields);
 
         return redirect(route('programs.index'));

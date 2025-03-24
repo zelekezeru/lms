@@ -15,6 +15,7 @@ class TenantResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -33,7 +34,7 @@ class TenantResource extends JsonResource
             'allowed' => $this->allowed,
             'status' => $this->status,
             'paid' => $this->paid,
-            'profileImg'  => $this->logo,
+            'logo'  => $this->logo,
         ];
     }
 }

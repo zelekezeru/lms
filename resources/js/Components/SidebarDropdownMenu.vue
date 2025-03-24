@@ -81,6 +81,7 @@ const afterLeave = (el) => {
                 </transition>
             </div>
             <component
+                v-if="sidebarVisible || sidebarHovered"
                 :is="isOpen ? ChevronUpIcon : ChevronDownIcon"
                 class="w-5 h-5 text-gray-200"
             />

@@ -205,12 +205,12 @@ const logout = () => {
                                         >
                                             {{ user.email }}
                                         </p>
-                                        <a
+                                        <Link
                                             :href="route('profile.edit')"
                                             class="btn btn-xs btn-secondary btn-sm mt-2 inline-block px-3 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                                         >
                                             View Profile
-                                        </a>
+                                    </Link>
                                     </div>
                                 </li>
 
@@ -219,33 +219,33 @@ const logout = () => {
                                     <div
                                         class="dropdown-divider border-t my-2"
                                     ></div>
-                                    <a
+                                    <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         :href="route('profile.edit')"
                                     >
                                         My Profile
-                                    </a>
-                                    <a
+                                </Link>
+                                    <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         My Balance
-                                    </a>
-                                    <a
+                                </Link>
+                                    <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         Inbox
-                                    </a>
+                                </Link>
                                     <div
                                         class="dropdown-divider border-t my-2"
                                     ></div>
-                                    <a
+                                    <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         Account Settings
-                                    </a>
+                                </Link>
                                     <div
                                         class="dropdown-divider border-t my-2"
                                     ></div>

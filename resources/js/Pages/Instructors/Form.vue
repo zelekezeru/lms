@@ -20,7 +20,8 @@ const imagePreview = ref(props.instructor?.profile_img || null);
 
 const handleFileChange = (e) => {
     const file = e.target.files[0];
-    form.profile_img = file; // Assign file to form
+    props.form.profile_img = file; // Assign file to form
+    
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {

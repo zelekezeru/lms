@@ -54,20 +54,17 @@ class InstructorController extends Controller
     {
 
         $fields = $request->validated();
-        
+        $profileImg = $fields['profile_img'] ?? null;
         $year = substr(Carbon::now()->year, -2);
 
         $instructor_id = 'IN/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
 
         $fields['tenant_id'] = 1; // Hardcoded tenant ID for now
-        
-        // Profile   of Institution
-        if ($request->hasFile('profile_img')) {
-            $fields['profile_img'] = $request->file('profile_img')->store('instructors', 'public');
-
-        }else{
-            $fields['profile_img'] = null;
+        // Profile   of Instructor
+        if ($profileImg) {
+            $fields['profile_img'] = $profileImg->store('instructors', 'public');
         }
+
         
         $user = User::create([
             'name' => $fields['name'],

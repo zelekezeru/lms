@@ -23,11 +23,14 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'is_training' => $this->is_training,
             'status' => $this->status,
+            'is_deleted' => $this->is_deleted,
+            'is_published' => $this->is_published,
+            'is_approved' => $this->is_approved,
+            'is_completed' => $this->is_completed,
             'department_id' => $this->department_id,
-            'instructor_id' => $this->instructor_id,
-    
-            'department' => $this->whenLoaded('department'), 
-            'instructor' => $this->whenLoaded('instructor'), 
+
+            // Include related department info if loaded
+            'department' => $this->whenLoaded('department'),
         ];
     }
 }

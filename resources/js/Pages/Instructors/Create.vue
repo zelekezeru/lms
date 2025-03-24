@@ -22,11 +22,13 @@ const form = useForm({
     bio: "",
     employment_type: "",
     office_hours: "",
-    profile_img: null,
+    profile_img: "",
 });
 
 // Submit the form
 const submit = () => {
+    console.log(form);
+    
     form.post(route("instructors.store"));
 };
  

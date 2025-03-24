@@ -12,10 +12,6 @@ defineProps({
         type: Object,
         required: true,
     },
-    user: {
-        type: Object,
-        required: true,
-    },
 });
 
 // Delete function with SweetAlert confirmation
@@ -39,10 +35,6 @@ const deletecourse = (id) => {
     });
 };
 
-// Permission check function for user roles
-const userCan = (permission) => {
-    return user.permissions.includes(permission);
-};
 </script>
 
 
@@ -64,37 +56,29 @@ const userCan = (permission) => {
                     <!-- course Name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.user?.name || "N/A" }}</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.name || "N/A" }}</span>
                     </div>
 
-                    <!-- Specialization -->
+                    <!-- Code -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Specialization</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.specialization }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.code }}</span>
                     </div>
 
-                    <!-- Employment Type -->
+                    <!-- Credit -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Employment Type</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.employment_type }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Credit Hours</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.credit_hours }}</span>
                     </div>
-
-                    <!-- Hire Date -->
+                    <!-- Duration -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Hire Date</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.hire_date }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Duration</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.duration }}</span>
                     </div>
-
-                    <!-- Status -->
+                    <!-- Description -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.status }}</span>
-                    </div>
-
-                    <!-- Bio -->
-                    <div class="flex flex-col col-span-2">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Bio</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.bio || "N/A" }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.description }}</span>
                     </div>
                 </div>
 

@@ -27,7 +27,7 @@ class InstructorStoreRequest extends FormRequest
             'hire_date' => 'required|date',
             'status' => 'required|in:active,inactive,suspended',
             'bio' => 'nullable|string',
-            'profile_image' => 'nullable|image|max:2048',
+            'profile_img' => 'nullable|image|max:2048',
         ];
     }
 }

@@ -51,7 +51,6 @@ const updateScreenSize = () => {
 
 // Add event listeners
 onMounted(() => {
-    console.log(usePage().props.auth.user);
     updateScreenSize();
     window.addEventListener("resize", updateScreenSize);
 });

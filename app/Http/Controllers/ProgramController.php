@@ -68,7 +68,7 @@ class ProgramController extends Controller
         $user = User::where('id', $fields['user_id'])->first();
 
         $user->assignRole('PROGRAM-DIRECTOR');
-dd($fields);
+        
         $program = Program::create($fields);
 
         return redirect(route('programs.index'));

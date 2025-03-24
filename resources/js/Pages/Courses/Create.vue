@@ -1,17 +1,54 @@
 <script setup>
+import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { usePage } from "@inertiajs/vue3";
 
-const { departments } = usePage().props;
-const { instructors } = usePage().props;
-const { course } = usePage().props;
-const { user } = usePage().props;
+// Props from controller
+defineProps({
+    departments: Array,
+});
 
+const form = useForm({
+    name: "",
+    credit_hours: "",
+    duration: "",
+    description: "",
+    department_id: "",
+    is_training: false,
+    status: true,
+    is_published: false,
+    is_approved: true,
+    is_completed: false,
+});
+
+const submit = () => {
+    form.post(route("courses.store"));
+};
 </script>
 
 <template>
     <AppLayout>
-        <Form :departments="departments" />
+        <div class="max-w-5xl mx-auto p-6">
+            <!-- Centered and Enhanced Title -->
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Course Creation Form
+                </h2>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    Please fill out the form below to create a new course.
+                </p>
+            </div>
+
+            <!-- Form Card -->
+            <div
+                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
+            >
+                <Form
+                    :form="form"
+                    :submit="submit"
+                    :departments="departments"
+                />
+            </div>
+        </div>
     </AppLayout>
 </template>

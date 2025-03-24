@@ -102,6 +102,12 @@ class RolePermissionSeeder extends Seeder
             'create-instructors',
             'update-instructors',
             'delete-instructors',
+
+            // StudyMode (CRUD)
+            'view-courses',
+            'create-courses',
+            'update-courses',
+            'delete-courses',
         ];
 
         // Create all permissions

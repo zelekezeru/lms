@@ -65,11 +65,8 @@ class InstructorController extends Controller
         if ($request->hasFile('profile_img')) {
             $fields['profile_img'] = $request->file('profile_img')->store('instructors', 'public');
 
-            //Add storage directory to Image Name
-            $fields['profile_img'] = '/storage/' . $fields['profile_img'];
         }else{
             $fields['profile_img'] = null;
-            
         }
         
         $user = User::create([

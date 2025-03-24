@@ -99,9 +99,12 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        // Later to be modified
+        // Delete all departments linked to this program
+        $program->departments()->delete(); 
+    
         $program->delete();
-
-        return redirect(route('programs.index'));
+    
+        return redirect()->route('programs.index')->with('success', 'Program deleted successfully.');
     }
+    
 }

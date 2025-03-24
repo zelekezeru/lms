@@ -19,7 +19,7 @@ defineProps({
       <!-- Program Director Dropdown -->
       <div class="mb-4">
         <InputLabel for="program_id" value="Select Program Director" />
-        <select v-model="form.program_id" class="w-full px-3 py-2 border rounded-md">
+        <select v-model="form.program_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
           <option value="">Select Program</option>
           <option v-for="program in programs" :key="program.id" :value="program.id">
             {{ program.name }} in {{ program.language }}
@@ -45,7 +45,7 @@ defineProps({
       <!-- Department Head Dropdown -->
       <div class="mb-4">
         <InputLabel for="user_id" value="Select Department Head" />
-        <select v-model="form.user_id" class="w-full px-3 py-2 border rounded-md">
+        <select v-model="form.user_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition">
           <option value="">Select Head</option>
           <option v-for="user in users" :key="user.id" :value="user.id">
             {{ user.name }}

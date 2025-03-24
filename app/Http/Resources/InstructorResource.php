@@ -30,10 +30,6 @@ class InstructorResource extends JsonResource
             'profileImg'  => Storage::url($this->user->profile_img),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
-            'id' => $this->id,
-            'name'  => $this->user->name,
-            'email' => $this->user->email,
-            'specialization'  => $this->specialization,
         ];
     }
 }

@@ -33,6 +33,7 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
+
         return inertia('Instructors/Show', [
             'instructor' => new InstructorResource($instructor->load('department'))
         ]);

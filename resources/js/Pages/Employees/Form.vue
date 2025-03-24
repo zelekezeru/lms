@@ -76,7 +76,7 @@ const handleFileChange = (e) => {
                         id="role"
                         v-model="props.form.role_name"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     >
                         <option disabled value="">Select Role</option>
                         <option
@@ -87,6 +87,7 @@ const handleFileChange = (e) => {
                             {{ role.name }}
                         </option>
                     </select>
+
                     <InputError :message="props.form.errors.role_name" />
                 </div>
 
@@ -130,7 +131,7 @@ const handleFileChange = (e) => {
                         id="department_id"
                         v-model="props.form.department_id"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     >
                         <option disabled value="">Select Department</option>
                         <option
@@ -141,6 +142,7 @@ const handleFileChange = (e) => {
                             {{ department.name }}
                         </option>
                     </select>
+
                     <InputError :message="props.form.errors.department_id" />
                 </div>
 
@@ -162,13 +164,14 @@ const handleFileChange = (e) => {
                         id="employment_type"
                         v-model="props.form.employment_type"
                         required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     >
                         <option disabled value="">Select Type</option>
                         <option value="FULL_TIME">Full-time</option>
                         <option value="PART_TIME">Part-time</option>
                         <option value="CONTRACT">Contract</option>
                     </select>
+
                     <InputError :message="props.form.errors.employment_type" />
                 </div>
 

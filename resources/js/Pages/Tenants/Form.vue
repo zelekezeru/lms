@@ -10,7 +10,8 @@ const props = defineProps({
 // Handle logo selection and preview
 const handleFileChange = (e) => {
     const file = e.target.files[0];
-    props.form.profile_img = file;
+    props.form.logo = file;
+
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {

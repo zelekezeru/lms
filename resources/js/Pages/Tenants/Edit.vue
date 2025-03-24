@@ -28,8 +28,11 @@ const form = useForm({
 
 
 const submit = (id) => {
-    form.patch(route('tenants.update', { tenant: id }));
+    form.post(route('tenants.update', { tenant: id }), {
+        forceFormData: true,
+    });
 };
+
 
 </script>
 

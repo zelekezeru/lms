@@ -30,7 +30,7 @@ class TenantUpdateRequest extends FormRequest
             'contact_person' => ['sometimes', 'string'],
             'contact_phone' => ['sometimes', 'string'],
             'contact_email' => ['required', 'email', Rule::unique('tenants', 'contact_email')->ignore(request()->tenant->id),],
-            'logo' => ['nullable', 'file'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'status' => ['sometimes'],
             'paid' => ['sometimes'],
         ];

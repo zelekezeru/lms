@@ -6,23 +6,24 @@ import { ref } from "vue";
 
 
 const form = useForm({
-  name: '',
-  email: '',
-  code:  '',
-  phone: '',
-  address: '',
-  contact_person:  '',
-  contact_phone:  '',
-  contact_email:  '',
-  status: '',
-  paid: '',
-  logo: null,
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    contact_person: '',
+    contact_phone: '',
+    contact_email: '',
+    status: '',
+    paid: '',
+    logo: null,
 });
 
-
-const submit = (id) => {
-    form.post(route('tenants.store'));
+const submit = () => {
+    form.post(route('tenants.store'), {
+        forceFormData: true,
+    });
 };
+
 
 </script>
 

@@ -61,17 +61,11 @@ const deletetenant = (id) => {
                 class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
             >
                 <div class="flex justify-center mb-8">
-                    <div
-                        v-if="!imageLoaded"
-                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
-                    ></div>
-                    
                     <img
-                        v-show="imageLoaded"
-                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="`${tenant.logo}`"
-                        :alt="`Logo of ` + tenant.name"
-                        @load="handleImageLoad"
+                        v-if="tenant.logo"
+                        :src="`/storage/${tenant.logo}`"
+                        class="w-6 h-6 inline-block mr-2 img-thumbnail"
+                        alt="Tenant Logo"
                     />
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
@@ -140,7 +134,7 @@ const deletetenant = (id) => {
                             >{{ tenant.contact_phone }}</span
                         >
                     </div>
-                    
+
                     <!-- Status -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -148,16 +142,14 @@ const deletetenant = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                        >
                             <div v-if="tenant.status == 0" class="text-red-500">
                                 Inactive
                             </div>
-                            <div v-else class="text-green-500">
-                                Active
-                            </div>
+                            <div v-else class="text-green-500">Active</div>
                         </span>
                     </div>
-                    
+
                     <!-- Payment -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -165,18 +157,19 @@ const deletetenant = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                        >
                             <div v-if="tenant.paid == 0" class="text-red-500">
                                 Not Paid
                             </div>
-                            <div v-else class="text-green-500">
-                                Paid
-                            </div></span
+                            <div v-else class="text-green-500">Paid</div></span
                         >
                     </div>
-                    
+
                     <!-- Password -->
-                    <div v-if="tenant.password_changed === 0" class="flex flex-col">
+                    <div
+                        v-if="tenant.password_changed === 0"
+                        class="flex flex-col"
+                    >
                         <span class="text-sm text-gray-500 dark:text-gray-400"
                             >Default Password</span
                         >
@@ -185,7 +178,7 @@ const deletetenant = (id) => {
                             >{{ tenant.default_password }}</span
                         >
                     </div>
-                                                      
+
                     <!-- Aggrement -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -201,9 +194,7 @@ const deletetenant = (id) => {
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link
-                        :href="
-                            route('tenants.edit', { tenant: tenant.id })
-                        "
+                        :href="route('tenants.edit', { tenant: tenant.id })"
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />

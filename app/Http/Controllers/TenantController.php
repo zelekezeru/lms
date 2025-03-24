@@ -40,14 +40,15 @@ class TenantController extends Controller
     {
         $fields = $request->validated();
 
-        $image = $fields['logo'] ?? null;
-        
-        if ($image) {
-            $logo_path = $image->store('tenants-logo', 'public');
-        }else{
-            $logo_path = null;
+        $fields = $request->validated();
+
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('tenants-logo', 'public');
+            $fields['logo'] = '/storage/' . $logoPath;
+        } else {
+            unset($fields['logo']); 
         }
-        $fields['logo'] = $logo_path;
+        
 
         // Creating Tenant Code
         $year = substr(Carbon::now()->year, -2);
@@ -98,24 +99,21 @@ class TenantController extends Controller
     {
         $fields = $request->validated();
         
-        // Logo of Institution
+        // Handle logo upload
         if ($request->hasFile('logo')) {
-            $fields['logo'] = $request->file('logo')->store('tenants', 'public');
-
-            //Add storage directory to Image Name
-            $fields['logo'] = '/storage/' . $fields['logo'];
-        }else{
-            $fields['logo'] = $tenant->logo;
-            
+            $logoPath = $request->file('logo')->store('tenants-logo', 'public');
+            $fields['logo'] = '/storage/' . $logoPath;
+        } else {
+            unset($fields['logo']); 
         }
         
         $tenant->update($fields);
-
+    
         return inertia('Tenants/Show', [
             'tenant' => new TenantResource($tenant),
         ]);
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */

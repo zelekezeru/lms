@@ -39,18 +39,17 @@ class TenantController extends Controller
     public function store(TenantStoreRequest $request)
     {
         $fields = $request->validated();
+
+        $image = $fields['logo'] ?? null;
         
-        // Logo of Institution
-        if ($request->hasFile('logo')) {
-            $fields['logo'] = $request->file('logo')->store('tenants', 'public');
-
-            //Add storage directory to Image Name
-            $fields['logo'] = '/storage/' . $fields['logo'];
+        if ($image) {
+            $logo_path = $image->store('tenants-logo', 'public');
         }else{
-            $fields['logo'] = null;
-            
+            $logo_path = null;
         }
+        $fields['logo'] = $logo_path;
 
+        // Creating Tenant Code
         $year = substr(Carbon::now()->year, -2);
 
         $fields['code'] = 'Tenant/'. str_pad(Tenant::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
@@ -68,8 +67,8 @@ class TenantController extends Controller
         $tenant = Tenant::create($fields);
 
         $this->tenantRepresentative($fields, $tenant->id);
-
-        return redirect(route('tenants.index'));
+        
+        return redirect(route('tenants.show', $tenant));
     }
     
     /**

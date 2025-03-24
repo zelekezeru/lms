@@ -7,20 +7,20 @@ const props = defineProps({
   form: { type: Object, required: true },
 });
 
-const imagePreview = ref(props.tenant?.logo || null);
-
+// Handle logo selection and preview
 const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  form.logo = file;
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.value = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = e.target.files[0];
+    props.form.profile_img = file;
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            props.form.imagePreview = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        props.form.imagePreview = null;
+    }
 };
-
 </script>
 
 <template>
@@ -64,29 +64,20 @@ const handleFileChange = (e) => {
         <div v-if="form.errors.phone" class="text-red-500 text-sm">{{ form.errors.phone }}</div>
       </div>
 
-      <div>
-        <label for="logo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo</label>
-        <div class="flex items-center gap-4">
-          <label
-            for="logo"
-            class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-          >
-            <PhotoIcon class="w-5 h-5" />
-            Upload Logo
-          </label>
-          <input
-            id="logo"
-            type="file"
-            accept="image/*"
-            class="hidden"
-            @change="handleFileChange"
-          />
-          <div v-if="imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
-            <img :src="imagePreview" alt="Logo Preview" class="object-cover w-full h-full" />
-          </div>
+  <!-- logo Upload & Preview -->
+  <div>
+    <InputLabel for="profile_img" value="logo" />
+    <div class="flex items-center gap-4">
+        <label for="profile_img" class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700">
+            <PhotoIcon class="w-5 h-5" /> Upload Image
+        </label>
+        <input id="profile_img" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
+        <div v-if="props.form.imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
+            <img :src="props.form.imagePreview" alt="Profile Preview" class="object-cover w-full h-full" />
         </div>
-        <div v-if="form.errors.logo" class="text-red-500 text-sm">{{ form.errors.logo }}</div>
-      </div>
+    </div>
+    <InputError :message="props.form.errors.profile_img" />
+  </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

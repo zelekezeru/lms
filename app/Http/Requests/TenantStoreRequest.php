@@ -31,8 +31,8 @@ class TenantStoreRequest extends FormRequest
             'contact_phone' => ['required', 'string'],
             'contact_email' => ['required', 'string', 'unique:users,email'],
             'status' => ['nullable', 'in:0,1'],
-            'paid' => ['nullable', 'in:0,1'],
-            'logo' => ['nullable', 'file'],      
+            'paid' => ['nullable', 'in:0,1'],    
+            'logo'   => 'nullable|image:jpeg,jpg,png,svg,gif',
         ];
     }
 }

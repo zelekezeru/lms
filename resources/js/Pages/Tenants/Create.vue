@@ -14,9 +14,9 @@ const form = useForm({
   contact_person:  '',
   contact_phone:  '',
   contact_email:  '',
-  logo: '',
   status: '',
   paid: '',
+  logo: null,
 });
 
 

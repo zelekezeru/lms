@@ -23,12 +23,12 @@ const form = useForm({
   logo: props.tenant?.logo || '',
   status: props.tenant?.status,
   paid: props.tenant?.paid,
-  _method: 'PUT',
+  _method: 'PATCH',
 });
 
 
 const submit = (id) => {
-    form.post(route('tenants.update', { tenant: id }));
+    form.patch(route('tenants.update', { tenant: id }));
 };
 
 </script>

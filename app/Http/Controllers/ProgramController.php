@@ -65,16 +65,6 @@ class ProgramController extends Controller
         $fields['code'] = $program_id;
         
         $program = Program::create($fields);
-        
-        foreach ($request->studyModes as $studyMode) {
-
-            $studyMode = StudyMode::create([
-                'program_id' => $program->id,
-                'mode' => $studyMode['mode'],
-                'duration' => $studyMode['duration'],
-                'fees' => $studyMode['fees']
-            ]);
-        }
 
         return redirect(route('programs.index'));
     }

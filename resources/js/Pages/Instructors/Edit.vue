@@ -18,12 +18,12 @@ const form = useForm({
     employment_type: instructor?.employment_type || "",
     office_hours: instructor?.office_hours || "",
     profile_img: instructor?.profile_img || "",
-    _method: 'PUT',
+    _method: 'PATCH',
 });
 
 // Submit the form
 const submit = () => {
-    form.put(route("instructors.update", { instructor: form.id }));
+    form.patch(route("instructors.update", { instructor: form.id }));
 };
 </script>
 

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class TenantResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class TenantResource extends JsonResource
             'code' => $this->code,
             'phone' => $this->phone,
             'address' => $this->address,
-            'logo' => $this->logo,
+            
             'password_changed' => $this->password_changed,
             'default_password' => $this->default_password,
             'password' => $this->password,
@@ -32,6 +33,7 @@ class TenantResource extends JsonResource
             'allowed' => $this->allowed,
             'status' => $this->status,
             'paid' => $this->paid,
+            'profileImg'  => $this->logo,
         ];
     }
 }

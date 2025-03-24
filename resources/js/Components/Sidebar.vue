@@ -284,6 +284,7 @@ const afterLeave = (el) => {
                 <SidebarDropdownMenu
                     :label="'Academic Documents'"   
                     :icon="AcademicCapIcon"
+                    class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                 >
@@ -408,7 +409,7 @@ const afterLeave = (el) => {
                     :href="route('profile.edit')"
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
                 >
-                    <UsersIcon class="w-8 h-8 text-gray-200 p-1 rounded-full" />
+                    <UsersIcon class="w-8 text-gray-200 p-1 rounded-full" />
                     <transition name="fade">
                         <span
                             v-if="sidebarVisible || sidebarHovered"

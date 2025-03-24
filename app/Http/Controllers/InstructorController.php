@@ -33,11 +33,11 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
-
-        return inertia('Instructors/Show', [
-            'instructor' => new InstructorResource($instructor->load('department'))
+        return Inertia::render('Instructors/Show', [
+            'instructor' => $instructor->load('user') 
         ]);
     }
+    
 
     public function create(): Response
     {

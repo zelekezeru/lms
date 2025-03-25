@@ -27,12 +27,23 @@ class TenantController extends Controller
                   ->orWhere('email', 'LIKE', "%{$search}%")
                   ->orWhere('phone', 'LIKE', "%{$search}%");
         }
-    
+        
+        $allowedSorts = ['name', 'code', 'email', 'phone'];
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
         $tenants = TenantResource::collection($query->paginate(15)->withQueryString());
     
         return inertia('Tenants/Index', [
             'tenants' => $tenants,
             'search' => $request->search, // Keep the search term in the frontend
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
         ]);
     }
     

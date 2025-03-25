@@ -6,11 +6,17 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import Thead from "@/Components/Thead.vue";
 
 defineProps({
     tenants: {
         type: Object,
         required: true,
+    },
+    sortInfo: {
+        type: Object,
     },
 });
 
@@ -126,16 +132,16 @@ const searchTenants = () => {
 
         <!-- Tenants Table OR No Results Message -->
         <div v-if="tenants.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <Table>
+                <TableHeader>
                     <tr>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Code</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Phone</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Name</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">Code</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'email'">Email</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'phone'">Phone</Thead>
+                        <Thead>Action</Thead>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
                     <tr
                         v-for="tenant in tenants.data"
@@ -165,7 +171,7 @@ const searchTenants = () => {
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </Table>
         </div>
 
         <!-- No Search Results Message -->

@@ -9,11 +9,15 @@ import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "../../Components/TableZebraRows.vue";
+import Thead from "@/Components/Thead.vue";
 
 defineProps({
     programs: {
         type: Object,
         required: true,
+    },
+    sortInfo: {
+        type: Object,
     },
 });
 
@@ -64,7 +68,7 @@ const deleteProgram = (id) => {
 const searchPrograms = () => {
     router.get(
         route("programs.index"),
-        { search: search.value },
+        { ...route().params, search: search.value },
         { preserveState: true }
     );
 };
@@ -137,10 +141,10 @@ const searchPrograms = () => {
         <Table>
             <TableHeader>
                 <tr>
-                    <th scope="col" class="px-6 py-3">Program Name</th>
-                    <th scope="col" class="px-6 py-3">Language</th>
-                    <th scope="col" class="px-6 py-3">Director</th>
-                    <th scope="col" class="px-6 py-3">Action</th>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Program Name</Thead>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'language'">Language</Thead>
+                    <Thead>Director</Thead>
+                    <Thead scope="col" class="px-6 py-3">Action</Thead>
                 </tr>
             </TableHeader>
             <tbody>

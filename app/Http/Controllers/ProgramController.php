@@ -21,24 +21,33 @@ class ProgramController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search', '');
-    
-        $programs = ProgramResource::collection(
-            Program::with('user')
-                ->when($search, function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                          ->orWhere('language', 'like', "%{$search}%")
-                          ->orWhereHas('user', function ($query) use ($search) {
-                              $query->where('name', 'like', "%{$search}%");
-                          });
-                })
-                ->paginate(15)
-        );
-    
+        $query = Program::with('user')
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('language', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    });
+            });
+
+        $allowedSorts = ['name', 'language'];
+        $sortColumn = $request->currentSortColumn;
+        $sortDirection = $request->currentSortDirection;
+        
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+        $programs = ProgramResource::collection($query->paginate(15));
+
         return inertia('Programs/Index', [
             'programs' => $programs,
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
         ]);
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -51,37 +60,37 @@ class ProgramController extends Controller
 
         ]);
     }
-    
+
     /**a
      * Show the form for creating a new resource.
      */
     public function create()
     {
         $users = UserResource::collection(User::all());
-        
+
         return  inertia('Programs/Create', [
             'users' => $users,
         ]);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $year = substr(Carbon::now()->year, -2);
-        
-        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
-        
+
+        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+
         $fields['code'] = $program_id;
 
         // Assign the selected director the PROGRAM-DIRECTOR role
         $user = User::where('id', $fields['user_id'])->first();
 
         $user->assignRole('PROGRAM-DIRECTOR');
-        
+
         $program = Program::create($fields);
 
         return redirect(route('programs.index'));
@@ -118,11 +127,10 @@ class ProgramController extends Controller
     public function destroy(Program $program)
     {
         // Delete all departments linked to this program
-        $program->departments()->delete(); 
-    
+        $program->departments()->delete();
+
         $program->delete();
-    
+
         return redirect()->route('programs.index')->with('success', 'Program deleted successfully.');
     }
-    
 }

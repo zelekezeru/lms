@@ -20,7 +20,7 @@ const form = useForm({
   contact_person: props.tenant?.contact_person || '',
   contact_phone: props.tenant?.contact_phone || '',
   contact_email: props.tenant?.contact_email || '',
-  logo: props.tenant?.logo || '',
+  logo: '',
   status: props.tenant?.status,
   paid: props.tenant?.paid,
   _method: 'PATCH',

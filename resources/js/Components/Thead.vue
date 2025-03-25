@@ -16,8 +16,13 @@ const props = defineProps({
     sortInfo: {
         type: Object,
     },
+    reloadOnly: {
+      type: String,
+    }
 });
 
+// This variable stores which props to reload after sorting in addition to the 
+const reloadOnly = route().current().split('.')[0];
 const sort = () => {
     let sortDirection = "desc";
 
@@ -51,7 +56,8 @@ const sort = () => {
             sortDirection: sortDirection,
         },
         {
-            only: ["departments", "sortInfo"],
+            preserveState: true,
+            only: [reloadOnly, "sortInfo"],
         }
     );
 };

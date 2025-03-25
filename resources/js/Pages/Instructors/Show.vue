@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -12,7 +12,16 @@ defineProps({
     type: Object,
     required: true,
   },
+
 });
+
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
 
 // Delete function with SweetAlert confirmation
 const deleteinstructor = (id) => {
@@ -44,8 +53,14 @@ const deleteinstructor = (id) => {
       </h1>
 
       <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
-        <div class="grid grid-cols-2 gap-4">
-          
+        <!-- Instructor Image -->
+                <div class="flex justify-center mb-8">
+                    <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
+                    
+                    <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                        :src="instructor.user.profileImg" :alt="`Logo of ` + instructor.name"
+                        @load="handleImageLoad"/>
+                </div>
           <!-- instructor Code -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
@@ -118,7 +133,6 @@ const deleteinstructor = (id) => {
             </button>
           </div>
         </div>
-      </div>
     </div>
   </AppLayout>
 </template>

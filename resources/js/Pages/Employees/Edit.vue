@@ -6,7 +6,6 @@ import Form from "./Form.vue";
 // Define props to accept the employee data
 const props = defineProps({
     employee: { type: Object, required: true },
-    departments: { type: Array, required: true },
     roles: { type: Array, required: true },
 });
 
@@ -18,7 +17,6 @@ const form = useForm({
     password: props.employee.password || "employees@default", // Set default if no password provided
     password_confirmation: props.employee.password_confirmation || "employees@default",
     role_name: props.employee.role_name || "",
-    department_id: props.employee.department_id || "",
     job_position: props.employee.job_position || "",
     employment_type: props.employee.employment_type || "",
     office_hours: props.employee.office_hours || "",

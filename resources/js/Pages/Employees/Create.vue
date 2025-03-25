@@ -5,7 +5,6 @@ import { ref } from "vue";
 import Form from "./Form.vue";
 
 defineProps({
-    departments: { type: Array, required: true },
     roles: { type: Array, required: true },
 });
 
@@ -16,7 +15,6 @@ const form = useForm({
     password: "employees@default",  // Default password
     password_confirmation: "employees@default",  // Default confirmation
     role_name: "",
-    department_id: "",
     job_position: "",
     employment_type: "",
     office_hours: "",

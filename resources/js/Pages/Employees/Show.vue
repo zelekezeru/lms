@@ -57,9 +57,7 @@ const deleteemployee = (id) => {
                 Employee Details
             </h1>
 
-            <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
-            >
+            <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
                 <div class="flex justify-center mb-8">
                     <div
                         v-if="!imageLoaded"
@@ -107,15 +105,14 @@ const deleteemployee = (id) => {
                         >
                     </div>
 
-                    <!-- Department -->
+                    <!-- Role -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Department</span
+                            >Role</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.department.name }}</span
-                        >
+                            >{{ employee.role.name }}</span>
                     </div>
 
                     <!-- Employment Type -->

@@ -33,7 +33,6 @@ const handleFileChange = (e) => {
     <form @submit.prevent="props.form.submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
-            <section class="space-y-6">
                 <div>
                     <InputLabel for="name" value="Full Name" />
                     <TextInput
@@ -121,42 +120,17 @@ const handleFileChange = (e) => {
                     </div>
                     <InputError :message="props.form.errors.profile_img" />
                 </div>
-            </section>
-
-            <!-- Employee Details -->
-            <section class="space-y-6">
-                <div>
-                    <InputLabel for="department_id" value="Department" />
-                    <select
-                        id="department_id"
-                        v-model="props.form.department_id"
-                        required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                    >
-                        <option disabled value="">Select Department</option>
-                        <option
-                            v-for="department in props.departments"
-                            :key="department.id"
-                            :value="department.id"
-                        >
-                            {{ department.name }}
-                        </option>
-                    </select>
-
-                    <InputError :message="props.form.errors.department_id" />
-                </div>
-
-                <div>
-                    <InputLabel for="job_position" value="Job Position" />
-                    <TextInput
-                        id="job_position"
-                        type="text"
-                        v-model="props.form.job_position"
-                        required
-                        class="w-full"
-                    />
-                    <InputError :message="props.form.errors.job_position" />
-                </div>
+            <div>
+                <InputLabel for="job_position" value="Job Position" />
+                <TextInput
+                    id="job_position"
+                    type="text"
+                    v-model="props.form.job_position"
+                    required
+                    class="w-full"
+                />
+                <InputError :message="props.form.errors.job_position" />
+            </div>
 
                 <div>
                     <InputLabel for="employment_type" value="Employment Type" />
@@ -185,7 +159,6 @@ const handleFileChange = (e) => {
                     />
                     <InputError :message="props.form.errors.office_hours" />
                 </div>
-            </section>
         </div>
 
         <!-- Submit Button -->

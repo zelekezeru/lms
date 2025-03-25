@@ -96,7 +96,7 @@ const deleteemployee = (id) => {
                     <tr>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Department</th>
+                        <th scope="col" class="px-6 py-3">Role</th>
                         <th scope="col" class="px-6 py-3">Job Position</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
@@ -122,9 +122,7 @@ const deleteemployee = (id) => {
                             </Link>
                         </th>
                         <td class="px-6 py-4">{{ employee.email }}</td>
-                        <td class="px-6 py-4">
-                            {{ employee.department.name }}
-                        </td>
+                        <td class="px-6 py-4">{{ employee.role.name }}</td>
                         <td class="px-6 py-4">
                             {{ employee.jobPosition }}
                         </td>

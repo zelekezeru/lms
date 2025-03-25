@@ -15,12 +15,10 @@ class EmployeeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // dd($this->user->roles()->first());
         return [
             'id' => $this->id,
             'name'  => $this->user->name,
             'email' => $this->user->email,
-            'department' => new DepartmentResource($this->whenLoaded('department')),
             'userRole' => $this->user->roles()->first()->name,
             'jobPosition'  => $this->job_position,
             'employmentType' => $this->employment_type,

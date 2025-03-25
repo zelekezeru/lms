@@ -29,7 +29,6 @@ class EmployeeStoreRequest extends FormRequest
             'role_name'   => 'required|exists:roles,name',
             // Employee table validations
             'profile_img'   => 'nullable|image:jpeg,jpg,png',
-            'department_id'  => 'required|exists:departments,id',
             'job_position'   => 'required|string|max:255',
             'employment_type'=> 'required|in:FULL_TIME,PART_TIME,CONTRACT',
             'office_hours'   => 'nullable|string|max:255',

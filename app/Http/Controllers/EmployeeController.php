@@ -34,12 +34,9 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $departments = DepartmentResource::collection(Department::all());
-
         $roles = Role::all();
         
         return inertia('Employees/Create', [
-            'departments' => $departments,
             'roles' => $roles,
         ]);
     }
@@ -68,7 +65,6 @@ class EmployeeController extends Controller
         ]);
 
         $employee = Employee::create([
-            'department_id' => $fields['department_id'],
             'user_id' => $user->id,
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
@@ -86,7 +82,7 @@ class EmployeeController extends Controller
     public function show(Employee $employee)
     {
         return inertia('Employees/Show', [
-            'employee' => new EmployeeResource($employee->load('department'))
+            'employee' => new EmployeeResource($employee->load('user')),
         ]);
     }
     
@@ -95,13 +91,10 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $departments = DepartmentResource::collection(Department::all());
-        
         $roles = Role::all();
 
         return inertia('Employees/Edit', [
-            'employee' => new EmployeeResource($employee->load('department')),
-            'departments' => $departments,
+            'employee' => new EmployeeResource($employee->load('user')),
             'roles' => $roles,
         ]);
     }
@@ -128,7 +121,6 @@ class EmployeeController extends Controller
         ]);
 
         $employee->update([
-            'department_id' => $fields['department_id'],
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],

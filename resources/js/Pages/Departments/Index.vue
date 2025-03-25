@@ -6,11 +6,18 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import TableZebraRows from "@/Components/TableZebraRows.vue";
+import Thead from "@/Components/Thead.vue";
 
 defineProps({
     departments: {
         type: Object,
         required: true,
+    },
+    sortInfo: {
+        type: Object,
     },
 });
 
@@ -34,8 +41,8 @@ const refreshData = () => {
 const searchDepartments = () => {
     router.get(
         route("departments.index"),
-        { search: search.value },
-        { preserveState: true }
+        { ...route().params, search: search.value },
+        { preserveState: true },
     );
 };
 
@@ -109,20 +116,19 @@ const deleteDepartment = (id) => {
         </div>
 
         <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <Table>
+                <TableHeader>
                     <tr>
-                        <th scope="col" class="px-6 py-3">Department Name</th>
-                        <th scope="col" class="px-6 py-3">Code</th>
-                        <th scope="col" class="px-6 py-3">Description</th>
-                        <th scope="col" class="px-6 py-3">Actions</th>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Department Name</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">Code</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'description'">Description</Thead>
+                        <Thead>Actions</Thead>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
-                    <tr
+                    <TableZebraRows
                         v-for="department in departments.data"
                         :key="department.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                     >
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             <Link :href="route('departments.show', { department: department.id })">
@@ -148,9 +154,9 @@ const deleteDepartment = (id) => {
                                 </button>
                             </div>
                         </td>
-                    </tr>
+                    </TableZebraRows>
                 </tbody>
-            </table>
+            </Table>
         </div>
 
         <!-- Pagination Links -->

@@ -32,6 +32,13 @@ class DepartmentController extends Controller
             $query->where('name', 'LIKE', "%{$search}%")
                   ->orWhere('code', 'LIKE', "%{$search}%");
         }
+
+        $allowedSorts = ['name', 'code', 'description'];
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
     
         
         $departments = $query->paginate(15)->withQueryString();
@@ -39,6 +46,10 @@ class DepartmentController extends Controller
         return inertia('Departments/Index', [
             'departments' => DepartmentResource::collection($departments), 
             'search' => $request->search, 
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
         ]);
     }
     

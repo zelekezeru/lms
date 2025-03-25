@@ -20,15 +20,29 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $departments = DepartmentResource::collection(Department::paginate(15));
-
+        
+        $query = Department::query();
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            
+            
+            $query->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('code', 'LIKE', "%{$search}%");
+        }
+    
+        
+        $departments = $query->paginate(15)->withQueryString();
+        
         return inertia('Departments/Index', [
-            'departments' => $departments
+            'departments' => DepartmentResource::collection($departments), 
+            'search' => $request->search, 
         ]);
     }
-
+    
+    
     /**
      * Show the form for creating a new resource.
      */

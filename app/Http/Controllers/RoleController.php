@@ -17,11 +17,18 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::paginate(15);
+        $search = $request->input('search');
 
-        return Inertia::render('Roles/Index', compact('roles'));
+        $roles = Role::when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%$search%");
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return Inertia::render('Roles/Index', compact('roles', 'search'));
     }
 
     public function create(): Response

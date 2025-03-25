@@ -3,23 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use App\Models\Program;
-use App\Http\Requests\StudentRequest;
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $students = Student::latest()->paginate(15);
-
-        return Inertia::render('Students/Index', compact('students'));
+        // Fetch the search term from the request
+        $search = $request->input('search', '');
+        
+        // Query the students, applying the search filter if provided
+        $students = Student::latest()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('student_name', 'LIKE', "%{$search}%")
+                          ->orWhere('father_name', 'LIKE', "%{$search}%")
+                          ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
+                          ->orWhere('program', 'LIKE', "%{$search}%");
+                });
+            })
+            ->paginate(15)
+            ->withQueryString(); // Retain the search term for pagination links
+        
+        return Inertia::render('Students/Index', [
+            'students' => $students,
+            'search' => $search, // Pass the search term back to the frontend
+        ]);
     }
+    
 
     public function create(): Response
     {

@@ -13,11 +13,18 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $permissions = Permission::paginate(15);
+        $search = $request->input('search');
+        
+        $permissions = Permission::when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%$search%");
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
 
-        return Inertia::render('Permissions/Index', compact('permissions'));
+        return Inertia::render('Permissions/Index', compact('permissions', 'search'));
     }
 
     public function create(): Response

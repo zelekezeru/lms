@@ -19,7 +19,9 @@ defineProps({
 });
 
 const refreshing = ref(false);
+const searchQuery = ref(""); // for search input
 
+// Refresh data
 const refreshData = () => {
     refreshing.value = true;
     router.flush("/permissions", { method: "get" });
@@ -30,6 +32,11 @@ const refreshData = () => {
             refreshing.value = false;
         },
     });
+};
+
+// Handle search functionality
+const searchPermissions = () => {
+    router.get(route("permissions.index"), { search: searchQuery.value }, { preserveState: true });
 };
 
 // Delete function with SweetAlert confirmation
@@ -62,30 +69,59 @@ const deletepermission = (id) => {
     <AppLayout>
         <!-- Page Title -->
         <div class="my-6 text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Permissions
-            </h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Permissions</h1>
         </div>
 
-        <!-- Header Toolbar -->
-        <div class="flex justify-between permissions-center mb-3">
-            <Link
-                :href="route('permissions.create')"
-                class="inline-flex permissions-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-                Add New Permission
-            </Link>
-            <button
-                @click="refreshData"
-                class="inline-flex permissions-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                title="Refresh Data"
-            >
-                <ArrowPathIcon
-                    class="w-5 h-5 mr-2"
-                    :class="{ 'animate-spin': refreshing }"
+        <!-- Search Bar and Header Toolbar -->
+        <div class="flex justify-between items-center mb-3">
+            <!-- Search Bar with Icon -->
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"
+                        />
+                    </svg>
+                </span>
+                <input
+                    type="text"
+                    v-model="searchQuery"
+                    placeholder="Search permissions..."
+                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                    @input="searchPermissions"
                 />
-                Refresh Data
-            </button>
+            </div>
+
+            <!-- Button Group (Add & Refresh) -->
+            <div class="flex space-x-2">
+                <Link
+                    :href="route('permissions.create')"
+                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                    + Add Permission
+                </Link>
+
+                <button
+                    @click="refreshData"
+                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    title="Refresh Data"
+                >
+                    <ArrowPathIcon
+                        class="w-5 h-5 mr-2"
+                        :class="{ 'animate-spin': refreshing }"
+                    />
+                    Refresh Data
+                </button>
+            </div>
         </div>
 
         <!-- Permissions Table -->

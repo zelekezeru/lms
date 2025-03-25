@@ -19,15 +19,27 @@ use Spatie\Permission\Models\Role;
 
 class InstructorController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request)
     {
-        $instructors = InstructorResource::collection(Instructor::with('department')->paginate(15));
-
+        $query = Instructor::query();
+    
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+    
+            // Adjusted for correct column names
+            $query->where('specialization', 'LIKE', "%{$search}%")
+                  ->orWhere('employment_type', 'LIKE', "%{$search}%");
+        }
+    
+        $instructors = InstructorResource::collection($query->paginate(15)->withQueryString());
+    
         return inertia('Instructors/Index', [
-            'instructors' => $instructors
+            'instructors' => $instructors,
+            'search' => $request->search,
         ]);
     }
-
+    
+    
     /**
      * Display the specified resource.
      */

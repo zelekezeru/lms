@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\Program;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class ProgramController extends Controller
@@ -17,10 +18,22 @@ class ProgramController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $programs = ProgramResource::collection(Program::with('user')->paginate(15));
-        
+        $search = $request->input('search', '');
+    
+        $programs = ProgramResource::collection(
+            Program::with('user')
+                ->when($search, function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('language', 'like', "%{$search}%")
+                          ->orWhereHas('user', function ($query) use ($search) {
+                              $query->where('name', 'like', "%{$search}%");
+                          });
+                })
+                ->paginate(15)
+        );
+    
         return inertia('Programs/Index', [
             'programs' => $programs,
         ]);

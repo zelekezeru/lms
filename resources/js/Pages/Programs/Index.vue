@@ -19,6 +19,10 @@ defineProps({
 
 const refreshing = ref(false);
 
+// Search term for filtering
+const search = ref(usePage().props.search || "");
+
+// Refresh data function
 const refreshData = () => {
     refreshing.value = true;
     router.flush("/programs", { method: "get" });
@@ -32,7 +36,7 @@ const refreshData = () => {
 };
 
 // Delete function with SweetAlert confirmation
-const deleteprogram = (id) => {
+const deleteProgram = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -55,6 +59,15 @@ const deleteprogram = (id) => {
         }
     });
 };
+
+// Search function for programs
+const searchPrograms = () => {
+    router.get(
+        route("programs.index"),
+        { search: search.value },
+        { preserveState: true }
+    );
+};
 </script>
 
 <template>
@@ -68,24 +81,56 @@ const deleteprogram = (id) => {
 
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
-            <Link
-                v-if="userCan('create-programs')"
-                :href="route('programs.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-                Add New Program
-            </Link>
-            <button
-                @click="refreshData"
-                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                title="Refresh Data"
-            >
-                <ArrowPathIcon
-                    class="w-5 h-5 mr-2"
-                    :class="{ 'animate-spin': refreshing }"
+            <!-- Search Bar with Icon -->
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"
+                        />
+                    </svg>
+                </span>
+                <input
+                    type="text"
+                    v-model="search"
+                    placeholder="Search Programs..."
+                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                    @input="searchPrograms"
                 />
-                Refresh Data
-            </button>
+            </div>
+
+            <div class="flex space-x-2">
+                <!-- Add New Program Button -->
+                <Link
+                    v-if="userCan('create-programs')"
+                    :href="route('programs.create')"
+                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                    + Add Program
+                </Link>
+
+                <!-- Refresh Button -->
+                <button
+                    @click="refreshData"
+                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    title="Refresh Data"
+                >
+                    <ArrowPathIcon
+                        class="w-5 h-5 mr-2"
+                        :class="{ 'animate-spin': refreshing }"
+                    />
+                    Refresh Data
+                </button>
+            </div>
         </div>
 
         <!-- Programs Table -->
@@ -138,7 +183,7 @@ const deleteprogram = (id) => {
                         </Link>
                         <button
                             v-if="userCan('delete-programs')"
-                            @click="deleteprogram(program.id)"
+                            @click="deleteProgram(program.id)"
                             class="text-red-500 hover:text-red-700"
                         >
                             <TrashIcon class="w-5 h-5" />

@@ -16,15 +16,26 @@ class TenantController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tenants = TenantResource::collection(Tenant::paginate(15));
-
+        $query = Tenant::query();
+    
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('code', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('phone', 'LIKE', "%{$search}%");
+        }
+    
+        $tenants = TenantResource::collection($query->paginate(15)->withQueryString());
+    
         return inertia('Tenants/Index', [
             'tenants' => $tenants,
+            'search' => $request->search, // Keep the search term in the frontend
         ]);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */

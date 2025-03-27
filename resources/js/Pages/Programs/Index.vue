@@ -16,6 +16,7 @@ defineProps({
         type: Object,
         required: true,
     },
+    
     sortInfo: {
         type: Object,
     },

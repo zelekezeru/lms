@@ -15,9 +15,9 @@ const form = useForm({
     description: "",
     department_id: "",
     is_training: false,
-    status: true,
+    status: false,
     is_published: false,
-    is_approved: true,
+    is_approved: false,
     is_completed: false,
 });
 

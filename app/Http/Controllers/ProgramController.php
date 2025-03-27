@@ -31,8 +31,8 @@ class ProgramController extends Controller
             });
 
         $allowedSorts = ['name', 'language'];
-        $sortColumn = $request->currentSortColumn;
-        $sortDirection = $request->currentSortDirection;
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
         
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
             $query->orderBy($sortColumn, $sortDirection);

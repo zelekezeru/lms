@@ -40,7 +40,7 @@ class StudentController extends Controller
     public function create(): Response
     {
         $departments = DepartmentResource::collection(Department::all());
-        dd($departments);
+
         return inertia('Students/Create', [
             'departments' => $departments,
         ]);

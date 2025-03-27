@@ -287,8 +287,8 @@ const afterLeave = (el) => {
                     :icon="BriefcaseIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-courses', 'create-courses'])">
-                    
+                    v-show="userCanAny(['view-courses', 'create-courses'])"
+                >
                     <SidebarDrowpdownLink
                         v-show="userCan('create-courses')"
                         :href="route('courses.create')"
@@ -307,21 +307,23 @@ const afterLeave = (el) => {
 
                 <!-- User Document -->
                 <SidebarDropdownMenu
-                    :label="'User Documents'"   
+                    :label="'User Documents'"
                     :icon="AcademicCapIcon"
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                 >
-                    <SidebarDrowpdownLink 
-                    v-show="userCan('create-userDocuments')"
-                    :href="route('userDocuments.create')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-userDocuments')"
+                        :href="route('userDocuments.create')"
+                    >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add User Document</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink 
-                    v-show="userCan('view-userDocuments')"
-                    :href="route('userDocuments.index')">
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-userDocuments')"
+                        :href="route('userDocuments.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage User Document</span>
                     </SidebarDrowpdownLink>
@@ -334,15 +336,18 @@ const afterLeave = (el) => {
                     :icon="UserIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-instructors', 'create-instructors'])"
+                    v-show="
+                        userCanAny(['view-instructors', 'create-instructors'])
+                    "
                 >
                     <SidebarDrowpdownLink :href="route('instructors.create')">
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Add Instructor</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink 
+                    <SidebarDrowpdownLink
                         v-show="userCan('view-instructors')"
-                        :href="route('instructors.index')">
+                        :href="route('instructors.index')"
+                    >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Instructors</span>
                     </SidebarDrowpdownLink>
@@ -434,6 +439,7 @@ const afterLeave = (el) => {
                 </SidebarDropdownMenu>
 
                 <!-- Profile Navigation Item -->
+                <!-- Profile Navigation Item -->
                 <Link
                     :href="route('profile.edit')"
                     class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
@@ -448,26 +454,25 @@ const afterLeave = (el) => {
                         </span>
                     </transition>
                 </Link>
-                <!-- Profile Navigation Item -->
-                <div class="absolute bottom-0 left-0 w-full px-4">
-                    <hr>
-                    <PrimaryButton
-                        @click="logout"
-                        class="flex items-center space-x-3  rounded-lg hover:bg-gray-700 w-full"
-                    >
-                        <ArrowLeftCircleIcon
-                            class="w-8 h-8 text-gray-200 rounded-full"
-                        />
-                        <transition name="fade">
-                            <span
-                                v-if="sidebarVisible || sidebarHovered"
-                                class="transition-all text-center duration-300 truncate text-sm"
-                            >
-                                Logout
-                            </span>
-                        </transition>
-                    </PrimaryButton>
-                </div>
+
+                <!-- Logout Navigation Item -->
+                <a
+                    href="#"
+                    @click.prevent="logout"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer"
+                >
+                    <ArrowLeftCircleIcon
+                        class="w-8 text-red-400 p-1 rounded-full"
+                    />
+                    <transition name="fade">
+                        <span
+                            v-if="sidebarVisible || sidebarHovered"
+                            class="transition-all duration-300 truncate text-sm text-red-400"
+                        >
+                            Logout
+                        </span>
+                    </transition>
+                </a>
             </div>
         </nav>
     </aside>

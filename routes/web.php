@@ -30,19 +30,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/roles/{role}/permissions', [RoleController::class, 'attach'])->middleware('can:attach-permissions-roles')->name('roles.attach');
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->middleware('can:detach-permissions-roles')->name('roles.detach');
 
-    // CRUD Resources with Permissions
-    // $controllers = [
-    //     'students' => StudentController::class,
-    //     'departments' => DepartmentController::class,
-    //     'programs' => ProgramController::class,
-    //     'employees' => EmployeeController::class,
-    //     'inventories' => InventoryController::class,
-    //     'inventorySuppliers' => InventorySupplierController::class,
-    //     'inventoryCategories' => InventoryCategoryController::class,
-    //     'instructors' => InstructorController::class,
-    //     'academic-documents' => AcademicDocumentController::class,
-    //     'tenants' => TenantController::class,
-    // ];
 
     $resourceRoutes = [
         'departments' => 'department',
@@ -54,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
         'inventorySuppliers' => 'inventorySupplier',
         'inventoryCategories' => 'inventoryCategory',
         'instructors' => 'instructor',
-        'academic-documents' => 'icademicDocument',
+        'userDocuments' => 'userDocument',
         'tenants' => 'tenant',
         'studyModes' => 'studyMode',
     ];

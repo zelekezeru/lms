@@ -305,9 +305,9 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
-                <!-- Acadamic Document -->
+                <!-- User Document -->
                 <SidebarDropdownMenu
-                    :label="'Academic Documents'"   
+                    :label="'User Documents'"   
                     :icon="AcademicCapIcon"
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
@@ -315,11 +315,11 @@ const afterLeave = (el) => {
                 >
                     <SidebarDrowpdownLink :href="route('academic-documents.create')">
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Academic</span>
+                        <span class="text-sm">Add User Document</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink :href="route('academic-documents.index')">
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Academic </span>
+                        <span class="text-sm">Manage User Document</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

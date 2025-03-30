@@ -41,7 +41,7 @@ const addMode = () => {
 };
 
 // Delete function with SweetAlert confirmation
-const deletestudyMode = (id) => {
+const deleteStudyMode = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -151,7 +151,7 @@ const deletestudyMode = (id) => {
                     <!-- Delete Button, only show if user has permission -->
                     <div v-if="userCan('delete-studyModes')">
                         <button
-                            @click="confirmDelete(studyMode.id)"
+                            @click="deleteStudyMode(studyMode.id)"
                             class="flex items-center space-x-1 text-red-500 hover:text-red-700"
                         >
                             <TrashIcon class="w-5 h-5" />

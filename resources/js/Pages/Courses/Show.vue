@@ -15,7 +15,7 @@ defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deletecourse = (id) => {
+const deleteCourse = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -87,7 +87,7 @@ const deletecourse = (id) => {
                     <Link :href="route('courses.edit', { course: course.id })" class="text-blue-500 hover:text-blue-700" v-if="userCan('update-courses')">
                         <PencilIcon class="w-5 h-5" />
                     </Link>
-                    <button @click="deletecourse(course.id)" class="text-red-500 hover:text-red-700" v-if="userCan('delete-courses')">
+                    <button @click="deleteCourse(course.id)" class="text-red-500 hover:text-red-700" v-if="userCan('delete-courses')">
                         <TrashIcon class="w-5 h-5" />
                     </button>
                 </div>

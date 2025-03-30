@@ -18,7 +18,6 @@ class InstructorStoreRequest extends FormRequest
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
             'password'  => 'sometimes|required|string|min:8|confirmed',
-            'role_name'   => 'required|exists:roles,name',
             
             // Instructor table validations
             'department_id' => 'required|exists:departments,id',

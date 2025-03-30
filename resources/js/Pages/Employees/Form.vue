@@ -30,18 +30,18 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-    <form @submit.prevent="props.form.submit">
+    <form @submit.prevent="submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
                 <div>
                     <InputLabel for="name" value="Full Name" />
                     <TextInput
                         id="name"
-                        v-model="props.form.name"
+                        v-model="form.name"
                         required
                         class="w-full"
                     />
-                    <InputError :message="props.form.errors.name" />
+                    <InputError :message="form.errors.name" />
                 </div>
 
                 <div>
@@ -49,11 +49,11 @@ const handleFileChange = (e) => {
                     <TextInput
                         id="email"
                         type="email"
-                        v-model="props.form.email"
+                        v-model="form.email"
                         required
                         class="w-full"
                     />
-                    <InputError :message="props.form.errors.email" />
+                    <InputError :message="form.errors.email" />
                 </div>
 
                 <div>
@@ -61,25 +61,25 @@ const handleFileChange = (e) => {
                     <TextInput
                         id="password"
                         type="text"
-                        v-model="props.form.password"
+                        v-model="form.password"
                         value="employees@default"
                         readonly
                         class="w-full bg-gray-200"
                     />
-                    <InputError :message="props.form.errors.password" />
+                    <InputError :message="form.errors.password" />
                 </div>
 
                 <div>
                     <InputLabel for="role" value="Select Role" />
                     <select
                         id="role"
-                        v-model="props.form.role_name"
+                        v-model="form.role_name"
                         required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     >
                         <option disabled value="">Select Role</option>
                         <option
-                            v-for="role in props.roles"
+                            v-for="role in roles"
                             :key="role.id"
                             :value="role.name"
                         >
@@ -87,7 +87,7 @@ const handleFileChange = (e) => {
                         </option>
                     </select>
 
-                    <InputError :message="props.form.errors.role_name" />
+                    <InputError :message="form.errors.role_name" />
                 </div>
 
                 <!-- Profile Image Upload & Preview -->
@@ -108,35 +108,35 @@ const handleFileChange = (e) => {
                             @change="handleFileChange"
                         />
                         <div
-                            v-if="props.form.imagePreview"
+                            v-if="form.imagePreview"
                             class="w-16 h-16 rounded-full border shadow overflow-hidden"
                         >
                             <img
-                                :src="props.form.imagePreview"
+                                :src="form.imagePreview"
                                 alt="Profile Preview"
                                 class="object-cover w-full h-full"
                             />
                         </div>
                     </div>
-                    <InputError :message="props.form.errors.profile_img" />
+                    <InputError :message="form.errors.profile_img" />
                 </div>
             <div>
                 <InputLabel for="job_position" value="Job Position" />
                 <TextInput
                     id="job_position"
                     type="text"
-                    v-model="props.form.job_position"
+                    v-model="form.job_position"
                     required
                     class="w-full"
                 />
-                <InputError :message="props.form.errors.job_position" />
+                <InputError :message="form.errors.job_position" />
             </div>
 
                 <div>
                     <InputLabel for="employment_type" value="Employment Type" />
                     <select
                         id="employment_type"
-                        v-model="props.form.employment_type"
+                        v-model="form.employment_type"
                         required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     >
@@ -146,7 +146,7 @@ const handleFileChange = (e) => {
                         <option value="CONTRACT">Contract</option>
                     </select>
 
-                    <InputError :message="props.form.errors.employment_type" />
+                    <InputError :message="form.errors.employment_type" />
                 </div>
 
                 <div>
@@ -154,10 +154,10 @@ const handleFileChange = (e) => {
                     <TextInput
                         id="office_hours"
                         type="text"
-                        v-model="props.form.office_hours"
+                        v-model="form.office_hours"
                         class="w-full"
                     />
-                    <InputError :message="props.form.errors.office_hours" />
+                    <InputError :message="form.errors.office_hours" />
                 </div>
         </div>
 

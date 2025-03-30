@@ -46,7 +46,7 @@ class InstructorController extends Controller
     public function show(Instructor $instructor)
     {
         return Inertia::render('Instructors/Show', [
-            'instructor' => $instructor->load('user') 
+            'instructor' => new InstructorResource($instructor->load('user')) 
         ]);
     }
     
@@ -74,14 +74,15 @@ class InstructorController extends Controller
         $fields['tenant_id'] = 1; // Hardcoded tenant ID for now
         // Profile   of Instructor
         if ($profileImg) {
-            $fields['profile_img'] = $profileImg->store('instructors', 'public');
+            $profile_path = $profileImg->store('profile-images', 'public');
+        }else{
+            $profile_path = null;
         }
 
-        
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'profile_img' => $fields['profile_img'],
+            'profile_img' => $profile_path,
             'user_uuid' => $instructor_id,
             'password' => Hash::make('pwd@default'),
         ]);
@@ -95,9 +96,9 @@ class InstructorController extends Controller
             'hire_date' => $fields['hire_date'],
         ]);
         
-        $user->assignRole($fields['role_name']);
+        $user->assignRole('INSTRUCTOR');
         
-        return redirect(route('instructors.index', $instructor));
+        return redirect(route('instructors.show', $instructor));
     }
     
     /**
@@ -116,26 +117,49 @@ class InstructorController extends Controller
 
     public function update(InstructorUpdateRequest $request, Instructor $instructor)
     {
-        $data = $request->validated();
-
+        $fields = $request->validated();
+        $profileImg = $fields['profile_img'] ?? null;
+        $user = $instructor->user;
+        
         // Handle profile image update
-        if ($request->hasFile('profile_image')) {
-            // Delete old image if exists
-            if ($instructor->profile_image) {
-                Storage::disk('public')->delete($instructor->profile_image);
+        if ($profileImg) {
+            if ($user->profile_img) {
+                Storage::disk('public')->delete($user->profile_img);
             }
-            $data['profile_image'] = $request->file('profile_image')->store('instructors', 'public');
+            $profile_path = $profileImg->store('profile-images', 'public');
         }
 
-        $instructor->update($data);
+        $user->update([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'profile_img' => $profile_path ?? $user->profile_img,
+        ]);
 
-        return redirect()->route('instructors.index')->with('success', 'Instructor updated successfully.');
+        
+        $instructor->update([
+            'specialization' => $fields['specialization'],
+            'employment_type' => $fields['employment_type'],
+            'hire_date' => $fields['hire_date'],
+            'status' => $fields['status'],
+            'bio' => $fields['bio'],
+        ]);
+       
+        if (!empty($fields['role_name'])) {
+            $user->syncRoles([$fields['role_name']]);
+        }
+
+        return to_route('instructors.show', $instructor)->with('success', 'Instructor updated successfully.');
     }
 
     public function destroy(Instructor $instructor)
     {
+        $user = $instructor->user;
+        if ($user->profile_img) {
+            Storage::disk('public')->delete($user->profile_img);
+        }
+        
         $instructor->delete();
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor deleted successfully.');
+        $user->delete();
+        return to_route('instructors.index');
     }
 }

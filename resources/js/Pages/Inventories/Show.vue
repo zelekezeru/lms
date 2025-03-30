@@ -15,7 +15,7 @@ defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deleteinventory = (id) => {
+const deleteInventory = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",

@@ -15,7 +15,7 @@ defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deletepermission = (id) => {
+const deletePermission = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -84,7 +84,7 @@ const deletepermission = (id) => {
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
-                        @click="deletepermission(permission.id)"
+                        @click="deletePermission(permission.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

@@ -16,10 +16,11 @@ const form = useForm({
     email: props.employee.email || "",
     password: props.employee.password || "employees@default", // Set default if no password provided
     password_confirmation: props.employee.password_confirmation || "employees@default",
-    role_name: props.employee.role_name || "",
-    job_position: props.employee.job_position || "",
-    employment_type: props.employee.employment_type || "",
-    office_hours: props.employee.office_hours || "",
+    role_name: props.employee.userRole || "",
+    job_position: props.employee.jobPosition || "",
+    employment_type: props.employee.employmentType ||   "",
+    office_hours: props.employee.officeHours || "",
+    profile_img: "",
     _method: "PUT",  // Indicates PUT method for the update
 });
 

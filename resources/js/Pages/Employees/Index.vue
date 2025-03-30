@@ -122,7 +122,7 @@ const deleteemployee = (id) => {
                             </Link>
                         </th>
                         <td class="px-6 py-4">{{ employee.email }}</td>
-                        <td class="px-6 py-4">{{ employee.role.name }}</td>
+                        <td class="px-6 py-4">{{ employee.userRole }}</td>
                         <td class="px-6 py-4">
                             {{ employee.jobPosition }}
                         </td>

@@ -15,7 +15,7 @@ defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deleteinventorySupplier = (id) => {
+const deleteInventorySupplier = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -97,7 +97,7 @@ const deleteinventorySupplier = (id) => {
                     <!-- Delete Button -->
                     <button
                         v-if="userCan('delete-inventory-suppliers')"
-                        @click="deleteinventorySupplier(inventorySupplier.id)"
+                        @click="deleteInventorySupplier(inventorySupplier.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

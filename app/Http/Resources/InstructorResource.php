@@ -18,19 +18,19 @@ class InstructorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->user->name,
-            'code' => $this->code,
             'email' => $this->user->email,
             'jobPosition'  => $this->specialization,
             'bio'  => $this->bio,
             'status'  => $this->status,
+            'specialization'  => $this->specialization,
             'employmentType' => $this->employment_type,
             'hireDate'  => $this->hire_date,
             'department' => new DepartmentResource($this->whenLoaded('department')),
-            'userRole' => $this->user->roles()->first()->name,
-            'officeHours' => $this->office_hours,
+            'user' => $this->whenLoaded('user'),
             'profileImg'  => Storage::url($this->user->profile_img),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
         ];
+
     }
 }

@@ -16,14 +16,8 @@ defineProps({
 
 const imageLoaded = ref(false);
 
-const handleImageLoad = () => {
-    console.log("hello");
-
-    imageLoaded.value = true;
-};
-
 // Delete function with SweetAlert confirmation
-const deleteemployee = (id) => {
+const deleteEmployee = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -68,10 +62,10 @@ const deleteemployee = (id) => {
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
                         :src="employee.profileImg"
                         :alt="`profile image of ` + employee.name"
-                        @load="handleImageLoad"
+                        @load="imageLoaded = true"
                     />
                 </div>
-                <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
+                <div class="grid sm:grid-cols-2 gap-4 place-items-center lg:pl-30 sm:gap-4">
                     <!-- employee ID -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -112,7 +106,7 @@ const deleteemployee = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.role.name }}</span>
+                            >{{ employee.userRole }}</span>
                     </div>
 
                     <!-- Employment Type -->

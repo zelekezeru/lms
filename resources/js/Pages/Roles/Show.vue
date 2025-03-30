@@ -15,7 +15,7 @@ defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deleterole = (id) => {
+const deleteRole = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -94,7 +94,7 @@ const deleterole = (id) => {
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
-                        @click="deleterole(role.id)"
+                        @click="deleteRole(role.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

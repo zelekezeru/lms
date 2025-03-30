@@ -36,7 +36,7 @@ const refreshData = () => {
 };
 
 // Delete function with SweetAlert confirmation
-const deletecourse = (id) => {
+const deleteCourse = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -158,7 +158,7 @@ const deletecourse = (id) => {
                             <!-- Delete -->
                             <div v-if="userCan('delete-courses')">
                                 <button
-                                    @click="deletecourse(course.id)"
+                                    @click="deleteCourse(course.id)"
                                     class="text-red-500 hover:text-red-700"
                                 >
                                     <TrashIcon class="w-5 h-5" />

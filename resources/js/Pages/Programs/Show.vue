@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deleteprogram = (id) => {
+const deleteProgram = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -201,7 +201,7 @@ const deleteprogram = (id) => {
                     </Link>
                     <button
                         v-if="userCan('delete-programs')"
-                        @click="deleteprogram(program.id)"
+                        @click="deleteProgram(program.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

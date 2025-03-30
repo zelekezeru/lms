@@ -22,7 +22,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = EmployeeResource::collection(Employee::with('department')->paginate(15));
+        $employees = EmployeeResource::collection(Employee::paginate(15));
 
         return inertia('Employees/Index', [
             'employees' => $employees
@@ -107,6 +107,7 @@ class EmployeeController extends Controller
         $fields = $request->validated();
         $image = $fields['profile_img'] ?? null;
         $user = $employee->user;
+        
         if ($image) {
             if ($user->profile_img) {
                 Storage::disk('public')->delete($user->profile_img);
@@ -132,7 +133,7 @@ class EmployeeController extends Controller
 
         return redirect(route('employees.show', $employee));
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -142,8 +143,10 @@ class EmployeeController extends Controller
         if ($user->profile_img) {
             Storage::disk('public')->delete($user->profile_img);
         }
-
+        
         $employee->delete();
+        $user->delete();
+        return to_route('employees.index');
     }
 
     public function userUuid($role)

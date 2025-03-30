@@ -127,17 +127,6 @@ const handleFileChange = (e) => {
                     </div>
 
                     <div>
-                        <InputLabel for="office_hours" value="Office Hours" />
-                        <TextInput
-                            id="office_hours"
-                            type="text"
-                            v-model="form.office_hours"
-                            class="w-full"
-                        />
-                        <InputError :message="form.errors.office_hours" />
-                    </div>
-
-                    <div>
                         <InputLabel for="hire_date" value="Hire Date" />
                         <TextInput
                             id="hire_date"
@@ -198,26 +187,6 @@ const handleFileChange = (e) => {
                             class="w-full bg-gray-200"
                         />
                         <InputError :message="form.errors.password" />
-                    </div>
-
-                    <div>
-                        <InputLabel for="role" value="Select Role" />
-                        <select
-                            id="role"
-                            v-model="form.role_name"
-                            required
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                        >
-                            <option disabled value="">Select Role</option>
-                            <option
-                                v-for="role in roles"
-                                :key="role.id"
-                                :value="role.name"
-                            >
-                                {{ role.name }}
-                            </option>
-                        </select>
-                        <InputError :message="form.errors.role_name" />
                     </div>
                 </div>
 

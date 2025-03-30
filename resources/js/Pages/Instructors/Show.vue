@@ -24,7 +24,7 @@ const handleImageLoad = () => {
 };
 
 // Delete function with SweetAlert confirmation
-const deleteinstructor = (id) => {
+const deleteInstructor = (id) => {
   Swal.fire({
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -58,14 +58,9 @@ const deleteinstructor = (id) => {
                     <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
                     
                     <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="instructor.user.profileImg" :alt="`Logo of ` + instructor.name"
+                        :src="instructor.profileImg" :alt="`Logo of ` + instructor.name"
                         @load="handleImageLoad"/>
                 </div>
-          <!-- instructor Code -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.user.code }}</span>
-          </div>
 
           <!-- instructor Full Name -->
           <div class="flex flex-col">
@@ -82,25 +77,13 @@ const deleteinstructor = (id) => {
           <!-- Hire Date -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Hire Date</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.hire_date }}</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.hireDate }}</span>
           </div>
-
-          <!-- Job Position -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Job Position</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.jobPosition }}</span>
-          </div>
-
+          
           <!-- Employment Type -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Employment Type</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.employmentType }}</span>
-          </div>
-
-          <!-- Office Hours -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Office Hours</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.officeHours }}</span>
           </div>
 
           <!-- Bio -->
@@ -128,7 +111,7 @@ const deleteinstructor = (id) => {
 
           <!-- Delete Button, only show if user has permission -->
           <div v-if="userCan('delete-instructors')">
-            <button @click="confirmDelete(instructor.id)" class="text-red-500 hover:text-red-700">
+            <button @click="deleteInstructor(instructor.id)" class="text-red-500 hover:text-red-700">
               <TrashIcon class="w-5 h-5" />
             </button>
           </div>

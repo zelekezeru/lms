@@ -6,24 +6,28 @@ import { useForm} from "@inertiajs/vue3";
 
 const props = defineProps({
     instructor: { type: Object, required: true },
+    departments: { type: Object, required: true },
 });
 
 // Initialize form data
 const form = useForm({
-    name: instructor?.name || "",
-    email: instructor?.email || "",
-    role_name: instructor?.role_name || "",
-    department_id: instructor?.department_id || "",
-    job_position: instructor?.job_position || "",
-    employment_type: instructor?.employment_type || "",
-    office_hours: instructor?.office_hours || "",
-    profile_img: instructor?.profile_img || "",
+    name: props.instructor?.name || "",
+    email: props.instructor?.email || "",
+    role_name: props.instructor?.roleName || "",
+    department_id: props.instructor?.department.id || "",
+    job_position: props.instructor?.jobPosition || "",
+    hire_date: props.instructor?.hireDate || "",
+    specialization: props.instructor?.specialization || "",
+    bio: props.instructor?.bio || "",
+    status: props.instructor?.status || "",
+    employment_type: props.instructor?.employmentType || "",
+    profile_img: "",
     _method: 'PATCH',
 });
 
 // Submit the form
-const submit = () => {
-    form.patch(route("instructors.update", { instructor: form.id }));
+const submit = (id) => {
+    form.post(route("instructors.update", { instructor: id }));
 };
 </script>
 
@@ -40,7 +44,6 @@ const submit = () => {
                 :form="form"
                 :departments="departments"
                 :roles="roles"
-                :instructor="form"
                 @submit="submit(instructor.id)"
             />
         </div>

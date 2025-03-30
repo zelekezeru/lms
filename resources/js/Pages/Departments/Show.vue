@@ -299,7 +299,7 @@ const deleteDepartment = (id) => {
                     <!-- Delete Button, only show if user has permission -->
                     <div v-if="userCan('delete-departments')">
                         <button
-                            @click="confirmDelete(department.id)"
+                            @click="deleteDepartment(department.id)"
                             class="flex items-center space-x-1 text-red-500 hover:text-red-700"
                         >
                             <TrashIcon class="w-5 h-5" />

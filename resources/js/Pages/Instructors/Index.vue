@@ -131,7 +131,6 @@ const searchInstructors = () => {
                     <tr>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Department</th>
                         <th scope="col" class="px-6 py-3">Employment Type</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
@@ -148,7 +147,6 @@ const searchInstructors = () => {
                             </Link>
                         </th>
                         <td class="px-6 py-4">{{ instructor.email }}</td>
-                        <td class="px-6 py-4">{{ instructor.department.name }}</td>
                         <td class="px-6 py-4">{{ instructor.employmentType }}</td>
                         <td class="px-6 py-4 flex justify-between">
                             <Link :href="route('instructors.show', { instructor: instructor.id })" class="text-blue-500 hover:text-blue-700">

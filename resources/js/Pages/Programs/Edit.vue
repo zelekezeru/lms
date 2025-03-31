@@ -20,6 +20,7 @@ const form = useForm({
     name: props.program.name || "",
     language: props.program.language || "",
     description: props.program.description || "",
+    duration: props.program.duration || "",
     address: props.program.address || "",
     user_id: props.program.user_id || "",
     _method: "PUT", // Change to PUT

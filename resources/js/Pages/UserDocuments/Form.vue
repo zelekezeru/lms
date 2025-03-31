@@ -80,7 +80,7 @@ const handleFileChange = (e, type) => {
 
     <!-- File Upload -->
     <div class="mt-4">
-      <label for="file" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Upload File</label>
+      <label for="file" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Upload File (Optional)</label>
       <div class="flex items-center gap-4">
         <label
           for="file"

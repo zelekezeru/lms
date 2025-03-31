@@ -20,7 +20,6 @@ class InstructorStoreRequest extends FormRequest
             'password'  => 'sometimes|required|string|min:8|confirmed',
             
             // Instructor table validations
-            'department_id' => 'required|exists:departments,id',
             'specialization' => 'nullable|string|max:255',
             'employment_type' => 'required|in:full-time,part-time,adjunct',
             'hire_date' => 'required|date',

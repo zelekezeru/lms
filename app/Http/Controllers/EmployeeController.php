@@ -8,12 +8,15 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Auth\RegisteredUserController;
+
 
 class EmployeeController extends Controller
 {
@@ -48,7 +51,19 @@ class EmployeeController extends Controller
     {
         $fields = $request->validated();
         $image = $fields['profile_img'] ?? null;
-        $userUuid = $this->userUuid($fields['role_name']);
+
+        
+        $registeredUserController = new RegisteredUserController();
+
+        $userUuid = $registeredUserController->userUuid('EMPLOYEE');
+
+        dd('HIT');
+
+        // $userUuid = $this->userUuid($fields['role_name']);
+        // $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+
+        // $instructor_id = 'EM/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
+
         
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
@@ -153,7 +168,9 @@ class EmployeeController extends Controller
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-        $userUuid = substr($role, 0, 3) . '/' . str_pad(Employee::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
+
+        $userUuid = $tenant .  '/EM/' . str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         return $userUuid;
     }

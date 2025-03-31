@@ -20,6 +20,7 @@ const form = useForm({
     name: "",
     description: "",
     language: "",
+    duration: "",
     user_id: "", // Allow null value for optional field
 });
 

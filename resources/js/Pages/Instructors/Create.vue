@@ -4,7 +4,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 
 defineProps({
-    departments: { type: Object, required: true },
     roles: { type: Object, required: true },
 });
 
@@ -14,7 +13,6 @@ const form = useForm({
     password: "instructors@default",
     password_confirmation: "instructors@default",
     role_name: "",
-    department_id: "",
     job_position: "",
     hire_date: "",
     status: "",
@@ -23,6 +21,7 @@ const form = useForm({
     employment_type: "",
     office_hours: "",
     profile_img: "",
+    status: "Inactive",
 });
 
 // Submit the form

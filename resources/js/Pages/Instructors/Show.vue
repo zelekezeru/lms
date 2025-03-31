@@ -91,13 +91,23 @@ const deleteInstructor = (id) => {
             <span class="text-sm text-gray-500 dark:text-gray-400">Bio</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.bio }}</span>
           </div>
-
+                    
           <!-- Status -->
           <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ instructor.status }}</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >Status</span
+              >
+              <span
+                  class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                  >
+                  <div v-if="instructor.status == 0" class="text-red-500">
+                      Inactive
+                  </div>
+                  <div v-else class="text-green-500">
+                      Active
+                  </div>
+              </span>
           </div>
-
         </div>
 
         <!-- Edit and Delete Buttons -->

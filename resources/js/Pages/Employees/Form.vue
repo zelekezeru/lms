@@ -55,20 +55,7 @@ const handleFileChange = (e) => {
                     />
                     <InputError :message="form.errors.email" />
                 </div>
-
-                <div>
-                    <InputLabel for="password" value="Password" />
-                    <TextInput
-                        id="password"
-                        type="text"
-                        v-model="form.password"
-                        value="employees@default"
-                        readonly
-                        class="w-full bg-gray-200"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
-
+                
                 <div>
                     <InputLabel for="role" value="Select Role" />
                     <select

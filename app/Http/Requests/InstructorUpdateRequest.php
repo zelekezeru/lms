@@ -16,7 +16,6 @@ class InstructorUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $this->instructor->user->id,
-            'department_id' => 'required|exists:departments,id',
             'specialization' => 'sometimes|string|max:255',
             'employment_type' => 'required|in:full-time,part-time,adjunct',
             'hire_date' => 'required|date',

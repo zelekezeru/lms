@@ -10,9 +10,8 @@ class Instructor extends Model
     use HasFactory;
 
     protected $fillable = [
-        // 'tenant_id',
+        'tenant_id',
         'user_id',
-        'department_id',
         'specialization',
         'employment_type',
         'hire_date',

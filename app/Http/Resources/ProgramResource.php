@@ -19,6 +19,7 @@ class ProgramResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'description' => $this->description,
+            'duration' => $this->duration,
             'language' => $this->language,
             'user_id' => $this->user_id,
             

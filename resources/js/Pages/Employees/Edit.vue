@@ -20,7 +20,7 @@ const form = useForm({
     job_position: props.employee.jobPosition || "",
     employment_type: props.employee.employmentType ||   "",
     office_hours: props.employee.officeHours || "",
-    profile_img: "",
+    profile_img: props.employee.profile_img || "",
     _method: "PUT",  // Indicates PUT method for the update
 });
 
@@ -35,7 +35,7 @@ const submit = (id) => {
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit Employee
+                    Edit {{ props.employee.name }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Modify the employee details below.

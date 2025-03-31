@@ -11,7 +11,8 @@ class Program extends Model
         'language',
         'code',
         'user_id',
-        'description'
+        'duration',
+        'description',
     ];
 
     public function user()

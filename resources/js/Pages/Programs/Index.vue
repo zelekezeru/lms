@@ -144,6 +144,7 @@ const searchPrograms = () => {
                 <tr>
                     <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Program Name</Thead>
                     <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'language'">Language</Thead>
+                    <Thead>Duration</Thead>
                     <Thead>Director</Thead>
                     <Thead scope="col" class="px-6 py-3">Action</Thead>
                 </tr>
@@ -166,6 +167,7 @@ const searchPrograms = () => {
                         </Link>
                     </th>
                     <td class="px-6 py-4">{{ program.language }}</td>
+                    <td class="px-6 py-4">{{ program.duration }}</td>
                     <td class="px-6 py-4">{{ program.user?.name }}</td>
                     <td class="px-6 py-4 flex justify-between">
                         <Link

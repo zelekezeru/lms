@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Http\Requests\StudentRequest;
+use App\Models\Tenant;
 
 class StudentController extends Controller
 {
@@ -58,10 +60,8 @@ class StudentController extends Controller
     {
         
         $student = Student::create($request->validated());
-        
-        $tenant = 'SITS';
 
-        $student_id = $this->student_id($tenant, $student->program);
+        $student_id = $this->student_id($student->program);
 
         $student->update(['student_id' => $student_id]);
 
@@ -96,7 +96,7 @@ class StudentController extends Controller
         return Inertia::render('Students/Index', compact('students'));
     }
 
-    public function student_id($tenant, $program)
+    public function student_id($program)
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
@@ -109,6 +109,8 @@ class StudentController extends Controller
         }else {
             return  'Invalid program';
         }
+
+        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
 
         $student_id = $tenant . '/' . $program_ref . ' ' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
 

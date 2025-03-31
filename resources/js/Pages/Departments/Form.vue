@@ -94,32 +94,13 @@ defineProps({
           v-model="form.user_id"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
         >
-          <option value="">Select Head</option>
+          <option value="">Select Department Head</option>
           <option v-for="user in users" :key="user.id" :value="user.id">
             {{ user.name }}
           </option>
         </select>
         <InputError
           :message="form.errors.user_id"
-          class="mt-2 text-sm text-red-500"
-        />
-      </div>
-
-      <!-- Duration -->
-      <div>
-        <InputLabel
-          for="duration"
-          value="Duration"
-          class="block mb-1 text-gray-200"
-        />
-        <TextInput
-          id="duration"
-          type="number"
-          v-model="form.duration"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-        />
-        <InputError
-          :message="form.errors.duration"
           class="mt-2 text-sm text-red-500"
         />
       </div>

@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('instructors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
+            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
+            
             $table->string('specialization', 255);
             $table->enum('employment_type', ['full-time', 'part-time', 'adjunct']);
             $table->date('hire_date');
             $table->enum('status', ['active', 'inactive', 'suspended']);
             $table->text('bio')->nullable();
             $table->timestamps();
-
         });
     }
 

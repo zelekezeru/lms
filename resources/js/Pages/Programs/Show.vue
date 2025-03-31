@@ -89,7 +89,7 @@ const deleteProgram = (id) => {
                             {{ program.language }}
                         </span>
                     </div>
-
+                    
                     <!-- Description -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"

@@ -9,7 +9,6 @@ defineProps({ department: Object, users: Array, programs: Array });
 const form = useForm({
     name: usePage().props.department.name,
     user_id: usePage().props.department.user_id,
-    duration: usePage().props.department.duration,
     description: usePage().props.department.description,
     program_id: usePage().props.department.program_id,
 });

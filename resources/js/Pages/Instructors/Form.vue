@@ -10,7 +10,6 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 // Define the expected props
 const props = defineProps({
     form: Object,
-    departments: { type: Array, required: true },
     roles: { type: Array, required: true },
 });
 
@@ -42,6 +41,8 @@ const handleFileChange = (e) => {
                 enctype="multipart/form-data"
             >
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- User Name -->
                     <div>
                         <InputLabel for="name" value="Name" />
                         <TextInput
@@ -53,6 +54,7 @@ const handleFileChange = (e) => {
                         />
                         <InputError :message="form.errors.name" />
                     </div>
+                    <!-- User Email -->
 
                     <div>
                         <InputLabel for="email" value="Email" />
@@ -68,32 +70,8 @@ const handleFileChange = (e) => {
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <InputLabel
-                            for="department_id"
-                            value="Select Department"
-                            class="block mb-1 text-gray-800 dark:text-gray-200"
-                        />
-                        <select
-                            id="department_id"
-                            v-model="form.department_id"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                        >
-                            <option value="">Select Department</option>
-                            <option
-                                v-for="department in departments"
-                                :key="department.id"
-                                :value="department.id"
-                            >
-                                {{ department.name }}
-                            </option>
-                        </select>
-                        <InputError
-                            :message="form.errors.department_id"
-                            class="mt-2 text-sm text-red-500"
-                        />
-                    </div>
-
+                    
+                    <!-- Job Position -->
                     <div>
                         <InputLabel for="job_position" value="Job Position" />
                         <TextInput
@@ -104,9 +82,31 @@ const handleFileChange = (e) => {
                         />
                         <InputError :message="form.errors.job_position" />
                     </div>
+                    
+                    <!-- Role -->
+                    <div>
+                        <InputLabel for="role" value="Select Role" />
+                        <select
+                            id="role"
+                            v-model="form.role_name"
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                        >
+                            <option disabled value="">Select Role</option>
+                            <option
+                                v-for="role in roles"
+                                :key="role.id"
+                                :value="role.name"
+                            >
+                                {{ role.name }}
+                            </option>
+                        </select>
+                        <InputError :message="form.errors.role_name" />
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <!-- Employment Type -->
                     <div>
                         <InputLabel
                             for="employment_type"
@@ -119,13 +119,27 @@ const handleFileChange = (e) => {
                             <option disabled value="">
                                 Select Employment Type
                             </option>
-                            <option value="full-time">Full-Time</option>
-                            <option value="part-time">Part-Time</option>
-                            <option value="contract">Contract</option>
+                            <option value="Full-time">Full-Time</option>
+                            <option value="Part-time">Part-Time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Guest">Guest</option>
                         </select>
                         <InputError :message="form.errors.employment_type" />
                     </div>
 
+                    <!-- Office Hours -->
+                    <div>
+                        <InputLabel for="office_hours" value="Office Hours" />
+                        <TextInput
+                            id="office_hours"
+                            type="text"
+                            v-model="form.office_hours"
+                            class="w-full"
+                        />
+                        <InputError :message="form.errors.office_hours" />
+                    </div>
+
+                    <!-- Hire Date -->
                     <div>
                         <InputLabel for="hire_date" value="Hire Date" />
                         <TextInput
@@ -137,6 +151,7 @@ const handleFileChange = (e) => {
                         <InputError :message="form.errors.hire_date" />
                     </div>
 
+                    <!-- Specialization -->
                     <div>
                         <InputLabel
                             for="specialization"
@@ -151,6 +166,7 @@ const handleFileChange = (e) => {
                         <InputError :message="form.errors.specialization" />
                     </div>
 
+                    <!-- Status -->
                     <div>
                         <label
                             for="status"
@@ -162,9 +178,10 @@ const handleFileChange = (e) => {
                             v-model="form.status"
                             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
-                            <option value="inactive">Inactive</option>
-                            <option value="active">Active</option>
-                            <option value="suspended">Suspended</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Active">Active</option>
+                            <option value="Suspended">Suspended</option>
+                            <option value="Terminated">Terminated</option>
                         </select>
                         <div
                             v-if="form.errors.status"
@@ -175,21 +192,7 @@ const handleFileChange = (e) => {
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <InputLabel for="password" value="Password" />
-                        <TextInput
-                            id="password"
-                            type="text"
-                            v-model="form.password"
-                            value="pwd@default (Default Password)"
-                            readonly
-                            class="w-full bg-gray-200"
-                        />
-                        <InputError :message="form.errors.password" />
-                    </div>
-                </div>
-
+                <!-- Bio -->
                 <div>
                     <InputLabel
                         for="bio"

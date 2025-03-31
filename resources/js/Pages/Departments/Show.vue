@@ -22,7 +22,6 @@ const createMode = ref(false);
 const modeForm = useForm({
     department_id: props.department.id,
     mode: "",
-    duration: "",
     fees: "",
 });
 
@@ -42,7 +41,6 @@ const addMode = () => {
 
                 createMode.value = false;
                 modeForm.mode = "";
-                modeForm.duration = "";
                 modeForm.fees = "";
             },
         }
@@ -124,19 +122,6 @@ const deleteDepartment = (id) => {
                             class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             {{ department.description }}
-                        </span>
-                    </div>
-
-                    <!-- Department Duration -->
-                    <div>
-                        <span
-                            class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Duration</span
-                        >
-                        <span
-                            class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ department.duration }}
                         </span>
                     </div>
                 </div>

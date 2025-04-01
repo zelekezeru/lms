@@ -45,21 +45,41 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'nullable|string|in:SUPER-ADMIN,ADMIN,EMPLOYEE,STUDENT,INSTRUCTOR',
+            'type' => 'nullable|string|in:SUPER-ADMIN,ADMIN,EMPLOYEE,STUDENT,INSTRUCTOR',
         ]);
+        // Check if the user with id 1 already exists
+        if(!User::exists()){
+            
+            $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+        
+            $userUuid = 'ADMIN' . '-' . $year . '-'. str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+            dd($userUuid);
 
-        $userUuid = $this->userUuid('SUPER-ADMIN');
+            $user = User::create([
+                'id' => 1,
+                'tenant_id' => 1,
+                'name' => $request->name,
+                'user_uuid' => $userUuid,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        $user = User::create([
-            'id' => 1,
-            'tenant_id' => 1,
-            'name' => $request->name,
-            'user_uuid' => $userUuid,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        if($user->id == 1){
             $user->assignRole('SUPER-ADMIN');
+        }
+        else{
+
+            $userUuid = $this->userUuid('SUPER-ADMIN', 'USER');
+
+            $user = User::create([
+                'id' => 1,
+                'tenant_id' => 1,
+                'name' => $request->name,
+                'user_uuid' => $userUuid,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+                $user->assignRole('SUPER-ADMIN');
         }
 
         event(new Registered($user));
@@ -75,17 +95,21 @@ class RegisteredUserController extends Controller
         
         $tenant = Tenant::first()->name; // get the first tenant name
         
-        if($type == 'STUDENT') {
+        dd($role, $type);
+
+        if($type == 'ADMIN') {
+            $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+        }elseif($type == 'USER') {
+            $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+        }  elseif($type == 'EMPLOYEE') {
+            $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
+        }elseif($type == 'STUDENT') {
             $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
         } elseif($type == 'INSTRUCTOR') {
             $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
-        } elseif($type == 'EMPLOYEE') {
-            $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
         }
-        else {
-            $userUuid = $tenant . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-        }      
-        
+
+        dd($userUuid);
         // Example: 'TENANT-23-EM-0001'
         return $userUuid;
     }

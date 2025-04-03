@@ -50,12 +50,22 @@ class EmployeeController extends Controller
     public function store(EmployeeStoreRequest $request)
     {
         $fields = $request->validated();
-        $image = $fields['profile_img'] ?? null;
 
+        $image = $fields['profile_img'] ?? null;
         
         $registeredUserController = new RegisteredUserController();
 
-        $userUuid = $registeredUserController->userUuid('EMPLOYEE');
+        $admin = \Illuminate\Support\Facades\Auth::user();
+
+        // Check if the admin is authenticated and has a tenant_id
+        if (!$admin || !property_exists($admin, 'tenant_id')) {
+            abort(403, 'Unauthorized action or missing tenant_id.');
+        }else{
+            $tenant_id = $admin->tenant_id;
+        }
+
+
+        $userUuid = $registeredUserController->userUuid('EMPLOYEE', 'User', $tenant = Tenant::first());
 
         dd('HIT');
 

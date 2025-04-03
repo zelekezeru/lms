@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Tenant;
 use App\Http\Requests\TenantStoreRequest;
 use App\Http\Requests\TenantUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\TenantResource;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 class TenantController extends Controller
 {
@@ -51,8 +53,23 @@ class TenantController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        return inertia('Tenants/Create');
+    {        
+        // Check if the user with id 1 already exists
+        if(count(User::get()) == 1){
+            // Get the user with id 1
+            // This is the first user, so we can proceed with the tenant creation
+            
+            $user = UserResource::collection(User::all());
+        
+            return inertia('Tenants/Create', [
+                'user' => $user,
+            ]);
+
+        }
+        else
+        {
+            return redirect(route('Tenants/Create'));
+        }
     }
     
     /**
@@ -62,6 +79,8 @@ class TenantController extends Controller
     {
         $fields = $request->validated();
         
+        // Check if the user with id 1 already exists
+
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('tenants-logo', 'public');
@@ -147,37 +166,27 @@ class TenantController extends Controller
 
     public function tenantRepresentative($fields, $tenant_id)
     {
-        $phone_end = substr($fields['contact_phone'], -4);
         
         // Set the default password
+        
+        $phone_end = substr($fields['contact_phone'], -4);
         $user_password = $fields['name'] . '@' . $phone_end;
+        
+        $registeredUserController = new RegisteredUserController();
 
-        // Representative ID 
-        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        $representative_id = 'ADMIN/' . '000'. User::count() . '/' .$fields['name'] .  '/' . $year;
-
+        $userUuid = $registeredUserController->userUuid('ADMIN', 'User', $tenant_id);
         // Creating Representative as ADMIN user for the Tenant
-
+        
         $user = User::create([
             'name' => $fields['contact_person'],
             'email' => $fields['contact_email'],
             'password' => Hash::make($user_password),
-            'user_uuid' => $representative_id,
+            'user_uuid' => $userUuid,
             'tenant_id' => $tenant_id,
         ]);
         
         $user->assignRole('ADMIN');
 
         return $user;
-    }
-
-    public function representative_id($tenant)
-    {
-        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        $representative_id = $tenant . '/' . '0001'  . '/' . $year;
-
-        return $representative_id;
     }
 }

@@ -4,6 +4,9 @@ import Form from "./Form.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
+defineProps({
+    user: { type: Object, required: true },
+});
 
 const form = useForm({
     name: '',

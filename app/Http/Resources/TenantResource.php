@@ -35,6 +35,7 @@ class TenantResource extends JsonResource
             'status' => $this->status,
             'paid' => $this->paid,
             'logo'  => $this->logo,
+            
         ];
     }
 }

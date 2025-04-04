@@ -7,6 +7,15 @@ use App\Http\Controllers\TenantController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudyModeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InventorySupplierController;
+use App\Http\Controllers\InventoryCategoryController;
+use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\UserDocumentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -44,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
         'userDocuments' => 'userDocument',
         'tenants' => 'tenant',
         'studyModes' => 'studyMode',
+        'users' => 'user',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {

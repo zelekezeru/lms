@@ -275,6 +275,13 @@ const afterLeave = (el) => {
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Employee</span>
                     </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-users')"
+                        :href="route('users.index')"
+                    >
+                        <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage User</span>
+                    </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>                
 
                 <!-- Students Managmant -->

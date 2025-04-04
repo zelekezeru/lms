@@ -108,6 +108,24 @@ class RolePermissionSeeder extends Seeder
             'create-userDocuments',
             'update-userDocuments',
             'delete-userDocuments',
+
+            // User (CRUD)
+            'view-users',
+            'create-users',
+            'update-users',
+            'delete-users',
+
+            // Student (CRUD)
+            'view-students',
+            'create-students',
+            'update-students',
+            'delete-students',
+
+            // UserDocument (CRUD)
+            'view-userDocuments',
+            'create-userDocuments',
+            'update-userDocuments',
+            'delete-userDocuments',
         ];
 
         // Create all permissions
@@ -163,6 +181,53 @@ class RolePermissionSeeder extends Seeder
                     'create-courses',
                     'update-courses',
                     'delete-courses',
+
+                    'view-instructors',
+                    'create-instructors',
+                    'update-instructors',
+                    'delete-instructors',
+
+                    'view-users',
+                    'create-users',
+                    'update-users',
+                    'delete-users',
+                    
+                    'view-departments',
+                    'create-departments',
+                    'update-departments',
+                    'delete-departments',
+
+
+                    'view-userDocuments',
+                    'create-userDocuments',
+                    'update-userDocuments',
+                    'delete-userDocuments',
+
+                    'view-inventory-suppliers',
+                    'create-inventory-suppliers',
+                    'update-inventory-suppliers',
+                    'delete-inventory-suppliers',
+
+                    'view-inventory-categories',
+                    'create-inventory-categories',
+                    'update-inventory-categories',
+                    'delete-inventory-categories',
+
+                    'view-studyModes',
+                    'create-studyModes',
+                    'update-studyModes',
+                    'delete-studyModes',
+
+                    'view-employees',
+                    'create-employees',
+                    'update-employees',
+                    'delete-employees',
+
+
+                    'view-inventories',
+                    'create-inventories',
+                    'update-inventories',
+                    'delete-inventories',
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);
             }

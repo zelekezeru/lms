@@ -50,6 +50,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
     public function employee()
     {
         return $this->hasOne(Employee::class);
@@ -74,4 +79,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Tenant::class);
     }
+    
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+
 }

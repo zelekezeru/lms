@@ -12,5 +12,15 @@ class Course extends Model
     {
         return $this->belongsTo(Department::class);
     }
-    
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
 }

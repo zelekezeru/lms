@@ -68,7 +68,11 @@ class TenantController extends Controller
         }
         else
         {
-            return redirect(route('Tenants/Create'));
+            $user = UserResource::collection(User::all());
+        
+            return inertia('Tenants/Create', [
+                'user' => $user,
+            ]);
         }
     }
     
@@ -104,6 +108,15 @@ class TenantController extends Controller
         $fields['default_password'] = $tenant_password;
 
         // Creating Tenant representative User
+        
+        
+        $registeredUserController = new RegisteredUserController();
+
+        $userUuid = $registeredUserController->store($request);
+
+        // Creating Representative as ADMIN user for the Tenant
+        
+        // Create a new Tenant instance
         $tenant = Tenant::create($fields);
 
         $this->tenantRepresentative($fields, $tenant->id);
@@ -158,6 +171,13 @@ class TenantController extends Controller
      */
     public function destroy(Tenant $tenant)
     {
+        $tenant->update([
+            'status' => 'inactive',
+            'deleted_at' => now(),
+            'deleted_by' => auth()->user()->id,
+        ]);
+
+        dd($tenant);
         // Later to be modified
         $tenant->delete();
 

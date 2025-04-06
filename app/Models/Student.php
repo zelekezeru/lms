@@ -35,4 +35,25 @@ class Student extends Model
         'student_signature',
         'office_use_notes'
     ];
+    
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    } 
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    } 
 }

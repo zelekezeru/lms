@@ -26,6 +26,9 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->boolean('allowed')->default(false);
             $table->boolean('paid')->default(false);
+            $table->dateTime('deleted_at')->nullable();
+            $table->foreignId('deleted_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             
             $table->string('password');
             $table->boolean('password_changed')->default(false);

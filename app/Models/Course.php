@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 { 
@@ -13,14 +14,19 @@ class Course extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function student()
+    public function students(): BelongsToMany
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsToMany(Student::class);
     }
 
-    public function section()
+    public function sections(): BelongsToMany
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsToMany(Section::class);
+    }
+
+    public function instructors(): BelongsToMany
+    {
+        return $this->belongsToMany(Instructor::class);
     }
 
 }

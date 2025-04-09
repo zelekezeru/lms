@@ -96,34 +96,8 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
-
-        $role->syncPermissions($request['permissions']);
-
-        cache()->forget("user_roles_" . Auth::id());
-        cache()->forget("user_permissions_" . Auth::id());
-
-        cache()->remember("user_roles_" . Auth::id(), now()->addMinutes(10), function () {
-            return Auth::user()->getRoleNames();
-        });
-
-        cache()->remember("user_permissions_" . Auth::id(), now()->addMinutes(10), function () {
-            return Auth::user()->getAllPermissions()->pluck('name');
-        });
-
-        // foreach ($request->permissions as $permissionId) {
-        //     // Check if the permission is already attached to the role
-        //     $exists = DB::table('role_has_permissions')
-        //         ->where('role_id', $roleId)
-        //         ->where('permission_id', $permissionId)
-        //         ->exists();
-
-        //     if (!$exists) {
-        //         DB::table('role_has_permissions')->insert([
-        //             'role_id' => $roleId,
-        //             'permission_id' => $permissionId,
-        //         ]);
-        //     }
-        // }
+        
+        $role->permissions()->sync($request['permissions']);
 
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');
     }

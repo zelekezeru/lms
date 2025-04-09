@@ -21,7 +21,7 @@ class PermissionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [            
+        return [
             'name' => 'required|string|max:100|',
             'guard_name' => 'nullable|string|max:100',
         ];

@@ -17,6 +17,7 @@ import {
     HandRaisedIcon,
     FolderIcon,
     ClockIcon,
+    LinkIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -118,11 +119,8 @@ const afterLeave = (el) => {
             }"
         >
             <div class="flex gap-4 items-center justify-center h-full">
-                <img
-                    src="/img/logo.png"
-                    class="w-[48px] rounded-full"
-                    alt="Logo"
-                />
+                <img src="/img/logo.png" class="w-[48px] rounded-full" alt="Logo" />
+                
                 <transition name="fade">
                     <h1
                         v-if="sidebarVisible || sidebarHovered"
@@ -250,6 +248,55 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
+                <!-- Assigning Relations -->
+                <SidebarDropdownMenu
+                    :label="'Assign Relations'"
+                    :icon="LinkIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['assign-courses-sections', 'assign-instructors-sections', 'assign-instructors-courses', 'assign-students-sections', 'assign-students-courses'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('assign-courses-sections')"
+                        :href="route('assignments.courses-sections')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Courses to Sections </span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('assign-instructors-sections')"
+                        :href="route('assignments.instructors-sections')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Instructors to Sections</span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('assign-instructors-courses')"
+                        :href="route('assignments.instructors-courses')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Courses to Instructors </span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('assign-students-sections')"
+                        :href="route('assignments.students-sections')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Students to Sections</span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('assign-students-courses')"
+                        :href="route('assignments.students-courses')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Students to Courses</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
                 <!-- User Managment-->
 
                 <SidebarDropdownMenu
@@ -298,6 +345,14 @@ const afterLeave = (el) => {
                     >
                         <UsersIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Student</span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('create-students')"
+                        :href="route('students.create')"
+                    >
+                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Register Student</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink

@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        dd('here');
+        // Validate the request data
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
@@ -51,7 +51,8 @@ class RegisteredUserController extends Controller
         ]);
 
         // Check if the user with id 1 already exists
-        if(!User::exists()){
+        if(User::where('id', 1)->first() == null){
+            // Get the user with id 1
             $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
             $user = User::create([
@@ -76,14 +77,13 @@ class RegisteredUserController extends Controller
             $userUuid = $this->userUuid('USER', 'User');
 
             $user = User::create([
-                'id' => 1,
                 'tenant_id' => 1,
                 'name' => $request->name,
                 'user_uuid' => $userUuid,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
-                $user->assignRole('SUPER-ADMIN');
+                $user->assignRole('USER');
         }
 
         event(new Registered($user));

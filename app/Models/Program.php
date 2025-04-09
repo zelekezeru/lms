@@ -15,20 +15,13 @@ class Program extends Model
         'description',
     ];
 
-    public function user()
+    public function departments()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Department::class);
     }
-    
 
     public function students()
     {
         return $this->hasMany(Student::class);
-    }
-
-
-    public function departments()
-    {
-        return $this->hasMany(Department::class);
     }
 }

@@ -43,47 +43,11 @@ class RolePermissionSeeder extends Seeder
             'update-tenants',
             'delete-tenants',
 
-            // Students (CRUD)
-            'view-students',
-            'create-students',
-            'update-students',
-            'delete-students',
-
-            // Departments (CRUD)
-            'view-departments',
-            'create-departments',
-            'update-departments',
-            'delete-departments',
-
             // Programs (CRUD)
             'view-programs',
             'create-programs',
             'update-programs',
             'delete-programs',
-
-            // Employees (CRUD)
-            'view-employees',
-            'create-employees',
-            'update-employees',
-            'delete-employees',
-
-            // Inventory Supplier (CRUD)
-            'view-inventory-suppliers',
-            'create-inventory-suppliers',
-            'update-inventory-suppliers',
-            'delete-inventory-suppliers',
-
-            // Inventory Category (CRUD)
-            'view-inventory-categories',
-            'create-inventory-categories',
-            'update-inventory-categories',
-            'delete-inventory-categories',
-
-            // Inventory (CRUD)
-            'view-inventories',
-            'create-inventories',
-            'update-inventories',
-            'delete-inventories',
 
             // StudyMode (CRUD)
             'view-studyModes',
@@ -91,23 +55,17 @@ class RolePermissionSeeder extends Seeder
             'update-studyModes',
             'delete-studyModes',
 
+            // Departments (CRUD)
+            'view-departments',
+            'create-departments',
+            'update-departments',
+            'delete-departments',
+
             // Courses (CRUD)
             'view-courses',
             'create-courses',
             'update-courses',
             'delete-courses',
-
-            // StudyMode (CRUD)
-            'view-instructors',
-            'create-instructors',
-            'update-instructors',
-            'delete-instructors',
-
-            // User Document (CRUD)
-            'view-userDocuments',
-            'create-userDocuments',
-            'update-userDocuments',
-            'delete-userDocuments',
 
             // User (CRUD)
             'view-users',
@@ -115,17 +73,59 @@ class RolePermissionSeeder extends Seeder
             'update-users',
             'delete-users',
 
-            // Student (CRUD)
+            // Students (CRUD)
             'view-students',
             'create-students',
             'update-students',
             'delete-students',
 
-            // UserDocument (CRUD)
+            // Instructors (CRUD)
+            'view-instructors',
+            'create-instructors',
+            'update-instructors',
+            'delete-instructors',
+
+            // Employees (CRUD)
+            'view-employees',
+            'create-employees',
+            'update-employees',
+            'delete-employees',
+
+            // User Document (CRUD)
             'view-userDocuments',
             'create-userDocuments',
             'update-userDocuments',
             'delete-userDocuments',
+
+            // Inventory (CRUD)
+            'view-inventories',
+            'create-inventories',
+            'update-inventories',
+            'delete-inventories',
+
+            // Inventory Category (CRUD)
+            'view-inventory-categories',
+            'create-inventory-categories',
+            'update-inventory-categories',
+            'delete-inventory-categories',
+
+            // Inventory Supplier (CRUD)
+            'view-inventory-suppliers',
+            'create-inventory-suppliers',
+            'update-inventory-suppliers',
+            'delete-inventory-suppliers',
+
+            // Assigning Relationships
+            'assign-courses-sections',
+            'remove-courses-sections',
+            'assign-instructors-sections',
+            'remove-instructors-sections',
+            'assign-instructors-courses',
+            'remove-instructors-courses',
+            'assign-students-sections',
+            'remove-students-sections',
+            'assign-students-courses',
+            'remove-students-courses',
         ];
 
         // Create all permissions
@@ -171,37 +171,56 @@ class RolePermissionSeeder extends Seeder
                     'create-permissions',
                     'update-permissions',
                     'delete-permissions',
-                    
-                    'view-tenants',
-                    'create-tenants',
-                    'update-tenants',
-                    'delete-tenants',
+
+                    'view-programs',
+                    'create-programs',
+                    'update-programs',
+                    'delete-programs',
+
+                    'view-studyModes',
+                    'create-studyModes',
+                    'update-studyModes',
+                    'delete-studyModes',
+
+                    'view-departments',
+                    'create-departments',
+                    'update-departments',
+                    'delete-departments',
                     
                     'view-courses',
                     'create-courses',
                     'update-courses',
                     'delete-courses',
 
+                    'view-users',
+                    'create-users',
+                    'update-users',
+                    'delete-users',
+
+                    'view-students',
+                    'create-students',
+                    'update-students',
+                    'delete-students',
+
                     'view-instructors',
                     'create-instructors',
                     'update-instructors',
                     'delete-instructors',
 
-                    'view-users',
-                    'create-users',
-                    'update-users',
-                    'delete-users',
-                    
-                    'view-departments',
-                    'create-departments',
-                    'update-departments',
-                    'delete-departments',
-
+                    'view-employees',
+                    'create-employees',
+                    'update-employees',
+                    'delete-employees',
 
                     'view-userDocuments',
                     'create-userDocuments',
                     'update-userDocuments',
                     'delete-userDocuments',
+
+                    'view-inventories',
+                    'create-inventories',
+                    'update-inventories',
+                    'delete-inventories',
 
                     'view-inventory-suppliers',
                     'create-inventory-suppliers',
@@ -213,21 +232,17 @@ class RolePermissionSeeder extends Seeder
                     'update-inventory-categories',
                     'delete-inventory-categories',
 
-                    'view-studyModes',
-                    'create-studyModes',
-                    'update-studyModes',
-                    'delete-studyModes',
+                    'assign-courses-sections',
+                    'remove-courses-sections',
+                    'assign-instructors-sections',
+                    'remove-instructors-sections',
+                    'assign-instructors-courses',
+                    'remove-instructors-courses',
+                    'assign-students-sections',
+                    'remove-students-sections',
+                    'assign-students-courses',
+                    'remove-students-courses',
 
-                    'view-employees',
-                    'create-employees',
-                    'update-employees',
-                    'delete-employees',
-
-
-                    'view-inventories',
-                    'create-inventories',
-                    'update-inventories',
-                    'delete-inventories',
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);
             }

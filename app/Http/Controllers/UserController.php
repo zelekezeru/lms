@@ -51,7 +51,7 @@ class UserController extends Controller
 
         $userUuid = $this->userUuid('user');
 
-        dd('HIT');
+        dd($userUuid);
 
         // $userUuid = $this->userUuid($fields['role_name']);
         // $year = substr(Carbon::now()->year, -2); // get current year's last two digits
@@ -91,7 +91,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         return inertia('Users/Show', [
-            'user' => new UserResource($user->load('user')),
+            'user' => new UserResource($user),
         ]);
     }
     

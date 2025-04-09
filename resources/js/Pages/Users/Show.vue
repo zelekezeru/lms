@@ -6,9 +6,9 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
-// Define the props for the employee
+// Define the props for the user
 defineProps({
-    employee: {
+    user: {
         type: Object,
         required: true,
     },
@@ -17,7 +17,7 @@ defineProps({
 const imageLoaded = ref(false);
 
 // Delete function with SweetAlert confirmation
-const deleteEmployee = (id) => {
+const deleteuser = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -28,11 +28,11 @@ const deleteEmployee = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("employees.destroy", { employee: id }), {
+            router.delete(route("users.destroy", { user: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The employee has been deleted.",
+                        "The User has been deleted.",
                         "success"
                     );
                 },
@@ -48,7 +48,7 @@ const deleteEmployee = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                Employee Details
+                User Details
             </h1>
 
             <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
@@ -60,92 +60,62 @@ const deleteEmployee = (id) => {
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="employee.profileImg"
-                        :alt="`profile image of ` + employee.name"
+                        :src="user.profileImg"
+                        :alt="`profile image of ` + user.name"
                         @load="imageLoaded = true"
                     />
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4 place-items-center lg:pl-30 sm:gap-4">
-                    <!-- employee ID -->
+                    <!-- user ID -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
                             >ID</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.id }}</span
+                            >{{ user.id }}</span
                         >
                     </div>
 
-                    <!-- employee Name -->
+                    <!-- user Name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
                             >Name</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.name }}</span
+                            >{{ user.name }}</span
                         >
                     </div>
 
-                    <!-- employee Email -->
+                    <!-- user Email -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
                             >Email</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.email }}</span
+                            >{{ user.email }}</span
                         >
                     </div>
 
-                    <!-- Role -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Role</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.userRole }}</span>
-                    </div>
-
-                    <!-- Employment Type -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Employment Type</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.employmentType }}</span
-                        >
-                    </div>
                     
-                    <!-- Job Position -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Job Position</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ employee.jobPosition }}</span
-                        >
-                    </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link
-                        v-if="userCan('update-employees')"
+                        v-if="userCan('update-users')"
                         :href="
-                            route('employees.edit', { employee: employee.id })
+                            route('users.edit', { user: user.id })
                         "
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
                     </Link>
                     <button
-                        v-if="userCan('delete-employees')"
-                        @click="deleteEmployee(employee.id)"
+                        v-if="userCan('delete-users')"
+                        @click="deleteuser(user.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />

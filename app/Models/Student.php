@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends Model
 {
@@ -35,25 +36,24 @@ class Student extends Model
         'student_signature',
         'office_use_notes'
     ];
-    
-
-    public function program()
-    {
-        return $this->belongsTo(Program::class);
-    }
-
-    public function courses()
-    {
-        return $this->hasMany(Course::class);
-    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     } 
+    
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class);
+    }
 
     public function section()
     {
         return $this->belongsTo(Section::class);
-    } 
+    }
 }

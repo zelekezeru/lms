@@ -18,7 +18,6 @@ class UserDocument extends Model
         'file'
     ];
 
-
     public function user()
     {
         return $this->belongsTo(User::class);

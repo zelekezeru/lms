@@ -64,26 +64,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(Instructor::class);
     }
-
-    public function program()
-    {
-        return $this->hasOne(Program::class);
-    }
     
-    public function department()
+    public function userDocuments()
     {
-        return $this->belongsTo(Department::class);
+        return $this->hasMany(UserDocument::class);
     }
     
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
-    
-    public function section()
-    {
-        return $this->belongsTo(Section::class);
-    }
-
 
 }

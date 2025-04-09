@@ -21,7 +21,7 @@ class PermissionController extends Controller
                 return $query->where('name', 'like', "%$search%");
             })
             ->latest()
-            ->paginate(15)
+            ->paginate(30)
             ->withQueryString();
 
         return Inertia::render('Permissions/Index', compact('permissions', 'search'));

@@ -16,6 +16,7 @@ use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +40,26 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/roles/{role}/permissions', [RoleController::class, 'attach'])->middleware('can:attach-permissions-roles')->name('roles.attach');
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->middleware('can:detach-permissions-roles')->name('roles.detach');
 
+    // Assignment routes
+    Route::get('/assignments/courses-sections', [AssignmentController::class, 'create_courses_sections'])->name('assignments.courses-sections');
+    Route::post('/assignments/courses-sections', [AssignmentController::class, 'assign_courses_sections'])->name('assignments.courses-sections.assign');
+    Route::post('/assignments/courses-sections/remove', [AssignmentController::class, 'remove_courses_sections'])->name('assignments.courses-sections.remove');
+    
+    Route::get('/assignments/instructors-sections', [AssignmentController::class, 'create_instructors_sections'])->name('assignments.instructors-sections');
+    Route::post('/assignments/instructors-sections', [AssignmentController::class, 'assign_instructors_sections'])->name('assignments.instructors-sections.assign');
+    Route::post('/assignments/instructors-sections/remove', [AssignmentController::class, 'remove_instructors_sections'])->name('assignments.instructors-sections.remove');
+    
+    Route::get('/assignments/instructors-courses', [AssignmentController::class, 'create_instructors_courses'])->name('assignments.instructors-sections');
+    Route::post('/assignments/instructors-courses', [AssignmentController::class, 'assign_instructors_courses'])->name('assignments.instructors-courses.assign');
+    Route::post('/assignments/instructors-courses/remove', [AssignmentController::class, 'remove_instructors_courses'])->name('assignments.instructors-courses.remove');
+    
+    Route::get('/assignments/students-sections', [AssignmentController::class, 'create_students_sections'])->name('assignments.students-sections');
+    Route::post('/assignments/students-sections', [AssignmentController::class, 'assign_students_sections'])->name('assignments.students-sections.assign');
+    Route::post('/assignments/students-sections/remove', [AssignmentController::class, 'remove_students_sections'])->name('assignments.students-sections.remove');
+    
+    Route::get('/assignments/students-courses', [AssignmentController::class, 'create_students_courses'])->name('assignments.students-courses');
+    Route::post('/assignments/students-courses', [AssignmentController::class, 'assign_students_courses'])->name('assignments.students-courses.assign');
+    Route::post('/assignments/students-courses/remove', [AssignmentController::class, 'remove_students_courses'])->name('assignments.students-courses.remove');
 
     $resourceRoutes = [
         'departments' => 'department',

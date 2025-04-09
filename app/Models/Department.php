@@ -13,11 +13,6 @@ class Department extends Model
         return $this->belongsTo(Program::class);
     }
 
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
-
     public function courses()
     {
         return $this->hasMany(Course::class);
@@ -27,4 +22,5 @@ class Department extends Model
     {
         return $this->hasMany(StudyMode::class);
     }
+    
 }

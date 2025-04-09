@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Instructor extends Model
 {
@@ -33,5 +34,15 @@ class Instructor extends Model
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+    
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class);
+    }
+
+    public function sections(): BelongsToMany
+    {
+        return $this->belongsToMany(Section::class);
     }
 }

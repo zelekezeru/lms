@@ -39,18 +39,16 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store($request, $role = null, $model= null): RedirectResponse
     {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+        $fields = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'nullable',
-            'type' => 'nullable',
         ]);
 
-        // Check if the user with id 1 already exists
+        // SUPER-ADMIN User
+
         if(User::where('id', 1)->first() == null){
             // Get the user with id 1
             $year = substr(Carbon::now()->year, -2); // get current year's last two digits
@@ -72,6 +70,31 @@ class RegisteredUserController extends Controller
 
             return redirect()->route('tenants.create');
         }
+
+        // TENANT-ADMIN User
+        elseif($request->contact_phone != null){
+
+            $userUuid = $this->userUuid('TENANT-ADMIN', 'Tenant');
+
+            $tenant = Tenant::first();
+
+            $fields['tenant_id'] = $tenant->id;
+            
+            $user = User::create([
+                'tenant_id' => $fields['tenant_id'],
+                'name' => $request->contact_person,
+                'user_uuid' => $userUuid,
+                'email' => $request->contact_email,
+                'password' => Hash::make($request->password),
+                'password_changed' => $request->password_changed
+
+            ]);
+                $user->assignRole('TENANT-ADMIN');
+                
+        
+            return redirect(route('tenants.show', $tenant));
+        }
+        // All other Users
         else{
 
             $userUuid = $this->userUuid('USER', 'User');
@@ -93,16 +116,26 @@ class RegisteredUserController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function userUuid($role, $type, $tenant_id = 1)
+    public function userUuid($role, $type, $tenant_id = null)
     {
-        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+        $userUuid = null;
         
-        $tenant = Tenant::find($tenant_id);
-
-        if(!$tenant){
-            return redirect(route('tenants.create'));
+        if($tenant_id == null){
+            $tenant = Tenant::first();
         }else{
-            if($role == 'ADMIN') {
+            $tenant = Tenant::find($tenant_id);
+        }
+        if(!$tenant){
+
+            return redirect(route('tenants.create'));
+
+        }else{ 
+
+            $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+            
+            if($role == 'TENANT-ADMIN') {
+                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+            }elseif($role == 'ADMIN') {
                 $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
             }elseif($role == 'USER') {
                 $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
@@ -114,7 +147,6 @@ class RegisteredUserController extends Controller
                 $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
             }
         }
-
         return $userUuid;
     }
 }

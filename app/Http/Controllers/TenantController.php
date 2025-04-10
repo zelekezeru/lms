@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\TenantResource;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -82,8 +83,6 @@ class TenantController extends Controller
     public function store(TenantStoreRequest $request)
     {
         $fields = $request->validated();
-        
-        // Check if the user with id 1 already exists
 
         // Handle logo upload
         if ($request->hasFile('logo')) {
@@ -106,20 +105,26 @@ class TenantController extends Controller
         $fields['password'] = Hash::make($tenant_password);
 
         $fields['default_password'] = $tenant_password;
-
-        // Creating Tenant representative User
-        
-        
-        $registeredUserController = new RegisteredUserController();
-
-        $userUuid = $registeredUserController->store($request);
-
-        // Creating Representative as ADMIN user for the Tenant
         
         // Create a new Tenant instance
         $tenant = Tenant::create($fields);
 
-        $this->tenantRepresentative($fields, $tenant->id);
+        // Create a new Tenant Admin in User table
+        $user_phone = substr($fields['contact_phone'], -4);
+
+        $user_password = $fields['name'] . '@' . $user_phone;
+
+        // Merge the default password into the request
+        $request->merge([
+            'password' => $user_password,
+            'password_confirmation' => $user_password, // needed for 'confirmed' rule
+        ]);
+        
+        $registeredUserController = new RegisteredUserController();
+
+        $Representative = $registeredUserController->store($request, 'TENANT-ADMIN', 'User');
+
+        // Creating Representative as ADMIN user for the Tenant
         
         return redirect(route('tenants.show', $tenant));
     }
@@ -174,7 +179,7 @@ class TenantController extends Controller
         $tenant->update([
             'status' => 'inactive',
             'deleted_at' => now(),
-            'deleted_by' => auth()->user()->id,
+            'deleted_by' => Auth::user()->id,
         ]);
 
         dd($tenant);

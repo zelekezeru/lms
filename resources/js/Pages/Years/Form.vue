@@ -1,0 +1,93 @@
+<script setup>
+import { defineProps } from "vue";
+
+const props = defineProps({
+  form: { type: Object, required: true },
+});
+console.log(props.form)
+
+</script>
+
+<template>
+    <form @submit.prevent="submit">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >Year Name</label
+                >
+                <input
+                    id="name"
+                    type="text"
+                    v-model="form.name"
+                    required
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <div v-if="form.errors.name" class="text-red-500 text-sm">
+                    {{ form.errors.name }}
+                </div>
+            </div>
+
+            <div>
+                <label
+                    for="status"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >Status</label
+                >
+                <select
+                    id="status"
+                    v-model="form.status"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                    <option value="inactive">Inactive</option>
+                    <option value="active">Active</option>
+                </select>
+                <div v-if="form.errors.status" class="text-red-500 text-sm">
+                    {{ form.errors.status }}
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="flex items-center gap-2">
+                <input
+                    id="is_approved"
+                    type="checkbox"
+                    v-model="form.is_approved"
+                    class="rounded text-indigo-600 border-gray-300 shadow-sm focus:ring-indigo-500"
+                />
+                <label
+                    for="is_approved"
+                    class="text-sm text-gray-700 dark:text-gray-300"
+                    >Is Approved</label
+                >
+            </div>
+
+            <div class="flex items-center gap-2">
+                <input
+                    id="is_completed"
+                    type="checkbox"
+                    v-model="form.is_completed"
+                    class="rounded text-indigo-600 border-gray-300 shadow-sm focus:ring-indigo-500"
+                />
+                <label
+                    for="is_completed"
+                    class="text-sm text-gray-700 dark:text-gray-300"
+                    >Is Completed</label
+                >
+            </div>
+        </div>
+
+        <div class="mt-6 flex justify-center">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <span v-if="!form.processing">Submit</span>
+                <span v-else>Submitting...</span>
+            </button>
+        </div>
+    </form>
+</template>

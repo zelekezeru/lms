@@ -17,8 +17,12 @@ use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\YearController;
+use App\Http\Controllers\SemesterController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
 
 
 Route::middleware('auth')->group(function () {});
@@ -61,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/assignments/students-courses', [AssignmentController::class, 'assign_students_courses'])->name('assignments.students-courses.assign');
     Route::post('/assignments/students-courses/remove', [AssignmentController::class, 'remove_students_courses'])->name('assignments.students-courses.remove');
 
+
     $resourceRoutes = [
         'departments' => 'department',
         'students' => 'student',
@@ -79,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
         'semesters' => 'semester',
         'sections' => 'section',
         'userDocuments' => 'userDocument',
+        'years' => 'year',
+        'semesters' => 'semester',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {

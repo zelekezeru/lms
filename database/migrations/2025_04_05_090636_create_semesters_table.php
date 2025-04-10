@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('semesters', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->foreignId('year_id')->constrained()->nullable();
+            $table->foreignId('year_id')->constrained();
             $table->string('status')->default('inactive');
             $table->boolean('is_approved')->default(1);
             $table->boolean('is_completed')->default(0);
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */

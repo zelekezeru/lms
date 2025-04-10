@@ -3,63 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Semester;
+use App\Models\Year;
 use Illuminate\Http\Request;
 
 class SemesterController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Store a new semester for the assigned year.
      */
-    public function index()
+    public function store(Request $request, Year $year)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:semesters,name',
+            'status' => 'required|string|in:active,inactive',
+            'is_approved' => 'required|boolean',
+            'is_completed' => 'required|boolean',
+        ]);
+    
+        // Create the semester with the year_id
+        Semester::create([
+            'name' => $request->name,
+            'status' => $request->status,
+            'is_approved' => $request->is_approved,
+            'is_completed' => $request->is_completed,
+            'year_id' => $year->id, // Ensure year_id is correctly assigned
+        ]);
+    
+        return redirect()->back()->with('success', 'Semester created successfully.');
     }
-
+    
+    
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Semester $semester)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Semester $semester)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update an existing semester.
      */
     public function update(Request $request, Semester $semester)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:semesters,name,' . $semester->id,
+            'status' => 'required|string|in:active,inactive',
+            'is_approved' => 'required|boolean',
+            'is_completed' => 'required|boolean',
+        ]);
+
+        $semester->update($request->all());
+
+        return redirect()->back()->with('success', 'Semester updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a semester.
      */
     public function destroy(Semester $semester)
     {
-        //
+        $semester->delete();
+
+        return redirect()->back()->with('success', 'Semester deleted successfully.');
     }
 }

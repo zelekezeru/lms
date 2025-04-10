@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store($request, $role = null, $model= null): RedirectResponse
+    public function store(Request $request, $role = null, $model= null): RedirectResponse
     {
         $fields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -57,7 +57,7 @@ class RegisteredUserController extends Controller
                 'id' => 1,
                 'name' => $request->name,
                 'tenant_id' => 1,
-                'user_uuid' => '000'. User::count() . '/' .$request->name .  '/' . $year,
+                'user_uuid' => 'SA' .  '/' . $year,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);

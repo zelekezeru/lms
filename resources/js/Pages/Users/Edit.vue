@@ -1,32 +1,38 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { defineProps, ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
 
-// Define props to accept the employee data
+// Define props to accept the user data
 const props = defineProps({
-    employee: { type: Object, required: true },
+    user: { type: Object, required: true },
     roles: { type: Array, required: true },
 });
 
-// Initialize the form with the employee data or empty values
+// Initialize the form with the user data or empty values
 const form = useForm({
-    id: props.employee.id || "",
-    name: props.employee.name || "",
-    email: props.employee.email || "",
-    password: props.employee.password || "employees@default", // Set default if no password provided
-    password_confirmation: props.employee.password_confirmation || "employees@default",
-    role_name: props.employee.userRole || "",
-    job_position: props.employee.jobPosition || "",
-    employment_type: props.employee.employmentType ||   "",
-    office_hours: props.employee.officeHours || "",
-    profile_img: props.employee.profile_img || "",
-    _method: "PUT",  // Indicates PUT method for the update
+    id: props.user.id || "",
+    name: props.user.name || "",
+    email: props.user.email || "",
+    password: "",
+    password_confirmation: "",
+    role_name: props.user.roles?.[0]?.name || "", // Get the first role name if available
+    profile_img: props.user.profile_img || "",
+    _method: "PUT", // Indicates PUT method for the update
 });
 
-// Submit the form, passing the employee ID to the route
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
+
+// Submit the form, passing the user ID to the route
 const submit = (id) => {
-    form.post(route("employees.update", { employee: id }));
+    form.post(route("users.update", { user: id }));
 };
 </script>
 
@@ -35,20 +41,33 @@ const submit = (id) => {
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit {{ props.employee.name }}
+                    Edit {{ props.user.name }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Modify the employee details below.
+                    Modify the user details below.
                 </p>
+                <div class="flex justify-center mb-8">
+                    <div
+                        v-if="!imageLoaded"
+                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                    ></div>
+                    
+                    <img
+                        v-show="imageLoaded"
+                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                        :src="user.profileImg"
+                        :alt="`Logo of ` + user.name"
+                        @load="handleImageLoad"
+                    />
+                </div>
             </div>
 
-            <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
-                <!-- Pass the form to the Form component, and handle submit with employee.id -->
+            <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6">
+                <!-- Pass the form to the Form component, and handle submit with user.id -->
                 <Form 
                     :form="form" 
-                    :departments="departments" 
                     :roles="roles" 
-                    @submit="submit(props.employee.id)" 
+                    @submit="submit(props.user.id)" 
                 />
             </div>
         </div>

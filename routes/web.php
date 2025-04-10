@@ -75,6 +75,10 @@ Route::middleware(['auth'])->group(function () {
         'tenants' => 'tenant',
         'studyModes' => 'studyMode',
         'users' => 'user',
+        'years' => 'year',
+        'semesters' => 'semester',
+        'sections' => 'section',
+        'userDocuments' => 'userDocument',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {

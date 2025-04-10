@@ -54,13 +54,13 @@ const deleteInstructor = (id) => {
 
       <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
         <!-- Instructor Image -->
-                <div class="flex justify-center mb-8">
-                    <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
-                    
-                    <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="instructor.profileImg" :alt="`Logo of ` + instructor.name"
-                        @load="handleImageLoad"/>
-                </div>
+          <div class="flex justify-center mb-8">
+              <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
+              
+              <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                  :src="instructor.profileImg" :alt="`Logo of ` + instructor.name"
+                  @load="handleImageLoad"/>
+          </div>
 
           <!-- instructor Full Name -->
           <div class="flex flex-col">

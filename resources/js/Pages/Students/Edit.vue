@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { defineProps, ref } from "vue";
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';

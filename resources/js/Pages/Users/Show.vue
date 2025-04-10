@@ -16,6 +16,12 @@ defineProps({
 
 const imageLoaded = ref(false);
 
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
+
 // Delete function with SweetAlert confirmation
 const deleteuser = (id) => {
     Swal.fire({
@@ -57,12 +63,13 @@ const deleteuser = (id) => {
                         v-if="!imageLoaded"
                         class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                     ></div>
+                    
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
                         :src="user.profileImg"
-                        :alt="`profile image of ` + user.name"
-                        @load="imageLoaded = true"
+                        :alt="`Logo of ` + user.name"
+                        @load="handleImageLoad"
                     />
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4 place-items-center lg:pl-30 sm:gap-4">
@@ -73,7 +80,7 @@ const deleteuser = (id) => {
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ user.id }}</span
+                            >{{ user.user_uuid }}</span
                         >
                     </div>
 

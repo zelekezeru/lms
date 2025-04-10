@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { defineProps, ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
 
@@ -40,6 +41,20 @@ const submit = (id) => {
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Modify the employee details below.
                 </p>
+            </div>
+            <!-- Employee Image -->
+            <div class="flex justify-center mb-8">
+                <div
+                    v-if="!imageLoaded"
+                    class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                ></div>
+                <img
+                    v-show="imageLoaded"
+                    class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                    :src="employee.profileImg"
+                    :alt="`profile image of ` + employee.name"
+                    @load="imageLoaded = true"
+                />
             </div>
 
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">

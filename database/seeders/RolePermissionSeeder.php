@@ -115,6 +115,17 @@ class RolePermissionSeeder extends Seeder
             'update-inventory-suppliers',
             'delete-inventory-suppliers',
 
+            // Year (CRUD)
+            'view-years',
+            'create-years',
+            'update-years',
+            'delete-years',
+            // Semester (CRUD)
+            'view-semesters',
+            'create-semesters',
+            'update-semesters',
+            'delete-semesters',
+
             // Assigning Relationships
             'assign-courses-sections',
             'remove-courses-sections',
@@ -231,6 +242,16 @@ class RolePermissionSeeder extends Seeder
                     'create-inventory-categories',
                     'update-inventory-categories',
                     'delete-inventory-categories',
+
+                    'view-years',
+                    'create-years',
+                    'update-years',
+                    'delete-years',
+
+                    'view-semesters',
+                    'create-semesters',
+                    'update-semesters',
+                    'delete-semesters',
 
                     'assign-courses-sections',
                     'remove-courses-sections',

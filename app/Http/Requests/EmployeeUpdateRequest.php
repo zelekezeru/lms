@@ -28,7 +28,7 @@ class EmployeeUpdateRequest extends FormRequest
             'job_position' => 'sometimes|nullable|max:255',
             'employment_type' => 'sometimes|required|in:FULL_TIME,PART_TIME,CONTRACT',
             'office_hours' => 'sometimes|nullable|string|max:255',
-            'profile_img' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Optional, depending on whether the employee uploads a new image
+            'profile_img' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:5150', // Optional, depending on whether the employee uploads a new image
         ];
     }
 }

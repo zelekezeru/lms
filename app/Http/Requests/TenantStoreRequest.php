@@ -32,7 +32,7 @@ class TenantStoreRequest extends FormRequest
             'contact_email' => ['required', 'string', 'unique:users,email'],
             'status' => ['required', 'in:0,1'],
             'paid' => ['required', 'in:0,1'],    
-            'logo'   => 'nullable|image:jpeg,jpg,png,svg,gif',
+            'logo'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }
 }

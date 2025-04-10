@@ -4,20 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Program extends Model
+class Year extends Model
 {
     protected $fillable = [
         'name',
-        'language',
-        'code',
-        'user_id',
-        'duration',
-        'description',
+        'status',
+        'is_approved',
+        'is_completed',
     ];
 
-    public function departments()
+    public function sections()
     {
-        return $this->hasMany(Department::class);
+        return $this->hasMany(Section::class);
     }
 
     public function students()
@@ -29,15 +27,12 @@ class Program extends Model
     {
         return $this->hasMany(User::class, 'user_id');
     }
-    
     public function semesters()
     {
         return $this->hasMany(Semester::class);
     }
-    
-    public function years()
+    public function programs()
     {
-        return $this->hasMany(Year::class);
+        return $this->hasMany(Program::class);
     }
-    
 }

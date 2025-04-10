@@ -16,8 +16,8 @@ class UserDocumentUpdateRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'file' => 'nullable|file|mimes:pdf,docx|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5150',
+            'file' => 'nullable|file|mimes:pdf,docx|max:20400',
         ];
     }
 }

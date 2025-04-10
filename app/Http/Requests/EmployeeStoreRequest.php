@@ -28,7 +28,7 @@ class EmployeeStoreRequest extends FormRequest
             'password'  => 'sometimes|required|string|min:8|confirmed',
             'role_name'   => 'required|exists:roles,name',
             // Employee table validations
-            'profile_img'   => 'nullable|image:jpeg,jpg,png',
+            'profile_img'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
             'job_position'   => 'required|string|max:255',
             'employment_type'=> 'required|in:FULL_TIME,PART_TIME,CONTRACT',
             'office_hours'   => 'nullable|string|max:255',

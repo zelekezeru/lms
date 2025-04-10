@@ -29,4 +29,14 @@ class Course extends Model
         return $this->belongsToMany(Instructor::class);
     }
 
+    public function semesters()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+    
+    public function years()
+    {
+        return $this->belongsTo(Year::class);
+    }
+
 }

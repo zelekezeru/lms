@@ -15,13 +15,13 @@ class InstructorUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $this->instructor->user->id,
+            'email' => 'sometimes|email|unique:users,email,' . $this->instructor->user->id,
             'specialization' => 'sometimes|string|max:255',
             'employment_type' => 'required|in:full-time,part-time,adjunct',
             'hire_date' => 'required|date',
             'status' => 'required|in:active,inactive,suspended',
             'bio' => 'sometimes|string',
-            'profile_img' => 'sometimes|nullable|image|max:2048',
+            'profile_img' => 'sometimes|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }
 }

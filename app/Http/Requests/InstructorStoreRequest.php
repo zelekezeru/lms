@@ -17,7 +17,7 @@ class InstructorStoreRequest extends FormRequest
             // User table validations
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
-            'password'  => 'sometimes|required|string|min:8|confirmed',
+            'password'  => 'required|string|min:8|confirmed',
             
             // Instructor table validations
             'specialization' => 'nullable|string|max:255',
@@ -25,7 +25,7 @@ class InstructorStoreRequest extends FormRequest
             'hire_date' => 'required|date',
             'status' => 'required|in:active,inactive,suspended',
             'bio' => 'nullable|string',
-            'profile_img' => 'nullable|image|max:2048',
+            'profile_img' => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }
 }

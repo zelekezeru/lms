@@ -11,7 +11,7 @@ class UserDocument extends Model
 
     
     protected $fillable = [
-        // 'user_id', 
+        'user_id', 
         'title', 
         'description', 
         'image', 

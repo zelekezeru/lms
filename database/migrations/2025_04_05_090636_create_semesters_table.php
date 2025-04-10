@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sections', function (Blueprint $table) {
+        Schema::create('semesters', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->foreignId('user_id')->constrained()->nullable();
-            $table->foreignId('program_id')->constrained()->nullable();
-            $table->foreignId('department_id')->constrained()->nullable();
+            $table->string('name')->unique();
             $table->foreignId('year_id')->constrained()->nullable();
-            $table->foreignId('semester_id')->constrained()->nullable();
+            $table->string('status')->default('inactive');
+            $table->boolean('is_approved')->default(1);
+            $table->boolean('is_completed')->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sections');
+        Schema::dropIfExists('semesters');
     }
 };

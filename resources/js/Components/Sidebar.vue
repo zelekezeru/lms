@@ -18,6 +18,9 @@ import {
     FolderIcon,
     ClockIcon,
     LinkIcon,
+    EyeIcon,
+    CalendarIcon,
+    ChartPieIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -205,6 +208,31 @@ const afterLeave = (el) => {
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Permissions</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+
+                <!-- Time Frame Structure Navigation -->
+                <SidebarDropdownMenu
+                    :label="'Schedule Structure'"
+                    :icon="ClockIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-years', 'view-semesters'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-years')"
+                        :href="route('years.index')"
+                    >
+                        <CalendarIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Years</span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-semesters')"
+                        :href="route('semesters.index')"
+                    >
+                        <ChartPieIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Semesters</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

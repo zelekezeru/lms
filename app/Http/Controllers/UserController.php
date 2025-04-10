@@ -8,9 +8,11 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Models\Tenant;
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 class UserController extends Controller
 {
@@ -47,18 +49,11 @@ class UserController extends Controller
 
         // Check if the admin is authenticated and has a tenant_id
         
+        $registeredUserController = new RegisteredUserController();
 
+        $user = $registeredUserController->store($request, 'USER', 'User');
 
-        $userUuid = $this->userUuid('user');
-
-        dd($userUuid);
-
-        // $userUuid = $this->userUuid($fields['role_name']);
-        // $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        // $instructor_id = 'EM/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
-
-        
+        $image = $request->file('profile_img');
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
         }else{
@@ -103,25 +98,25 @@ class UserController extends Controller
         $roles = Role::all();
 
         return inertia('Users/Edit', [
-            'user' => new UserResource($user->load('user')),
+            'user' => new UserResource($user->load('tenant')),
             'roles' => $roles,
         ]);
     }
-
+    
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
         $fields = $request->validated();
-        $image = $fields['profile_img'] ?? null;
-        $user = $user->user;
         
-        if ($image) {
-            if ($user->profile_img) {
-                Storage::disk('public')->delete($user->profile_img);
-            }
-            $profile_path = $image->store('profile-images', 'public');
+        $profileImg = $fields['profile_img'] ?? null;
+        
+        // Profile   of Users
+        if ($profileImg) {
+            $profile_path = $profileImg->store('profile-images', 'public');
+        }else{
+            $profile_path = null;
         }
         
         $user->update([
@@ -129,16 +124,6 @@ class UserController extends Controller
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
-
-        $user->update([
-            'job_position' => $fields['job_position'],
-            'employment_type' => $fields['employment_type'],
-            'office_hours' => $fields['office_hours'],
-        ]);
-        
-        if (!empty($fields['role_name'])) {
-            $user->syncRoles([$fields['role_name']]);
-        }
 
         return redirect(route('users.show', $user));
     }

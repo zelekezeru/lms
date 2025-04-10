@@ -97,6 +97,7 @@ const handleFileChange = (e) => {
                                 v-for="role in roles"
                                 :key="role.id"
                                 :value="role.name"
+                                :selected="role.name === form.role_name"
                             >
                                 {{ role.name }}
                             </option>

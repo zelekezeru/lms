@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { defineProps, ref } from "vue";
 import Form from "./Form.vue";
 import { useForm} from "@inertiajs/vue3";
 
@@ -30,6 +31,14 @@ const form = useForm({
     _method: 'PATCH',
 });
 
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
+
 // Submit the form
 const submit = (id) => {
     form.post(route("instructors.update", { instructor: id }));
@@ -45,6 +54,16 @@ const submit = (id) => {
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 Modify the instructor details below.
             </p>
+
+            <!-- Instructor Image -->
+            <div class="flex justify-center mb-8">
+                <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
+                
+                <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                    :src="instructor.profileImg" :alt="`Logo of ` + instructor.name"
+                    @load="handleImageLoad"/>
+            </div>
+            
             <Form
                 :form="form"
                 :departments="departments"

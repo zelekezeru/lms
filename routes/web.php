@@ -49,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/assignments/instructors-sections', [AssignmentController::class, 'assign_instructors_sections'])->name('assignments.instructors-sections.assign');
     Route::post('/assignments/instructors-sections/remove', [AssignmentController::class, 'remove_instructors_sections'])->name('assignments.instructors-sections.remove');
     
-    Route::get('/assignments/instructors-courses', [AssignmentController::class, 'create_instructors_courses'])->name('assignments.instructors-sections');
+    Route::get('/assignments/instructors-courses', [AssignmentController::class, 'create_instructors_courses'])->name('assignments.instructors-courses');
     Route::post('/assignments/instructors-courses', [AssignmentController::class, 'assign_instructors_courses'])->name('assignments.instructors-courses.assign');
     Route::post('/assignments/instructors-courses/remove', [AssignmentController::class, 'remove_instructors_courses'])->name('assignments.instructors-courses.remove');
     

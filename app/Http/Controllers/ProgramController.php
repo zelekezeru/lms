@@ -20,15 +20,21 @@ class ProgramController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input('search', '');
-        $query = Program::with('user')
-            ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('language', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($query) use ($search) {
-                        $query->where('name', 'like', "%{$search}%");
-                    });
-            });
+        
+        $query = Program::query();
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            
+            $query = Program::with('user')
+                ->when($search, function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('language', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                });
+        }
 
         $allowedSorts = ['name', 'language'];
         $sortColumn = $request->sortColumn;

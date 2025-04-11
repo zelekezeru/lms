@@ -58,14 +58,13 @@ class StudentController extends Controller
     
     public function store(StudentRequest $request)
     {
-        
         $student = Student::create($request->validated());
 
         $student_id = $this->student_id($student->program);
 
         $student->update(['student_id' => $student_id]);
 
-        return redirect()->route('students.index')->with('success', 'Student added successfully.');
+        return redirect()->route('students.show', $student)->with('success', 'Student created successfully.');
     }
 
     public function edit(Student $student): Response
@@ -77,12 +76,13 @@ class StudentController extends Controller
     {
         $student->update($request->validated());
         
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
     }
 
     public function destroy(Student $student)
     {
         $student->delete();
+
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 

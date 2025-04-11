@@ -25,6 +25,11 @@ class Program extends Model
         return $this->hasMany(Student::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function users()
     {
         return $this->hasMany(User::class, 'user_id');

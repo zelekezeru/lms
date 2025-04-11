@@ -39,9 +39,7 @@ class StudyModeController extends Controller
 
         $studyMode = StudyMode::create($fields);
         
-        $redirectTo = request()->query('redirectTo') ?? 'studyModes.index';
-        $params = request()->query('params') ?? [];
-        return redirect(route($redirectTo, $params));
+        return redirect()->route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
     }
     
     /**
@@ -75,7 +73,7 @@ class StudyModeController extends Controller
         
         $studyMode->update($fields);
 
-        return redirect(route('studyModes.index'));
+        return redirect()->route('studyModes.show', $studyMode)->with('success', 'Study Mode updated successfully.');
     }
 
     /**
@@ -85,6 +83,6 @@ class StudyModeController extends Controller
     {
         $studyMode->delete();
         
-        return redirect(route('studyModes.index'));
+        return redirect()->route('studyModes.index')->with('success', 'Study Mode deleted successfully.');
     }
 }

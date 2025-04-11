@@ -44,8 +44,8 @@ class InventoryController extends Controller
         $fields = $request->validated();
         
         $inventory = Inventory::create($fields);
-
-        return redirect(route('inventories.index'));
+        
+        return redirect()->route('inventories.show', $inventory)->with('success', 'Inventory created successfully.');
     }
 
     /**
@@ -77,8 +77,8 @@ class InventoryController extends Controller
         $fields = $request->validated();
 
         $inventory->update($fields);
-
-        return redirect(route('inventories.index'));
+        
+        return redirect()->route('inventories.show', $inventory)->with('success', 'Inventory updated successfully.');
     }
 
     /**
@@ -86,9 +86,8 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
-        // Later to be modified
         $inventory->delete();
 
-        return redirect(route('inventories.index'));
+        return redirect()->route('inventories.index')->with('success', 'Inventory deleted successfully.');
     }
 }

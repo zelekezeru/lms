@@ -78,14 +78,13 @@ class DepartmentController extends Controller
         
         $year = substr(Carbon::now()->year, -2);
 
-        $department_id = 'DP' .  '/' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+        $department_id = 'DP' .  '/' . str_pad(Department::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
 
         $fields['code'] = $department_id;
         
         $department = Department::create($fields);
         
-        
-        return redirect(route('departments.index'));
+        return redirect(route('departments.show', $department))->with('success', 'Department created successfully.');
     }
 
     /**
@@ -124,8 +123,8 @@ class DepartmentController extends Controller
         $fields = $request->validated();
         
         $department->update($fields);
-
-        return redirect(route('departments.index'));
+        
+        return redirect(route('departments.show', $department))->with('success', 'Department updated successfully.');
     }
     
     /**
@@ -135,7 +134,7 @@ class DepartmentController extends Controller
     {
         $department->delete();
         
-        return redirect(route('departments.index'));
+        return redirect(route('departments.index'))->with('success', 'Department deleted successfully.');    
     }
 
     public function search(Request $request)

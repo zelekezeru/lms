@@ -1,14 +1,14 @@
 <script setup>
-import { defineProps } from 'vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PhotoIcon } from '@heroicons/vue/24/outline';
+import { defineProps } from "vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputError from "@/Components/InputError.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { PhotoIcon } from "@heroicons/vue/24/outline";
 
 // Define the expected props: form data and departments/roles for the dropdowns
 const props = defineProps({
-    form: { type: Object, required: true },
+    form: { type: Object, required: true }, // The form object passed from parent
     departments: { type: Array, required: true },
     roles: { type: Array, required: true },
 });
@@ -30,7 +30,7 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-    <form @submit.prevent="props.form.submit" class="space-y-6">
+    <form @submit.prevent="props.form.submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
             <section class="space-y-6">
@@ -87,6 +87,7 @@ const handleFileChange = (e) => {
                             {{ role.name }}
                         </option>
                     </select>
+
                     <InputError :message="props.form.errors.role_name" />
                 </div>
 
@@ -120,18 +121,17 @@ const handleFileChange = (e) => {
                     </div>
                     <InputError :message="props.form.errors.profile_img" />
                 </div>
-
-                <div>
-                    <InputLabel for="job_position" value="Job Position" />
-                    <TextInput
-                        id="job_position"
-                        type="text"
-                        v-model="props.form.job_position"
-                        required
-                        class="w-full"
-                    />
-                    <InputError :message="props.form.errors.job_position" />
-                </div>
+            <div>
+                <InputLabel for="job_position" value="Job Position" />
+                <TextInput
+                    id="job_position"
+                    type="text"
+                    v-model="props.form.job_position"
+                    required
+                    class="w-full"
+                />
+                <InputError :message="props.form.errors.job_position" />
+            </div>
 
                 <div>
                     <InputLabel for="employment_type" value="Employment Type" />
@@ -146,6 +146,7 @@ const handleFileChange = (e) => {
                         <option value="PART_TIME">Part-time</option>
                         <option value="CONTRACT">Contract</option>
                     </select>
+
                     <InputError :message="props.form.errors.employment_type" />
                 </div>
 
@@ -164,10 +165,14 @@ const handleFileChange = (e) => {
 
         <!-- Submit Button -->
         <div class="mt-6 flex justify-center">
-            <PrimaryButton :disabled="props.form.processing">
-                <span v-if="!props.form.processing">Submit</span>
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <span v-if="!form.processing">Submit</span>
                 <span v-else>Submitting...</span>
-            </PrimaryButton>
+            </button>
         </div>
     </form>
 </template>

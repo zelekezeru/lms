@@ -73,7 +73,7 @@ class UserDocumentController extends Controller
 
         $userDocument = UserDocument::create($fields);
 
-        return redirect(route('userDocuments.show', $userDocument));
+        return redirect(route('userDocuments.show', $userDocument))->with('success', 'User Document created successfully.');
     }
 
     /**
@@ -123,9 +123,7 @@ class UserDocumentController extends Controller
 
         $userDocument->update($fields);
 
-        return inertia('UserDocuments/Show', [
-            'userDocument' => new UserDocumentResource($userDocument),
-        ]);
+        return redirect(route('userDocuments.show', $userDocument))->with('success', 'User Document updated successfully.');
     }
 
     /**

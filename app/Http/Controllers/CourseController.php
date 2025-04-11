@@ -55,10 +55,9 @@ class CourseController extends Controller
 
         $fields['code'] = $course_id;
         
-        $course = Course::create($fields);
+        $course = Course::create($fields);        
         
-        
-        return redirect(route('courses.index'));
+        return redirect(route('courses.show', $course))->with('success', 'Course created successfully.');
     }
 
     /**
@@ -90,8 +89,8 @@ class CourseController extends Controller
         $fields = $request->validated();
         
         $course->update($fields);
-
-        return redirect(route('courses.index'));
+        
+        return redirect(route('courses.show', $course))->with('success', 'Course updated successfully.');
     }
     
     /**
@@ -101,7 +100,7 @@ class CourseController extends Controller
     {
         $course->delete();
         
-        return redirect(route('courses.index'));
+        return redirect(route('courses.index'))->with('success', 'Course deleted successfully.');
     }
 
     public function search(Request $request)

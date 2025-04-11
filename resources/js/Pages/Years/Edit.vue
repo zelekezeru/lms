@@ -12,9 +12,9 @@ const props = defineProps({
 
 const form = useForm({
     name: props.year?.name || "",
-    status: props.year?.status || "inactive",
-    is_approved: props.year?.is_approved ?? true,
-    is_completed: props.year?.is_completed ?? false,
+    status: props.year?.status,
+    is_approved: props.year?.is_approved,
+    is_completed: props.year?.is_completed,
     _method: "PATCH",
 });
 

@@ -98,7 +98,7 @@ class EmployeeController extends Controller
         
         $user->assignRole($fields['role_name']);
         
-        return redirect(route('employees.show', $employee));
+        return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }
 
     /**
@@ -155,8 +155,8 @@ class EmployeeController extends Controller
         if (!empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
-
-        return redirect(route('employees.show', $employee));
+        
+        return redirect(route('employees.show', $employee))->with('success', 'Employee updated successfully.');
     }
     
     /**
@@ -170,8 +170,10 @@ class EmployeeController extends Controller
         }
         
         $employee->delete();
+
         $user->delete();
-        return to_route('employees.index');
+        
+        return to_route('employees.index')->with('success', 'Employee deleted successfully.');
     }
 
     public function userUuid($role)

@@ -41,8 +41,9 @@ class YearController extends Controller
 
     public function store(StoreYearRequest $request)
     {
-        Year::create($request->validated());
-        return redirect()->route('years.index')->with('success', 'Year created successfully.');
+        $year = Year::create($request->validated());
+
+        return redirect(route('years.show', $year))->with('success', 'Year created successfully.');
     }
 
     public function show(Year $year)
@@ -54,6 +55,7 @@ class YearController extends Controller
         
         return inertia('Years/Show', [
             'year' => $year,
+            'semesters' => $year->semesters,
         ]);
     }
     
@@ -67,7 +69,8 @@ class YearController extends Controller
     public function update(UpdateYearRequest $request, Year $year)
     {
         $year->update($request->validated());
-        return redirect()->route('years.index')->with('success', 'Year updated successfully.');
+
+        return redirect(route('years.show', $year))->with('success', 'Year updated successfully.');
     }
 
     public function destroy(Year $year)

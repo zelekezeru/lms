@@ -47,8 +47,6 @@ class UserController extends Controller
     {
         $fields = $request->validated();
 
-        // Check if the admin is authenticated and has a tenant_id
-        
         $registeredUserController = new RegisteredUserController();
 
         $user = $registeredUserController->store($request, 'USER', 'User');
@@ -56,7 +54,7 @@ class UserController extends Controller
         $image = $request->file('profile_img');
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
-        }else{
+        } else {
             $profile_path = null;
         }
         
@@ -77,7 +75,7 @@ class UserController extends Controller
         
         $user->assignRole($fields['role_name']);
         
-        return redirect(route('users.show', $user));
+        return redirect()->route('users.show', $user)->with('success', 'User created successfully.');
     }
 
     /**
@@ -112,10 +110,9 @@ class UserController extends Controller
         
         $profileImg = $fields['profile_img'] ?? null;
         
-        // Profile   of Users
         if ($profileImg) {
             $profile_path = $profileImg->store('profile-images', 'public');
-        }else{
+        } else {
             $profile_path = null;
         }
         
@@ -125,7 +122,7 @@ class UserController extends Controller
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 
-        return redirect(route('users.show', $user));
+        return redirect()->route('users.show', $user)->with('success', 'User updated successfully.');
     }
     
     /**
@@ -133,14 +130,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user = $user->user;
         if ($user->profile_img) {
             Storage::disk('public')->delete($user->profile_img);
         }
         
         $user->delete();
-        $user->delete();
-        return to_route('users.index');
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
     public function userUuid($role)

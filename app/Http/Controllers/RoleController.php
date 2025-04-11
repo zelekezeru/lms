@@ -38,10 +38,9 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request)
     {
-
         $role = Role::create($request->validated());
 
-        return redirect()->route('roles.index')->with('success', 'Role added successfully.');
+        return redirect()->route('roles.show', $role)->with('success', 'Role created successfully.');
     }
 
     public function show(Role $role)
@@ -63,12 +62,13 @@ class RoleController extends Controller
     {
         $role->update($request->validated());
 
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('roles.show', $role)->with('success', 'Role created successfully.');
     }
 
     public function destroy(Role $role)
     {
         $role->delete();
+
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 

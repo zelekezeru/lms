@@ -122,11 +122,9 @@ class TenantController extends Controller
         
         $registeredUserController = new RegisteredUserController();
 
-        $Representative = $registeredUserController->store($request, 'TENANT-ADMIN', 'User');
+        $registeredUserController->store($request, 'TENANT-ADMIN', 'User');
 
-        // Creating Representative as ADMIN user for the Tenant
-        
-        return redirect(route('tenants.show', $tenant));
+        return redirect()->route('tenants.show', $tenant)->with('success', 'Tenant created successfully.');
     }
     
     /**
@@ -166,9 +164,7 @@ class TenantController extends Controller
         
         $tenant->update($fields);
     
-        return inertia('Tenants/Show', [
-            'tenant' => new TenantResource($tenant),
-        ]);
+        return redirect()->route('tenants.show', $tenant)->with('success', 'Tenant updated successfully.');
     }
     
     /**
@@ -182,11 +178,9 @@ class TenantController extends Controller
             'deleted_by' => Auth::user()->id,
         ]);
 
-        dd($tenant);
-        // Later to be modified
         $tenant->delete();
 
-        return redirect(route('tenants.index'));
+        return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
     }
 
     public function tenantRepresentative($fields, $tenant_id)

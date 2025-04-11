@@ -113,10 +113,37 @@ const deleteProgram = (id) => {
                             {{ program.user.name }}
                         </span>
                     </div>
+                </div>                
+
+                <!-- Edit and Delete Buttons -->
+                <div class="flex justify-end mt-6 space-x-2">
+                    <Link
+                        v-if="userCan('update-programs')"
+                        :href="route('programs.edit', { program: program.id })"
+                        class="text-blue-500 hover:text-blue-700"
+                    >
+                        <PencilIcon class="w-5 h-5" />
+                    </Link>
+                    <button
+                        v-if="userCan('delete-programs')"
+                        @click="deleteProgram(program.id)"
+                        class="text-red-500 hover:text-red-700"
+                    >
+                        <TrashIcon class="w-5 h-5" />
+                    </button>
                 </div>
 
                 <!-- Departments -->
                 <div class="mt-10">
+                    
+                    <Link
+                        v-if="userCan('create-departments')"
+                        :href="route('departments.create')"
+                        class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                        + Add Department
+                    </Link>
+
                     <div class="text-center">
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -167,7 +194,7 @@ const deleteProgram = (id) => {
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ department.duration }}
+                                    {{ program.duration }}
                                 </td>
                                 <td>
                                     <div v-if="userCan('view-departments')">
@@ -190,23 +217,6 @@ const deleteProgram = (id) => {
                     </table>
                 </div>
 
-                <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
-                    <Link
-                        v-if="userCan('update-programs')"
-                        :href="route('programs.edit', { program: program.id })"
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
-                    </Link>
-                    <button
-                        v-if="userCan('delete-programs')"
-                        @click="deleteProgram(program.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                    </button>
-                </div>
             </div>
         </div>
     </AppLayout>

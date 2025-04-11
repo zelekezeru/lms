@@ -97,7 +97,7 @@ class InstructorController extends Controller
         
         $user->assignRole('INSTRUCTOR');
         
-        return redirect(route('instructors.show', $instructor));
+        return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
     
     /**
@@ -146,8 +146,8 @@ class InstructorController extends Controller
         if (!empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
-
-        return to_route('instructors.show', $instructor)->with('success', 'Instructor updated successfully.');
+        
+        return redirect(route('instructors.show', $instructor))->with('success', 'Instructor updated successfully.');
     }
 
     public function destroy(Instructor $instructor)
@@ -158,7 +158,9 @@ class InstructorController extends Controller
         }
         
         $instructor->delete();
+
         $user->delete();
-        return to_route('instructors.index');
+
+        return to_route('instructors.index', $instructor)->with('success', 'Instructor deleted successfully.');  
     }
 }

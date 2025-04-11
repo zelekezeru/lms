@@ -34,10 +34,9 @@ class PermissionController extends Controller
     
     public function store(PermissionRequest $request)
     {
-        
         $permission = Permission::create($request->validated());
 
-        return redirect()->route('permissions.index')->with('success', 'Permission added successfully.');
+        return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
     }
     
     public function show(Permission $permission)
@@ -62,6 +61,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $permission->delete();
+        
         return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully.');
     }
 

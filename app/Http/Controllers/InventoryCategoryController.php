@@ -39,8 +39,8 @@ class InventoryCategoryController extends Controller
         $fields = $request->validated();
 
         $inventoryCategory = InventoryCategory::create($fields);
-
-        return redirect(route('inventoryCategories.index'));
+        
+        return redirect(route('inventoryCategories.show', $inventoryCategory))->with('success', 'InventoryCategory created successfully.');
     }
 
     /**
@@ -71,8 +71,10 @@ class InventoryCategoryController extends Controller
         $fields = $request->validated();
 
         $inventoryCategory->update($fields);
-
-        return redirect(route('inventoryCategories.index'));
+        
+        $inventoryCategory->delete();
+        
+        return redirect(route('inventoryCategories.show', $inventoryCategory))->with('success', 'InventoryCategory deleted successfully.');
     }
 
     /**
@@ -80,9 +82,8 @@ class InventoryCategoryController extends Controller
      */
     public function destroy(InventoryCategory $inventoryCategory)
     {
-        // Later to be modified
         $inventoryCategory->delete();
 
-        return redirect(route('inventoryCategories.index'));
+        return redirect()->route('inventoryCategories.index')->with('success', 'Inventory Category deleted successfully.');
     }
 }

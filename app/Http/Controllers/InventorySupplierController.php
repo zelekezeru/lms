@@ -39,8 +39,8 @@ class InventorySupplierController extends Controller
         $fields = $request->validated();
 
         $inventorySupplier = InventorySupplier::create($fields);
-
-        return redirect(route('inventorySuppliers.index'));
+        
+        return redirect()->route('inventorySuppliers.show', $inventorySupplier)->with('success', 'Inventory Supplier created successfully.');
     }
 
     /**
@@ -71,8 +71,8 @@ class InventorySupplierController extends Controller
         $fields = $request->validated();
 
         $inventorySupplier->update($fields);
-
-        return redirect(route('inventorySuppliers.index'));
+        
+        return redirect()->route('inventorySuppliers.show', $inventorySupplier)->with('success', 'Inventory Supplier updated successfully.');
     }
 
     /**
@@ -80,9 +80,8 @@ class InventorySupplierController extends Controller
      */
     public function destroy(InventorySupplier $inventorySupplier)
     {
-        // Later to be modified
         $inventorySupplier->delete();
 
-        return redirect(route('inventorySuppliers.index'));
+        return redirect()->route('inventorySuppliers.index')->with('success', 'Inventory Supplier deleted successfully.');
     }
 }

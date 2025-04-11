@@ -55,6 +55,12 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    //Program Director
+    public function directorOf()
+    {
+        return $this->hasOne(Program::class);
+    }
+
     public function employee()
     {
         return $this->hasOne(Employee::class);

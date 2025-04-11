@@ -1,11 +1,29 @@
 <script setup>
 import { defineProps } from "vue";
+import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
   form: { type: Object, required: true },
 });
-console.log(props.form)
 
+// Initialize the form with existing data or default values
+const form = useForm({
+  name: props.form.name || "",
+  status: props.form.status || "inactive",
+  is_approved: props.form.is_approved || false,
+  is_completed: props.form.is_completed || false,
+});
+
+// Function to handle form submission
+const submit = () => {
+  if (props.form.id) {
+    // Update functionality
+    form.put(route("years.update", { year: props.form.id }));
+  } else {
+    // Create functionality
+    form.post(route("years.store"));
+  }
+};
 </script>
 
 <template>
@@ -62,6 +80,9 @@ console.log(props.form)
                     class="text-sm text-gray-700 dark:text-gray-300"
                     >Is Approved</label
                 >
+                <div v-if="form.errors.is_approved" class="text-red-500 text-sm">
+                    {{ form.errors.is_approved }}
+                </div>
             </div>
 
             <div class="flex items-center gap-2">
@@ -76,6 +97,9 @@ console.log(props.form)
                     class="text-sm text-gray-700 dark:text-gray-300"
                     >Is Completed</label
                 >
+                <div v-if="form.errors.is_completed" class="text-red-500 text-sm">
+                    {{ form.errors.is_completed }}
+                </div>  
             </div>
         </div>
 

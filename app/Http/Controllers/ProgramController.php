@@ -43,10 +43,11 @@ class ProgramController extends Controller
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
             $query->orderBy($sortColumn, $sortDirection);
         }
+        
         $programs = ProgramResource::collection($query->paginate(15));
 
         return inertia('Programs/Index', [
-            'programs' => $programs,
+            'programs' => $programs, // Corrected to return the programs collection
             'sortInfo' => [
                 "currentSortColumn" => $sortColumn,
                 "currentSortDirection" => $sortDirection,
@@ -88,7 +89,7 @@ class ProgramController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
+        $program_id = 'PR' .  '/' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $program_id;
 
@@ -98,8 +99,8 @@ class ProgramController extends Controller
         $user->assignRole('PROGRAM-DIRECTOR');
 
         $program = Program::create($fields);
-
-        return redirect(route('programs.index'));
+        
+        return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }
 
     /**
@@ -123,8 +124,8 @@ class ProgramController extends Controller
         $fields = $request->validated();
 
         $program->update($fields);
-
-        return redirect(route('programs.index'));
+        
+        return redirect()->route('programs.show', $program)->with('success', 'Program updated successfully.');
     }
 
     /**

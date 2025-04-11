@@ -1,34 +1,46 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import Form from './Form.vue';
+import { router } from '@inertiajs/vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import BasicInfoForm from './BasicInfoForm.vue';
+import AcademicInfoForm from './AcademicInfoForm.vue';
+import ChurchInfoForm from './ChurchInfoForm.vue';
 
-const form = ref({ 
-    student_id: '', 
-    student_name: '', 
-    father_name: '', 
-    grand_father_name: '', 
-    mobile_phone: '', 
-    office_phone: '', 
-    date_of_birth: '', 
-    email: '', 
-    marital_status: '', 
-    sex: '', 
-    address_1: '', 
-    academic_year: '', 
-    semester: '', 
-    program_id: '', 
-    total_credit_hours: '', 
-    total_amount_paid: '', 
-    pastor_name: '', 
-    pastor_phone: '', 
-    position_denomination: '', 
-    church_name: '', 
-    church_address: '', 
-    student_signature: '', 
-    office_use_notes: '' 
+const form = ref({
+    student_id: '',
+    student_name: '',
+    father_name: '',
+    grand_father_name: '',
+    mobile_phone: '',
+    office_phone: '',
+    date_of_birth: '',
+    email: '',
+    marital_status: '',
+    sex: '',
+    address_1: '',
+    academic_year: '',
+    semester: '',
+    program_id: '',
+    total_credit_hours: '',
+    total_amount_paid: '',
+    pastor_name: '',
+    pastor_phone: '',
+    position_denomination: '',
+    church_name: '',
+    church_address: '',
+    student_signature: '',
+    office_use_notes: ''
 });
+
+const currentStep = ref(1);
+
+const nextStep = () => {
+    if (currentStep.value < 3) currentStep.value++;
+};
+
+const previousStep = () => {
+    if (currentStep.value > 1) currentStep.value--;
+};
 
 const submit = () => {
     router.post(route('students.store'), form.value);
@@ -39,7 +51,15 @@ const submit = () => {
     <Head title="Register Student" />
     <AppLayout>
         <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition">
-            <Form :form="form" @submit="submit" />
+            <div v-if="currentStep === 1">
+                <BasicInfoForm :form="form" @next="nextStep" />
+            </div>
+            <div v-else-if="currentStep === 2">
+                <AcademicInfoForm :form="form" @next="nextStep" @previous="previousStep" />
+            </div>
+            <div v-else-if="currentStep === 3">
+                <ChurchInfoForm :form="form" @submit="submit" @previous="previousStep" />
+            </div>
         </div>
     </AppLayout>
 </template>

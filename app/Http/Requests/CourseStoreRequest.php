@@ -18,7 +18,6 @@ class CourseStoreRequest extends FormRequest
             'credit_hours' => ['required', 'integer', 'min:1'],
             'duration' => ['required', 'integer', 'min:1'],
             'description' => ['nullable', 'string'],
-            'department_id' => ['nullable', 'exists:departments,id'],
             'is_training' => ['boolean'],
             'status' => ['boolean'],
             'is_published' => ['boolean'],

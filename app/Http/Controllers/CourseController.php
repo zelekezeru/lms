@@ -14,7 +14,6 @@ use App\Http\Resources\InstructorResource;
 use App\Http\Resources\InstructorsResource;
 use Inertia\Inertia;
 use App\Models\User;
-use App\Models\Department;
 
 class CourseController extends Controller
 {
@@ -34,11 +33,8 @@ class CourseController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {   
-        $departments = DepartmentResource::collection(Department::all());
-        
+    {           
         return inertia('Courses/Create', [
-            'departments' => $departments,
         ]);
     }
 
@@ -51,7 +47,7 @@ class CourseController extends Controller
         
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'DP' .  '/' . str_pad(Course::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;  
+        $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
 
         $fields['code'] = $course_id;
         
@@ -77,7 +73,6 @@ class CourseController extends Controller
     {
         return inertia('Courses/Edit', [
             'course' => new CourseResource($course),
-            'departments' => DepartmentResource::collection(Department::all()),
         ]);
     }
 

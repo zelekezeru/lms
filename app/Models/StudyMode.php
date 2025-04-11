@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StudyMode extends Model
 {
     protected $guarded =[];
 
-    public function department()
+    public function programs(): BelongsToMany
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Program::class);
     }
 }

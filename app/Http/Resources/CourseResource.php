@@ -27,10 +27,6 @@ class CourseResource extends JsonResource
             'is_published' => $this->is_published,
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,
-            'department_id' => $this->department_id,
-
-            // Include related department info if loaded
-            'department' => $this->whenLoaded('department'),
         ];
     }
 }

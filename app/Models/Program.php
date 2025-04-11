@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Program extends Model
 {
@@ -48,6 +49,11 @@ class Program extends Model
     public function years()
     {
         return $this->hasMany(Year::class);
+    }
+
+    public function studyModes(): BelongsToMany
+    {
+        return $this->belongsToMany(StudyMode::class);
     }
     
 }

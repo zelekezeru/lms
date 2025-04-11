@@ -86,9 +86,11 @@ const deleteCourse = (id) => {
                 <div class="flex justify-end mt-6 space-x-2">
                     <Link :href="route('courses.edit', { course: course.id })" class="text-blue-500 hover:text-blue-700" v-if="userCan('update-courses')">
                         <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
                     </Link>
                     <button @click="deleteCourse(course.id)" class="text-red-500 hover:text-red-700" v-if="userCan('delete-courses')">
                         <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
                     </button>
                 </div>
             </div>

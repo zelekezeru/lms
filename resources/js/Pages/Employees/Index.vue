@@ -154,6 +154,7 @@ const deleteemployee = (id) => {
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
                             </button>
                         </td>
                     </tr>

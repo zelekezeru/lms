@@ -177,6 +177,7 @@ const searchSemesters = () => {
                                 class="text-red-500 px-2 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
                             </button>
                         </td>
                     </tr>

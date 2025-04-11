@@ -213,6 +213,7 @@ const deleteStudent = (id) => {
               title="Edit"
             >
               <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
             </Link>
           </div>
           <!-- Delete Button -->
@@ -223,6 +224,7 @@ const deleteStudent = (id) => {
               title="Delete"
             >
               <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
             </button>
           </div>
         </div>

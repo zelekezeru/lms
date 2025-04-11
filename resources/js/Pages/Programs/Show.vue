@@ -57,7 +57,7 @@ const deleteProgram = (id) => {
                     <!-- Program ID -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >ID</span
+                            >CODE</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -123,6 +123,7 @@ const deleteProgram = (id) => {
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
                     </Link>
                     <button
                         v-if="userCan('delete-programs')"
@@ -130,6 +131,7 @@ const deleteProgram = (id) => {
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
                     </button>
                 </div>
 

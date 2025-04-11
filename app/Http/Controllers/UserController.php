@@ -52,25 +52,15 @@ class UserController extends Controller
         $user = $registeredUserController->store($request, 'USER', 'User');
 
         $image = $request->file('profile_img');
+        
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
         } else {
             $profile_path = null;
         }
         
-        $user = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
+        $user_image = User::update([
             'profile_img' => $profile_path,
-            'user_uuid' => $userUuid,
-            'password' => Hash::make('pwd@default'),
-        ]);
-
-        $user = User::create([
-            'user_id' => $user->id,
-            'job_position' => $fields['job_position'],
-            'employment_type' => $fields['employment_type'],
-            'office_hours' => $fields['office_hours'],
         ]);
         
         $user->assignRole($fields['role_name']);

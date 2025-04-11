@@ -162,6 +162,7 @@ const deletestudyMode = (id) => {
                                     class="text-green-500 hover:text-green-700"
                                 >
                                     <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
                                 </Link>
                             </div>
                             <!-- Delete -->
@@ -171,6 +172,7 @@ const deletestudyMode = (id) => {
                                     class="text-red-500 hover:text-red-700"
                                 >
                                     <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
                                 </button>
                             </div>
                         </td>

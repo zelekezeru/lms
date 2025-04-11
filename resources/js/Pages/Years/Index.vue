@@ -166,18 +166,6 @@ const searchYears = () => {
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link
-                                :href="route('years.edit', { year: year.id })"
-                                class="text-green-500 px-2 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                @click="deleteYear(year.id)"
-                                class="text-red-500 px-2 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
                         </td>
                     </tr>
                 </tbody>

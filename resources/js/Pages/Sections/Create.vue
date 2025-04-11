@@ -16,11 +16,11 @@ const props = defineProps({
 const form = useForm({
     name: '',
     code: '',
-    user_id: null,
-    program_id: null,
-    department_id: null,
-    year_id: null,
-    semester_id: null,
+    user_id: '',
+    program_id: '',
+    department_id: '',
+    year_id: '',
+    semester_id: '',
 });
 
 // Submit handler

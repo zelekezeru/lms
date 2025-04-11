@@ -47,22 +47,16 @@ const deleteCourse = (id) => {
 
             <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- course ID -->
+                    <!-- course Code -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.id }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.code }}</span>
                     </div>
 
                     <!-- course Name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
                         <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.name || "N/A" }}</span>
-                    </div>
-
-                    <!-- Code -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.code }}</span>
                     </div>
 
                     <!-- Credit -->
@@ -80,18 +74,42 @@ const deleteCourse = (id) => {
                         <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
                         <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.description }}</span>
                     </div>
+
+                    <!-- Status -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ course.status ? "Active" : "Inactive" }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
-                    <Link :href="route('courses.edit', { course: course.id })" class="text-blue-500 hover:text-blue-700" v-if="userCan('update-courses')">
-                        <PencilIcon class="w-5 h-5" />
+                <div class="flex justify-end mt-6 space-x-4">
+                    <!-- Edit Button, only show if user has permission -->
+                    <div v-if="userCan('update-courses')">
+                        <Link
+                            :href="
+                                route('courses.edit', {
+                                    course: course.id,
+                                })
+                            "
+                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
                             <span>Edit</span>
-                    </Link>
-                    <button @click="deleteCourse(course.id)" class="text-red-500 hover:text-red-700" v-if="userCan('delete-courses')">
-                        <TrashIcon class="w-5 h-5" />
+                        </Link>
+                    </div>
+                    <!-- Delete Button, only show if user has permission -->
+                    <div v-if="userCan('delete-courses')">
+                        <button
+                            @click="deleteCourse(course.id)"
+                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
                             <span>Delete</span>
-                    </button>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

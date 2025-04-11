@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('specialization', 255);
             $table->enum('employment_type', ['full-time', 'part-time', 'adjunct']);
             $table->date('hire_date');
-            $table->enum('status', ['active', 'inactive', 'suspended']);
+            $table->enum('status', ['Active', 'Inactive', 'Suspended']);
             $table->text('bio')->nullable();
             $table->timestamps();
         });

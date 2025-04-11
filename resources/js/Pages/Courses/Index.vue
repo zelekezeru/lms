@@ -34,31 +34,6 @@ const refreshData = () => {
         },
     });
 };
-
-// Delete function with SweetAlert confirmation
-const deleteCourse = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("courses.destroy", { course: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The course has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
-};
 </script>
 
 <template>
@@ -98,7 +73,6 @@ const deleteCourse = (id) => {
                     <tr>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Code</th>
-                        <th scope="col" class="px-6 py-3">Department</th>
                         <th scope="col" class="px-6 py-3">Duration</th>
                         <th scope="col" class="px-6 py-3">Actions</th>
                     </tr>
@@ -113,58 +87,20 @@ const deleteCourse = (id) => {
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
                             <Link
-                                :href="
-                                    route('courses.show', {
-                                        course: course.id,
-                                    })
-                                "
-                                >{{ course.name }}</Link
+                                :href="route('courses.show', { course: course.id })"
+                                class="text-blue-500 hover:text-blue-700"
                             >
+                                {{ course.name }}
+                            </Link>
                         </th>
                         <td class="px-6 py-4">{{ course.code }}</td>
-                        <td class="px-6 py-4">{{ course.department.name }}</td>
                         <td class="px-6 py-4">{{ course.duration }}</td>
                         <td class="px-6 py-4 flex space-x-2">
                             <!-- View -->
                             <div v-if="userCan('view-courses')">
-                                <Link
-                                    prefetch="hover"
-                                    cache-for="3"
-                                    :href="
-                                        route('courses.show', {
-                                            course: course.id,
-                                        })
-                                    "
-                                    class="text-blue-500 hover:text-blue-700"
-                                >
-                                    <EyeIcon class="w-5 h-5" />
-                                </Link>
-                            </div>
-                            <!-- Edit -->
-                            <div v-if="userCan('update-courses')">
-                                <Link
-                                    prefetch="hover"
-                                    cache-for="3"
-                                    :href="
-                                        route('courses.edit', {
-                                            course: course.id,
-                                        })
-                                    "
-                                    class="text-green-500 hover:text-green-700"
-                                >
-                                    <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                                </Link>
-                            </div>
-                            <!-- Delete -->
-                            <div v-if="userCan('delete-courses')">
-                                <button
-                                    @click="deleteCourse(course.id)"
-                                    class="text-red-500 hover:text-red-700"
-                                >
-                                    <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                                </button>
+                                <Link :href="route('courses.show', { course: course.id })" class="text-blue-500 hover:text-blue-700">
+                                <EyeIcon class="w-5 h-5" />
+                            </Link>
                             </div>
                         </td>
                     </TableZebraRows>

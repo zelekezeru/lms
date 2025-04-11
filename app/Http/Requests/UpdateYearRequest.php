@@ -15,7 +15,7 @@ class UpdateYearRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:years,name,' . $this->year->id,
-            'status' => 'required|string|in:active,inactive',
+            'status' => 'required|string|in:Active,Inactive',
             'is_approved' => 'boolean',
             'is_completed' => 'boolean',
         ];

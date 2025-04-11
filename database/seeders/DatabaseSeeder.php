@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\TenantSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,10 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Call other seeders
         $this->call(RolePermissionSeeder::class);
-        $this->call(ProgramSeeder::class);
-        $this->call(DepartmentSeeder::class);
-        
-        
+        // $this->call(ProgramSeeder::class);
+        // $this->call(DepartmentSeeder::class);
     }
 }

@@ -4,16 +4,12 @@ import Form from "./Form.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 
 // Props from controller
-defineProps({
-    departments: Array,
-});
 
 const form = useForm({
     name: "",
     credit_hours: "",
     duration: "",
     description: "",
-    department_id: "",
     is_training: false,
     status: false,
     is_published: false,
@@ -46,7 +42,6 @@ const submit = () => {
                 <Form
                     :form="form"
                     :submit="submit"
-                    :departments="departments"
                 />
             </div>
         </div>

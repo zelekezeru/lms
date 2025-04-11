@@ -26,7 +26,6 @@ return new class extends Migration
             $table->boolean('is_approved')->default(1);
             $table->boolean('is_completed')->default(0);
             
-            $table->foreignId('department_id')->nullable()->constrained('departments')->onDelete('SET NULL');
             $table->timestamps();
         });
     }

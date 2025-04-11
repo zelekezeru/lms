@@ -15,12 +15,9 @@ class SectionRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
             'user_id' => 'exists:users,id',
             'program_id' => 'exists:programs,id',
             'department_id' => 'exists:departments,id',
-            'year_id' => 'exists:years,id',
-            'semester_id' => 'exists:semesters,id',
         ];
     }
 }

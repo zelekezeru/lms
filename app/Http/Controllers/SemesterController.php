@@ -52,7 +52,7 @@ class SemesterController extends Controller
         $request->validate([
             'name' => 'required|string|unique:semesters,name',
             'year_id' => 'required|exists:years,id',
-            'status' => 'required|string|in:active,inactive',
+            'status' => 'required|string|in:Active,Inactive',
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
@@ -77,7 +77,7 @@ class SemesterController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:semesters,name,' . $semester->id,
-            'status' => 'required|string|in:active,inactive',
+            'status' => 'required|string|in:Active,Inactive',
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
@@ -92,8 +92,10 @@ class SemesterController extends Controller
      */
     public function destroy(Semester $semester)
     {
+        dd('hit' . $semester->id);
         $semester->delete();
 
-        return redirect()->back()->with('success', 'Semester deleted successfully.');
+        return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
+    
     }
 }

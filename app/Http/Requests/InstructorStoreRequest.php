@@ -23,7 +23,7 @@ class InstructorStoreRequest extends FormRequest
             'specialization' => 'nullable|string|max:255',
             'employment_type' => 'required|in:full-time,part-time,adjunct',
             'hire_date' => 'required|date',
-            'status' => 'required|in:active,inactive,suspended',
+            'status' => 'required|in:Active,Inactive,Suspended',
             'bio' => 'nullable|string',
             'profile_img' => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];

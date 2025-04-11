@@ -166,19 +166,6 @@ const searchSemesters = () => {
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link
-                                :href="route('semesters.edit', { semester: semester.id })"
-                                class="text-green-500 px-2 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                @click="deleteSemester(semester.id)"
-                                class="text-red-500 px-2 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                            </button>
                         </td>
                     </tr>
                 </tbody>

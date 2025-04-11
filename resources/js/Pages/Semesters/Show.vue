@@ -1,10 +1,11 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { router } from "@inertiajs/vue3";
+import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PlusIcon } from "@heroicons/vue/24/solid";
+import { ArrowPathIcon, TrashIcon, EyeIcon, PlusIcon, PencilSquareIcon, PencilIcon } from "@heroicons/vue/24/solid";
+
 
 // Props
 const props = defineProps({
@@ -12,45 +13,30 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    year: {
-        type: Object,
-        required: true,
-    },
 });
 
-const { semester } = props;
-
-// Ref for toggling the form
-const showForm = ref(false);
-
-// Ref for handling semester form data
-const semesterForm = ref({
-    name: "",
-    semester_id: semester.id,
-    status: "inactive",
-    is_approved: false,
-    is_completed: false,
-});
-
-// Function to toggle form visibility
-const toggleForm = () => {
-    showForm.value = !showForm.value;
-};
-
-// Function to submit the semester form
-const submitSemester = () => {
-    router.post(route("semesters.store"), semesterForm.value, {
-        onSuccess: () => {
-            Swal.fire("Added!", "Semester has been added.", "success");
-            semesterForm.value = {
-                name: "",
-                status: "inactive",
-                semester_id: semester.id,
-                is_approved: false,
-                is_completed: false,
-            };
-            showForm.value = false;
-        },
+// Delete function with SweetAlert confirmation
+const deleteSemester = (id) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(route("semesters.destroy", { semester: id }), {
+                onSuccess: () => {
+                    Swal.fire(
+                        "Deleted!",
+                        "The semester has been deleted.",
+                        "success"
+                    );
+                },
+            });
+        }
     });
 };
 </script>
@@ -98,6 +84,35 @@ const submitSemester = () => {
                         </span>
                     </div>
                         
+                </div>
+                
+
+                <!-- Edit and Delete Buttons -->
+                <div class="flex justify-end mt-6 space-x-4">
+                    <!-- Edit Button, only show if user has permission -->
+                    <div v-if="userCan('update-semesters')">
+                        <Link
+                            :href="
+                                route('semesters.edit', {
+                                    semester: semester.id,
+                                })
+                            "
+                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
+                        </Link>
+                    </div>
+                    <!-- Delete Button, only show if user has permission -->
+                    <div v-if="userCan('delete-semesters')">
+                        <button
+                            @click="deleteSemester(semester.id)"
+                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

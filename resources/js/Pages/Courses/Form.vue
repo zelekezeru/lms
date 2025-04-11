@@ -7,7 +7,6 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 defineProps({
     form: Object,
     submit: Function,
-    departments: Object,
 });
 </script>
 
@@ -60,7 +59,7 @@ defineProps({
             <div>
                 <InputLabel
                     for="duration"
-                    value="Duration (in weeks/months)"
+                    value="Duration (in months)"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -77,35 +76,8 @@ defineProps({
                 />
             </div>
 
-            <!-- Department -->
-            <div>
-                <InputLabel
-                    for="department_id"
-                    value="Select Department"
-                    class="block mb-1 text-gray-200"
-                />
-                <select
-                    id="department_id"
-                    v-model="form.department_id"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                >
-                    <option value="">Select Department</option>
-                    <option
-                        v-for="dept in departments"
-                        :key="dept.id"
-                        :value="dept.id"
-                    >
-                        {{ dept.name }}
-                    </option>
-                </select>
-                <InputError
-                    :message="form.errors.department_id"
-                    class="mt-2 text-sm text-red-500"
-                />
-            </div>
-
             <!-- Description -->
-            <div class="md:col-span-2">
+            <div>
                 <InputLabel
                     for="description"
                     value="Description"
@@ -124,7 +96,7 @@ defineProps({
             </div>
 
             <!-- Boolean Toggles -->
-            <div class="flex flex-wrap gap-4 mt-2 md:col-span-2">
+            <div class="flex flex-wrap gap-8 mt-2 md:col-span-2 mx-auto">
                 <label
                     class="flex items-center gap-2 dark:text-gray-100 text-gray-700"
                 >

@@ -15,14 +15,6 @@ class TenantSeeder extends Seeder
     public function run(): void
     {
         // Ensure the user exists before inserting the tenant
-        DB::table('users')->insertOrIgnore([
-            'id' => 2,
-            'name' => 'Endale Sebsibe',
-            'email' => 'esebsibe@gmail.com',
-            'password' => Hash::make('4565@lms'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
 
         DB::table('tenants')->insert([
             'id' => 1,
@@ -36,7 +28,7 @@ class TenantSeeder extends Seeder
             'contact_phone' => '0975210098',
             'contact_email' => 'esebsibe@gmail.com',
             'aggrement' => '',
-            'default_password' => '4565@lms',
+            'default_password' => '123456789',
             'user_id' => 2,
             'status' => 1,
             'allowed' => 1,

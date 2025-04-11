@@ -5,7 +5,6 @@ import Form from './Form.vue'
 
 const props = defineProps({
   course: Object,
-  departments: Array,
 })
 
 const form = useForm({
@@ -14,7 +13,6 @@ const form = useForm({
   credit_hours: props.course.credit_hours,
   duration: props.course.duration,
   description: props.course.description ?? '',
-  department_id: props.course.department_id,
   is_training: Boolean(props.course.is_training),
   status: Boolean(props.course.status),
   is_published: Boolean(props.course.is_published),
@@ -47,7 +45,6 @@ const submit = (id) => {
                 <Form
                     :form="form"
                     @submit="submit(course.id)"
-                    :departments="departments"
                 />
             </div>
         </div>

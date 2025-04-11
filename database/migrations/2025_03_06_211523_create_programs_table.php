@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('programs', function (Blueprint $table) {
-            $table->id();            
+            $table->id();
             $table->string('name');
             $table->string('language');
             $table->string('code')->nullable();
-            $table->integer('duration');
+            $table->integer('duration')->default(4);
             $table->longText('description');
+            $table->string('status')->default('Active');
             
             $table->foreignId('user_id')->constrained()->nullable();
             $table->timestamps();

@@ -19,7 +19,7 @@ class InstructorUpdateRequest extends FormRequest
             'specialization' => 'sometimes|string|max:255',
             'employment_type' => 'required|in:full-time,part-time,adjunct',
             'hire_date' => 'required|date',
-            'status' => 'required|in:active,inactive,suspended',
+            'status' => 'required|in:Active,Inactive,Suspended',
             'bio' => 'sometimes|string',
             'profile_img' => 'sometimes|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];

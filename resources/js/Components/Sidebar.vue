@@ -370,7 +370,6 @@ const afterLeave = (el) => {
                         userCanAny([
                             'view-instructors',
                             'view-employees',
-                            'view-students',
                         ])
                     "
                 >
@@ -404,6 +403,11 @@ const afterLeave = (el) => {
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
+                    v-show="
+                        userCanAny([
+                            'view-students',
+                        ])
+                    "
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-students')"

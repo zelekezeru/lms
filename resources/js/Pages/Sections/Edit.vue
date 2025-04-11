@@ -15,11 +15,11 @@ const props = defineProps({
 const form = useForm({
   name: props.section?.name || '',
   code: props.section?.code || '',
-  user_id: props.section?.user_id || null,
-  program_id: props.section?.program_id || null,
-  department_id: props.section?.department_id || null,
-  year_id: props.section?.year_id || null,
-  semester_id: props.section?.semester_id || null,
+  user_id: props.section?.user_id || '',
+  program_id: props.section?.program_id || '',
+  department_id: props.section?.department_id || '',
+  year_id: props.section?.year_id || '',
+  semester_id: props.section?.semester_id || '',
   _method: 'PATCH',
 });
 

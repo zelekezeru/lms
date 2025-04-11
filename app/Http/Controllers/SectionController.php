@@ -28,10 +28,8 @@ class SectionController extends Controller
     {
         return Inertia::render('Sections/Create', [
             'programs' => Program::all(),
-            'users' => User::all(),
             'departments' => Department::all(),
-            'semesters' => Semester::all(),
-            'years' => Year::all(),
+            'users' => User::all(),
         ]);
     }
     
@@ -57,8 +55,6 @@ class SectionController extends Controller
             'programs' => Program::all(),
             'users' => User::all(),
             'departments' => Department::all(),
-            'semesters' => Semester::all(),
-            'years' => Year::all(),
         ]);
     }
     

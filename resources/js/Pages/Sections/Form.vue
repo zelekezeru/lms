@@ -31,36 +31,6 @@ const emit = defineEmits(['submit']);
       </div>
 
       <div>
-        <InputLabel for="code" value="Section Code" />
-        <input
-          id="code"
-          type="text"
-          v-model="form.code"
-          required
-          class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        />
-        <InputError :message="form.errors.code" />
-      </div>
-    </div>
-
-    <!-- Foreign Keys -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-      <div>
-        <InputLabel for="user_id" value="Assigned User" />
-        <select
-          v-model="form.user_id"
-          id="user_id"
-          class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option value="">Select User</option>
-          <option v-for="user in users" :key="user.id" :value="user.id">
-            {{ user.name }}
-          </option>
-        </select>
-        <InputError :message="form.errors.user_id" />
-      </div>
-
-      <div>
         <InputLabel for="program_id" value="Program" />
         <select
           v-model="form.program_id"
@@ -74,7 +44,11 @@ const emit = defineEmits(['submit']);
         </select>
         <InputError :message="form.errors.program_id" />
       </div>
+      
     </div>
+
+    <!-- Foreign Keys -->
+    
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
@@ -93,34 +67,19 @@ const emit = defineEmits(['submit']);
       </div>
 
       <div>
-        <InputLabel for="year_id" value="Year" />
+        <InputLabel for="user_id" value="Section Representstive" />
         <select
-          v-model="form.year_id"
-          id="year_id"
+          v-model="form.user_id"
+          id="user_id"
           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          <option value="">Select Year</option>
-          <option v-for="year in years" :key="year.id" :value="year.id">
-            {{ year.name }}
+          <option value="">Select User</option>
+          <option v-for="user in users" :key="user.id" :value="user.id">
+            {{ user.name }}
           </option>
         </select>
-        <InputError :message="form.errors.year_id" />
+        <InputError :message="form.errors.user_id" />
       </div>
-    </div>
-
-    <div class="mt-4">
-      <InputLabel for="semester_id" value="Semester" />
-      <select
-        v-model="form.semester_id"
-        id="semester_id"
-        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      >
-        <option value="">Select Semester</option>
-        <option v-for="semester in semesters" :key="semester.id" :value="semester.id">
-          {{ semester.name }}
-        </option>
-      </select>
-      <InputError :message="form.errors.semester_id" />
     </div>
 
     <!-- Submit Button -->

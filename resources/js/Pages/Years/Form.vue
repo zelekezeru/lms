@@ -58,8 +58,8 @@ const submit = () => {
                     v-model="form.status"
                     class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
-                    <option value="inactive">Inactive</option>
-                    <option value="active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Active">Active</option>
                 </select>
                 <div v-if="form.errors.status" class="text-red-500 text-sm">
                     {{ form.errors.status }}

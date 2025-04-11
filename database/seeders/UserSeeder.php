@@ -13,6 +13,26 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table("users")->truncate();
+        DB::table('users')->insert([
+
+        [
+            'id' => 1,
+            'name' => 'Super Admin',
+            'user_uuid' => 'SA-25-001',
+            'email' => 'sadmin@gmail.com',
+            'password' => bcrypt('123456789'), // Use a secure password
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+            [
+            'id' => 2,
+            'name' => 'Admin User',
+            'user_uuid' => 'AD-25-001',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('123456789'), // Use a secure password
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+    ]);
     }
 }

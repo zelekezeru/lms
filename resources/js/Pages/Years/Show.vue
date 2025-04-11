@@ -4,16 +4,12 @@ import { defineProps, ref } from "vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { ArrowPathIcon, TrashIcon, EyeIcon, PlusIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
+import { ArrowPathIcon, TrashIcon, EyeIcon, PlusIcon, PencilSquareIcon, PencilIcon } from "@heroicons/vue/24/solid";
 
 // Props
 const props = defineProps({
     year: {
         type: Object,
-        required: true,
-    },
-    semesters: {
-        type: Array,
         required: true,
     },
 });
@@ -31,6 +27,9 @@ const semesterForm = ref({
     is_approved: false,
     is_completed: false,
 });
+
+// Add this line to declare the 'refreshing' ref
+const refreshing = ref(false);
 
 // Function to toggle form visibility
 const toggleForm = () => {
@@ -56,8 +55,19 @@ const submitSemester = () => {
     });
 };
 
+// Refresh Data function
+const refreshData = () => {
+    refreshing.value = true;
+    router.visit(route("semesters.show"), {
+        only: ["year"],
+        onFinish: () => {
+            refreshing.value = false;
+        },
+    });
+};
+
 // Delete function with SweetAlert confirmation
-const deleteTenant = (id) => {
+const deleteYear = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -68,12 +78,19 @@ const deleteTenant = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("tenants.destroy", { tenant: id }), {
+            router.delete(route("years.destroy", { year: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The tenant has been deleted.",
+                        "The Year has been deleted.",
                         "success"
+                    );
+                },
+                onError: () => {
+                    Swal.fire(
+                        "Error!",
+                        "There was a problem deleting the Year.",
+                        "error"
                     );
                 },
             });
@@ -119,31 +136,34 @@ const deleteTenant = (id) => {
                         </span>
                     </div>
                 </div>
-                
 
                 <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
-                    <Link
-                        v-if="userCan('update-years')"
-                        :href="
-                            route('years.edit', { year: year.id })
-                        "
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
+                <div class="flex justify-end mt-6 space-x-4">
+                    <!-- Edit Button, only show if user has permission -->
+                    <div v-if="userCan('update-years')">
+                        <Link
+                            :href="
+                                route('years.edit', {
+                                    year: year.id,
+                                })
+                            "
+                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
                             <span>Edit</span>
-                    </Link>
-                    
-                    <button
-                        v-if="userCan('delete-years')"
-                        @click="deleteyear(year.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
+                        </Link>
+                    </div>
+                    <!-- Delete Button, only show if user has permission -->
+                    <div v-if="userCan('delete-years')">
+                        <button
+                            @click="deleteYear(year.id)"
+                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
                             <span>Delete</span>
-                    </button>
+                        </button>
+                    </div>
                 </div>
-            </div>
             
 
                 <!-- semesters -->
@@ -215,15 +235,22 @@ const deleteTenant = (id) => {
                             <td class="px-6 py-4">{{ semester.status }}</td>
                             <td class="px-6 py-4">{{ semester.is_approved ? "Yes" : "No" }}</td>
                             <td class="px-6 py-4">{{ semester.is_completed ? "Yes" : "No" }}</td>
-                            <td class="px-6 py-4 flex space-x-2">
-                                <button
-                                    @click="deleteSemester(semester.id)"
-                                    class="text-red-500 hover:text-red-700"
-                                >
-                                    <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                                </button>
-                            </td>
+                            
+                            <td> <div v-if="userCan('view-semesters')">
+                                        <Link
+                                            prefetch="hover"
+                                            cache-for="3"
+                                            :href="
+                                                route('semesters.show', {
+                                                    semester: semester.id,
+                                                })
+                                            "
+                                            class="text-blue-500 hover:text-blue-700"
+                                        >
+                                            <EyeIcon class="w-5 h-5" />
+                                        </Link>
+                                    </div>
+                                </td>
                         </tr>
                     </tbody>
                 </table>
@@ -267,8 +294,8 @@ const deleteTenant = (id) => {
                             v-model="semesterForm.status"
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-100"
                         >
-                            <option value="inactive">Inactive</option>
-                            <option value="active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Active">Active</option>
                         </select>
                     </div>
 
@@ -308,5 +335,6 @@ const deleteTenant = (id) => {
                 </form>
             </div>
         </div>
+        </div>  
     </AppLayout>
 </template>

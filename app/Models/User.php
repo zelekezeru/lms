@@ -81,4 +81,9 @@ class User extends Authenticatable
         return $this->belongsTo(Tenant::class);
     }
 
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
 }

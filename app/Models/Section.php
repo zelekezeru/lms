@@ -2,6 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Program;
+use App\Models\Course;
+use App\Models\Instructor;  
+use App\Models\Semester;
+use App\Models\Year;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -14,9 +21,14 @@ class Section extends Model
         return $this->belongsTo(Program::class);
     }
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function courses(): BelongsToMany
@@ -29,12 +41,12 @@ class Section extends Model
         return $this->belongsToMany(Instructor::class);
     }
     
-    public function semesters()
+    public function semester()
     {
         return $this->belongsTo(Semester::class);
     }
     
-    public function years()
+    public function year()
     {
         return $this->belongsTo(Year::class);
     }

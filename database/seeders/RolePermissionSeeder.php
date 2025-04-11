@@ -125,6 +125,11 @@ class RolePermissionSeeder extends Seeder
             'create-semesters',
             'update-semesters',
             'delete-semesters',
+            // Section (CRUD)
+            'view-sections',
+            'create-sections',
+            'update-sections',
+            'delete-sections',
 
             // Assigning Relationships
             'assign-courses-sections',
@@ -252,6 +257,11 @@ class RolePermissionSeeder extends Seeder
                     'create-semesters',
                     'update-semesters',
                     'delete-semesters',
+
+                    'view-sections',
+                    'create-sections',
+                    'update-sections',
+                    'delete-sections',
 
                     'assign-courses-sections',
                     'remove-courses-sections',

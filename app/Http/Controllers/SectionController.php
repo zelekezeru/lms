@@ -3,63 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\Section;
+use App\Models\Program;
+use App\Models\Semester;
+use App\Models\Year;
+use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Http\Requests\SectionRequest;
+use Inertia\Inertia;
 
 class SectionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-    }
+        $sections = Section::with(['user', 'program', 'department', 'year', 'semester'])->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
+        return Inertia::render('Sections/Index', [
+            'sections' => $sections
+        ]);
+    }
+    
+
     public function create()
     {
-        //
+        return Inertia::render('Sections/Create', [
+            'programs' => Program::all(),
+            'users' => User::all(),
+            'departments' => Department::all(),
+            'semesters' => Semester::all(),
+            'years' => Year::all(),
+        ]);
     }
+    
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(SectionRequest $request)
     {
-        //
+        Section::create($request->validated());
+    
+        return redirect()->route('sections.index')->with('success', 'Section created successfully.');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Section $section)
+    
+    public function update(SectionRequest $request, Section $section)
     {
-        //
+        $section->update($request->validated());
+    
+        return redirect()->route('sections.index')->with('success', 'Section updated successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Section $section)
     {
-        //
+        return Inertia::render('Sections/Edit', [
+            'section' => $section->load(['user', 'program', 'department', 'year', 'semester']),
+            'programs' => Program::all(),
+            'users' => User::all(),
+            'departments' => Department::all(),
+            'semesters' => Semester::all(),
+            'years' => Year::all(),
+        ]);
     }
+    
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Section $section)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Section $section)
     {
-        //
+        $section->delete();
+
+        return redirect()->back()->with('success', 'Section deleted successfully.');
     }
 }

@@ -122,8 +122,12 @@ const afterLeave = (el) => {
             }"
         >
             <div class="flex gap-4 items-center justify-center h-full">
-                <img src="/img/logo.png" class="w-[48px] rounded-full" alt="Logo" />
-                
+                <img
+                    src="/img/logo.png"
+                    class="w-[48px] rounded-full"
+                    alt="Logo"
+                />
+
                 <transition name="fade">
                     <h1
                         v-if="sidebarVisible || sidebarHovered"
@@ -237,12 +241,21 @@ const afterLeave = (el) => {
                 </SidebarDropdownMenu>
 
                 <!-- Academic Structure Navigation -->
+                <!-- Academic Structure Navigation -->
                 <SidebarDropdownMenu
                     :label="'Academic Structure'"
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-programs', 'view-departments', 'view-studyModes', 'view-courses',])"
+                    v-show="
+                        userCanAny([
+                            'view-programs',
+                            'view-departments',
+                            'view-studyModes',
+                            'view-courses',
+                            'view-sections',
+                        ])
+                    "
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-programs')"
@@ -256,7 +269,9 @@ const afterLeave = (el) => {
                         v-show="userCan('view-departments')"
                         :href="route('departments.index')"
                     >
-                        <BuildingOffice2Icon class="w-4 h-5 mr-2 text-gray-200" />
+                        <BuildingOffice2Icon
+                            class="w-4 h-5 mr-2 text-gray-200"
+                        />
                         <span class="text-sm">Manage Department</span>
                     </SidebarDrowpdownLink>
 
@@ -267,6 +282,7 @@ const afterLeave = (el) => {
                         <ClockIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Study Modes</span>
                     </SidebarDrowpdownLink>
+
                     <SidebarDrowpdownLink
                         v-show="userCan('view-courses')"
                         :href="route('courses.index')"
@@ -274,7 +290,17 @@ const afterLeave = (el) => {
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Course</span>
                     </SidebarDrowpdownLink>
+
+                    <!-- Manage Sections Link -->
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-sections')"
+                        :href="route('sections.index')"
+                    >
+                        <FolderIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Section</span>
+                    </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
+
 
                 <!-- Assigning Relations -->
                 <SidebarDropdownMenu
@@ -282,7 +308,15 @@ const afterLeave = (el) => {
                     :icon="LinkIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['assign-courses-sections', 'assign-instructors-sections', 'assign-instructors-courses', 'assign-students-sections', 'assign-students-courses'])"
+                    v-show="
+                        userCanAny([
+                            'assign-courses-sections',
+                            'assign-instructors-sections',
+                            'assign-instructors-courses',
+                            'assign-students-sections',
+                            'assign-students-courses',
+                        ])
+                    "
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('assign-courses-sections')"
@@ -333,7 +367,11 @@ const afterLeave = (el) => {
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                     v-show="
-                        userCanAny(['view-instructors', 'view-employees', 'view-students'])
+                        userCanAny([
+                            'view-instructors',
+                            'view-employees',
+                            'view-students',
+                        ])
                     "
                 >
                     <SidebarDrowpdownLink
@@ -357,7 +395,7 @@ const afterLeave = (el) => {
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage User</span>
                     </SidebarDrowpdownLink>
-                </SidebarDropdownMenu>                
+                </SidebarDropdownMenu>
 
                 <!-- Students Managmant -->
                 <SidebarDropdownMenu
@@ -366,7 +404,7 @@ const afterLeave = (el) => {
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                >                
+                >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-students')"
                         :href="route('students.index')"

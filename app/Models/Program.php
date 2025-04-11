@@ -34,6 +34,11 @@ class Program extends Model
     {
         return $this->hasMany(User::class, 'user_id');
     }
+
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
     
     public function semesters()
     {

@@ -34,7 +34,9 @@ class Student extends Model
         'total_credit_hours', 
         'total_amount_paid', 
         'student_signature',
-        'office_use_notes'
+        'office_use_notes',
+        'default_password',
+        
     ];
 
     public function user()

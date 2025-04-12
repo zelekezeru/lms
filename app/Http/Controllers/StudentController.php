@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use App\Models\Department;
+use App\Models\Tenant;
+use App\Models\Program;
 use App\Http\Resources\DepartmentResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Requests\StudentRequest;
+use App\Http\Resources\ProgramResource;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Requests\StudentRequest;
-use App\Models\Tenant;
 
 class StudentController extends Controller
 {
@@ -43,8 +46,11 @@ class StudentController extends Controller
     {
         $departments = DepartmentResource::collection(Department::all());
 
+        $programs = ProgramResource::collection(Program::all());
+
         return inertia('Students/Create', [
             'departments' => $departments,
+            'programs'=> $programs,
         ]);
     }
     
@@ -58,18 +64,35 @@ class StudentController extends Controller
     
     public function store(StudentRequest $request)
     {
-        $student = Student::create($request->validated());
+        $fields = $request->validated(); 
 
-        $student_id = $this->student_id($student->program);
+        // Create a new Tenant Admin in User table
+        $user_phone = substr($fields['mobile_phone'], -4);
 
-        $student->update(['student_id' => $student_id]);
+        $fields['default_password'] = $fields['student_name'] . '@' . $user_phone;
+        
+        $fields['id_no'] = $this->student_id();
+dd($fields);
+        $student = Student::create($fields);   
+        
+        $user = User::create([
+            'name'=> $fields['name'],
+            'email'=> $fields['email'],
+            'password'=> bcrypt($fields['default_password']),
+            'default_password' => $fields['default_password'], 
 
+        ]);
+        // Create the student
         return redirect()->route('students.show', $student)->with('success', 'Student created successfully.');
     }
 
     public function edit(Student $student): Response
     {
-        return Inertia::render('Students/Edit', compact('student'));
+        $departments = DepartmentResource::collection(Department::all());
+        $programs = ProgramResource::collection(Program::all());
+
+
+        return Inertia::render('Students/Edit', compact('student', 'programs',  'departments'));
     }
 
     public function update(StudentRequest $request, Student $student)
@@ -96,24 +119,14 @@ class StudentController extends Controller
         return Inertia::render('Students/Index', compact('students'));
     }
 
-    public function student_id($program)
+    public function student_id)
     {
-        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        if($program == 'Regular') {
-            $program_ref = 'RG';
-        } elseif($program == 'Online') {
-            $program_ref = 'OL';
-        } elseif($program == 'Distance') {
-            $program_ref = 'DS';
-        }else {
-            return  'Invalid program';
-        }
+        $year = substr(Carbon::now()->year, -2); // get current year's last two di
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
-
-        $student_id = $tenant . '/' . $program_ref . ' ' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT) . '/' . $year;
-
-        return $student_id;
+        
+        $userUuid = $tenant . '-' . $year . '-' . 'ST-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+            
+        return $userUuid;
     }
 }

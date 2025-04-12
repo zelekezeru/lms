@@ -6,6 +6,14 @@ import BasicInfoForm from './BasicInfoForm.vue';
 import AcademicInfoForm from './AcademicInfoForm.vue';
 import ChurchInfoForm from './ChurchInfoForm.vue';
 
+
+const props = defineProps({
+    programs: { type: Array, required: true },
+    departments: { type: Array, required: true },
+    years: { type: Array, required: true },
+    semesters: { type: Array, required: true },
+});
+
 const form = ref({
     student_id: '',
     student_name: '',
@@ -18,9 +26,10 @@ const form = ref({
     marital_status: '',
     sex: '',
     address_1: '',
-    academic_year: '',
-    semester: '',
+    year_id: '',
+    semester_id: '',
     program_id: '',
+    department_id: '',
     total_credit_hours: '',
     total_amount_paid: '',
     pastor_name: '',
@@ -31,6 +40,7 @@ const form = ref({
     student_signature: '',
     office_use_notes: ''
 });
+
 
 const currentStep = ref(1);
 
@@ -43,8 +53,20 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    router.post(route('students.store'), form.value);
+    form.value.processing = true; // Optional: Add a processing state if needed
+    router.post(route('students.store'), form.value, {
+        onSuccess: () => {
+            alert('Student registered successfully!');
+        },
+        onError: (errors) => {
+            form.value.errors = errors; // Capture validation errors
+        },
+        onFinish: () => {
+            form.value.processing = false; // Reset processing state
+        },
+    });
 };
+
 </script>
 
 <template>
@@ -55,7 +77,12 @@ const submit = () => {
                 <BasicInfoForm :form="form" @next="nextStep" />
             </div>
             <div v-else-if="currentStep === 2">
-                <AcademicInfoForm :form="form" @next="nextStep" @previous="previousStep" />
+                <AcademicInfoForm :form="form" 
+                    :departments="departments"
+                    :programs="programs"
+                    :years="years"
+                    :semesters="semesters"
+                @next="nextStep" @previous="previousStep" />
             </div>
             <div v-else-if="currentStep === 3">
                 <ChurchInfoForm :form="form" @submit="submit" @previous="previousStep" />

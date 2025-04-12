@@ -27,6 +27,7 @@ class StudentResource extends JsonResource
             'marital_status' => $this->marital_status,
             'sex' => $this->sex,
             'address_1' => $this->address_1,
+            'default_password' => $this->default_password,
             // Academic Information
             'academic_year' => $this->academic_year,
             'semester' => $this->semester,

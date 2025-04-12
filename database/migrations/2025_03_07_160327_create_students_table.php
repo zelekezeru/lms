@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+            $table->string('id_no', 20)->unique();
             $table->string('student_name', 100);
             $table->string('father_name', 100);
             $table->string('grand_father_name', 100)->nullable();
@@ -23,9 +24,7 @@ return new class extends Migration
             $table->char('sex', 6);
             $table->string('academic_year', 10);
             $table->string('semester', 20)->nullable();
-            $table->string('student_id', 20)->nullable();
             $table->string('program', 50)->nullable();
-            $table->string('email', 100)->nullable();
             $table->string('address_1', 200)->nullable();
             $table->string('year_of_study', 10)->nullable();
             $table->string('pastor_name', 100)->nullable();
@@ -41,6 +40,7 @@ return new class extends Migration
             
             // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('tenant_id')->nullable()->constrained();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -36,6 +36,7 @@ class SectionController extends Controller
 
     public function store(SectionRequest $request)
     {
+        dd($request->validated());
         Section::create($request->validated());
     
         return redirect()->route('sections.index')->with('success', 'Section created successfully.');

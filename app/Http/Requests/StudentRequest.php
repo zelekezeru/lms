@@ -29,7 +29,8 @@ class StudentRequest extends FormRequest
             //Academic Information
             'academic_year' => 'nullable|max:10',
             'semester' => 'nullable|string|max:20',
-            'program_id' => 'sometimes', 'exists:programs,id',
+            'program_id' => 'nullable|exists:programs,id',
+            'department_id' => 'nullable|exists:departments,id',
             'total_credit_hours' => 'nullable|integer',
             'total_amount_paid' => 'nullable|numeric',
             

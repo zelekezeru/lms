@@ -12,8 +12,8 @@ class SectionRequest extends FormRequest
     }
 
     public function rules()
-    {
-        return [
+        {
+            return [
             'name' => 'required|string|max:255',
             'user_id' => 'exists:users,id',
             'program_id' => 'exists:programs,id',

@@ -20,20 +20,19 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    years: {
+        type: Array,
+        required: true,
+    },
+    semesters: {
+        type: Array,
+        required: true,
+    },
 });
 
 // Emits
 const emit = defineEmits(['next', 'previous']);
 
-// Helper function to generate years
-const getYears = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = 2000; year <= currentYear; year++) {
-        years.push(year);
-    }
-    return years;
-};
 </script>
 
 <template>
@@ -41,27 +40,52 @@ const getYears = () => {
         <h2 class="text-lg font-bold mb-4">Academic Information</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
             <!-- Academic Year Dropdown -->
             <div>
-                <InputLabel for="year_id" value="Academic Year" />
+                <InputLabel for="year_id" value="Select Registration year" />
                 <select
                     id="year_id"
                     v-model="form.year_id"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    <option value="" disabled>Select Year</option>
+                    <option value="">Select Academic year</option>
                     <option
-                        v-for="year in getYears()"
-                        :key="year"
-                        :value="year"
+                        v-for="year in years"
+                        :key="year.id"
+                        :value="year.id"
                     >
-                        {{ year }}
+                        {{ year.name }}
                     </option>
                 </select>
                 <InputError :message="form.errors?.year_id" class="mt-2" />
             </div>
 
-            <!-- Program Dropdown -->
+            <!-- Semester Dropdown -->
+            <div>
+                <InputLabel for="semester_id" value="Select semester" />
+                <select
+                    id="semester_id"
+                    v-model="form.semester_id"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                >
+                    <option value="">Select semester</option>
+                    <option
+                        v-for="semester in semesters"
+                        :key="semester.id"
+                        :value="semester.id"
+                    >
+                        {{ semester.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors?.semester_id" class="mt-2" />
+            </div>
+            </div>
+        </div>
+
+        <!-- Program Input -->
+         
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
             <div>
                 <InputLabel for="program_id" value="Select Program" />
                 <select
@@ -80,11 +104,6 @@ const getYears = () => {
                 </select>
                 <InputError :message="form.errors?.program_id" class="mt-2" />
             </div>
-        </div>
-
-        <!-- Department Input -->
-         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
             <div>
                 <InputLabel for="department_id" value="Department" />
@@ -106,10 +125,8 @@ const getYears = () => {
             </div>
 
             <div>
-                
+
             </div>
-        </div>
-        
         <div class="flex justify-end mt-4">
             <button
                 @click="$emit('previous')"

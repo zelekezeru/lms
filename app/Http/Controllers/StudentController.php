@@ -12,9 +12,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StudentRequest;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\SemesterResource;
 use App\Models\Year;
 use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Models\Semester;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -59,12 +61,15 @@ class StudentController extends Controller
 
         $programs = ProgramResource::collection(Program::all());
 
-        $years = YearResource::collection(Year::all());
+        $years = YearResource::collection(Year::all()->sortBy('name'));
+
+        $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
 
         return inertia('Students/Create', [
             'departments' => $departments,
             'programs'=> $programs,
             'years' => $years,
+            'semesters' => $semesters,
         ]);
     }
     
@@ -78,16 +83,27 @@ class StudentController extends Controller
         $fields['default_password'] = $fields['student_name'] . '@' . $user_phone;
         
         $fields['id_no'] = $this->student_id();
-dd($fields);
-        $student = Student::create($fields);   
-        
-        $user = User::create([
+
+        $fields['name'] = $fields['student_name']. ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
+        $fields['tenant_id'] = Tenant::first()->id; // Updated to use tenant ID
+
+        $user_data = [
             'name'=> $fields['name'],
             'email'=> $fields['email'],
+            'phone_number'=> $fields['mobile_phone'],
             'password'=> bcrypt($fields['default_password']),
-            'default_password' => $fields['default_password'], 
+            'default_password' => $fields['default_password'],
+            'user_uuid' => $fields['id_no'],
+        ];
 
-        ]);
+        $user = User::create($user_data);
+        
+
+        $fields['user_id'] = 1;
+
+        $student = Student::create($fields);  
+
+        dd($student);
         // Create the student
         return redirect()->route('students.show', $student)->with('success', 'Student created successfully.');
     }
@@ -95,14 +111,19 @@ dd($fields);
     public function edit(Student $student): Response
     {
         $departments = DepartmentResource::collection(Department::all());
+
         $programs = ProgramResource::collection(Program::all());
+
         $years = YearResource::collection(Year::all());
+
+        $semesters = SemesterResource::collection(Semester::all());
 
         return Inertia::render('Students/Edit', [
             'student' => $student,
             'departments' => $departments,
             'programs' => $programs,
             'years' => $years,
+            'semesters' => $semesters,
         ]);
     }
 
@@ -151,5 +172,48 @@ dd($fields);
         $userUuid = $tenant . '-' . $year . '-' . 'ST-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
             
         return $userUuid;
+    }
+
+    public function student_data($fields)
+    {
+        $student_data = [
+            // Personal details
+            'student_name' => $fields['student_name'],
+            'father_name' => $fields['father_name'],
+            'grand_father_name' => $fields['grand_father_name'],
+            'mobile_phone' => $fields['mobile_phone'],
+            'office_phone' => $fields['office_phone'],
+            'date_of_birth' => $fields['date_of_birth'],
+            'email' => $fields['email'],
+            'marital_status' => $fields['marital_status'],
+            'sex' => $fields['sex'],
+            'address' => $fields['address'],
+            //Academic details
+            'year_id' => $fields['year_id'],
+            'semester_id' => $fields['semester_id'],
+            'program_id' => $fields['program_id'],
+            'department_id' => $fields['department_id'],
+
+            'total_credit_hours' => $fields['total_credit_hours'],
+            'total_amount_paid' => $fields['total_amount_paid'],
+            'total_amount_due' => $fields['total_amount_due'],
+            //Church details
+            'pastor_name' => $fields['pastor_name'],
+            'pastor_phone' => $fields['pastor_phone'],
+            'position_denomination' => $fields['position_denomination'],
+            'church_name' => $fields['church_name'],
+            'church_address' => $fields['church_address'],
+
+            'student_signature' => $fields['student_signature'],
+            'default_password' => $fields['default_password'],
+
+            'id_no' => $fields['id_no'],
+
+            // ID card details
+            'user_id' => $fields['user_id'],
+            'tenant_id' => $fields['tenant_id'],
+
+        ];
+        return $student_data;
     }
 }

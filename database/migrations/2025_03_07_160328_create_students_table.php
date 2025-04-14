@@ -24,7 +24,7 @@ return new class extends Migration
             $table->char('sex', 6);
             $table->string('semester', 20)->nullable();
             $table->string('program', 50)->nullable();
-            $table->string('address_1', 200)->nullable();
+            $table->string('address', 200)->nullable();
             $table->string('pastor_name', 100)->nullable();
             $table->string('pastor_phone', 100)->nullable();
             $table->string('church_name', 100)->nullable();

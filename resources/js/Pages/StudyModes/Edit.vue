@@ -10,14 +10,14 @@ defineProps({
         type: Object,
         required: true,
     },
-    departments: {
+    programs: {
         type: Object,
         required: true,
     },
 });
 
 const form = useForm({
-    department_id: usePage().props.studyMode.department.id,
+    program_id: usePage().props.studyMode.program.id,
     mode: usePage().props.studyMode.mode,
     duration: usePage().props.studyMode.duration,
     fees: usePage().props.studyMode.fees,
@@ -41,7 +41,7 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit "{{ studyMode.department.name }} ({{ studyMode.mode }})"
+                    Edit "{{ studyMode.program.name }} ({{ studyMode.mode }})"
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Please fill out the form below to Update the studyMode.
@@ -56,7 +56,7 @@ const submit = (id) => {
                     :form="form"
                     @submit="submit(studyMode.id)"
                     :users="users"
-                    :departments="departments"
+                    :programs="programs"
                 />
             </div>
         </div>

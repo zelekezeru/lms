@@ -199,30 +199,4 @@ class TenantController extends Controller
 
         return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
     }
-
-    public function tenantRepresentative($fields, $tenant_id)
-    {
-        
-        // Set the default password
-        
-        $phone_end = substr($fields['contact_phone'], -4);
-        $user_password = $fields['name'] . '@' . $phone_end;
-        
-        $registeredUserController = new RegisteredUserController();
-
-        $userUuid = $registeredUserController->userUuid('ADMIN', 'User', $tenant_id);
-        // Creating Representative as ADMIN user for the Tenant
-        
-        $user = User::create([
-            'name' => $fields['contact_person'],
-            'email' => $fields['contact_email'],
-            'password' => Hash::make($user_password),
-            'user_uuid' => $userUuid,
-            'tenant_id' => $tenant_id,
-        ]);
-        
-        $user->assignRole('ADMIN');
-
-        return $user;
-    }
 }

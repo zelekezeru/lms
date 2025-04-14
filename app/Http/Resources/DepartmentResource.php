@@ -23,8 +23,7 @@ class DepartmentResource extends JsonResource
             'user_id' => $this->user_id,
             'program_id' => $this->program_id,
             
-            'program' => $this->whenLoaded('program'),            
-            'studyModes' => $this->whenLoaded('studyModes'),
+            'program' => $this->whenLoaded('program'),        
             'user' => $this->whenLoaded('user'),
 
         ];        

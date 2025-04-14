@@ -9,8 +9,8 @@ class StudyMode extends Model
 {
     protected $guarded =[];
 
-    public function programs(): BelongsToMany
+    public function program()
     {
-        return $this->belongsToMany(Program::class);
+        return $this->belongsTo(Program::class);
     }
 }

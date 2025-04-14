@@ -25,7 +25,7 @@ const form = ref({
     email: '',
     marital_status: '',
     sex: '',
-    address_1: '',
+    address: '',
     year_id: '',
     semester_id: '',
     program_id: '',

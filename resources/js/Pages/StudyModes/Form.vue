@@ -6,7 +6,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 defineProps({
     form: Object,
-    departments: {
+    programs: {
         type: Object,
         required: true,
     },
@@ -19,26 +19,26 @@ defineProps({
             <!-- Program Dropdown -->
             <div>
                 <InputLabel
-                    for="department_id"
-                    value="Select Department"
+                    for="program_id"
+                    value="Select program"
                     class="block mb-1 text-gray-200"
                 />
                 <select
-                    id="department_id"
-                    v-model="form.department_id"
+                    id="program_id"
+                    v-model="form.program_id"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    <option value="">Select Department</option>
+                    <option value="">Select program</option>
                     <option
-                        v-for="department in departments"
-                        :key="department.id"
-                        :value="department.id"
+                        v-for="program in programs"
+                        :key="program.id"
+                        :value="program.id"
                     >
-                        {{ department.name }} in {{ department.language }}
+                        {{ program.name }} in {{ program.language }}
                     </option>
                 </select>
                 <InputError
-                    :message="form.errors.department_id"
+                    :message="form.errors.program_id"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
@@ -47,7 +47,7 @@ defineProps({
             <div>
                 <InputLabel
                     for="mode"
-                    value="Select Department"
+                    value="Select program"
                     class="block mb-1 text-gray-200"
                 />
                 <select

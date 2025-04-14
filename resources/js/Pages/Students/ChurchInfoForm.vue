@@ -91,16 +91,7 @@ const emit = defineEmits(['previous', 'next', 'submit']);
             <InputError :message="form.errors?.position_denomination" class="mt-2" />
         </div>
 
-        <div>
-            <InputLabel for="office_use_notes" value="Office Use Notes" />
-            <textarea
-            id="office_use_notes"
-            v-model="form.office_use_notes"
-            class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-            placeholder="Internal Notes"
-            ></textarea>
-            <InputError :message="form.errors?.office_use_notes" class="mt-2" />
-        </div>
+        
     </div>  
         <div class="mt-6 flex justify-end">
             <button

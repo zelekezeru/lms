@@ -92,7 +92,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        $department = new DepartmentResource($department->load('program', 'studyModes'));
+        $department = new DepartmentResource($department->load('program'));
 
         return inertia('Departments/Show', [
             'department' => $department,

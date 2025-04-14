@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+dd($fields);
         // SUPER-ADMIN User
 
         if(User::where('id', 1)->first() == null){
@@ -93,6 +93,13 @@ class RegisteredUserController extends Controller
                 
         
             return redirect(route('tenants.show', $tenant));
+        }
+        // Student User
+        elseif($request->contact_email != null){
+            $userUuid = $this->userUuid('STUDENT', 'Student');
+            $fields['name'] = $request->contact_email;
+            $fields['contact_phone'] = $request->contact_phone;
+            
         }
         // All other Users
         else{

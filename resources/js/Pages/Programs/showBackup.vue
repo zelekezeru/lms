@@ -4,8 +4,10 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
-import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { usePage } from "@inertiajs/vue3";
+import TextInput from "@/Components/TextInput.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { PencilIcon, EyeIcon, TrashIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 
 // Define the props for the program
 const props = defineProps({
@@ -13,8 +15,37 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    
+
 });
+const createMode = ref(false);
+
+const modeForm = useForm({
+    program_id: props.program.id,
+    mode: "",
+    fees: "",
+});
+
+const addMode = () => {
+    modeForm.post(
+        route("studyModes.store", {
+            redirectTo: "programs.show",
+            params: { program: props.program.id },
+        }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    "Added!",
+                    "The Study Mode you entered has been inserted succesfully.",
+                    "success"
+                );
+
+                createMode.value = false;
+                modeForm.mode = "";
+                modeForm.fees = "";
+            },
+        }
+    );
+};
 
 // Delete function with SweetAlert confirmation
 const deleteProgram = (id) => {
@@ -40,6 +71,11 @@ const deleteProgram = (id) => {
         }
     });
 };
+
+// Ensure program.user, program.departments, and program.studyModes have fallbacks
+const programUser = props.program.user || { name: "N/A" };
+const programDepartments = props.program.departments || [];
+const studyModes = props.program.studyModes || [];
 </script>
 
 <template>
@@ -48,7 +84,7 @@ const deleteProgram = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ program.name }} Program
+                {{ program.name || "N/A" }} Program
             </h1>
 
             <div
@@ -63,7 +99,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.code }}
+                            {{ program.code || "N/A" }}
                         </span>
                     </div>
 
@@ -75,7 +111,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.name }}
+                            {{ program.name || "N/A" }}
                         </span>
                     </div>
 
@@ -87,7 +123,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.language }}
+                            {{ program.language || "N/A" }}
                         </span>
                     </div>
                     
@@ -99,7 +135,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.description }}
+                            {{ program.description || "N/A" }}
                         </span>
                     </div>
 
@@ -111,7 +147,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.user.name }}
+                            {{ programUser.name }}
                         </span>
                     </div>
                 </div>                
@@ -136,7 +172,7 @@ const deleteProgram = (id) => {
                     </button>
                 </div>
 
-                <!-- Departments -->
+    <!-- Departments -->
                 <div class="mt-10">
                     
                     <Link
@@ -180,24 +216,24 @@ const deleteProgram = (id) => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="department in program.departments"
+                                v-for="department in programDepartments"
                                 :key="department.id"
                                 class="border-b dark:border-gray-700 p-2 cursor-pointer"
                             >
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ department.code }}
+                                    {{ department.code || "N/A" }}
                                 </td>
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ department.name }}
+                                    {{ department.name || "N/A" }}
                                 </td>
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ program.duration }}
+                                    {{ program.duration || "N/A" }}
                                 </td>
                                 <td>
                                     <div v-if="userCan('view-departments')">
@@ -219,8 +255,84 @@ const deleteProgram = (id) => {
                         </tbody>
                     </table>
                 </div>
+                <!-- Study Modes -->
+                <div class="mt-10">
+                    <Link
+                        v-if="userCan('create-study-modes')"
+                        @click="createMode = true"
+                        class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                        + Add Study Mode
+                    </Link>
 
+                    <div class="text-center">
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >Study Modes</span
+                        >
+                    </div>
+                    <table class="mt-2 w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b dark:border-gray-700 p-2">
+                                <th
+                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
+                                >
+                                    Mode
+                                </th>
+                                <th
+                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
+                                >
+                                    Fees
+                                </th>
+                                <th
+                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
+                                >
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="mode in studyModes"
+                                :key="mode.id"
+                                class="border-b dark:border-gray-700 p-2 cursor-pointer"
+                            >
+                                <td
+                                    class="text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                    {{ mode.mode || "N/A" }}
+                                </td>
+                                <td
+                                    class="text-sm text-gray-500 dark:text-gray-400"
+                                >
+                                    {{ mode.fees || "N/A" }}
+                                </td>
+                                <td>
+                                    <div v-if="userCan('delete-study-modes')">
+                                        <button
+                                            @click="
+                                                deleteProgram(mode.id)
+                                            "
+                                            class="text-red-500 hover:text-red-700"
+                                        >
+                                            <TrashIcon class="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Add Study Mode Modal -->
+                    <div
+                        v-if="createMode"
+                        class="fixed inset
+                            0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                    >
+                </div>  
             </div>
+            
+        </div>
         </div>
     </AppLayout>
 </template>

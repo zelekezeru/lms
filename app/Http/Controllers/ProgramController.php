@@ -60,9 +60,9 @@ class ProgramController extends Controller
      */
     public function show(Program $program)
     {
-        $program = (Program::with('user', 'departments')->find($program->id));
-
-        return inertia('Programs/Show', [
+        $program = new ProgramResource($program->load('departments')); 
+        
+        return inertia('programs/Show', [
             'program' => $program,
 
         ]);

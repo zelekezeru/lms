@@ -4,8 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
-class StudyModeResource extends JsonResource
+class SemesterResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +15,15 @@ class StudyModeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
-            'mode' => $this->mode,
-            'program_id' => new ProgramResource($this->whenLoaded('program')),
-            'duration' => $this->duration,
-            'fees' => $this->fees,
+            'name' => $this->name,
+            'status' => $this->status,
+            'is_approved' => $this->is_approved,
+            'is_completed' => $this->is_completed,
+            'created_at' => $this->created_at,
+            
         ];
     }
 }

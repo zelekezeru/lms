@@ -140,15 +140,15 @@ const emit = defineEmits(['next']);
         </div>
 
         <div>
-            <InputLabel for="address_1" value="Address" />
+            <InputLabel for="address" value="Address" />
             <TextInput
-            id="address_1"
+            id="address"
             type="text"
-            v-model="form.address_1"
+            v-model="form.address"
             class="w-full"
             placeholder="e.g., Hawassa, Sidama, Ethiopia"
             />
-            <InputError :message="form.errors?.address_1" class="mt-2" />
+            <InputError :message="form.errors?.address" class="mt-2" />
         </div>
         </div>
         

@@ -56,7 +56,7 @@ class User extends Authenticatable
     }
 
     //Program Director
-    public function directorOf()
+    public function director()
     {
         return $this->hasOne(Program::class);
     }

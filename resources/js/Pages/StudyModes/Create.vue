@@ -4,14 +4,14 @@ import Form from "./Form.vue";
 import { useForm } from "@inertiajs/vue3";
 
 defineProps({
-    departments: {
+    programs: {
         type: Object,
         required: true,
     },
 });
 
 const form = useForm({
-    department_id: "",
+    program_id: "",
     mode: "",
     duration: "",
     fees: "",
@@ -40,7 +40,7 @@ const submit = () => form.post(route("studyModes.store"));
                 <Form
                     :form="form"
                     @submit="submit"
-                    :departments="departments"
+                    :programs="programs"
                 />
             </div>
         </div>

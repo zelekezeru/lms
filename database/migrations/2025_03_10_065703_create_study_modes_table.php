@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('study_modes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained()->onDelete('CASCADE');
+            $table->foreignId('program_id')->constrained()->onDelete('CASCADE');
             $table->enum('mode', ['REGULAR', 'EXTENSION', 'DISTANCE', 'ONLINE']);
             $table->integer('duration');// Duration In Years
             $table->float('fees');

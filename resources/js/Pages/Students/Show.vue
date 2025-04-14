@@ -170,7 +170,7 @@ const deleteStudent = (id) => {
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Address</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.address_1 }}
+              {{ student.address }}
             </span>
           </div>
           <!-- Position/Denomination -->

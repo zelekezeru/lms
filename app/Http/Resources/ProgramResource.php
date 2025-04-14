@@ -22,9 +22,10 @@ class ProgramResource extends JsonResource
             'duration' => $this->duration,
             'language' => $this->language,
             'user_id' => $this->user_id,
-            
+
             'department' => new DepartmentResource($this->whenLoaded('department')),
-            'user' => new UserResource($this->whenLoaded('directorOf')),
+            'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
+            'user' => new UserResource($this->whenLoaded('director')),
         ];
     }
 }

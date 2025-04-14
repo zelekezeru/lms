@@ -5,7 +5,8 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Form from './Form.vue';
 
-const props = defineProps({ student: Object });
+const props = defineProps({ student: Object, programs: Array, departments: Array, years: Array, semesters: Array });
+
 const form = ref({ 
     ...props.student,
     student_id: props.student.student_id || '', 
@@ -18,9 +19,9 @@ const form = ref({
     email: props.student.email || '', 
     marital_status: props.student.marital_status || '', 
     sex: props.student.sex || '', 
-    address_1: props.student.address_1 || '', 
+    address: props.student.address || '', 
     year_id: props.student.year_id || '', 
-    semester: props.student.semester || '', 
+    semester_id: props.student.semester_id || '', 
     program_id: props.student.program_id || '', 
     total_credit_hours: props.student.total_credit_hours || '', 
     total_amount_paid: props.student.total_amount_paid || '', 

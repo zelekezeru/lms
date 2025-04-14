@@ -24,7 +24,7 @@ class StudentRequest extends FormRequest
             'email' => 'sometimes|string|max:100',
             'marital_status' => 'sometimes|string|max:10',
             'sex' => 'required|in:M,F',            
-            'address_1' => 'required|string|max:200',
+            'address' => 'required|string|max:200',
 
             //Academic Information
             'year_id' => 'sometimes|max:10',

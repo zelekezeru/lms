@@ -28,12 +28,7 @@ class Program extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class, 'user_id');
+        return $this->director();
     }
 
     public function sections()
@@ -51,9 +46,9 @@ class Program extends Model
         return $this->hasMany(Year::class);
     }
 
-    public function studyModes(): BelongsToMany
+    public function studyModes()
     {
-        return $this->belongsToMany(StudyMode::class);
+        return $this->hasMany(StudyMode::class);
     }
     
 }

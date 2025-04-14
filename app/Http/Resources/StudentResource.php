@@ -29,7 +29,7 @@ class StudentResource extends JsonResource
             'address_1' => $this->address_1,
             'default_password' => $this->default_password,
             // Academic Information
-            'academic_year' => $this->academic_year,
+            'year_id' => $this->year_id,
             'semester' => $this->semester,
             'program_id' => $this->program_id,
             'total_credit_hours' => $this->total_credit_hours,

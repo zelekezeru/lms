@@ -58,8 +58,8 @@ class StudyModeController extends Controller
      */
     public function edit(StudyMode $studyMode)
     {
-        $departments = Department::all();
-        $studyMode = new StudyModeResource($studyMode->load('department'));
+        $departments = Department::all(); // Fetch all departments for the dropdown
+        $studyMode = new StudyModeResource($studyMode->load('department')); // Load the related department
 
         return inertia('StudyModes/Edit', compact('departments', 'studyMode'));
     }
@@ -70,7 +70,8 @@ class StudyModeController extends Controller
     public function update(StudyModeUpdateRequest $request, StudyMode $studyMode)
     {
         $fields = $request->validated();
-        
+
+        // Update the study mode record
         $studyMode->update($fields);
 
         return redirect()->route('studyModes.show', $studyMode)->with('success', 'Study Mode updated successfully.');

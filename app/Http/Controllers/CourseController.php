@@ -71,8 +71,11 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
+        $departments = DepartmentResource::collection(\App\Models\Department::all());
+
         return inertia('Courses/Edit', [
             'course' => new CourseResource($course),
+            'departments' => $departments,
         ]);
     }
 
@@ -82,9 +85,16 @@ class CourseController extends Controller
     public function update(CourseUpdateRequest $request, Course $course)
     {
         $fields = $request->validated();
-        
+
+        // Optionally regenerate the course code if needed
+        if (!$course->code) {
+            $year = substr(Carbon::now()->year, -2);
+            $course_id = 'CR' . '/' . str_pad(Course::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $fields['code'] = $course_id;
+        }
+
         $course->update($fields);
-        
+
         return redirect(route('courses.show', $course))->with('success', 'Course updated successfully.');
     }
     

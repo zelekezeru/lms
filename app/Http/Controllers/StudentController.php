@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentRequest;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\YearResource;
+use App\Models\Year;
+use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -41,6 +44,14 @@ class StudentController extends Controller
         ]);
     }
     
+    public function show(Student $student)
+    {
+
+        return Inertia::render('Students/Show', [
+            'student' => $student,
+        ]);
+    }
+    
 
     public function create(): Response
     {
@@ -48,17 +59,12 @@ class StudentController extends Controller
 
         $programs = ProgramResource::collection(Program::all());
 
+        $years = YearResource::collection(Year::all());
+
         return inertia('Students/Create', [
             'departments' => $departments,
             'programs'=> $programs,
-        ]);
-    }
-    
-    public function show(Student $student)
-    {
-
-        return Inertia::render('Students/Show', [
-            'student' => $student,
+            'years' => $years,
         ]);
     }
     
@@ -90,15 +96,32 @@ dd($fields);
     {
         $departments = DepartmentResource::collection(Department::all());
         $programs = ProgramResource::collection(Program::all());
+        $years = YearResource::collection(Year::all());
 
-
-        return Inertia::render('Students/Edit', compact('student', 'programs',  'departments'));
+        return Inertia::render('Students/Edit', [
+            'student' => $student,
+            'departments' => $departments,
+            'programs' => $programs,
+            'years' => $years,
+        ]);
     }
 
     public function update(StudentRequest $request, Student $student)
     {
-        $student->update($request->validated());
-        
+        $fields = $request->validated();
+
+        // Update the student record
+        $student->update($fields);
+
+        // Update the associated user record if necessary
+        $user = $student->user; // Assuming a relationship exists between Student and User
+        if ($user) {
+            $user->update([
+                'name' => $fields['name'],
+                'email' => $fields['email'],
+            ]);
+        }
+
         return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
     }
 
@@ -119,7 +142,7 @@ dd($fields);
         return Inertia::render('Students/Index', compact('students'));
     }
 
-    public function student_id)
+    public function student_id()
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two di
 

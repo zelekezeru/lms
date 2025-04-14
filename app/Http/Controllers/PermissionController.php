@@ -48,14 +48,19 @@ class PermissionController extends Controller
 
     public function edit(Permission $permission): Response
     {
-        return Inertia::render('Permissions/Edit', compact('permission'));
+        return Inertia::render('Permissions/Edit', [
+            'permission' => $permission,
+        ]);
     }
 
     public function update(PermissionRequest $request, Permission $permission)
     {
-        $permission->update($request->validated());
-        
-        return redirect()->route('permissions.index')->with('success', 'Permission updated successfully.');
+        $fields = $request->validated();
+
+        // Update the permission record
+        $permission->update($fields);
+
+        return redirect()->route('permissions.show', $permission)->with('success', 'Permission updated successfully.');
     }
 
     public function destroy(Permission $permission)

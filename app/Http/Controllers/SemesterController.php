@@ -58,18 +58,27 @@ class SemesterController extends Controller
         ]);
     
         // Create the semester with the year_id
-        Semester::create([
-            'name' => $request->name,
-            'status' => $request->status,
-            'is_approved' => $request->is_approved,
-            'is_completed' => $request->is_completed,
-            'year_id' => $request->year_id, // Ensure year_id is correctly assigned
+    $semester = Semester::create([
+        'name' => $request->name,
+        'status' => $request->status,
+        'is_approved' => $request->is_approved,
+        'is_completed' => $request->is_completed,
+        'year_id' => $request->year_id,
         ]);
-    
-        return redirect()->back()->with('success', 'Semester created successfully.');
+        // Redirect to the semester's show page
+        return redirect()->route('semesters.show', $semester)->with('success', 'Semester created successfully.');
     }
     
-    
+    public function edit(Semester $semester)
+    {
+        $years = Year::all(); // Fetch all years for the dropdown
+
+        return inertia('Semesters/Edit', [
+            'semester' => $semester,
+            'years' => $years,
+        ]);
+    }
+
     /**
      * Update an existing semester.
      */
@@ -77,22 +86,22 @@ class SemesterController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:semesters,name,' . $semester->id,
+            'year_id' => 'required|exists:years,id',
             'status' => 'required|string|in:Active,Inactive',
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
 
-        $semester->update($request->all());
-
-        return redirect()->back()->with('success', 'Semester updated successfully.');
+        // Update the semester record
+        $semester->update($request->only(['name', 'year_id', 'status', 'is_approved', 'is_completed']));
+        
+        return redirect()->route('semesters.show', $semester)->with('success', 'Semester updated successfully.');
     }
 
-    /**
-     * Delete a semester.
+    /**     * Delete a semester.
      */
     public function destroy(Semester $semester)
     {
-        dd('hit' . $semester->id);
         $semester->delete();
 
         return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');

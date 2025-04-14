@@ -27,12 +27,13 @@ class StudentRequest extends FormRequest
             'address_1' => 'required|string|max:200',
 
             //Academic Information
-            'academic_year' => 'nullable|max:10',
             'semester' => 'nullable|string|max:20',
             'program_id' => 'nullable|exists:programs,id',
+            'year_id' => 'nullable|exists:years,id',
             'department_id' => 'nullable|exists:departments,id',
             'total_credit_hours' => 'nullable|integer',
             'total_amount_paid' => 'nullable|numeric',
+            'total_amount_due' => 'nullable|numeric',
             
             //Church Information
             'pastor_name' => 'nullable|string|max:100',

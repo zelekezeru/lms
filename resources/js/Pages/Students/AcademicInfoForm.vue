@@ -83,24 +83,31 @@ const getYears = () => {
         </div>
 
         <!-- Department Input -->
+         
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
-        <div class="mt-4">
-            <InputLabel for="department_id" value="Department" />
-            <select
-                id="department_id"
-                v-model="form.department_id"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-            >
-                <option value="" disabled>Select Department</option>
-                <option
-                    v-for="department in departments"
-                    :key="department.id"
-                    :value="department.id"
+            <div>
+                <InputLabel for="department_id" value="Department" />
+                <select
+                    id="department_id"
+                    v-model="form.department_id"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    {{ department.name }}
-                </option>
-            </select>
-            <InputError :message="form.errors?.department_id" class="mt-2" />
+                    <option value="" disabled>Select Department</option>
+                    <option
+                        v-for="department in departments"
+                        :key="department.id"
+                        :value="department.id"
+                    >
+                        {{ department.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors?.department_id" class="mt-2" />
+            </div>
+
+            <div>
+                
+            </div>
         </div>
         
         <div class="flex justify-end mt-4">

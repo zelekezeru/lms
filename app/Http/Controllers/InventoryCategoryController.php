@@ -70,11 +70,10 @@ class InventoryCategoryController extends Controller
     {
         $fields = $request->validated();
 
+        // Update the inventory category
         $inventoryCategory->update($fields);
-        
-        $inventoryCategory->delete();
-        
-        return redirect(route('inventoryCategories.show', $inventoryCategory))->with('success', 'InventoryCategory deleted successfully.');
+
+        return redirect(route('inventoryCategories.show', $inventoryCategory))->with('success', 'Inventory Category updated successfully.');
     }
 
     /**

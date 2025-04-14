@@ -109,7 +109,6 @@ class DepartmentController extends Controller
 
         return inertia('Departments/Edit', [
             'department' => new DepartmentResource($department),
-
             'users' => UserResource::collection(User::all()),
             'programs' => ProgramResource::collection(Program::all()),
         ]);
@@ -121,9 +120,16 @@ class DepartmentController extends Controller
     public function update(DepartmentUpdateRequest $request, Department $department)
     {
         $fields = $request->validated();
-        
+
+        // Optionally regenerate the department code if needed
+        if (!$department->code) {
+            $year = substr(Carbon::now()->year, -2);
+            $department_id = 'DP' . '/' . str_pad(Department::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $fields['code'] = $department_id;
+        }
+
         $department->update($fields);
-        
+
         return redirect(route('departments.show', $department))->with('success', 'Department updated successfully.');
     }
     

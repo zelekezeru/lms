@@ -123,8 +123,17 @@ class ProgramController extends Controller
     {
         $fields = $request->validated();
 
+        // Update the program record
         $program->update($fields);
-        
+
+        // Update the director's role if the user_id changes
+        if (isset($fields['user_id'])) {
+            $user = User::where('id', $fields['user_id'])->first();
+            if ($user && !$user->hasRole('PROGRAM-DIRECTOR')) {
+                $user->assignRole('PROGRAM-DIRECTOR');
+            }
+        }
+
         return redirect()->route('programs.show', $program)->with('success', 'Program updated successfully.');
     }
 

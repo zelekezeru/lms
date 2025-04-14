@@ -19,7 +19,7 @@ const form = ref({
     marital_status: props.student.marital_status || '', 
     sex: props.student.sex || '', 
     address_1: props.student.address_1 || '', 
-    academic_year: props.student.academic_year || '', 
+    year_id: props.student.year_id || '', 
     semester: props.student.semester || '', 
     program_id: props.student.program_id || '', 
     total_credit_hours: props.student.total_credit_hours || '', 

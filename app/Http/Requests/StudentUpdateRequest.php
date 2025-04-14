@@ -27,7 +27,7 @@ class StudentRequest extends FormRequest
             'address_1' => 'required|string|max:200',
 
             //Academic Information
-            'academic_year' => 'sometimes|max:10',
+            'year_id' => 'sometimes|max:10',
             'semester' => 'sometimes|string|max:20',
             'program_id' => 'sometimes', 'exists:programs,id',
             'total_credit_hours' => 'sometimes|integer',

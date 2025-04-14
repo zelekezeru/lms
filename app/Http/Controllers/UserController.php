@@ -97,20 +97,27 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user)
     {
         $fields = $request->validated();
-        
-        $profileImg = $fields['profile_img'] ?? null;
-        
+
+        // Handle profile image upload
+        $profileImg = $request->file('profile_img');
         if ($profileImg) {
+            if ($user->profile_img) {
+                Storage::disk('public')->delete($user->profile_img); // Delete old image
+            }
             $profile_path = $profileImg->store('profile-images', 'public');
-        } else {
-            $profile_path = null;
         }
-        
+
+        // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
+
+        // Update roles if provided
+        if (!empty($fields['role_name'])) {
+            $user->syncRoles([$fields['role_name']]);
+        }
 
         return redirect()->route('users.show', $user)->with('success', 'User updated successfully.');
     }

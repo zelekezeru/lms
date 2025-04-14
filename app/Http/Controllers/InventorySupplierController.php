@@ -70,8 +70,9 @@ class InventorySupplierController extends Controller
     {
         $fields = $request->validated();
 
+        // Update the inventory supplier record
         $inventorySupplier->update($fields);
-        
+
         return redirect()->route('inventorySuppliers.show', $inventorySupplier)->with('success', 'Inventory Supplier updated successfully.');
     }
 

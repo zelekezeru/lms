@@ -35,18 +35,20 @@ class SectionController extends Controller
     
 
     public function store(SectionRequest $request)
-    {
-        dd($request->validated());
-        Section::create($request->validated());
+    {        
+        $section = Section::create($request->validated());
     
-        return redirect()->route('sections.index')->with('success', 'Section created successfully.');
+        return redirect()->route('sections.show', $section)->with('success', 'Section created successfully.');
     }
     
     public function update(SectionRequest $request, Section $section)
     {
-        $section->update($request->validated());
-    
-        return redirect()->route('sections.index')->with('success', 'Section updated successfully.');
+        $fields = $request->validated();
+
+        // Update the section record
+        $section->update($fields);
+
+        return redirect()->route('sections.show', $section)->with('success', 'Section updated successfully.');
     }
 
     public function edit(Section $section)
@@ -54,8 +56,10 @@ class SectionController extends Controller
         return Inertia::render('Sections/Edit', [
             'section' => $section->load(['user', 'program', 'department', 'year', 'semester']),
             'programs' => Program::all(),
-            'users' => User::all(),
             'departments' => Department::all(),
+            'users' => User::all(),
+            'years' => Year::all(),
+            'semesters' => Semester::all(),
         ]);
     }
     

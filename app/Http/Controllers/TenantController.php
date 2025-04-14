@@ -141,9 +141,12 @@ class TenantController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Tenant $tenant)
-    {        
+    {
+        $user = UserResource::collection(User::where('tenant_id', $tenant->id)->get());
+
         return inertia('Tenants/Edit', [
             'tenant' => new TenantResource($tenant),
+            'user' => $user,
         ]);
     }
 
@@ -153,17 +156,31 @@ class TenantController extends Controller
     public function update(TenantUpdateRequest $request, Tenant $tenant)
     {
         $fields = $request->validated();
-        
+
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('tenants-logo', 'public');
             $fields['logo'] = '/storage/' . $logoPath;
         } else {
-            unset($fields['logo']); 
+            unset($fields['logo']);
         }
-        
+
+        // Update the tenant
         $tenant->update($fields);
-    
+
+        // Update the tenant representative if necessary
+        $user = User::where('tenant_id', $tenant->id)->first();
+        if ($user) {
+            $phone_end = substr($fields['contact_phone'], -4);
+            $user_password = $fields['name'] . '@' . $phone_end;
+
+            $user->update([
+                'name' => $fields['contact_person'],
+                'email' => $fields['contact_email'],
+                'password' => Hash::make($user_password),
+            ]);
+        }
+
         return redirect()->route('tenants.show', $tenant)->with('success', 'Tenant updated successfully.');
     }
     

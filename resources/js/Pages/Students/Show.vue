@@ -135,7 +135,7 @@ const deleteStudent = (id) => {
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Academic Year</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.academic_year }}
+              {{ student.year_id }}
             </span>
           </div>
           <!-- Semester -->

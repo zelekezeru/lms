@@ -106,7 +106,7 @@ class UserDocumentController extends Controller
         // Handle image upload
         if ($request->hasFile('image')) {
             if ($userDocument->image) {
-                Storage::disk('public')->delete($userDocument->image);
+                Storage::disk('public')->delete($userDocument->image); // Delete old image
             }
             $imagePath = $request->file('image')->store('user-documents/images', 'public');
             $fields['image'] = '/storage/' . $imagePath;
@@ -115,12 +115,13 @@ class UserDocumentController extends Controller
         // Handle file upload
         if ($request->hasFile('file')) {
             if ($userDocument->file) {
-                Storage::disk('public')->delete($userDocument->file);
+                Storage::disk('public')->delete($userDocument->file); // Delete old file
             }
             $filePath = $request->file('file')->store('user-documents/files', 'public');
             $fields['file'] = '/storage/' . $filePath;
         }
 
+        // Update the user document record
         $userDocument->update($fields);
 
         return redirect(route('userDocuments.show', $userDocument))->with('success', 'User Document updated successfully.');

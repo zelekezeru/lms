@@ -55,14 +55,29 @@ class RoleController extends Controller
 
     public function edit(Role $role): Response
     {
-        return Inertia::render('Roles/Edit', compact('role'));
+        $permissions = Permission::all(); // Fetch all permissions to allow assignment during editing
+        $attachedPermissions = $role->permissions()->pluck('id'); // Fetch currently attached permissions
+
+        return Inertia::render('Roles/Edit', [
+            'role' => $role,
+            'permissions' => $permissions,
+            'attachedPermissions' => $attachedPermissions,
+        ]);
     }
 
     public function update(RoleRequest $request, Role $role)
     {
-        $role->update($request->validated());
+        $fields = $request->validated();
 
-        return redirect()->route('roles.show', $role)->with('success', 'Role created successfully.');
+        // Update the role details
+        $role->update($fields);
+
+        // Sync permissions if provided
+        if ($request->has('permissions')) {
+            $role->permissions()->sync($request->input('permissions'));
+        }
+
+        return redirect()->route('roles.show', $role)->with('success', 'Role updated successfully.');
     }
 
     public function destroy(Role $role)

@@ -66,7 +66,12 @@ class InventoryController extends Controller
         $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::all());
         $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::all());
         $inventory = new InventoryResource($inventory);
-        return inertia('Inventories/Edit', compact('inventoryCategories', 'inventorySuppliers', 'inventory'));
+
+        return inertia('Inventories/Edit', [
+            'inventory' => $inventory,
+            'inventoryCategories' => $inventoryCategories,
+            'inventorySuppliers' => $inventorySuppliers,
+        ]);
     }
 
     /**
@@ -76,8 +81,9 @@ class InventoryController extends Controller
     {
         $fields = $request->validated();
 
+        // Update the inventory record
         $inventory->update($fields);
-        
+
         return redirect()->route('inventories.show', $inventory)->with('success', 'Inventory updated successfully.');
     }
 

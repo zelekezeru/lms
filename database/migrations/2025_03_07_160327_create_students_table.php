@@ -22,11 +22,9 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('marital_status', 10)->nullable();
             $table->char('sex', 6);
-            $table->string('academic_year', 10);
             $table->string('semester', 20)->nullable();
             $table->string('program', 50)->nullable();
             $table->string('address_1', 200)->nullable();
-            $table->string('year_of_study', 10)->nullable();
             $table->string('pastor_name', 100)->nullable();
             $table->string('pastor_phone', 100)->nullable();
             $table->string('church_name', 100)->nullable();
@@ -34,12 +32,14 @@ return new class extends Migration
             $table->string('position_denomination', 100)->nullable();
             $table->integer('total_credit_hours')->nullable();
             $table->decimal('total_amount_paid', 10, 2)->nullable();
+            $table->decimal('total_amount_due', 10, 2)->nullable();
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
             $table->string('profile_image')->nullable();
             
             // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('tenant_id')->nullable()->constrained();
+            $table->foreignId('year_id')->nullable()->constrained();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

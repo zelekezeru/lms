@@ -132,30 +132,34 @@ class EmployeeController extends Controller
         $fields = $request->validated();
         $image = $fields['profile_img'] ?? null;
         $user = $employee->user;
-        
+
+        // Handle profile image upload
         if ($image) {
             if ($user->profile_img) {
                 Storage::disk('public')->delete($user->profile_img);
             }
             $profile_path = $image->store('profile-images', 'public');
         }
-        
+
+        // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 
+        // Update employee details
         $employee->update([
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],
         ]);
-        
+
+        // Update roles if provided
         if (!empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
-        
+
         return redirect(route('employees.show', $employee))->with('success', 'Employee updated successfully.');
     }
     

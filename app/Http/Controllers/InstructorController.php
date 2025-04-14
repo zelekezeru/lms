@@ -108,7 +108,7 @@ class InstructorController extends Controller
         $roles = Role::all();
 
         return inertia('Instructors/Edit', [
-            'instructor' => new InstructorResource($instructor->load('department')),
+            'instructor' => new InstructorResource($instructor->load('user', 'department')),
             'departments' => Department::all(['id', 'name']),
             'roles' => $roles,
         ]);
@@ -119,7 +119,7 @@ class InstructorController extends Controller
         $fields = $request->validated();
         $profileImg = $fields['profile_img'] ?? null;
         $user = $instructor->user;
-        
+
         // Handle profile image update
         if ($profileImg) {
             if ($user->profile_img) {
@@ -128,13 +128,14 @@ class InstructorController extends Controller
             $profile_path = $profileImg->store('profile-images', 'public');
         }
 
+        // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 
-        
+        // Update instructor details
         $instructor->update([
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
@@ -142,11 +143,12 @@ class InstructorController extends Controller
             'status' => $fields['status'],
             'bio' => $fields['bio'],
         ]);
-       
+
+        // Update roles if provided
         if (!empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
-        
+
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor updated successfully.');
     }
 

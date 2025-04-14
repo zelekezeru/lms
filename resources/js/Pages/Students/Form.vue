@@ -169,10 +169,10 @@ const getYears = () => {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <InputLabel for="academic_year" value="Academic Year" />
+        <InputLabel for="year_id" value="Academic Year" />
         <select
-          id="academic_year"
-          v-model="form.academic_year"
+          id="year_id"
+          v-model="form.year_id"
           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
         >
           <option value="" disabled>Select Year</option>
@@ -184,7 +184,7 @@ const getYears = () => {
             {{ year }}
           </option>
         </select>
-        <InputError :message="form.errors?.academic_year" class="mt-2" />
+        <InputError :message="form.errors?.year_id" class="mt-2" />
       </div>
 
       <div>

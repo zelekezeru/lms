@@ -63,12 +63,17 @@ class YearController extends Controller
     
     public function edit(Year $year)
     {
-        return Inertia::render('Years/Edit', compact('year'));
+        return Inertia::render('Years/Edit', [
+            'year' => new YearResource($year),
+        ]);
     }
 
     public function update(UpdateYearRequest $request, Year $year)
     {
-        $year->update($request->validated());
+        $fields = $request->validated();
+
+        // Update the year record
+        $year->update($fields);
 
         return redirect(route('years.show', $year))->with('success', 'Year updated successfully.');
     }

@@ -72,7 +72,7 @@ const deleteStudyMode = (id) => {
             <h1
                 class="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100"
             >
-                {{ studyMode.department.name }} ({{ studyMode.mode }}) Study Mode
+                {{ studyMode.program.name }} ({{ studyMode.mode }}) Study Mode
             </h1>
 
             <div
@@ -92,16 +92,16 @@ const deleteStudyMode = (id) => {
                         </span>
                     </div>
 
-                    <!-- studyMode Department -->
+                    <!-- studyMode Program -->
                     <div>
                         <span
                             class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Department</span
+                            >Program</span
                         >
                         <span
                             class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ studyMode.department.name }}
+                            {{ studyMode.program.name }}
                         </span>
                     </div>
 

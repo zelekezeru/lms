@@ -25,7 +25,7 @@ class ProgramResource extends JsonResource
 
             'department' => new DepartmentResource($this->whenLoaded('department')),
             'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
-            'user' => new UserResource($this->whenLoaded('director')),
+            'director' => new UserResource($this->whenLoaded('director')),
         ];
     }
 }

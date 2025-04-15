@@ -10,6 +10,7 @@ defineProps({
         type: Object,
         required: true,
     },
+
     programs: {
         type: Object,
         required: true,
@@ -55,7 +56,6 @@ const submit = (id) => {
                 <Form
                     :form="form"
                     @submit="submit(studyMode.id)"
-                    :users="users"
                     :programs="programs"
                 />
             </div>

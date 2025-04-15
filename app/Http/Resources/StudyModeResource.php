@@ -17,7 +17,7 @@ class StudyModeResource extends JsonResource
         return [
             'id' => $this->id,
             'mode' => $this->mode,
-            'program_id' => new ProgramResource($this->whenLoaded('program')),
+            'program' => new ProgramResource($this->whenLoaded('program')),
             'duration' => $this->duration,
             'fees' => $this->fees,
         ];

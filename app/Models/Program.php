@@ -26,9 +26,9 @@ class Program extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function user()
+    public function director()
     {
-        return $this->director();
+        return $this->belongsTo(User::class);
     }
 
     public function sections()

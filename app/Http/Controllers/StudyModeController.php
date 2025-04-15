@@ -15,12 +15,41 @@ class StudyModeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        dd('index');
-        $studyModes = StudyModeResource::collection(StudyMode::with('program')->paginate(15));
-dd($studyModes);
-        return inertia('StudyModes/Index', compact('studyModes'));
+        
+        $query = StudyMode::query()->with('program');
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            
+            $query = StudyMode::when($search, function ($query) use ($search) {
+                    $query->where('mode', 'like', "%{$search}%")
+                        ->orWhere('duration', 'like', "%{$search}%")
+                        ->orWhere('fees', 'like', "%{$search}%")
+                        ->orWhereHas('program', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                });
+        }
+
+        $allowedSorts = ['mode', 'duration', 'fees'];
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
+        
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+        
+        $studyModes = StudyModeResource::collection($query->paginate(15));
+
+        return inertia('StudyModes/Index', [
+            'studyModes' => $studyModes, // Corrected to return the studyModes collection
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
+        ]);
     }
 
     /**
@@ -46,7 +75,7 @@ dd($studyModes);
 
         $program = Program::find($fields['program_id']);
         
-        return redirect()->route('programs.show', $program)->with('success', 'Study Mode created successfully.');
+        return redirect()->route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
     }
     
     /**

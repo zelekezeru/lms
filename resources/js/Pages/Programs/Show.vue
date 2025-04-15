@@ -111,7 +111,7 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.user.name }}
+                            {{ program.director ? program.director.name : 'N/A'}}
                         </span>
                     </div>
                 </div>                

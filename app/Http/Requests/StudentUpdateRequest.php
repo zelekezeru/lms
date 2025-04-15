@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StudentRequest extends FormRequest
+class StudentUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -44,7 +44,6 @@ class StudentRequest extends FormRequest
             'position_denomination' => 'sometimes|string|max:100',
             'church_name' => 'sometimes|string|max:100',
             'church_address' => 'sometimes|string|max:200',
-            'student_signature' => 'sometimes|string|max:100',
             'office_use_notes' => 'sometimes|string',
         ];
     }

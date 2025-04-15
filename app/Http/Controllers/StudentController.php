@@ -9,7 +9,7 @@ use App\Models\Program;
 use App\Http\Resources\DepartmentResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Requests\StudentRequest;
+use App\Http\Requests\StudentStoreRequest;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\YearResource;
 use App\Http\Resources\SemesterResource;
@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Resources\StudentResource;
 use App\Models\Semester;
+use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -44,11 +45,6 @@ class StudentController extends Controller
         
         return Inertia::render('Students/Index', [
             'students' => $students,
-            'departments' => DepartmentResource::collection(Department::all()),
-            'programs' => ProgramResource::collection(Program::all()),
-            'years' => YearResource::collection(Year::all()),
-            'semesters' => SemesterResource::collection(Semester::all()),
-            'sections' => SectionResource::collection(Section::all()),
             'search' => $search, // Pass the search term back to the frontend
         ]);
     }
@@ -84,7 +80,7 @@ class StudentController extends Controller
         ]);
     }
     
-    public function store(StudentRequest $request)
+    public function store(StudentStoreRequest $request)
     {
         $fields = $request->validated(); 
 
@@ -140,7 +136,7 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(StudentRequest $request, Student $student)
+    public function update(StudentStoreRequest $request, Student $student)
     {
         $fields = $request->validated();
 

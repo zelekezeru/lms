@@ -34,7 +34,8 @@ const form = ref({
     church_name: props.student.church_name || '', 
     church_address: props.student.church_address || '', 
     student_signature: props.student.student_signature || '', 
-    office_use_notes: props.student.office_use_notes || '' 
+    office_use_notes: props.student.office_use_notes || '' ,
+    _method: "PATCH", 
 });
 
 

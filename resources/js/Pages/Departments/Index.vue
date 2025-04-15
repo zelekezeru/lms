@@ -95,7 +95,7 @@ const deleteDepartment = (id) => {
                 />
             </div>
 
-            <div class="flex space-x-2">
+            <div class="flex space-x-6">
                 <Link
                     v-if="userCan('create-departments')"
                     :href="route('departments.create')"
@@ -137,7 +137,7 @@ const deleteDepartment = (id) => {
                         </th>
                         <td class="px-6 py-4">{{ department.code }}</td>
                         <td class="px-6 py-4">{{ department.description }}</td>
-                        <td class="px-6 py-4 flex space-x-2">
+                        <td class="px-6 py-4 flex space-x-6">
                             <div v-if="userCan('view-departments')">
                                 <Link :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
                                     <EyeIcon class="w-5 h-5"/>
@@ -160,7 +160,7 @@ const deleteDepartment = (id) => {
         </div>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in departments.meta.links"
                 :key="link.label"

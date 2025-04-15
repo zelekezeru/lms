@@ -65,6 +65,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/assignments/students-courses', [AssignmentController::class, 'assign_students_courses'])->name('assignments.students-courses.assign');
     Route::post('/assignments/students-courses/remove', [AssignmentController::class, 'remove_students_courses'])->name('assignments.students-courses.remove');
 
+    //Student Managment
+    Route::get('/students/{student}/profile', [StudentController::class, 'profile'])->name('students.profile');
+    Route::post('/students/{student}/updateProfile', [StudentController::class, 'updateProfile'])->name('students.updateProfile');
 
     $resourceRoutes = [
         'departments' => 'department',

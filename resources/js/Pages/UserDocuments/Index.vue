@@ -107,7 +107,7 @@ const searchDocuments = () => {
                 />
             </div>
 
-            <div class="flex space-x-2">
+            <div class="flex space-x-6">
                 <Link
                     :href="route('userDocuments.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -176,7 +176,7 @@ const searchDocuments = () => {
         </div>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in userDocuments.meta.links"
                 :key="link.label"

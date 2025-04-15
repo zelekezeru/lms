@@ -98,7 +98,7 @@ const searchYears = () => {
                 />
             </div>
 
-            <div class="flex space-x-2">
+            <div class="flex space-x-6">
                 <Link
                     :href="route('years.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"

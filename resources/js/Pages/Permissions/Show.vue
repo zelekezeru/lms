@@ -76,7 +76,7 @@ const deletePermission = (id) => {
                 </div>
             
                 <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
+                <div class="flex justify-end mt-6 space-x-6">
                     <Link
                         :href="route('permissions.edit', { permission: permission.id })"
                         class="text-blue-500 hover:text-blue-700"

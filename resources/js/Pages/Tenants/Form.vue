@@ -65,20 +65,20 @@ const handleFileChange = (e) => {
         <div v-if="form.errors.phone" class="text-red-500 text-sm">{{ form.errors.phone }}</div>
       </div>
 
-  <!-- logo Upload & Preview -->
-  <div>
-    <InputLabel for="profile_img" value="logo" />
-    <div class="flex items-center gap-4">
-        <label for="profile_img" class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700">
-            <PhotoIcon class="w-5 h-5" /> Upload Logo
-        </label>
-        <input id="profile_img" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
-        <div v-if="props.form.imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
-            <img :src="props.form.imagePreview" alt="Profile Preview" class="object-cover w-full h-full" />
+      <!-- logo Upload & Preview -->
+      <div>
+        <InputLabel for="profile_img" value="logo" />
+        <div class="flex items-center gap-4">
+            <label for="profile_img" class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700">
+                <PhotoIcon class="w-5 h-5" /> Upload Logo
+            </label>
+            <input id="profile_img" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
+            <div v-if="props.form.imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
+                <img :src="props.form.imagePreview" alt="Profile Preview" class="object-cover w-full h-full" />
+            </div>
         </div>
-    </div>
-    <InputError :message="props.form.errors.profile_img" />
-  </div>
+        <InputError :message="props.form.errors.profile_img" />
+      </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

@@ -52,10 +52,11 @@ class StudentController extends Controller
         // Paginate results
         $students = $query->paginate(30)->withQueryString();
 
+        $students = StudentResource::collection($query->paginate(30)->withQueryString());
+
         return inertia('Students/Index', [
-            'students' => StudentResource::collection($students), 
-            'programs' => ProgramResource::collection(Program::all()),
-            'users' => UserResource::collection(User::all()),
+            'students' => $students,
+            
             'search' => $request->search, 
             'sortInfo' => [
                 "currentSortColumn" => $sortColumn,
@@ -66,7 +67,9 @@ class StudentController extends Controller
     
     public function show(Student $student)
     {
-        return Inertia::render('Students/Show', [
+        $student = new StudentResource($student->load('user'));
+        
+        return Inertia::render('Students/Show', [            
             'student' => $student,
             'program' => $student->program,
             'department' => $student->department,
@@ -155,20 +158,58 @@ class StudentController extends Controller
     public function update(StudentStoreRequest $request, Student $student)
     {
         $fields = $request->validated();
-        
-        // Update the student record
-        $student->update($fields);
 
-        // Update the associated user record if necessary
+        // Update the associated user record
         $user = $student->user; // Assuming a relationship exists between Student and User
+
         if ($user) {
+            $name = $fields['student_name'] . ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
+            $student_email = $this->student_email($fields);
+
             $user->update([
-                'name' => $fields['name'],
-                'email' => $fields['email'],
+                'name' => $name,
+                'email' => $student_email,
+                'phone' => $fields['mobile_phone'],
             ]);
         }
 
+        // Update the student record
+        $fields['user_id'] = $user->id; // Ensure the user ID is linked
+
+        $student->update($fields);
+
         return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
+    }
+
+    //Student goto Profile
+    public function profile(Student $student)
+    {        
+        $user = UserResource::collection(User::where('id', $student->user_id)->get());
+        
+        return inertia('Students/Profile', [
+            'student' => new StudentResource($student),
+            'user' => $user,
+        ]);
+
+    }
+    //Student Profile Image and Status
+    public function updateProfile(Request $request, Student $student)
+    {
+        $request->validate([
+            'profile_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        if ($request->hasFile('profile_img')) {
+            $imagePath = $request->file('profile_img')->store('profile_images', 'public');
+            $student->user->update(['profile_img' => $imagePath]);
+        }
+
+        // Update the status of the student
+        if ($request->has('status')) {
+            $student->update(['status' => $request->input('status')]);
+        }
+
+        return redirect()->route('students.show', $student)->with('success', 'Profile image updated successfully.');
     }
 
     public function destroy(Student $student)

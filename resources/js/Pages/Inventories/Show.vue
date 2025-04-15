@@ -58,7 +58,7 @@ const deleteInventory = (id) => {
                 </div>
 
                 <!-- Edit and Delete Buttons with permission check -->
-                <div class="flex justify-end mt-6 space-x-2">
+                <div class="flex justify-end mt-6 space-x-6">
                     <!-- Edit button -->
                     <Link 
                         v-if="userCan('update-inventories')" 

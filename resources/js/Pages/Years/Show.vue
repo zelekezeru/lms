@@ -177,7 +177,7 @@ const deleteYear = (id) => {
             </div>  
             
             <div class="mt-6">
-                <div class="flex space-x-2">
+                <div class="flex space-x-6">
 
                     <button
                         @click="refreshData"

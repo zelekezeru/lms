@@ -23,7 +23,7 @@ const form = useForm({
     duration: props.program.duration || "",
     address: props.program.address || "",
     user_id: props.program.user_id || "",
-    _method: "PUT", // Change to PUT
+    _method: "PATCH", 
 });
 
 // Submit form function

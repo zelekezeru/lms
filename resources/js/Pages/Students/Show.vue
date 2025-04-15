@@ -2,8 +2,8 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { defineProps, ref } from 'vue';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
@@ -31,12 +31,14 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  user: {
+    type: Object,
+    required: true,
+  },
 });
 
+
 const imageLoaded = ref(false);
-const handleImageLoad = () => {
-  imageLoaded.value = true;
-};
 
 const deleteStudent = (id) => {
   Swal.fire({
@@ -69,24 +71,34 @@ const deleteStudent = (id) => {
       <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
         <!-- Profile Image -->
         <div class="flex justify-center mb-8">
-          <div
-            v-if="!imageLoaded"
-            class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
-          ></div>
-          <img
-            v-show="imageLoaded"
-            class="rounded-full w-44 h-44 object-contain bg-gray-400"
-            :src="student.profile_image_url"
-            :alt="`Profile image of ` + student.student_name"
-            @load="handleImageLoad"
-          />
+            <div
+                v-if="!imageLoaded"
+                class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+            ></div>
+            <img
+                v-show="imageLoaded"
+                class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                :src="student.profileImg"
+                :alt="`profile image of ` + student.name"
+                @load="imageLoaded = true"
+            />
+        </div>
+
+        <!-- Student Profile route Button-->
+        <div class="flex justify-center mb-6">
+          <Link
+            :href="route('students.profile', { student: student.id })"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Modify Profile
+          </Link>
         </div>
 
         <!-- Personal Details Grid -->
         <div class="grid sm:grid-cols-2 gap-4">
           <!-- Student ID -->
           <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Student ID</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400"> ID Number</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
               {{ student.id_no }}
             </span>
@@ -148,7 +160,7 @@ const deleteStudent = (id) => {
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Academic Year</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.year.name }}
+              {{ year.name }}
             </span>
           </div>
           <!-- Semester -->
@@ -224,7 +236,7 @@ const deleteStudent = (id) => {
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-end mt-6 space-x-2">
+        <div class="flex justify-end mt-6 space-x-6">
           <!-- Edit Button -->
           <div v-if="userCan('update-students')">
             <Link

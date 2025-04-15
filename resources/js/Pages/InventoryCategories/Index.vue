@@ -158,7 +158,7 @@ const deleteinventoryCategory = (id) => {
         </div>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in inventoryCategories.meta.links"
                 :key="link.label"

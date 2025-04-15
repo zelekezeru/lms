@@ -118,7 +118,7 @@ const searchPrograms = () => {
                 />
             </div>
 
-            <div class="flex space-x-2">
+            <div class="flex space-x-6">
                 <!-- Add New Program Button -->
                 <Link
                     v-if="userCan('create-programs')"
@@ -204,7 +204,7 @@ const searchPrograms = () => {
         </Table>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in programs.meta.links"
                 :key="link.label"

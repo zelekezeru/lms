@@ -84,7 +84,7 @@ const deleteInventorySupplier = (id) => {
                 </div>
 
                 <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
+                <div class="flex justify-end mt-6 space-x-6">
                     <!-- Edit Button -->
                     <Link
                         v-if="userCan('update-inventory-suppliers')"

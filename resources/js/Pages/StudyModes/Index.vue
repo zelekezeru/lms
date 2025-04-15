@@ -133,7 +133,7 @@ const deletestudyMode = (id) => {
                             {{ studyMode.mode }}
                         </span>
                     </td> -->
-                        <td class="px-6 py-4 flex space-x-2">
+                        <td class="px-6 py-4 flex space-x-6">
                             <!-- View -->
                             <div v-if="userCan('view-studyModes')">
                                 <Link
@@ -182,7 +182,7 @@ const deletestudyMode = (id) => {
         </div>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in studyModes.meta.links"
                 :key="link.label"

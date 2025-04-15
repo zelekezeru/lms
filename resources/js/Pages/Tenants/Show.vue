@@ -199,7 +199,7 @@ const deleteTenant = (id) => {
                 </div>
 
                 <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-2">
+                <div class="flex justify-end mt-6 space-x-6">
                     <Link
                         :href="
                             route('tenants.edit', { tenant: tenant.id })

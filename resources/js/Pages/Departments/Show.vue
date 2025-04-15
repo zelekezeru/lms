@@ -138,7 +138,7 @@ const deleteDepartment = (id) => {
                         </h2>
                         <button
                             @click="createMode = !createMode"
-                            class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800 transition"
+                            class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
                         >
                             <PlusCircleIcon class="w-8 h-8" />
                             <span class="hidden sm:inline">Add Mode</span>
@@ -242,7 +242,7 @@ const deleteDepartment = (id) => {
                                         </td>
                                         <td class="px-4 py-2">
                                             <div
-                                                class="flex items-center space-x-2"
+                                                class="flex items-center space-x-6"
                                             >
                                                 <TextInput
                                                     v-model="modeForm.fees"

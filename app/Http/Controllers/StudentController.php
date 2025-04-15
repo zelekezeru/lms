@@ -10,6 +10,7 @@ use App\Http\Resources\DepartmentResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentStoreRequest;
+use App\Http\Requests\StudentUpdateRequest;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\YearResource;
 use App\Http\Resources\SemesterResource;
@@ -17,7 +18,6 @@ use App\Http\Resources\SectionResource;
 use App\Models\Year;
 use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Resources\StudentResource;
 use App\Models\Semester;
 use App\Models\Section;
 use Inertia\Inertia;
@@ -49,7 +49,7 @@ class StudentController extends Controller
         ]);
     }
     
-    public function show(StudentResource $student)
+    public function show(Student $student)
     {
         return Inertia::render('Students/Show', [
             'student' => $student,
@@ -58,6 +58,7 @@ class StudentController extends Controller
             'year' => $student->year,
             'semester' => $student->semester,
             'section' => $student->section,
+            'user' => $student->user,
         ]);
     }
     
@@ -139,7 +140,7 @@ class StudentController extends Controller
     public function update(StudentStoreRequest $request, Student $student)
     {
         $fields = $request->validated();
-
+        
         // Update the student record
         $student->update($fields);
 

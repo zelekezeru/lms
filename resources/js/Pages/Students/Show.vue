@@ -11,6 +11,26 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  program: {
+    type: Object,
+    required: true,
+  },
+  department: {
+    type: Object,
+    required: true,
+  },
+  year: {
+    type: Object,
+    required: true,
+  },
+  semester: {
+    type: Object,
+    required: true,
+  },
+  semester: {
+    type: Object,
+    required: true,
+  },
 });
 
 const imageLoaded = ref(false);
@@ -64,18 +84,11 @@ const deleteStudent = (id) => {
 
         <!-- Personal Details Grid -->
         <div class="grid sm:grid-cols-2 gap-4">
-          <!-- ID -->
-          <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">ID</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.id }}
-            </span>
-          </div>
           <!-- Student ID -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Student ID</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.student_id }}
+              {{ student.id_no }}
             </span>
           </div>
           <!-- Full Name -->
@@ -89,7 +102,7 @@ const deleteStudent = (id) => {
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.email }}
+              {{ student.user.email }}
             </span>
           </div>
           <!-- Mobile Phone -->
@@ -135,21 +148,28 @@ const deleteStudent = (id) => {
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Academic Year</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.year_id }}
+              {{ student.year.name }}
             </span>
           </div>
           <!-- Semester -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Semester</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.semester }}
+              {{ student.semester.name }}
             </span>
           </div>
           <!-- Program -->
           <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Program</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-              {{ student.program }}
+              {{ student.program.name }}
+            </span>
+          </div>
+          <!-- Department -->
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Department</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+              {{ student.department.name }}
             </span>
           </div>
           <!-- Pastor's Name -->
@@ -208,36 +228,30 @@ const deleteStudent = (id) => {
           <!-- Edit Button -->
           <div v-if="userCan('update-students')">
             <Link
-              :href="route('students.edit', student.id)"
-              class="text-blue-500 hover:text-blue-700"
-              title="Edit"
-            >
-              <PencilIcon class="w-5 h-5" />
+                            :href="
+                                route('students.edit', {
+                                    student: student.id,
+                                })
+                            "
+                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
                             <span>Edit</span>
-            </Link>
+                        </Link>
           </div>
           <!-- Delete Button -->
           <div v-if="userCan('delete-students')">
             <button
-              @click="deleteStudent(student.id)"
-              class="text-red-500 hover:text-red-700"
-              title="Delete"
+                @click="deleteStudent(student.id)"
+                class="flex items-center space-x-1 text-red-500 hover:text-red-700"
             >
-              <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                <TrashIcon class="w-5 h-5" />
+                <span>Delete</span>
             </button>
           </div>
         </div>
 
-        <!-- Back to List Button -->
-        <div class="flex justify-end mt-4">
-          <Link
-            :href="route('students.index')"
-            class="inline-flex items-center rounded-md border border-transparent bg-gray-800 dark:bg-gray-200 dark:text-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Back to List
-          </Link>
-        </div>
+        
       </div>
     </div>
   </AppLayout>

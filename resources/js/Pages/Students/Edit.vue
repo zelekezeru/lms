@@ -2,8 +2,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { defineProps, ref } from "vue";
 import { Head, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import Form from './Form.vue';
+import BasicInfoForm from './BasicInfoForm.vue';
+import AcademicInfoForm from './AcademicInfoForm.vue';
+import ChurchInfoForm from './ChurchInfoForm.vue';
 
 const props = defineProps({ student: Object, programs: Array, departments: Array, years: Array, semesters: Array });
 
@@ -36,8 +37,30 @@ const form = ref({
     office_use_notes: props.student.office_use_notes || '' 
 });
 
+
+const currentStep = ref(1);
+
+const nextStep = () => {
+    if (currentStep.value < 3) currentStep.value++;
+};
+
+const previousStep = () => {
+    if (currentStep.value > 1) currentStep.value--;
+};
+
 const submit = () => {
-    form.put(route('students.update', props.student.id), form.value);
+    form.value.processing = true; // Optional: Add a processing state if needed
+    router.post(route('students.update', props.student.id), form.value, {
+        onSuccess: () => {
+            alert('Student registered successfully!');
+        },
+        onError: (errors) => {
+            form.value.errors = errors; // Capture validation errors
+        },
+        onFinish: () => {
+            form.value.processing = false; // Reset processing state
+        },
+    });
 };
 </script>
 
@@ -47,6 +70,21 @@ const submit = () => {
         <template #header>
             <h2 class="text-xl font-semibold text-gray-800">Edit Student</h2>
         </template>
-        <Form :form="form" @submit="submit" />
+        <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition">
+            <div v-if="currentStep === 1">
+                <BasicInfoForm :form="form" @next="nextStep" />
+            </div>
+            <div v-else-if="currentStep === 2">
+                <AcademicInfoForm :form="form" 
+                    :programs="programs"
+                    :departments="departments"
+                    :years="years"
+                    :semesters="semesters"
+                @next="nextStep" @previous="previousStep" />
+            </div>
+            <div v-else-if="currentStep === 3">
+                <ChurchInfoForm :form="form" @submit="submit" @previous="previousStep" />
+            </div>
+        </div>
     </AppLayout>
 </template>

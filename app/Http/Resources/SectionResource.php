@@ -18,9 +18,12 @@ class SectionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'code' => $this->code,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'program' => new ProgramResource($this->whenLoaded('program')),
+            'department' => new DepartmentResource($this->whenLoaded('department')),
+            'year' => new YearResource($this->whenLoaded('year')),
+            'semester' => new SemesterResource($this->whenLoaded('semester')),
         ];
     }
 }

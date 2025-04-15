@@ -10,7 +10,13 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
+use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\ProgramResource;
+use App\Http\Resources\SemesterResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\YearResource;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class SectionController extends Controller
 {
@@ -26,19 +32,49 @@ class SectionController extends Controller
 
     public function create()
     {
+        $departments = DepartmentResource::collection(Department::all());
+
+        $programs = ProgramResource::collection(Program::all());
+
+        $years = YearResource::collection(Year::all()->sortBy('name'));
+
+        $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
+
+        $users = UserResource::collection(User::all());
+
         return Inertia::render('Sections/Create', [
-            'programs' => Program::all(),
-            'departments' => Department::all(),
-            'users' => User::all(),
+            'departments' => $departments,
+            'programs' => $programs,
+            'years' => $years,
+            'semesters' => $semesters,
+            'users' => $users,
         ]);
     }
     
 
     public function store(SectionRequest $request)
-    {        
-        $section = Section::create($request->validated());
+    {   
+        $fields = $request->validated();
+        // Section code generation logic
+
+        $year = substr(Carbon::now()->year, -2);
+
+        $section_id = 'SC' . '-' . $year .  '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+
+        $fields['code'] = $section_id;
+        
+        $section = Section::create($fields);
     
-        return redirect()->route('sections.show', $section)->with('success', 'Section created successfully.');
+        return redirect(route('sections.show', $section))->with('success', 'Section created successfully.');
+    }
+
+    public function show(Section $section)
+    {
+        $section->load(['user', 'program', 'department', 'year', 'semester']);
+
+        return Inertia::render('Sections/Show', [
+            'section' => $section,
+        ]);
     }
     
     public function update(SectionRequest $request, Section $section)

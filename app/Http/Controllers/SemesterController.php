@@ -65,8 +65,10 @@ class SemesterController extends Controller
         'is_completed' => $request->is_completed,
         'year_id' => $request->year_id,
         ]);
+
+        $year = Year::find($request->year_id);
         // Redirect to the semester's show page
-        return redirect()->route('semesters.show', $semester)->with('success', 'Semester created successfully.');
+        return redirect()->back()->with('success', 'Semester created successfully.');
     }
     
     public function edit(Semester $semester)

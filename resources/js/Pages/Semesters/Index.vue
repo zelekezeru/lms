@@ -99,12 +99,12 @@ const searchSemesters = () => {
             </div>
 
             <div class="flex space-x-2">
-                <Link
+                <!-- <Link
                     :href="route('semesters.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"
                 >
                     + Add Semester
-                </Link>
+                </Link> -->
 
                 <button
                     @click="refreshData"

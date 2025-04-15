@@ -28,7 +28,7 @@ class Section extends Model
 
     public function department()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function courses(): BelongsToMany
@@ -49,6 +49,11 @@ class Section extends Model
     public function year()
     {
         return $this->belongsTo(Year::class);
+    }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
     }
     
 }

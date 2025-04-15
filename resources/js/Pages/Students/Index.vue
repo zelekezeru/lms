@@ -20,13 +20,8 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    program: {
+    sortInfo: {
         type: Object,
-        required: true,
-    },
-    department: {
-        type: Object,
-        required: true,
     },
     
 });

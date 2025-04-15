@@ -4,8 +4,8 @@ import Form from "./Form.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const form = useForm({
-    name: "",
-    status: "inactive",
+    name: '',
+    status: 'Inactive',
     is_approved: true,
     is_completed: false,
 });

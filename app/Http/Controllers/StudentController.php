@@ -13,6 +13,8 @@ use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\SectionResource;
 use App\Models\Year;
@@ -27,25 +29,38 @@ class StudentController extends Controller
 {
     public function index(Request $request): Response
     {
-        // Fetch the search term from the request
-        $search = $request->input('search', '');
-        
-        // Query the students, applying the search filter if provided
-        $students = Student::latest()
-            ->when($search, function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('student_name', 'LIKE', "%{$search}%")
-                          ->orWhere('father_name', 'LIKE', "%{$search}%")
-                          ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
-                          ->orWhere('program', 'LIKE', "%{$search}%");
-                });
-            })
-            ->paginate(15)
-            ->withQueryString(); // Retain the search term for pagination links
-        
-        return Inertia::render('Students/Index', [
-            'students' => $students,
-            'search' => $search, // Pass the search term back to the frontend
+        $query = Student::query();
+
+        // Apply search filter
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+
+            $query->where('student_name', 'LIKE', "%{$search}%")
+                  ->orWhere('father_name', 'LIKE', "%{$search}%")
+                  ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
+                  ->orWhere('id_no', 'LIKE', "%{$search}%");
+        }
+
+        // Apply sorting
+        $allowedSorts = ['student_name', 'id_no', 'program_id'];
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        // Paginate results
+        $students = $query->paginate(30)->withQueryString();
+
+        return inertia('Students/Index', [
+            'students' => StudentResource::collection($students), 
+            'programs' => ProgramResource::collection(Program::all()),
+            'users' => UserResource::collection(User::all()),
+            'search' => $request->search, 
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
         ]);
     }
     
@@ -115,7 +130,7 @@ class StudentController extends Controller
         $student = Student::create($fields);  
 
         // Create the student
-        return redirect()->route('students.show', $student)->with('success', 'Student created successfully.');
+        return redirect(route('students.show', $student))->with('success', 'Student created successfully.');
     }
 
     public function edit(Student $student): Response

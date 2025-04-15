@@ -41,10 +41,12 @@ class DepartmentController extends Controller
         }
     
         
-        $departments = $query->paginate(15)->withQueryString();
+        $departments = $query->paginate(15)->withQueryString('program');
         
         return inertia('Departments/Index', [
             'departments' => DepartmentResource::collection($departments), 
+            'programs' => ProgramResource::collection(Program::all()),
+            'users' => UserResource::collection(User::all()),
             'search' => $request->search, 
             'sortInfo' => [
                 "currentSortColumn" => $sortColumn,

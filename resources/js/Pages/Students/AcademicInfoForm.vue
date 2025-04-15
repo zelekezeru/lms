@@ -106,7 +106,7 @@ const emit = defineEmits(['next', 'previous']);
             </div>
 
             <div>
-                <InputLabel for="department_id" value="Department" />
+                <InputLabel for="department_id" value="Select Department" />
                 <select
                     id="department_id"
                     v-model="form.department_id"

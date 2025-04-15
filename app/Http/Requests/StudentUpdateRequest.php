@@ -27,9 +27,14 @@ class StudentRequest extends FormRequest
             'address' => 'required|string|max:200',
 
             //Academic Information
-            'year_id' => 'sometimes|max:10',
-            'semester' => 'sometimes|string|max:20',
+            'year_id'=> 'sometimes', 'exists:years,id',
+            'semester_id' => 'sometimes', 'exists:semesters,id',
+            'id_no' => 'sometimes|string|max:100',
             'program_id' => 'sometimes', 'exists:programs,id',
+            'department_id' => 'sometimes', 'exists:departments,id',
+            'section_id' => 'sometimes', 'exists:sections,id',
+            'student_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'student_signature' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'total_credit_hours' => 'sometimes|integer',
             'total_amount_paid' => 'sometimes|numeric',
             

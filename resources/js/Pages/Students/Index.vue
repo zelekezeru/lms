@@ -20,6 +20,15 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    program: {
+        type: Object,
+        required: true,
+    },
+    department: {
+        type: Object,
+        required: true,
+    },
+    
 });
 
 const search = ref(usePage().props.search || "");
@@ -152,13 +161,13 @@ const deleteStudent = (id) => {
                         v-for="student in students.data"
                         :key="student.id"
                     >
-                        <td class="px-6 py-4">{{ student.student_id }}</td>
+                        <td class="px-6 py-4">{{ student.id_no }}</td>
                         <td class="px-6 py-4">
                             {{ student.student_name }}
                             {{ student.father_name }}
                             {{ student.grand_father_name }}
                         </td>
-                        <td class="px-6 py-4">{{ student.program }}</td>
+                        <td class="px-6 py-4">{{ student.program.name }}</td>
                         <td class="px-6 py-4 flex space-x-2">
                             <Link
                                 :href="route('students.show', student.id)"

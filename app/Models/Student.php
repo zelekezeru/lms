@@ -23,6 +23,12 @@ class Student extends Model
         return $this->belongsTo(Program::class);
     }
 
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+    
+
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class);

@@ -8,15 +8,6 @@ import { ArrowRightIcon, ArrowLeftIcon, ArrowDownTrayIcon } from "@heroicons/vue
 
 const props = defineProps({ form: Object });
 
-const getYears = () => {
-  const currentYear = new Date().getFullYear();
-  const years = [];
-  for (let year = 2000; year <= currentYear; year++) {
-    years.push(year);
-  }
-  return years;
-};
-
 const emit = defineEmits(['previous', 'next', 'submit']);
 
 </script>

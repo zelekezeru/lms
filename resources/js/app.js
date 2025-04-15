@@ -5,6 +5,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { Head, Link } from '@inertiajs/vue3';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,6 +20,9 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) });
 
         app.use(plugin).use(ZiggyVue);
+
+        // Register Head globally
+        app.component('Head', Head);
 
         // Define a global getter for authUser that always reads from the reactive $page property
         Object.defineProperty(app.config.globalProperties, 'authUser', {

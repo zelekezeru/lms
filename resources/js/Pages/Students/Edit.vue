@@ -23,6 +23,8 @@ const form = ref({
     year_id: props.student.year_id || '', 
     semester_id: props.student.semester_id || '', 
     program_id: props.student.program_id || '', 
+    department_id: props.student.department_id || '',
+    section_id: props.student.section_id || '',
     total_credit_hours: props.student.total_credit_hours || '', 
     total_amount_paid: props.student.total_amount_paid || '', 
     pastor_name: props.student.pastor_name || '', 

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Head } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import BasicInfoForm from './BasicInfoForm.vue';
 import AcademicInfoForm from './AcademicInfoForm.vue';
@@ -15,7 +15,6 @@ const props = defineProps({
 });
 
 const form = ref({
-    student_id: '',
     student_name: '',
     father_name: '',
     grand_father_name: '',
@@ -30,8 +29,7 @@ const form = ref({
     semester_id: '',
     program_id: '',
     department_id: '',
-    total_credit_hours: '',
-    total_amount_paid: '',
+    section_id: '',
     pastor_name: '',
     pastor_phone: '',
     position_denomination: '',
@@ -78,8 +76,8 @@ const submit = () => {
             </div>
             <div v-else-if="currentStep === 2">
                 <AcademicInfoForm :form="form" 
-                    :departments="departments"
                     :programs="programs"
+                    :departments="departments"
                     :years="years"
                     :semesters="semesters"
                 @next="nextStep" @previous="previousStep" />

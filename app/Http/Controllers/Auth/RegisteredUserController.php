@@ -45,8 +45,10 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => ['nullable', 'string', 'max:15'],
+            'default_password' => ['nullable', 'string', 'max:15'],
         ]);
-dd($fields);
+
         // SUPER-ADMIN User
 
         if(User::where('id', 1)->first() == null){
@@ -59,6 +61,9 @@ dd($fields);
                 'tenant_id' => 1,
                 'user_uuid' => 'SA' .  '/' . $year,
                 'email' => $request->email,
+                'phone' => $request->contact,
+                'profile_img' => $request->profile_img,
+                'default_password' => $request->password,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -85,6 +90,9 @@ dd($fields);
                 'name' => $request->contact_person,
                 'user_uuid' => $userUuid,
                 'email' => $request->contact_email,
+                'phone'=> $request->contact_phone,
+                'default_password' => $request->password,
+                'profile_img' => $request->profile_img,
                 'password' => Hash::make($request->password),
                 'password_changed' => $request->password_changed
 
@@ -98,7 +106,9 @@ dd($fields);
         elseif($request->contact_email != null){
             $userUuid = $this->userUuid('STUDENT', 'Student');
             $fields['name'] = $request->contact_email;
-            $fields['contact_phone'] = $request->contact_phone;
+            $fields['phone'] = $request->contact_phone;
+            $fields['default_password'] = $request->password;
+            $fields['profile_img'] = $request->profile_img;
             
         }
         // All other Users
@@ -111,6 +121,9 @@ dd($fields);
                 'name' => $request->name,
                 'user_uuid' => $userUuid,
                 'email' => $request->email,
+                'phone'=> $request->contact,
+                'profile_img' => $request->profile_img,
+                'default_password' => $request->password,
                 'password' => Hash::make($request->password),
             ]);
                 $user->assignRole('USER');

@@ -3,198 +3,208 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
-    ArrowPathIcon,
-} from "@heroicons/vue/24/solid";
+// Using the same icons as on the programs page for consistency.
+import { PencilSquareIcon, EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
+import Thead from "@/Components/Thead.vue";
 
+// Added the sortInfo prop to pass the sorting details from the controller.
 defineProps({
-    studyModes: {
-        type: Object,
-        required: true,
-    },
+  studyModes: {
+    type: Object,
+    required: true,
+  },
+  sortInfo: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const refreshing = ref(false);
+const search = ref(usePage().props.search || "");
 
 const refreshData = () => {
-    refreshing.value = true;
-    router.flush("/studyModes", { method: "get" });
-
-    router.visit(route("studyModes.index"), {
-        only: ["studyModes"],
-        onFinish: () => {
-            refreshing.value = false;
-        },
-    });
+  refreshing.value = true;
+  router.flush("/studyModes", { method: "get" });
+  router.visit(route("studyModes.index"), {
+    only: ["studyModes"],
+    onFinish: () => {
+      refreshing.value = false;
+    },
+  });
 };
 
-// Delete function with SweetAlert confirmation
-const deletestudyMode = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("studyModes.destroy", { studyMode: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The studyMode has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
+const deleteStudyMode = (id) => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.delete(route("studyModes.destroy", { studyMode: id }), {
+        onSuccess: () => {
+          Swal.fire("Deleted!", "The study mode has been deleted.", "success");
+        },
+      });
+    }
+  });
+};
+
+const searchStudyModes = () => {
+  router.get(
+    route("studyModes.index"),
+    { ...route().params, search: search.value },
+    { preserveState: true }
+  );
 };
 </script>
 
 <template>
-    <AppLayout>
-        <h1
-            class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
-        >
-            Study Modes
-        </h1>
+  <AppLayout>
+    <!-- Page Title -->
+    <div class="my-6 text-center">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Study Modes
+      </h1>
+    </div>
 
-        <!-- Add New studyMode Button -->
-        <div class="flex justify-between items-center mb-3">
-            <Link
-                v-if="userCan('create-studyModes')"
-                :href="route('studyModes.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-                Add New studyMode
-            </Link>
-
-            <button
-                @click="refreshData"
-                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                title="Refresh Data"
-            >
-                <ArrowPathIcon
-                    class="w-5 h-5 mr-2"
-                    :class="{ 'animate-spin': refreshing }"
-                />
-                Refresh Data
-            </button>
-        </div>
-
-        <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
-            <Table>
-                <TableHeader>
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Department(Mode)</th>
-                        <th scope="col" class="px-6 py-3">Duration</th>
-                        <th scope="col" class="px-6 py-3">Fees</th>
-                        <th scope="col" class="px-6 py-3">Actions</th>
-                    </tr>
-                </TableHeader>
-                <tbody>
-                    <TableZebraRows
-                        v-for="studyMode in studyModes.data"
-                        :key="studyMode.id"
-                    >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                            <Link
-                                :href="
-                                    route('studyModes.show', {
-                                        studyMode: studyMode.id,
-                                    })
-                                "
-                                >{{ studyMode.department.name }} ({{ studyMode.mode }})</Link
-                            >
-                        </th>
-                        <td class="px-6 py-4">{{ studyMode.duration }}</td>
-                        <td class="px-6 py-4">{{ studyMode.fees }}</td>
-                        <!--
-                            <td class="px-1 w-14 py-4">
-                        <span
-                            v-for="studyMode in program.studyModes"
-                            :key="studyMode.id"
-                            class="bg-yellow-700 rounded-md px-2 py-1 ml-1 text-gray-100 cursor-help"
-                            :title="`Mode: ${studyMode.mode}\nProgram: ${program.name}\nDuration: ${studyMode.duration}\nFees: ${studyMode.fees}`"
-                        >
-                            {{ studyMode.mode }}
-                        </span>
-                    </td> -->
-                        <td class="px-6 py-4 flex space-x-2">
-                            <!-- View -->
-                            <div v-if="userCan('view-studyModes')">
-                                <Link
-                                    prefetch="hover"
-                                    cache-for="3"
-                                    :href="
-                                        route('studyModes.show', {
-                                            studyMode: studyMode.id,
-                                        })
-                                    "
-                                    class="text-blue-500 hover:text-blue-700"
-                                >
-                                    <EyeIcon class="w-5 h-5" />
-                                </Link>
-                            </div>
-                            <!-- Edit -->
-                            <div v-if="userCan('update-studyModes')">
-                                <Link
-                                    prefetch="hover"
-                                    cache-for="3"
-                                    :href="
-                                        route('studyModes.edit', {
-                                            studyMode: studyMode.id,
-                                        })
-                                    "
-                                    class="text-green-500 hover:text-green-700"
-                                >
-                                    <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                                </Link>
-                            </div>
-                            <!-- Delete -->
-                            <div v-if="userCan('delete-studyModes')">
-                                <button
-                                    @click="deletestudyMode(studyMode.id)"
-                                    class="text-red-500 hover:text-red-700"
-                                >
-                                    <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                                </button>
-                            </div>
-                        </td>
-                    </TableZebraRows>
-                </tbody>
-            </Table>
-        </div>
-
-        <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-2">
-            <Link
-                v-for="link in studyModes.meta.links"
-                :key="link.label"
-                :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
-                :class="{
-                    'text-gray-700 dark:text-gray-400': true,
-                    'cursor-not-allowed opacity-50': !link.url,
-                    '!bg-gray-100 !dark:bg-gray-800': link.active,
-                }"
-                v-html="link.label"
+    <!-- Header Toolbar -->
+    <div class="flex justify-between items-center mb-3">
+      <!-- Search Bar with Icon -->
+      <div class="relative">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+          <svg
+            class="w-5 h-5 text-gray-500 dark:text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"
             />
-        </div>
-    </AppLayout>
+          </svg>
+        </span>
+        <input
+          type="text"
+          v-model="search"
+          placeholder="Search Study Modes..."
+          class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+          @input="searchStudyModes"
+        />
+      </div>
+
+      <div class="flex space-x-2">
+        <!-- Add New Study Mode Button -->
+        <Link
+          v-if="userCan('create-studyModes')"
+          :href="route('studyModes.create')"
+          class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+        >
+          + Add Study Mode
+        </Link>
+
+        <!-- Refresh Button -->
+        <button
+          @click="refreshData"
+          class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          title="Refresh Data"
+        >
+          <ArrowPathIcon
+            class="w-5 h-5 mr-2"
+            :class="{ 'animate-spin': refreshing }"
+          />
+          Refresh Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Study Modes Table -->
+    <Table>
+      <TableHeader>
+        <tr>
+          <!-- Sorting enabled on Program(Mode) as an example (adjust the sortColumn if needed) -->
+          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'mode'">
+            Program(Mode)
+          </Thead>
+          <!-- Added sortable headers for Duration and Fees -->
+          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'duration'">
+            Duration
+          </Thead>
+          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'fees'">
+            Fees
+          </Thead>
+          <Thead scope="col" class="px-6 py-3">
+            Actions
+          </Thead>
+        </tr>
+      </TableHeader>
+      <tbody>
+        <TableZebraRows
+          v-for="studyMode in studyModes.data"
+          :key="studyMode.id"
+        >
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+          >
+            <Link :href="route('studyModes.show', { studyMode: studyMode.id })">
+              {{ studyMode.program.name }} ({{ studyMode.mode }})
+            </Link>
+          </th>
+          <td class="px-6 py-4">{{ studyMode.duration }}</td>
+          <td class="px-6 py-4">{{ studyMode.fees }}</td>
+          <td class="px-6 py-4 flex justify-between">
+            <Link
+              v-if="userCan('view-studyModes')"
+              :href="route('studyModes.show', { studyMode: studyMode.id })"
+              class="text-blue-500 hover:text-blue-700"
+            >
+              <EyeIcon class="w-5 h-5" />
+            </Link>
+            <Link
+              v-if="userCan('update-studyModes')"
+              :href="route('studyModes.edit', { studyMode: studyMode.id })"
+              class="text-green-500 hover:text-green-700"
+            >
+              <PencilSquareIcon class="w-5 h-5" />
+            </Link>
+            <button
+              v-if="userCan('delete-studyModes')"
+              @click="deleteStudyMode(studyMode.id)"
+              class="text-red-500 hover:text-red-700"
+            >
+              <TrashIcon class="w-5 h-5" />
+            </button>
+          </td>
+        </TableZebraRows>
+      </tbody>
+    </Table>
+
+    <!-- Pagination Links -->
+    <div class="mt-3 flex justify-center space-x-2">
+      <Link
+        v-for="link in studyModes.meta.links"
+        :key="link.label"
+        :href="link.url || '#'"
+        class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+        :class="{
+          'text-gray-700 dark:text-gray-400': true,
+          'cursor-not-allowed opacity-50': !link.url,
+          '!bg-gray-100 !dark:bg-gray-800': link.active,
+        }"
+        v-html="link.label"
+      />
+    </div>
+  </AppLayout>
 </template>

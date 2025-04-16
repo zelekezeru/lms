@@ -44,25 +44,26 @@ return new class extends Migration
             $table->foreignId('section_id')->nullable()->constrained();
             
             $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('is_active')->nullable()->default(1);
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->date('deleted_at')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users');
-            $table->date('approved_at')->nullable();
             $table->foreignId('completed_by')->nullable()->constrained('users');
-            $table->date('completed_at')->nullable();
-            $table->foreignId('is_approved')->nullable();
-            $table->foreignId('is_completed')->nullable();
-            
-            $table->foreignId('is_deleted')->nullable();
-            $table->foreignId('is_verified')->nullable();
-            $table->foreignId('is_enrolled')->nullable();
-            $table->foreignId('is_graduated')->nullable();
-            $table->foreignId('is_scholarship')->nullable();
-            $table->foreignId('is_scholarship_approved')->nullable();
-            $table->foreignId('is_scholarship_verified')->nullable();
             $table->foreignId('is_scholarship_verified_by')->nullable()->constrained('users');
+            $table->boolean('is_active')->nullable()->default(1);
+            $table->boolean('is_approved')->nullable()->default(0);
+            $table->boolean('is_completed')->nullable()->default(0);
+            
+            $table->boolean('is_deleted')->nullable()->default(0);
+            $table->boolean('is_verified')->nullable()->default(0);
+            $table->boolean('is_enrolled')->nullable()->default(0);
+            $table->boolean('is_graduated')->nullable()->default(0);
+            $table->boolean('is_scholarship')->nullable()->default(0);
+            $table->boolean('is_scholarship_approved')->nullable()->default(0);
+            $table->boolean('is_scholarship_verified')->nullable()->default(0);
+            
+            $table->date('deleted_at')->nullable();
+            $table->date('approved_at')->nullable();
+            $table->date('completed_at')->nullable();
             $table->date('is_scholarship_verified_at')->nullable();
             $table->timestamps();
         });

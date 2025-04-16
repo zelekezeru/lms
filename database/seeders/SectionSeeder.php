@@ -27,7 +27,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'Section 2',
+                'name' => 'Section 1',
                 'code' => 'SC-25-02',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -39,7 +39,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'Section 3',
+                'name' => 'Section 1',
                 'code' => 'SC-25-03',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -51,7 +51,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'name' => 'Section 4',
+                'name' => 'Section 1',
                 'code' => 'SC-25-04',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -63,7 +63,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 5,
-                'name' => 'Section 5',
+                'name' => 'Section 1',
                 'code' => 'SC-25-05',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -75,7 +75,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 6,
-                'name' => 'Section 6',
+                'name' => 'Section 1',
                 'code' => 'SC-25-06',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -87,7 +87,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 7,
-                'name' => 'Section 7',
+                'name' => 'Section 1',
                 'code' => 'SC-25-07',
                 'year_id' => 1,
                 'user_id' => 3,
@@ -99,7 +99,7 @@ class SectionSeeder extends Seeder
             ],
             [
                 'id' => 8,
-                'name' => 'Section 8',
+                'name' => 'Section 1',
                 'code' => 'SC-25-08',
                 'year_id' => 1,
                 'user_id' => 3,

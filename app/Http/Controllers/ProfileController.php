@@ -72,33 +72,39 @@ class ProfileController extends Controller
             }
             
         }
-        
+
+        // Payment Status Handling
         if ($request->input('payment_status') == '1') {
-            $student->is_verified = 1;
-            $student->is_approved = 1;
-            $student->is_active = 1;
-            $student->is_enrolled = 1;
-            $student->approved_by = Auth::user()->id;
-            $student->approved_at = now()->format('d/m/Y');
+            $student['is_verified']   = 1;
+            $student['is_approved']   = 1;
+            $student['is_active']     = 1;
+            $student['is_enrolled']   = 1; // initial value, may get overwritten below
+            $student['approved_by']   = Auth::id();
+            $student['approved_at']   = now(); // use Carbon object, not string
         } else {
-            $student->is_verified = 0;
-            $student->is_approved = 0;
-            $student->is_active = 0;
-            $student->is_enrolled = 0;
+            $student['is_verified']   = 0;
+            $student['is_approved']   = 0;
+            $student['is_active']     = 0;
+            $student['is_enrolled']   = 0;
         }
+
+        // Document Submission Handling
         if ($request->input('document_submitted') == '1') {
-            $student->is_completed = 1;
-            $student->completed_by = Auth::user()->id;
-            $student->completed_at = now()->format('d/m/Y');
+            $student['is_completed']  = 1;
+            $student['completed_by']  = Auth::id();
+            $student['completed_at']  = now();
         } else {
-            $student->is_completed = 0;
+            $student['is_completed']  = 0;
         }
-        if ($request->input('enroll') == '1') {
-            $student->is_enrolled = 1;
-        } else {
-            $student->is_enrolled = 0;
+
+        // Enroll Override (takes precedence if present)
+        if ($request->has('enroll')) {
+            $student['is_enrolled'] = $request->input('enroll') == '1' ? 1 : 0;
         }
-        // Update the student record
+        if ($request->has('section_id')) {
+            $student['section_id'] = $request->input('section_id');
+        }
+        
         $student->update([
             'is_verified' => $student->is_verified,
             'is_approved' => $student->is_approved,
@@ -110,7 +116,7 @@ class ProfileController extends Controller
             'completed_by' => $student->completed_by,
             'completed_at' => $student->completed_at,
         ]);
-
+        
         return redirect()->route('students.show', $student)->with('success', 'Profile image updated successfully.');
     }
     /**

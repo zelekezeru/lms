@@ -60,7 +60,7 @@ class ProgramController extends Controller
      */
     public function show(Program $program)
     {
-        $program = new ProgramResource($program->load('departments', 'director')); 
+        $program = new ProgramResource($program->load('departments', 'director', 'studyModes')); 
 
         return inertia('Programs/Show', [
             'program' => $program,

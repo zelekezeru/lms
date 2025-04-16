@@ -70,12 +70,15 @@ class StudyModeController extends Controller
     public function store(StudyModeStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $studyMode = StudyMode::create($fields);
 
         $program = Program::find($fields['program_id']);
         
-        return redirect()->route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
+        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the studyModes.show method is the default
+        $redirectTo = $request->input('redirectTo', route('studyModes.show', $studyMode));
+
+        return redirect($redirectTo)->with('success', 'Study Mode created successfully.');
     }
     
     /**

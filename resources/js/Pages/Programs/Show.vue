@@ -5,7 +5,7 @@ import { Link, router, useForm, WhenVisible } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
-import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Modal from "@/Components/Modal.vue";
@@ -21,7 +21,7 @@ const props = defineProps({
     users: {
         type: Object,
         required: false,
-    }
+    },
 });
 
 const modeForm = useForm({
@@ -44,22 +44,6 @@ const closeDepartmetnForm = () => {
     showDepartmentForm.value = false;
     departmentForm.reset;
 };
-const addDepartment = () => {
-    departmentForm.post(route('departments.store', {
-        redirectTo: route('programs.show', {program: props.program.id})
-    }), {
-        onSuccess: () => {
-            Swal.fire(
-                    "Added!",
-                    "The Study Mode you entered has been inserted succesfully.",
-                    "success"
-                );
-
-            departmentForm.reset;
-            showDepartmentForm.value = false;
-        }
-    })
-};
 
 const createMode = ref(false);
 const addMode = () => {
@@ -77,9 +61,29 @@ const addMode = () => {
                 );
 
                 createMode.value = false;
-                modeForm.mode = "";
-                modeForm.duration = "";
-                modeForm.fees = "";
+                modeForm.reset();
+            },
+        }
+    );
+};
+
+const createDepartment = ref(false);
+const addDepartment = () => {
+    departmentForm.post(
+        route("departments.store", {
+            redirectTo: route("programs.show", { program: props.program.id }),
+            params: { program: props.program.id },
+        }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    "Added!",
+                    "The Study Department you entered has been inserted succesfully.",
+                    "success"
+                );
+
+                createDepartment.value = false;
+                departmentForm.reset();
             },
         }
     );
@@ -207,89 +211,154 @@ const deleteProgram = (id) => {
                     </button>
                 </div>
 
-                <!-- Departments -->
-                <div class="mt-10">
-                    <button
-                        v-if="userCan('create-departments')"
-                        @click="showDepartmentForm = true"
-                        class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                        + Add Department
-                    </button>
-
-                    <div class="text-center">
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >Departments</span
+                <!-- Departments Section -->
+                <div
+                    class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                >
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                         >
+                            Departments
+                        </h2>
+                        <button
+                            @click="createDepartment = !createDepartment"
+                            class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
+                        >
+                            <PlusCircleIcon
+                                class="w-8 h-8"
+                                v-if="!createDepartment"
+                            />
+                            <XMarkIcon
+                                class="w-8 h-8"
+                                v-if="createDepartment"
+                            />
+                            <span class="hidden sm:inline">Add Mode</span>
+                        </button>
                     </div>
-                    <table class="mt-2 w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b dark:border-gray-700 p-2">
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
+                    <div class="overflow-x-auto">
+                        <table
+                            class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                        >
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-700">
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        Name
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        Description
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Head
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(
+                                        department, index
+                                    ) in program.departments"
+                                    :key="department.id"
+                                    :class="
+                                        index % 2 === 0
+                                            ? 'bg-white dark:bg-gray-800'
+                                            : 'bg-gray-50 dark:bg-gray-700'
+                                    "
+                                    class="border-b border-gray-300 dark:border-gray-600"
                                 >
-                                    Code
-                                </th>
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Department Name
-                                </th>
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Duration
-                                </th>
-                                <th
-                                    class="text-md font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="department in program.departments"
-                                :key="department.id"
-                                class="border-b dark:border-gray-700 p-2 cursor-pointer"
-                            >
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ department.code }}
-                                </td>
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ department.name }}
-                                </td>
-                                <td
-                                    class="text-sm text-gray-500 dark:text-gray-400"
-                                >
-                                    {{ program.duration }}
-                                </td>
-                                <td>
-                                    <div v-if="userCan('view-departments')">
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
                                         <Link
-                                            prefetch="hover"
-                                            cache-for="3"
                                             :href="
                                                 route('departments.show', {
                                                     department: department.id,
                                                 })
                                             "
-                                            class="text-blue-500 hover:text-blue-700"
                                         >
-                                            <EyeIcon class="w-5 h-5" />
+                                            {{ department.name }}
                                         </Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                    </td>
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        {{ department.description }}
+                                    </td>
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                    >
+                                        {{ department.head?.name }}
+                                    </td>
+                                </tr>
 
+                                <!-- Create New Department Row -->
+                                <transition
+                                    enter-active-class="transition duration-300 ease-out"
+                                    enter-from-class="opacity-0 -translate-y-2"
+                                    enter-to-class="opacity-100 translate-y-0"
+                                    leave-active-class="transition duration-200 ease-in"
+                                    leave-from-class="opacity-100 translate-y-0"
+                                    leave-to-class="opacity-0 -translate-y-2"
+                                >
+                                    <tr
+                                        v-if="createDepartment"
+                                        class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600"
+                                    >
+                                        <td class="px-4 py-2">
+                                            <TextInput
+                                                v-model="departmentForm.name"
+                                                type="text"
+                                                placeholder="name"
+                                                class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                            />
+                                        </td>
+
+                                        <td class="px-4 py-2">
+                                            <TextInput
+                                                v-model="
+                                                    departmentForm.description
+                                                "
+                                                type="text"
+                                                placeholder="Description"
+                                                class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                            />
+                                        </td>
+
+                                        <td class="px-4 py-2">
+                                            <select
+                                                v-model="departmentForm.user_id"
+                                                class="w-[60%] mr-10 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
+                                            >
+                                                <option value="">
+                                                    Select Head
+                                                </option>
+                                                <option
+                                                    v-for="user in users"
+                                                    :value="user.id"
+                                                >
+                                                    {{ user.name }}
+                                                </option>
+                                            </select>
+
+                                            <PrimaryButton
+                                                class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                                @click="addDepartment"
+                                            >
+                                                Save
+                                            </PrimaryButton>
+                                        </td>
+                                    </tr>
+                                </transition>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <!-- Study Modes Section -->
                 <div
                     class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
@@ -428,17 +497,5 @@ const deleteProgram = (id) => {
                 </div>
             </div>
         </div>
-
-        <Modal :show="showDepartmentForm" @close="closeDepartmetnForm">
-            <div class="p-5">
-                <WhenVisible data="users">
-                    <template #fallback>
-                        <div class="dark:text-white">Loading...</div>
-                    </template>   
-
-                    <Form :show-programs="false" @submit="addDepartment" :form="departmentForm" :users="users"/>
-                </WhenVisible>
-            </div>
-        </Modal>
     </AppLayout>
 </template>

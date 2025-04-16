@@ -65,7 +65,7 @@ class ProgramController extends Controller
 
         return inertia('Programs/Show', [
             'program' => $program,
-            'users' => Inertia::defer(fn () => UserResource::collection(User::all())),
+            'users' => UserResource::collection(User::all()),
         ]);
     }
 

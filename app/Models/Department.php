@@ -13,6 +13,11 @@ class Department extends Model
         return $this->belongsTo(Program::class);
     }
 
+    public function head()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function courses()
     {
         return $this->hasMany(Course::class);

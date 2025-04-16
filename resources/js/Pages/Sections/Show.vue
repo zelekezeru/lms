@@ -13,26 +13,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    program: {
-        type: Object,
-        required: true,
-    },
-    user: {
-        type: Object,
-        required: true,
-    },
-    department: {
-        type: Array,
-        required: true,
-    },
-    year: {
-        type: Array,
-        required: true,
-    },
-    semester: {
-        type: Array,
-        required: true,
-    },
 });
 
 // Delete function with SweetAlert confirmation
@@ -176,6 +156,17 @@ const deletesection = (id) => {
                         <TrashIcon class="w-5 h-5" />
                     </button>
                 </div>
+
+                <!-- Assign Students to This section -->
+                    <div class="flex justify-center mb-6">
+                    <Link
+                        :href="route('assignments.students.sections')"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                        Assign Students
+                        <PlusCircleIcon class="w-5 h-5 ml-2" />     
+                    </Link>
+                    </div>
             </div>
         </div>
     </AppLayout>

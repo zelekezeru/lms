@@ -44,26 +44,26 @@ return new class extends Migration
             $table->foreignId('section_id')->nullable()->constrained();
             
             $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('is_active')->nullable()->default(1)->constrained('users');
+            $table->foreignId('is_active')->nullable()->default(1);
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->foreignId('deleted_at')->nullable()->constrained('users');
+            $table->date('deleted_at')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users');
-            $table->foreignId('approved_at')->nullable()->constrained('users');
+            $table->date('approved_at')->nullable();
             $table->foreignId('completed_by')->nullable()->constrained('users');
-            $table->foreignId('completed_at')->nullable()->constrained('users');
-            $table->foreignId('is_approved')->nullable()->constrained('users');
-            $table->foreignId('is_completed')->nullable()->constrained('users');
+            $table->date('completed_at')->nullable();
+            $table->foreignId('is_approved')->nullable();
+            $table->foreignId('is_completed')->nullable();
             
-            $table->foreignId('is_deleted')->nullable()->constrained('users');
-            $table->foreignId('is_verified')->nullable()->constrained('users');
-            $table->foreignId('is_enrolled')->nullable()->constrained('users');
-            $table->foreignId('is_graduated')->nullable()->constrained('users');
-            $table->foreignId('is_scholarship')->nullable()->constrained('users');
-            $table->foreignId('is_scholarship_approved')->nullable()->constrained('users');
-            $table->foreignId('is_scholarship_verified')->nullable()->constrained('users');
+            $table->foreignId('is_deleted')->nullable();
+            $table->foreignId('is_verified')->nullable();
+            $table->foreignId('is_enrolled')->nullable();
+            $table->foreignId('is_graduated')->nullable();
+            $table->foreignId('is_scholarship')->nullable();
+            $table->foreignId('is_scholarship_approved')->nullable();
+            $table->foreignId('is_scholarship_verified')->nullable();
             $table->foreignId('is_scholarship_verified_by')->nullable()->constrained('users');
-            $table->foreignId('is_scholarship_verified_at')->nullable()->constrained('users');
+            $table->date('is_scholarship_verified_at')->nullable();
             $table->timestamps();
         });
     }

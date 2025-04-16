@@ -155,7 +155,7 @@ const searchSemesters = () => {
                             </Link>
                         </td>
                         <td class="px-6 py-4">{{ semester.status }}</td>
-                        <td class="px-6 py-4 flex">
+                        <td class="px-6 py-4 flex justify-between">
                             <Link
                                 :href="
                                     route('semesters.show', {

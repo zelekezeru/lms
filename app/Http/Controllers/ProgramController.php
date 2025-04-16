@@ -107,7 +107,7 @@ class ProgramController extends Controller
      */
     public function edit(Program $program)
     {
-        $program->load('departments', 'user');
+        $program->load('departments', 'director');
 
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),

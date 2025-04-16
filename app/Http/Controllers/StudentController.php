@@ -24,6 +24,7 @@ use App\Models\Semester;
 use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -179,37 +180,6 @@ class StudentController extends Controller
         $student->update($fields);
 
         return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
-    }
-
-    //Student goto Profile
-    public function profile(Student $student)
-    {        
-        $user = UserResource::collection(User::where('id', $student->user_id)->get());
-        
-        return inertia('Students/Profile', [
-            'student' => new StudentResource($student),
-            'user' => $user,
-        ]);
-
-    }
-    //Student Profile Image and Status
-    public function updateProfile(Request $request, Student $student)
-    {
-        $request->validate([
-            'profile_img' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-        
-        if ($request->hasFile('profile_img')) {
-            $imagePath = $request->file('profile_img')->store('profile_images', 'public');
-            $student->user->update(['profile_img' => $imagePath]);
-        }
-
-        // Update the status of the student
-        if ($request->has('status')) {
-            $student->update(['status' => $request->input('status')]);
-        }
-
-        return redirect()->route('students.show', $student)->with('success', 'Profile image updated successfully.');
     }
 
     public function destroy(Student $student)

@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <form @submit.prevent="submiaslkdfjdst">
+    <form @submit.prevent="submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <InputLabel

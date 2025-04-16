@@ -22,15 +22,15 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $query = Department::query();
-        
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            
-            
+
+
             $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('code', 'LIKE', "%{$search}%");
+                ->orWhere('code', 'LIKE', "%{$search}%");
         }
 
         $allowedSorts = ['name', 'code', 'description'];
@@ -39,32 +39,32 @@ class DepartmentController extends Controller
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
             $query->orderBy($sortColumn, $sortDirection);
         }
-    
-        
+
+
         $departments = $query->paginate(15)->withQueryString('program');
-        
+
         return inertia('Departments/Index', [
-            'departments' => DepartmentResource::collection($departments), 
+            'departments' => DepartmentResource::collection($departments),
             'programs' => ProgramResource::collection(Program::all()),
             'users' => UserResource::collection(User::all()),
-            'search' => $request->search, 
+            'search' => $request->search,
             'sortInfo' => [
                 "currentSortColumn" => $sortColumn,
                 "currentSortDirection" => $sortDirection,
             ]
         ]);
     }
-    
-    
+
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {   
+    {
         $users = UserResource::collection(User::all());
 
         $programs = ProgramResource::collection(Program::all());
-        
+
         return inertia('Departments/Create', [
             'users' => $users,
             'programs' => $programs,
@@ -77,16 +77,19 @@ class DepartmentController extends Controller
     public function store(DepartmentStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $year = substr(Carbon::now()->year, -2);
 
-        $department_id = 'DP' .  '/' . str_pad(Department::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
+        $department_id = 'DP' .  '/' . str_pad(Department::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $department_id;
-        
+
         $department = Department::create($fields);
-        
-        return redirect(route('departments.show', $department))->with('success', 'Department created successfully.');
+
+        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the departments.show method is the default
+        $redirectTo = $request->input('redirectTo', route('departments.show', $department));
+
+        return redirect($redirectTo)->with('success', 'Department created successfully.');
     }
 
     /**
@@ -134,15 +137,15 @@ class DepartmentController extends Controller
 
         return redirect(route('departments.show', $department))->with('success', 'Department updated successfully.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Department $department)
     {
         $department->delete();
-        
-        return redirect(route('departments.index'))->with('success', 'Department deleted successfully.');    
+
+        return redirect(route('departments.index'))->with('success', 'Department deleted successfully.');
     }
 
     public function search(Request $request)

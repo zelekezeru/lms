@@ -1,13 +1,15 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { Link, router, useForm, WhenVisible } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Modal from "@/Components/Modal.vue";
+import Form from "../Departments/Form.vue";
 
 // Define the props for the program
 const props = defineProps({
@@ -15,10 +17,12 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    
-});
 
-const createMode = ref(false);
+    users: {
+        type: Object,
+        required: false,
+    }
+});
 
 const modeForm = useForm({
     program_id: props.program.id,
@@ -27,10 +31,41 @@ const modeForm = useForm({
     fees: "",
 });
 
+const departmentForm = useForm({
+    name: "",
+    description: "",
+    program_id: props.program.id,
+    user_id: "",
+});
+
+const showDepartmentForm = ref(false);
+
+const closeDepartmetnForm = () => {
+    showDepartmentForm.value = false;
+    departmentForm.reset;
+};
+const addDepartment = () => {
+    departmentForm.post(route('departments.store', {
+        redirectTo: route('programs.show', {program: props.program.id})
+    }), {
+        onSuccess: () => {
+            Swal.fire(
+                    "Added!",
+                    "The Study Mode you entered has been inserted succesfully.",
+                    "success"
+                );
+
+            departmentForm.reset;
+            showDepartmentForm.value = false;
+        }
+    })
+};
+
+const createMode = ref(false);
 const addMode = () => {
     modeForm.post(
         route("studyModes.store", {
-            redirectTo: route("programs.show", {program: props.program.id}),
+            redirectTo: route("programs.show", { program: props.program.id }),
             params: { program: props.program.id },
         }),
         {
@@ -49,7 +84,6 @@ const addMode = () => {
         }
     );
 };
-
 
 // Delete function with SweetAlert confirmation
 const deleteProgram = (id) => {
@@ -125,7 +159,7 @@ const deleteProgram = (id) => {
                             {{ program.language }}
                         </span>
                     </div>
-                    
+
                     <!-- Description -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -146,10 +180,12 @@ const deleteProgram = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ program.director ? program.director.name : 'N/A'}}
+                            {{
+                                program.director ? program.director.name : "N/A"
+                            }}
                         </span>
                     </div>
-                </div>                
+                </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
@@ -159,7 +195,7 @@ const deleteProgram = (id) => {
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                        <span>Edit</span>
                     </Link>
                     <button
                         v-if="userCan('delete-programs')"
@@ -167,20 +203,19 @@ const deleteProgram = (id) => {
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                        <span>Delete</span>
                     </button>
                 </div>
 
                 <!-- Departments -->
                 <div class="mt-10">
-                    
-                    <Link
+                    <button
                         v-if="userCan('create-departments')"
-                        :href="route('departments.create')"
+                        @click="showDepartmentForm = true"
                         class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
                         + Add Department
-                    </Link>
+                    </button>
 
                     <div class="text-center">
                         <span
@@ -255,8 +290,8 @@ const deleteProgram = (id) => {
                     </table>
                 </div>
 
-                                <!-- Study Modes Section -->
-                                <div
+                <!-- Study Modes Section -->
+                <div
                     class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
                 >
                     <div class="flex items-center justify-between mb-4">
@@ -298,9 +333,7 @@ const deleteProgram = (id) => {
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(
-                                        mode, index
-                                    ) in program.studyModes"
+                                    v-for="(mode, index) in program.studyModes"
                                     :key="mode.id"
                                     :class="
                                         index % 2 === 0
@@ -395,5 +428,17 @@ const deleteProgram = (id) => {
                 </div>
             </div>
         </div>
+
+        <Modal :show="showDepartmentForm" @close="closeDepartmetnForm">
+            <div class="p-5">
+                <WhenVisible data="users">
+                    <template #fallback>
+                        <div class="dark:text-white">Loading...</div>
+                    </template>   
+
+                    <Form :show-programs="false" @submit="addDepartment" :form="departmentForm" :users="users"/>
+                </WhenVisible>
+            </div>
+        </Modal>
     </AppLayout>
 </template>

@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
@@ -64,6 +65,7 @@ class ProgramController extends Controller
 
         return inertia('Programs/Show', [
             'program' => $program,
+            'users' => Inertia::defer(fn () => UserResource::collection(User::all())),
         ]);
     }
 

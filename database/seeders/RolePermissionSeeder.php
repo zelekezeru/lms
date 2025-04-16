@@ -132,16 +132,25 @@ class RolePermissionSeeder extends Seeder
             'delete-sections',
 
             // Assigning Relationships
-            'assign-courses-sections',
-            'remove-courses-sections',
-            'assign-instructors-sections',
-            'remove-instructors-sections',
-            'assign-instructors-courses',
-            'remove-instructors-courses',
-            'assign-students-sections',
-            'remove-students-sections',
-            'assign-students-courses',
-            'remove-students-courses',
+            'section-courses',
+            'attach-section-courses',
+            'detach-section-courses',
+
+            'section-instructors',
+            'attach-section-instructors',
+            'detach-section-instructors',
+
+            'section-students',
+            'attach-section-students',
+            'detach-section-students',
+
+            'course-instructors',
+            'attach-course-instructors',
+            'detach-course-instructors',
+
+            'course-students',
+            'attach-course-students',
+            'detach-course-students',
         ];
 
         // Create all permissions
@@ -262,17 +271,26 @@ class RolePermissionSeeder extends Seeder
                     'create-sections',
                     'update-sections',
                     'delete-sections',
+                    
+                    'section-courses',
+                    'attach-section-courses',
+                    'detach-section-courses',
 
-                    'assign-courses-sections',
-                    'remove-courses-sections',
-                    'assign-instructors-sections',
-                    'remove-instructors-sections',
-                    'assign-instructors-courses',
-                    'remove-instructors-courses',
-                    'assign-students-sections',
-                    'remove-students-sections',
-                    'assign-students-courses',
-                    'remove-students-courses',
+                    'section-instructors',
+                    'attach-section-instructors',
+                    'detach-section-instructors',
+
+                    'section-students',
+                    'attach-section-students',
+                    'detach-section-students',
+
+                    'course-instructors',
+                    'attach-course-instructors',
+                    'detach-course-instructors',
+                    
+                    'course-students',
+                    'attach-course-students',
+                    'detach-course-students',
 
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);

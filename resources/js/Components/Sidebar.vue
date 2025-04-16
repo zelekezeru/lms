@@ -58,6 +58,18 @@ const openMenus = ref({
     examsMenu: false,
     permissionsMenu: false,
     tenantsMenu: false,
+    inventoryMenu: false,
+    rolesMenu: false,
+    semestersMenu: false,
+    yearsMenu: false,
+    studyModesMenu: false,
+    sectionsMenu: false,
+    userDocumentsMenu: false,
+    courseStudentsMenu: false,
+    courseInstructorsMenu: false,
+    sectionStudentsMenu: false,
+    sectionInstructorsMenu: false,
+    sectionCoursesMenu: false,
 });
 
 const logout = () => {
@@ -290,72 +302,26 @@ const afterLeave = (el) => {
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Course</span>
                     </SidebarDrowpdownLink>
-
-                    <!-- Manage Sections Link -->
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-sections')"
-                        :href="route('sections.index')"
-                    >
-                        <FolderIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Section</span>
-                    </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
-
-                <!-- Assigning Relations -->
+                <!-- Sections Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Assign Relations'"
-                    :icon="LinkIcon"
+                    :label="'Section Classes'"
+                    :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                     v-show="
                         userCanAny([
-                            'assign-courses-sections',
-                            'assign-instructors-sections',
-                            'assign-instructors-courses',
-                            'assign-students-sections',
-                            'assign-students-courses',
+                            'view-sections',
                         ])
                     "
                 >
                     <SidebarDrowpdownLink
-                        v-show="userCan('assign-courses-sections')"
-                        :href="route('assignments.courses-sections')"
+                        v-show="userCan('view-sections')"
+                        :href="route('sections.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Courses to Sections </span>
-                    </SidebarDrowpdownLink>
-
-                    <SidebarDrowpdownLink
-                        v-show="userCan('assign-instructors-sections')"
-                        :href="route('assignments.instructors-sections')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Instructors to Sections</span>
-                    </SidebarDrowpdownLink>
-
-                    <SidebarDrowpdownLink
-                        v-show="userCan('assign-instructors-courses')"
-                        :href="route('assignments.instructors-courses')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Courses to Instructors </span>
-                    </SidebarDrowpdownLink>
-
-                    <SidebarDrowpdownLink
-                        v-show="userCan('assign-students-sections')"
-                        :href="route('assignments.students-sections')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Students to Sections</span>
-                    </SidebarDrowpdownLink>
-
-                    <SidebarDrowpdownLink
-                        v-show="userCan('assign-students-courses')"
-                        :href="route('assignments.students-courses')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Students to Courses</span>
+                        <span class="text-sm">Manage Sections</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

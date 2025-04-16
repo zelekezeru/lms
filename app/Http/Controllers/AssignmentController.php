@@ -7,198 +7,151 @@ use App\Models\Course;
 use App\Models\Section;
 use App\Models\Instructor;
 use App\Models\Student;
+use Inertia\Inertia;
 
 class AssignmentController extends Controller
 {
-    //Assigning courses to sections, Instructors to sections,  Instructors to courses, Students to sections, Students to courses
+    //Assigning courses to sections, instructors, and students
 
+    //Assignning Courses to Section
 
-    //Assignning courses to sections
-
-    public function create_courses_sections()
+    public function section_courses($section)
     {
-        return inertia('Assignments/CoursesSections', [
-            'courses' => Course::all(),
-            'sections' => Section::all(),
-        ]);
-    }
+        $courses = Course::get();
 
-    public function assign_courses_sections(Request $request)
-    {
-        $request->validate([
-            'course_id' => 'required|exists:courses,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
+        // Fetch existing attached courses
+        $attachedcourses = $section->courses()->get()->pluck('id');
 
-        $course = Course::find($request->course_id);
-        $section = Section::find($request->section_id);
-
-        $course->sections()->attach($section);
-
-        return redirect()->route('courses.index')->with('success', 'Course assigned to section successfully.');
-    }
+        return Inertia::render('Assignments/SectionCourses', compact('section', 'courses', 'attachedcourses'));
     
-    public function remove_courses_sections(Request $request)
+    }    
+
+    public function attach_section_courses(Request $request, $sectionId)
     {
-        $request->validate([
-            'course_id' => 'required|exists:courses,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
+        $section = Section::findOrFail($sectionId);
+        
+        $section->courses()->sync($request['courses']);
 
-        $course = Course::find($request->course_id);
-        $section = Section::find($request->section_id);
-
-        $course->sections()->detach($section);
-
-        return redirect()->route('courses.index')->with('success', 'Course removed from section successfully.');
+        return redirect()->route('sections.show', $section)->with('success', 'Courses Assigned successfully.');
     }
 
-    //Assigning instructors to sections
-    public function create_instructors_sections()
+    public function detach_section_courses(Request $request, $sectionId, $courseId)
     {
-        return inertia('Assignments/InstructorsSections', [
-            'instructors' => Instructor::all(),
-            'sections' => Section::all(),
-        ]);
-    }
-    public function assign_instructors_sections(Request $request)
-    {
-        $request->validate([
-            'instructor_id' => 'required|exists:instructors,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
+        $section = Section::findOrFail($sectionId);
 
-        $instructor = Instructor::find($request->instructor_id);
-        $section = Section::find($request->section_id);
+        $section->courses()->detach($courseId);
 
-        $instructor->sections()->attach($section);
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor assigned to section successfully.');
-    }
-    public function remove_instructors_sections(Request $request)
-    {
-        $request->validate([
-            'instructor_id' => 'required|exists:instructors,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
-
-        $instructor = Instructor::find($request->instructor_id);
-        $section = Section::find($request->section_id);
-
-        $instructor->sections()->detach($section);
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor removed from section successfully.');
+        return redirect()->route('sections.show', $section)->with('success', 'Course Detached successfully.');
     }
 
-    //Assigning instructors to courses
-    public function create_instructors_courses()
+    //Assigning Instructors to Section
+    public function section_instructors($section)
     {
-        return inertia('Assignments/InstructorsCourses', [
-            'instructors' => Instructor::all(),
-            'courses' => Course::all(),
-        ]);
-    }
-    public function assign_instructors_courses(Request $request)
-    {
-        $request->validate([
-            'instructor_id' => 'required|exists:instructors,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+        $instructors = Instructor::get();
 
-        $instructor = Instructor::find($request->instructor_id);
-        $course = Course::find($request->course_id);
+        // Fetch existing attached instructors
+        $attachedInstructors = $section->instructors()->get()->pluck('id');
 
-        $instructor->courses()->attach($course);
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor assigned to course successfully.');
-    }
-    public function remove_instructors_courses(Request $request)
-    {
-        $request->validate([
-            'instructor_id' => 'required|exists:instructors,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
-
-        $instructor = Instructor::find($request->instructor_id);
-        $course = Course::find($request->course_id);
-
-        $instructor->courses()->detach($course);
-
-        return redirect()->route('instructors.index')->with('success', 'Instructor removed from course successfully.');
+        return Inertia::render('Assignments/SectionInstructors', compact('section', 'instructors', 'attachedInstructors'));
     }
 
-
-    //Assigning students to sections
-    public function create_students_sections()
+    public function attach_section_instructors(Request $request, $sectionId)
     {
-        return inertia('Assignments/StudentsSections', [
-            'students' => Student::all(),
-            'sections' => Section::all(),
-        ]);
-    }
-    public function assign_students_sections(Request $request)
-    {
-        $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
+        $section = Section::findOrFail($sectionId);
+        
+        $section->instructors()->sync($request['instructors']);
 
-        $student = Student::find($request->student_id);
-        $section = Section::find($request->section_id);
-
-        $student->sections()->attach($section);
-
-        return redirect()->route('students.index')->with('success', 'Student assigned to section successfully.');
-    }
-    public function remove_students_sections(Request $request)
-    {
-        $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
-
-        $student = Student::find($request->student_id);
-        $section = Section::find($request->section_id);
-
-        $student->sections()->detach($section);
-
-        return redirect()->route('students.index')->with('success', 'Student removed from section successfully.');
+        return redirect()->route('sections.show', $section)->with('success', 'Instructors Assigned successfully.');
     }
 
-    //Assigning students to courses
-    public function create_students_courses()
+    public function detach_section_instructors(Request $request, $sectionId, $courseId)
     {
-        return inertia('Assignments/StudentsCourses', [
-            'students' => Student::all(),
-            'courses' => Course::all(),
-        ]);
+        $section = Section::findOrFail($sectionId);
+
+        $section->instructors()->detach($courseId);
+
+        return redirect()->route('sections.show', $section)->with('success', 'Instructor Detached successfully.');
     }
-    public function assign_students_courses(Request $request)
+
+    //Assign Students to Section
+    public function section_students($section)
     {
-        $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+        $students = Student::get();
 
-        $student = Student::find($request->student_id);
-        $course = Course::find($request->course_id);
+        // Fetch existing attached students
+        $attachedStudents = $section->students()->get()->pluck('id');
 
-        $student->courses()->attach($course);
-
-        return redirect()->route('students.index')->with('success', 'Student assigned to course successfully.');
+        return Inertia::render('Assignments/SectionStudents', compact('section', 'students', 'attachedStudents'));
     }
-    public function remove_students_courses(Request $request)
+    public function attach_section_students(Request $request, $sectionId)
     {
-        $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
+        $section = Section::findOrFail($sectionId);
+        
+        $section->students()->sync($request['students']);
 
-        $student = Student::find($request->student_id);
-        $course = Course::find($request->course_id);
-
-        $student->courses()->detach($course);
-
-        return redirect()->route('students.index')->with('success', 'Student removed from course successfully.');
+        return redirect()->route('sections.show', $section)->with('success', 'Students Assigned successfully.');
     }
+    public function detach_section_students(Request $request, $sectionId, $studentId)
+    {
+        $section = Section::findOrFail($sectionId);
+
+        $section->students()->detach($studentId);
+
+        return redirect()->route('sections.show', $section)->with('success', 'Student Detached successfully.');
+    }
+
+    //Assigning Instructors to Course
+    public function course_instructors($course)
+    {
+        $instructors = Instructor::get();
+
+        // Fetch existing attached instructors
+        $attachedInstructors = $course->instructors()->get()->pluck('id');
+
+        return Inertia::render('Assignments/CourseInstructors', compact('course', 'instructors', 'attachedInstructors'));
+    }
+    public function attach_course_instructors(Request $request, $courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        
+        $course->instructors()->sync($request['instructors']);
+
+        return redirect()->route('courses.show', $course)->with('success', 'Instructors Assigned successfully.');
+    }
+    public function detach_course_instructors(Request $request, $courseId, $instructorId)
+    {
+        $course = Course::findOrFail($courseId);
+
+        $course->instructors()->detach($instructorId);
+
+        return redirect()->route('courses.show', $course)->with('success', 'Instructor Detached successfully.');
+    }
+    //Assigning Students to Course
+    public function course_students($course)
+    {
+        $students = Student::get();
+
+        // Fetch existing attached students
+        $attachedStudents = $course->students()->get()->pluck('id');
+
+        return Inertia::render('Assignments/CourseStudents', compact('course', 'students', 'attachedStudents'));
+    }
+    public function attach_course_students(Request $request, $courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        
+        $course->students()->sync($request['students']);
+
+        return redirect()->route('courses.show', $course)->with('success', 'Students Assigned successfully.');
+    }
+    public function detach_course_students(Request $request, $courseId, $studentId)
+    {
+        $course = Course::findOrFail($courseId);
+
+        $course->students()->detach($studentId);
+
+        return redirect()->route('courses.show', $course)->with('success', 'Student Detached successfully.');
+    }
+
+
 }

@@ -45,27 +45,29 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->middleware('can:detach-permissions-roles')->name('roles.detach');
 
     // Assignment routes
-    Route::get('/assignments/courses-sections', [AssignmentController::class, 'create_courses_sections'])->name('assignments.courses-sections');
-    Route::post('/assignments/courses-sections', [AssignmentController::class, 'assign_courses_sections'])->name('assignments.courses-sections.assign');
-    Route::post('/assignments/courses-sections/remove', [AssignmentController::class, 'remove_courses_sections'])->name('assignments.courses-sections.remove');
+    // Attaching Section to courses, instructors, and students
+    Route::get('/sections/{section}/courses', [AssignmentController::class, 'section_courses'])->middleware('can:assign-section-courses')->name('section.courses');
+    Route::post('/sections/{section}/courses', [AssignmentController::class, 'attach_section_courses'])->middleware('can:attach-section-courses')->name('section-courses.attach');
+    Route::post('/sections/{section}/courses/{course}', [AssignmentController::class, 'detach_section_courses'])->middleware('can:detach-section-courses')->name('section-courses.detach');
     
-    Route::get('/assignments/instructors-sections', [AssignmentController::class, 'create_instructors_sections'])->name('assignments.instructors-sections');
-    Route::post('/assignments/instructors-sections', [AssignmentController::class, 'assign_instructors_sections'])->name('assignments.instructors-sections.assign');
-    Route::post('/assignments/instructors-sections/remove', [AssignmentController::class, 'remove_instructors_sections'])->name('assignments.instructors-sections.remove');
-    
-    Route::get('/assignments/instructors-courses', [AssignmentController::class, 'create_instructors_courses'])->name('assignments.instructors-courses');
-    Route::post('/assignments/instructors-courses', [AssignmentController::class, 'assign_instructors_courses'])->name('assignments.instructors-courses.assign');
-    Route::post('/assignments/instructors-courses/remove', [AssignmentController::class, 'remove_instructors_courses'])->name('assignments.instructors-courses.remove');
-    
-    Route::get('/assignments/students-sections', [AssignmentController::class, 'create_students_sections'])->name('assignments.students-sections');
-    Route::post('/assignments/students-sections', [AssignmentController::class, 'assign_students_sections'])->name('assignments.students-sections.assign');
-    Route::post('/assignments/students-sections/remove', [AssignmentController::class, 'remove_students_sections'])->name('assignments.students-sections.remove');
-    
-    Route::get('/assignments/students-courses', [AssignmentController::class, 'create_students_courses'])->name('assignments.students-courses');
-    Route::post('/assignments/students-courses', [AssignmentController::class, 'assign_students_courses'])->name('assignments.students-courses.assign');
-    Route::post('/assignments/students-courses/remove', [AssignmentController::class, 'remove_students_courses'])->name('assignments.students-courses.remove');
+    Route::get('/sections/{section}/instructors', [AssignmentController::class, 'section_instructors'])->middleware('can:assign-section-instructors')->name('section.instructors');
+    Route::post('/sections/{section}/instructors', [AssignmentController::class, 'attach_section_instructors'])->middleware('can:attach-section-instructors')->name('section-instructors.attach');
+    Route::post('/sections/{section}/instructors/{instructor}', [AssignmentController::class, 'detach_section_instructors'])->middleware('can:detach-section-instructors')->name('section-instructors.detach');
 
-    //Student Managment
+    Route::get('/sections/{section}/students', [AssignmentController::class, 'section_students'])->middleware('can:assign-section-students')->name('section.students');
+    Route::post('/sections/{section}/students', [AssignmentController::class, 'attach_section_students'])->middleware('can:attach-section-students')->name('section-students.attach');
+    Route::post('/sections/{section}/students/{student}', [AssignmentController::class, 'detach_section_students'])->middleware('can:detach-section-students')->name('section-students.detach');
+
+    // Attaching Course to instructors and students
+    Route::get('/courses/{course}/instructors', [AssignmentController::class, 'course_instructors'])->name('course.instructors');
+    Route::post('/courses/{course}/instructors', [AssignmentController::class, 'attach_course_instructors'])->name('course-instructors.attach');
+    Route::post('/courses/{course}/instructors/{instructor}', [AssignmentController::class, 'detach_course_instructors'])->name('course-instructors.detach');
+
+    Route::get('/courses/{course}/students', [AssignmentController::class, 'course_students'])->name('course.students');
+    Route::post('/courses/{course}/students', [AssignmentController::class, 'attach_course_students'])->name('course-students.attach');
+    Route::post('/courses/{course}/students/{student}', [AssignmentController::class, 'detach_course_students'])->name('course-students.detach');
+
+        //Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
 

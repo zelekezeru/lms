@@ -19,7 +19,7 @@ const form = useForm({
     password_confirmation: props.employee.password_confirmation || "employees@default",
     role_name: props.employee.userRole || "",
     job_position: props.employee.jobPosition || "",
-    employment_type: props.employee.employmentType ||   "",
+    employment_type: props.employee.employmentType || "",
     office_hours: props.employee.officeHours || "",
     profile_img: props.employee.profile_img || "",
     _method: "PUT",  // Indicates PUT method for the update

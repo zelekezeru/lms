@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->string('phone', 15)->nullable();
             $table->string('address');
+            $table->string('website')->nullable();
             $table->string('contact_person');
             $table->string('contact_phone', 15)->nullable();
             $table->string('contact_email')->nullable();

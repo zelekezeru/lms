@@ -36,11 +36,11 @@ class SectionController extends Controller
 
         $programs = ProgramResource::collection(Program::all());
 
-        $years = YearResource::collection(Year::all()->sortBy('name'));
+        $years = YearResource::collection(Year::all()->sortBy('name', true));
 
         $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
 
-        $users = UserResource::collection(User::all());
+        $users = UserResource::collection(User::all()->sortBy('name'));
 
         return Inertia::render('Sections/Create', [
             'departments' => $departments,
@@ -71,7 +71,7 @@ class SectionController extends Controller
     public function show(Section $section)
     {
         $section->load(['user', 'program', 'department', 'year', 'semester']);
-
+        
         return Inertia::render('Sections/Show', [
             'section' => $section,
         ]);

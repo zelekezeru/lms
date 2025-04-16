@@ -16,6 +16,20 @@ class TenantSeeder extends Seeder
     {
         // Ensure the user exists before inserting the tenant
 
+        DB::table('users')->insert([
+            [
+            'id' => 2,
+            'name' => 'Tenant User',
+            'user_uuid' => 'AD-25-001',
+            'email' => 'admin@sits.edu.et',
+            'default_password' => '123456789',
+            'password_changed' => 0,
+            'password' => bcrypt('123456789'), // Use a secure password
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+        ]);
+
         DB::table('tenants')->insert([
             'id' => 1,
             'name' => 'SITS',
@@ -23,7 +37,8 @@ class TenantSeeder extends Seeder
             'code' => 'Tenant/0001/25',
             'phone' => '0911274565',
             'address' => 'Weldeamanuel Avenue, Hawassa, Sidama, Ethiopia',
-            'logo' => 'logo/B532heVzz5Azgj7RzfBmP3UhgYT0bD4nExcxBSWH.png',
+            'logo' => 'https://example.com/logo.png',
+            'website' => 'https://sits.edu.et',
             'contact_person' => 'Endale Sebsibe',
             'contact_phone' => '0975210098',
             'contact_email' => 'esebsibe@gmail.com',

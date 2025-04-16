@@ -159,16 +159,13 @@ const deletesection = (id) => {
                     </button>
                 </div>
 
-                <!-- Assign Students to This section -->
-                <!-- <div class="flex justify-center mb-6">
-                    <Link
-                        :href="route('section.students')"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        Assign Students
-                        <PlusCircleIcon class="w-5 h-5 ml-2" />
-                    </Link>
-                </div> -->
+                <!-- Assign Courses to This section -->
+                <Link
+                    v-if="userCan('section-courses')"
+                    :href="route('section.courses', { section: section.name })"
+                    class="text-blue-500 hover:text-blue-700"
+                >
+                </Link>
             </div>
         </div>
     </AppLayout>

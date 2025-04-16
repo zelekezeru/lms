@@ -6,8 +6,6 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // Define the props for the department
 const props = defineProps({
@@ -16,36 +14,6 @@ const props = defineProps({
         required: true,
     },
 });
-
-const createMode = ref(false);
-
-const modeForm = useForm({
-    department_id: props.department.id,
-    mode: "",
-    fees: "",
-});
-
-const addMode = () => {
-    modeForm.post(
-        route("studyModes.store", {
-            redirectTo: "departments.show",
-            params: { department: props.department.id },
-        }),
-        {
-            onSuccess: () => {
-                Swal.fire(
-                    "Added!",
-                    "The Study Mode you entered has been inserted succesfully.",
-                    "success"
-                );
-
-                createMode.value = false;
-                modeForm.mode = "";
-                modeForm.fees = "";
-            },
-        }
-    );
-};
 
 // Delete function with SweetAlert confirmation
 const deleteDepartment = (id) => {

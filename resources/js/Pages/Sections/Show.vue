@@ -43,7 +43,7 @@ const deletesection = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
+        <div class="max-w-8xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
@@ -129,21 +129,23 @@ const deletesection = (id) => {
                     <!-- Semester name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Semester </span
-                        >
+                            >Semester
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             {{ section.semester.name }}
                         </span>
                     </div>
-                </div>                
+                </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
                     <Link
                         v-if="userCan('update-sections')"
-                        :href="route('sections.edit', { section: section.name })"
+                        :href="
+                            route('sections.edit', { section: section.name })
+                        "
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
@@ -158,15 +160,15 @@ const deletesection = (id) => {
                 </div>
 
                 <!-- Assign Students to This section -->
-                    <div class="flex justify-center mb-6">
+                <!-- <div class="flex justify-center mb-6">
                     <Link
-                        :href="route('assignments.students.sections')"
+                        :href="route('section.students')"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                         Assign Students
-                        <PlusCircleIcon class="w-5 h-5 ml-2" />     
+                        <PlusCircleIcon class="w-5 h-5 ml-2" />
                     </Link>
-                    </div>
+                </div> -->
             </div>
         </div>
     </AppLayout>

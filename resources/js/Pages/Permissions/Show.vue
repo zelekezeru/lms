@@ -43,14 +43,16 @@ const deletePermission = (id) => {
 <template>
     <Head title="Permission Details" />
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
+        <div class="max-w-8xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ permission.name }}   Permission 
+                {{ permission.name }} Permission
             </h1>
 
-            <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
+            <div
+                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            >
                 <div class="grid grid-cols-2 gap-4">
                     <!-- permission ID -->
                     <div class="flex flex-col">
@@ -74,22 +76,26 @@ const deletePermission = (id) => {
                         >
                     </div>
                 </div>
-            
+
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
                     <Link
-                        :href="route('permissions.edit', { permission: permission.id })"
+                        :href="
+                            route('permissions.edit', {
+                                permission: permission.id,
+                            })
+                        "
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                        <span>Edit</span>
                     </Link>
                     <button
                         @click="deletePermission(permission.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                        <span>Delete</span>
                     </button>
                 </div>
             </div>

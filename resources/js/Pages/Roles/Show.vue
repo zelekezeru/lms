@@ -42,11 +42,11 @@ const deleteRole = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
+        <div class="max-w-8xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                 {{ role.name }} Role
+                {{ role.name }} Role
             </h1>
 
             <div
@@ -76,7 +76,9 @@ const deleteRole = (id) => {
                     </div>
                 </div>
 
-                <h1 class="text-center text-xl font-bold my-4 text-white">All Permissions For This Role</h1>
+                <h1 class="text-center text-xl font-bold my-4 text-white">
+                    All Permissions For This Role
+                </h1>
                 <div class="grid grid-cols-2 gap-4 ml-16">
                     <span
                         v-for="permission in role.permissions"
@@ -92,14 +94,14 @@ const deleteRole = (id) => {
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                        <span>Edit</span>
                     </Link>
                     <button
                         @click="deleteRole(role.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                        <span>Delete</span>
                     </button>
                 </div>
             </div>

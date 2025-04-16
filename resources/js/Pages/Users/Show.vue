@@ -50,20 +50,22 @@ const deleteuser = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
+        <div class="max-w-8xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
                 User Details
             </h1>
 
-            <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
+            <div
+                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            >
                 <div class="flex justify-center mb-8">
                     <div
                         v-if="!imageLoaded"
                         class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                     ></div>
-                    
+
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
@@ -72,7 +74,9 @@ const deleteuser = (id) => {
                         @load="handleImageLoad"
                     />
                 </div>
-                <div class="grid sm:grid-cols-2 gap-4 place-items-center lg:pl-30 sm:gap-4">
+                <div
+                    class="grid sm:grid-cols-2 gap-4 place-items-center lg:pl-30 sm:gap-4"
+                >
                     <!-- user ID -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -105,21 +109,17 @@ const deleteuser = (id) => {
                             >{{ user.email }}</span
                         >
                     </div>
-
-                    
                 </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
                     <Link
                         v-if="userCan('update-users')"
-                        :href="
-                            route('users.edit', { user: user.id })
-                        "
+                        :href="route('users.edit', { user: user.id })"
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                        <span>Edit</span>
                     </Link>
                     <button
                         v-if="userCan('delete-users')"
@@ -127,7 +127,7 @@ const deleteuser = (id) => {
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                        <span>Delete</span>
                     </button>
                 </div>
             </div>

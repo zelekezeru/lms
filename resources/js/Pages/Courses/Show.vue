@@ -28,57 +28,92 @@ const deleteCourse = (id) => {
         if (result.isConfirmed) {
             router.delete(route("courses.destroy", { course: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "The course has been deleted.", "success");
+                    Swal.fire(
+                        "Deleted!",
+                        "The course has been deleted.",
+                        "success"
+                    );
                 },
             });
         }
     });
 };
-
 </script>
-
 
 <template>
     <AppLayout title="course Details">
-        <div class="max-w-2xl mx-auto p-6">
-            <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
+        <div class="max-w-8xl mx-auto p-6">
+            <h1
+                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+            >
                 Course Details
             </h1>
 
-            <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
+            <div
+                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            >
                 <div class="grid grid-cols-2 gap-4">
                     <!-- course Code -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Code</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.code }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Code</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ course.code }}</span
+                        >
                     </div>
 
                     <!-- course Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.name || "N/A" }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Name</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ course.name || "N/A" }}</span
+                        >
                     </div>
 
                     <!-- Credit -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Credit Hours</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.credit_hours }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Credit Hours</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ course.credit_hours }}</span
+                        >
                     </div>
                     <!-- Duration -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Duration</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.duration }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Duration</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ course.duration }}</span
+                        >
                     </div>
                     <!-- Description -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Description</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ course.description }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Description</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                            >{{ course.description }}</span
+                        >
                     </div>
 
                     <!-- Status -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Status</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
                             {{ course.status ? "Active" : "Inactive" }}
                         </span>
                     </div>

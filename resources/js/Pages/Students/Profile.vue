@@ -7,7 +7,13 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import { PhotoIcon } from "@heroicons/vue/24/outline";
 
-const props = defineProps({ student: Object, user: Object, sections: Array, program: Object, department: Object });
+const props = defineProps({
+    student: Object,
+    user: Object,
+    sections: Array,
+    program: Object,
+    department: Object,
+});
 
 const student = ref(props.student);
 const user = ref(props.user);
@@ -48,59 +54,83 @@ const emit = defineEmits(["submit"]);
 
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
-            <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
+        <div class="max-w-8xl mx-auto p-6">
+            <h1
+                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+            >
                 Complete Registration
             </h1>
-            
-            <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition my-2">
-                <div class="grid sm:grid-cols-2 gap-4 my-4">
 
+            <div
+                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition my-2"
+            >
+                <div class="grid sm:grid-cols-2 gap-4 my-4">
                     <!-- Full Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Full Name</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Full Name</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ student.student_name }}
+                            {{ student.father_name }}
+                            {{ student.grand_father_name }}
                         </span>
                     </div>
                     <!-- Student ID -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"> ID Number</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ student.id_no }}
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            ID Number</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ student.id_no }}
                         </span>
                     </div>
 
                     <!-- Email -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ student.user.email }}
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Email</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ student.user.email }}
                         </span>
                     </div>
                     <!-- Program -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Program</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ program.name }}
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Program</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ program.name }}
                         </span>
-                    </div>  
+                    </div>
                 </div>
+            </div>
 
-                </div>
-
-                <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition">
-
-                    <h3 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-                        Registration Verifications
-                    </h3>
+            <div
+                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
+            >
+                <h3
+                    class="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+                >
+                    Registration Verifications
+                </h3>
                 <form @submit.prevent="submit" class="space-y-6">
-                        
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-
                         <!-- Payment Status -->
                         <div>
-                            <InputLabel for="payment_status" value="Payment Status" />
+                            <InputLabel
+                                for="payment_status"
+                                value="Payment Status"
+                            />
                             <select
                                 id="payment_status"
                                 v-model="form.payment_status"
@@ -115,7 +145,10 @@ const emit = defineEmits(["submit"]);
 
                         <!-- Profile Image Upload -->
                         <div>
-                            <InputLabel for="profile_img" value="Profile Image" />
+                            <InputLabel
+                                for="profile_img"
+                                value="Profile Image"
+                            />
                             <div class="mt-1 flex items-center gap-4">
                                 <label
                                     for="profile_img"
@@ -146,7 +179,10 @@ const emit = defineEmits(["submit"]);
 
                         <!-- Department Section Select -->
                         <div>
-                            <InputLabel for="section_id" value="Select Department Section" />
+                            <InputLabel
+                                for="section_id"
+                                value="Select Department Section"
+                            />
                             <select
                                 id="section_id"
                                 v-model="form.section_id"
@@ -161,14 +197,22 @@ const emit = defineEmits(["submit"]);
                                     {{ department.name }} - {{ section.name }}
                                 </option>
                             </select>
-                            <InputError :message="form.errors?.section_id" class="mt-2" />
+                            <InputError
+                                :message="form.errors?.section_id"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Enroll to Courses -->
                         <div>
-                            <InputLabel for="enroll" value="Enroll to Courses" />
+                            <InputLabel
+                                for="enroll"
+                                value="Enroll to Courses"
+                            />
                             <div class="mt-2 flex items-center gap-4">
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         id="enroll"
@@ -178,7 +222,9 @@ const emit = defineEmits(["submit"]);
                                     />
                                     Enroll
                                 </label>
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         value="0"
@@ -193,9 +239,14 @@ const emit = defineEmits(["submit"]);
 
                         <!-- Document Submitted -->
                         <div>
-                            <InputLabel for="document_submitted" value="Document Submitted" />
+                            <InputLabel
+                                for="document_submitted"
+                                value="Document Submitted"
+                            />
                             <div class="mt-2 flex items-center gap-4">
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         id="document_submitted"
@@ -205,7 +256,9 @@ const emit = defineEmits(["submit"]);
                                     />
                                     Submitted
                                 </label>
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         value="0"
@@ -215,14 +268,21 @@ const emit = defineEmits(["submit"]);
                                     Not Submitted
                                 </label>
                             </div>
-                            <InputError :message="form.errors.document_submitted" />
+                            <InputError
+                                :message="form.errors.document_submitted"
+                            />
                         </div>
 
                         <!-- Scholarship Status -->
                         <div>
-                            <InputLabel for="is_scholarship" value="Scholarship Status" />
+                            <InputLabel
+                                for="is_scholarship"
+                                value="Scholarship Status"
+                            />
                             <div class="mt-2 flex items-center gap-4">
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         id="is_scholarship"
@@ -232,7 +292,9 @@ const emit = defineEmits(["submit"]);
                                     />
                                     Scholarship
                                 </label>
-                                <label class="flex items-center gap-2 text-gray-700 dark:text-gray-100">
+                                <label
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-100"
+                                >
                                     <input
                                         type="radio"
                                         value="0"
@@ -244,9 +306,7 @@ const emit = defineEmits(["submit"]);
                             </div>
                             <InputError :message="form.errors.is_scholarship" />
                         </div>
-
                     </div>
-
 
                     <!-- Submit Button -->
                     <div class="mt-6 flex justify-center">

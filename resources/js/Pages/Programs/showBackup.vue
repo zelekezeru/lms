@@ -7,7 +7,12 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { usePage } from "@inertiajs/vue3";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { PencilIcon, EyeIcon, TrashIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
+import {
+    PencilIcon,
+    EyeIcon,
+    TrashIcon,
+    PlusCircleIcon,
+} from "@heroicons/vue/24/solid";
 
 // Define the props for the program
 const props = defineProps({
@@ -15,7 +20,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-
 });
 const createMode = ref(false);
 
@@ -80,7 +84,7 @@ const studyModes = props.program.studyModes || [];
 
 <template>
     <AppLayout>
-        <div class="max-w-2xl mx-auto p-6">
+        <div class="max-w-8xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
@@ -126,7 +130,7 @@ const studyModes = props.program.studyModes || [];
                             {{ program.language || "N/A" }}
                         </span>
                     </div>
-                    
+
                     <!-- Description -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -150,7 +154,7 @@ const studyModes = props.program.studyModes || [];
                             {{ programUser.name }}
                         </span>
                     </div>
-                </div>                
+                </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
@@ -160,7 +164,7 @@ const studyModes = props.program.studyModes || [];
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                        <span>Edit</span>
                     </Link>
                     <button
                         v-if="userCan('delete-programs')"
@@ -168,13 +172,12 @@ const studyModes = props.program.studyModes || [];
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                        <span>Delete</span>
                     </button>
                 </div>
 
-    <!-- Departments -->
+                <!-- Departments -->
                 <div class="mt-10">
-                    
                     <Link
                         v-if="userCan('create-departments')"
                         :href="route('departments.create')"
@@ -310,9 +313,7 @@ const studyModes = props.program.studyModes || [];
                                 <td>
                                     <div v-if="userCan('delete-study-modes')">
                                         <button
-                                            @click="
-                                                deleteProgram(mode.id)
-                                            "
+                                            @click="deleteProgram(mode.id)"
                                             class="text-red-500 hover:text-red-700"
                                         >
                                             <TrashIcon class="w-5 h-5" />
@@ -326,13 +327,10 @@ const studyModes = props.program.studyModes || [];
                     <!-- Add Study Mode Modal -->
                     <div
                         v-if="createMode"
-                        class="fixed inset
-                            0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-                    >
-                </div>  
+                        class="fixed inset 0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                    ></div>
+                </div>
             </div>
-            
-        </div>
         </div>
     </AppLayout>
 </template>

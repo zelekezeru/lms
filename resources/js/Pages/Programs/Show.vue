@@ -5,7 +5,7 @@ import { Link, router, useForm, WhenVisible } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
-import { PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { CogIcon, PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Modal from "@/Components/Modal.vue";
@@ -189,6 +189,16 @@ const deleteProgram = (id) => {
                             }}
                         </span>
                     </div>
+                    <!-- Relations list -->
+                </div>
+                <div class="flex mt-8">
+                    <Link
+                        v-if="userCan('create-programs')"
+                        :href="route('program.courses', { program: program.id })"
+                        class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                        Assign Courses
+                    </Link>
                 </div>
 
                 <!-- Edit and Delete Buttons -->

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Section;
 use App\Models\Instructor;
+use App\Models\Program;
 use App\Models\Student;
 use Inertia\Inertia;
 
@@ -13,26 +14,26 @@ class AssignmentController extends Controller
 {
     //Assigning courses to sections, instructors, and students
 
-    //Assignning Courses to Section
+    //Assignning Courses to Program
 
-    public function section_courses($section)
+    public function program_courses(Program $program)
     {
         $courses = Course::get();
 
         // Fetch existing attached courses
-        $attachedcourses = $section->courses()->get()->pluck('id');
+        $attachedcourses = $program->courses()->get()->pluck('id');
 
-        return Inertia::render('Assignments/SectionCourses', compact('section', 'courses', 'attachedcourses'));
+        return inertia('Assignments/ProgramCourses', compact('program', 'courses', 'attachedcourses'));
     
     }    
 
-    public function attach_section_courses(Request $request, $sectionId)
+    public function attach_program_courses(Request $request, $programId)
     {
-        $section = Section::findOrFail($sectionId);
+        $program = Program::findOrFail($programId);
         
-        $section->courses()->sync($request['courses']);
+        $program->courses()->sync($request['courses']);
 
-        return redirect()->route('sections.show', $section)->with('success', 'Courses Assigned successfully.');
+        return redirect()->route('programs.show', $program)->with('success', 'Courses Assigned successfully.');
     }
 
     public function detach_section_courses(Request $request, $sectionId, $courseId)

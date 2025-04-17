@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\Department;
 use App\Models\Section;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -36,24 +37,16 @@ class AssignmentController extends Controller
         return redirect()->route('programs.show', $program)->with('success', 'Courses Assigned successfully.');
     }
 
-    public function detach_section_courses(Request $request, $sectionId, $courseId)
+
+    //Assigning Departments to Course
+    public function course_departments($course)
     {
-        $section = Section::findOrFail($sectionId);
+        $departments = Department::get();
 
-        $section->courses()->detach($courseId);
+        // Fetch existing attached departments
+        $attachedDepartments = $course->departments()->get()->pluck('id');
 
-        return redirect()->route('sections.show', $section)->with('success', 'Course Detached successfully.');
-    }
-
-    //Assigning Instructors to Section
-    public function section_instructors($section)
-    {
-        $instructors = Instructor::get();
-
-        // Fetch existing attached instructors
-        $attachedInstructors = $section->instructors()->get()->pluck('id');
-
-        return Inertia::render('Assignments/SectionInstructors', compact('section', 'instructors', 'attachedInstructors'));
+        return Inertia::render('Assignments/CourseDepartments', compact('course', 'departments', 'attachedDepartments'));
     }
 
     public function attach_section_instructors(Request $request, $sectionId)
@@ -63,15 +56,6 @@ class AssignmentController extends Controller
         $section->instructors()->sync($request['instructors']);
 
         return redirect()->route('sections.show', $section)->with('success', 'Instructors Assigned successfully.');
-    }
-
-    public function detach_section_instructors(Request $request, $sectionId, $courseId)
-    {
-        $section = Section::findOrFail($sectionId);
-
-        $section->instructors()->detach($courseId);
-
-        return redirect()->route('sections.show', $section)->with('success', 'Instructor Detached successfully.');
     }
 
     //Assign Students to Section
@@ -84,6 +68,7 @@ class AssignmentController extends Controller
 
         return Inertia::render('Assignments/SectionStudents', compact('section', 'students', 'attachedStudents'));
     }
+
     public function attach_section_students(Request $request, $sectionId)
     {
         $section = Section::findOrFail($sectionId);
@@ -92,6 +77,7 @@ class AssignmentController extends Controller
 
         return redirect()->route('sections.show', $section)->with('success', 'Students Assigned successfully.');
     }
+
     public function detach_section_students(Request $request, $sectionId, $studentId)
     {
         $section = Section::findOrFail($sectionId);

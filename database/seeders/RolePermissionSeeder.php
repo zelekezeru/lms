@@ -131,6 +131,24 @@ class RolePermissionSeeder extends Seeder
             'update-sections',
             'delete-sections',
 
+            // Results (CRUD)
+            'view-results',
+            'create-results',
+            'update-results',
+            'delete-results',
+
+            // Weights (CRUD)
+            'view-weights',
+            'create-weights',
+            'update-weights',
+            'delete-weights',
+
+            // Grades (CRUD)
+            'view-grades',
+            'create-grades',
+            'update-grades',
+            'delete-grades',
+
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -271,6 +289,21 @@ class RolePermissionSeeder extends Seeder
                     'create-sections',
                     'update-sections',
                     'delete-sections',
+                    
+                    'view-results',
+                    'create-results',
+                    'update-results',
+                    'delete-results',
+                    
+                    'view-weights',
+                    'create-weights',
+                    'update-weights',
+                    'delete-weights',
+                    
+                    'view-grades',
+                    'create-grades',
+                    'update-grades',
+                    'delete-grades',
                     
                     'section-courses',
                     'attach-section-courses',

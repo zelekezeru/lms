@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WeightStoreRequest;
+use App\Http\Requests\WeightUpdateRequest;
 use App\Models\Weight;
 use Illuminate\Http\Request;
 
@@ -9,29 +11,23 @@ class WeightController extends Controller
 {
     public function index()
     {
-        $weights = Weight::with(['instructor', 'year', 'semester', 'course'])->get();
+        $weights = Weight::with(['instructor', 'year', 'semester', 'course'])->paginate(30);
 
         return inertia('Weights/Index', [
             'weights' => $weights,
         ]);
     }
+    
     public function create()
     {
         return inertia('Weights/Create');
     }
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'weight_point' => 'required|numeric|min:0|max:100',
-            'weight_description' => 'nullable|string|max:255',
-            'user_id' => 'required|exists:users,id',
-            'year_id' => 'required|exists:years,id',
-            'semester_id' => 'required|exists:semesters,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
 
-        Weight::create($request->all());
+    public function store(WeightStoreRequest $request)
+    {
+        $fields = $request->validated();
+
+        Weight::create($fields);
 
         return redirect()->route('weights.index')->with('success', 'Weight created successfully.');
     }
@@ -42,34 +38,30 @@ class WeightController extends Controller
             'weight' => $weight,
         ]);
     }
+
     public function edit(Weight $weight)
     {
         return inertia('Weights/Edit', [
             'weight' => $weight,
         ]);
     }
-    public function update(Request $request, Weight $weight)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'weight_point' => 'required|numeric|min:0|max:100',
-            'weight_description' => 'nullable|string|max:255',
-            'user_id' => 'required|exists:users,id',
-            'year_id' => 'required|exists:years,id',
-            'semester_id' => 'required|exists:semesters,id',
-            'course_id' => 'required|exists:courses,id',
-        ]);
 
-        $weight->update($request->all());
+    public function update(WeightUpdateRequest $request, Weight $weight)
+    {
+        $fields = $request->validated();
+
+        $weight->update($fields);
 
         return redirect()->route('weights.index')->with('success', 'Weight updated successfully.');
     }
+
     public function destroy(Weight $weight)
     {
         $weight->delete();
 
         return redirect()->route('weights.index')->with('success', 'Weight deleted successfully.');
     }
+
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -78,7 +70,7 @@ class WeightController extends Controller
             ->orWhere('weight_point', 'like', "%{$query}%")
             ->orWhere('weight_description', 'like', "%{$query}%")
             ->with(['instructor', 'year', 'semester', 'course'])
-            ->get();
+            ->paginate(30); // Ensure pagination is used
 
         return inertia('Weights/Index', [
             'weights' => $weights,

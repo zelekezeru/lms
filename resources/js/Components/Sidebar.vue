@@ -323,6 +323,22 @@ const afterLeave = (el) => {
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Sections</span>
                     </SidebarDrowpdownLink>
+                    
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-results')"
+                        :href="route('results.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Results</span>
+                    </SidebarDrowpdownLink>
+
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-weights')"
+                        :href="route('weights.index')"
+                    >
+                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Weight</span>
+                    </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- User Managment-->

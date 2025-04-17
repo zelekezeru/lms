@@ -401,7 +401,7 @@ const deleteProgram = (id) => {
                                     <th
                                         class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        Duration
+                                        Duration (Months)
                                     </th>
                                     <th
                                         class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -477,7 +477,7 @@ const deleteProgram = (id) => {
                                             <TextInput
                                                 v-model="modeForm.duration"
                                                 type="number"
-                                                placeholder="Duration"
+                                                placeholder="Duration (Months)"
                                                 class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                             />
                                         </td>

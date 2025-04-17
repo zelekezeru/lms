@@ -14,7 +14,11 @@ const props = defineProps({
     },
 });
 
-const selectedProgramsDepartments = ref([]);
+const selectedProgramsDepartments = ref(props.form.programs.flatMap(
+            (programId) => {
+                    const program = props.programs.find(p => p.id == programId);
+                    return program.departments
+            }));
 
 // watch and updated the list of departments
 watch(
@@ -25,6 +29,7 @@ watch(
                     const program = props.programs.find(p => p.id == programId);
                     return program.departments
             })
+        props.form.departments = [];
     }
 );
 const emits = defineEmits(["submit"]);

@@ -4,11 +4,22 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import Form from './Form.vue'
 
 const props = defineProps({
-  course: Object,
+  course: {
+    type: Object,
+    required: true
+  },
+  
+  programs: {
+    type: Object,
+    required: true
+  },
 })
 
 const form = useForm({
   name: props.course.name,
+  code: props.course.code,
+  programs: props.course.programs.map(program => program.id),
+  departments: props.course.departments.map(department => department.id),
   code: props.course.code,
   credit_hours: props.course.credit_hours,
   duration: props.course.duration,
@@ -44,6 +55,7 @@ const submit = (id) => {
             >
                 <Form
                     :form="form"
+                    :programs="programs"
                     @submit="submit(course.id)"
                 />
             </div>

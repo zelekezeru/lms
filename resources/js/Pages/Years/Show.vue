@@ -28,9 +28,6 @@ const semesterForm = ref({
     is_completed: false,
 });
 
-// Add this line to declare the 'refreshing' ref
-const refreshing = ref(false);
-
 // Function to toggle form visibility
 const toggleForm = () => {
     showForm.value = !showForm.value;
@@ -58,7 +55,7 @@ const submitSemester = () => {
 // Refresh Data function
 const refreshData = () => {
     refreshing.value = true;
-    router.visit(route("semesters.show"), {
+    router.visit(route("years.show", year.id), {
         only: ["year"],
         onFinish: () => {
             refreshing.value = false;

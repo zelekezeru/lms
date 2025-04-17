@@ -28,7 +28,6 @@ class DepartmentController extends Controller
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
 
-
             $query->where('name', 'LIKE', "%{$search}%")
                 ->orWhere('code', 'LIKE', "%{$search}%");
         }
@@ -41,7 +40,7 @@ class DepartmentController extends Controller
         }
 
 
-        $departments = $query->paginate(15)->withQueryString('program');
+        $departments = $query->paginate(15)->withQueryString();
 
         return inertia('Departments/Index', [
             'departments' => DepartmentResource::collection($departments),

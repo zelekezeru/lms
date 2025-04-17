@@ -44,4 +44,9 @@ class Course extends Model
         return $this->belongsTo(Semester::class);
     }
 
+    public function programs()
+    {
+        return $this->belongsToMany(Program::class);
+    }
+
 }

@@ -50,5 +50,10 @@ class Program extends Model
     {
         return $this->hasMany(StudyMode::class);
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class);
+    }
     
 }

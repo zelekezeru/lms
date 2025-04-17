@@ -4,12 +4,18 @@ import Form from "./Form.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 
 // Props from controller
-
+defineProps({
+    programs: {
+        type: Object,
+        required: true,
+    }
+})
 const form = useForm({
     name: "",
     credit_hours: "",
     duration: "",
     description: "",
+    programs: null,
     is_training: false,
     status: false,
     is_published: false,
@@ -18,6 +24,7 @@ const form = useForm({
 });
 
 const submit = () => {
+    console.log('hii')
     form.post(route("courses.store"));
 };
 </script>
@@ -41,6 +48,8 @@ const submit = () => {
             >
                 <Form
                     :form="form"
+                    @submit="submit"
+                    :programs="programs"
                     :submit="submit"
                 />
             </div>

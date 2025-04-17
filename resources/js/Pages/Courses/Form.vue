@@ -3,15 +3,23 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { MultiSelect } from "primevue";
+import { ref } from "vue";
 
 defineProps({
     form: Object,
-    submit: Function,
+    programs: {
+        type: Object,
+        required: true,
+    },
 });
+
+const selectedProgramsDepartments = ref([]);
+const emits = defineEmits(['submit'])
 </script>
 
 <template>
-    <form @submit.prevent="submit">
+    <form @submit.prevent="emits('submit')">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Course Name -->
             <div>
@@ -51,6 +59,56 @@ defineProps({
                 />
                 <InputError
                     :message="form.errors.credit_hours"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
+
+            <!-- Program field -->
+            <div>
+                <InputLabel
+                    for="programs"
+                    value="Select Programs (at least one)"
+                    class="block mb-1 text-gray-200"
+                />
+
+                <MultiSelect
+                    v-model="form.programs"
+                    :options="programs"
+                    optionLabel="name"
+                    option-value="id"
+                    filter
+                    placeholder="Select Programs"
+                    :maxSelectedLabels="3"
+                    class="w-full md:w-80"
+                />
+
+                <InputError
+                    :message="form.errors.programs"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
+            
+            <!-- Department field -->
+            <div>
+                <InputLabel
+                    for="departments"
+                    value="Select Departments (at least one)"
+                    class="block mb-1 text-gray-200"
+                />
+
+                <MultiSelect
+                    v-model="form.departments"
+                    :options="selectedProgramDepartments"
+                    optionLabel="name"
+                    option-value="id"
+                    filter
+                    placeholder="Select Departments"
+                    :maxSelectedLabels="3"
+                    class="w-full md:w-80"
+                />
+
+                <InputError
+                    :message="form.errors.departments"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>

@@ -6,6 +6,8 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { Head } from '@inertiajs/vue3';
+import PrimeVue from 'primevue/config';
+import Aura from '@primeuix/themes/aura';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,7 +21,11 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) });
 
-        app.use(plugin).use(ZiggyVue);
+        app.use(plugin).use(ZiggyVue).use(PrimeVue, {
+            theme: {
+                preset: Aura
+            }
+        });
 
         // Register Head globally
         app.component('Head', Head);

@@ -12,6 +12,8 @@ use App\Http\Requests\CourseStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\InstructorsResource;
+use App\Http\Resources\ProgramResource;
+use App\Models\Program;
 use Inertia\Inertia;
 use App\Models\User;
 
@@ -34,7 +36,9 @@ class CourseController extends Controller
      */
     public function create()
     {           
+        $programs = ProgramResource::collection(Program::all());
         return inertia('Courses/Create', [
+            'programs' => $programs
         ]);
     }
 
@@ -44,14 +48,18 @@ class CourseController extends Controller
     public function store(CourseStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
+        $programs = $fields['programs'] ?? [];
+        unset($fields['programs']);
         $year = substr(Carbon::now()->year, -2);
 
         $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
 
         $fields['code'] = $course_id;
         
-        $course = Course::create($fields);        
+        $course = Course::create($fields);
+        
+        $course->programs()->attach($programs);
         
         return redirect(route('courses.show', $course))->with('success', 'Course created successfully.');
     }

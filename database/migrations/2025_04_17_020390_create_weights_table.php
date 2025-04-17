@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('weight_point');
             $table->string('weight_description')->nullable();
-            $table->foreignId(' user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('year_id')->constrained();
             $table->foreignId('semester_id')->constrained();
             $table->foreignId('course_id')->constrained();

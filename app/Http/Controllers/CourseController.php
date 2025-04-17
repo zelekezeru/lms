@@ -36,7 +36,7 @@ class CourseController extends Controller
      */
     public function create()
     {           
-        $programs = ProgramResource::collection(Program::all());
+        $programs = ProgramResource::collection(Program::with('departments')->get());
         return inertia('Courses/Create', [
             'programs' => $programs
         ]);
@@ -50,7 +50,10 @@ class CourseController extends Controller
         $fields = $request->validated();
 
         $programs = $fields['programs'] ?? [];
+        $departments = $fields['departments'] ?? [];
         unset($fields['programs']);
+        unset($fields['departments']);
+
         $year = substr(Carbon::now()->year, -2);
 
         $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
@@ -60,6 +63,7 @@ class CourseController extends Controller
         $course = Course::create($fields);
         
         $course->programs()->attach($programs);
+        $course->departments()->attach($departments);
         
         return redirect(route('courses.show', $course))->with('success', 'Course created successfully.');
     }

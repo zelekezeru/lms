@@ -4,9 +4,9 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { MultiSelect } from "primevue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-defineProps({
+const props = defineProps({
     form: Object,
     programs: {
         type: Object,
@@ -15,7 +15,19 @@ defineProps({
 });
 
 const selectedProgramsDepartments = ref([]);
-const emits = defineEmits(['submit'])
+
+// watch and updated the list of departments
+watch(
+    () => props.form.programs,
+    () => {
+        selectedProgramsDepartments.value = props.form.programs.flatMap(
+            (programId) => {
+                    const program = props.programs.find(p => p.id == programId);
+                    return program.departments
+            })
+    }
+);
+const emits = defineEmits(["submit"]);
 </script>
 
 <template>
@@ -87,22 +99,24 @@ const emits = defineEmits(['submit'])
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
-            
+
             <!-- Department field -->
             <div>
                 <InputLabel
                     for="departments"
-                    value="Select Departments (at least one)"
+                    value="Select Departments In the Programs You Selected (at least one)"
                     class="block mb-1 text-gray-200"
                 />
 
                 <MultiSelect
                     v-model="form.departments"
-                    :options="selectedProgramDepartments"
+                    :options="selectedProgramsDepartments"
                     optionLabel="name"
                     option-value="id"
+                    empty-message="No departments available (make sure you select program first)"
+                    empty-filter-message="No departments available"
                     filter
-                    placeholder="Select Departments"
+                    placeholder="Select Departments (Select Program First)"
                     :maxSelectedLabels="3"
                     class="w-full md:w-80"
                 />

@@ -55,5 +55,20 @@ class Section extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
+    
+    public function weights()
+    {
+        return $this->hasMany(Weight::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
     
 }

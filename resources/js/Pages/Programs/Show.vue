@@ -35,6 +35,7 @@ const departmentForm = useForm({
 });
 
 const createMode = ref(false);
+
 const createDepartment = ref(false);
 
 const addMode = () => {

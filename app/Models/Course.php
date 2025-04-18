@@ -49,4 +49,19 @@ class Course extends Model
         return $this->belongsToMany(Program::class);
     }
 
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
+    
+    public function weights()
+    {
+        return $this->hasMany(Weight::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
 }

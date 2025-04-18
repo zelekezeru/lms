@@ -9,16 +9,14 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::find($section);
-
-        $course = $section->courses()->find($course);
-
+        $section = Section::find($section)->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
+        
+        $course = $section->courses()->find($course)->load(['instructors', 'students', 'sections', 'results', 'weights', 'grades']);
+        
         // Check if the section and course exist
         if (!$section || !$course) {
             return redirect()->back()->with('error', 'Section or Course not found.');
         }
-
-        dd($section->students()->get());
 
         return inertia('Assessments/SectionCourse', [
             'section' => $section,

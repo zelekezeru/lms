@@ -11,7 +11,7 @@ class WeightStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,11 +23,12 @@ class WeightStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'weight_point' => 'required|numeric|min:0|max:100',
-            'weight_description' => 'nullable|string|max:255',
-            'user_id' => 'nullable|exists:users,id',
+            'point' => 'required|numeric|min:0|max:100',
+            'description' => 'nullable|string|max:255',
             'course_id' => 'required|exists:courses,id',
             'semester_id' => 'required|exists:semesters,id',
+            'section_id' => 'nullable|exists:sections,id',
+            'instructor_id' => 'nullable|exists:instructors,id',
         ];
     }
 }

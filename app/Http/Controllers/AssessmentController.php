@@ -11,14 +11,14 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        dd(Auth::user()->roles);
-
-        $section = Section::find($section)->load(['user', 'program', 'department','students', 'courses']);
+        $section = Section::find($section)->load(['user', 'program', 'department','students']);
         
-        $course = $section->courses()->find($course)->load(['instructors', 'students', 'sections', 'results', 'weights', 'grades']);
+        $course = $section->courses()->find($course)->load(['instructors', 'students', ]);
         
         $semester = Semester::where('status', "Active")->first()->load(['year']); // Current Active semester 
 
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
+        
         // Check if the section and course exist
         if (!$section || !$course) {
             return redirect()->back()->with('error', 'Section or Course not found.');
@@ -27,7 +27,8 @@ class AssessmentController extends Controller
         return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,
-            'semester' => $semester, // Pass the semester to the view
+            'semester' => $semester,
+            'weights' => $weights,
         ]);
     }
 

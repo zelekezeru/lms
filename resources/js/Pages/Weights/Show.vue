@@ -39,7 +39,7 @@ defineProps({
                             Weight Point
                         </h3>
                         <p class="text-gray-600 dark:text-gray-400">
-                            {{ weight.weight_point }}
+                            {{ weight.point }}
                         </p>
                     </div>
 
@@ -48,7 +48,7 @@ defineProps({
                             Description
                         </h3>
                         <p class="text-gray-600 dark:text-gray-400">
-                            {{ weight.weight_description || "N/A" }}
+                            {{ weight.description || "N/A" }}
                         </p>
                     </div>
 

@@ -1,44 +1,57 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
+import { useForm } from "@inertiajs/vue3";
 
-defineProps({
+const props = defineProps({
     weight: Object,
-    users: Object,
+    users: Array,
+    programs: Array,
+    departments: Array,
+    years: Array,
+    semesters: Array,
+    courses: Array,
+    sections: Array,
 });
 
 const form = useForm({
-    name: weight.name,
-    weight_point: weight.weight_point,
-    weight_description: weight.weight_description,
-    user_id: weight.user_id,
+    name: props.weight?.name || "",
+    point: props.weight?.point || "",
+    description: props.weight?.description || "",
+    instructor_id: props.weight?.instructor_id || "",
+    semester_id: props.weight?.semester_id || "",
+    course_id: props.weight?.course_id || "",
+    section_id: props.weight?.section_id || "",
+    _method: "PATCH",
 });
 
 const submit = () => {
-    form.put(route("weights.update", weight.id));
+    form.post(route("weights.update", { weight: props.weight.id }), {
+        preserveScroll: true,
+    });
 };
 </script>
 
 <template>
     <AppLayout>
-        <div class="max-w-5xl mx-auto p-6">
-            <!-- Page Title -->
+        <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit Weight
-                </h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Weight</h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Update the details of the weight below.
+                    Modify the details of the weight.
                 </p>
             </div>
-
-            <!-- Form Card -->
-            <div
-                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
-            >
-                <Form :form="form" @submit="submit" :users="users" />
-            </div>
+            <Form
+                :form="form"
+                :users="users"
+                :programs="programs"
+                :departments="departments"
+                :years="years"
+                :semesters="semesters"
+                :courses="courses"
+                :sections="sections"
+                @submit="submit"
+            />
         </div>
     </AppLayout>
 </template>

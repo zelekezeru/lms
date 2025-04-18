@@ -25,7 +25,7 @@ class Weight extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function result()
+    public function results()
     {
         return $this->hasMany(Result::class);
     }

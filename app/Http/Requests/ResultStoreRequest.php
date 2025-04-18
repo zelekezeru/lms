@@ -11,7 +11,7 @@ class ResultStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,18 +22,18 @@ class ResultStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'result_point' => 'required|string|max:255',
-            'result_description' => 'nullable|string|max:255',
-            'changed_point' => 'nullable|string|max:255',
-            'weight_id' => 'required|exists:weights,id',
+
+            'name' => 'required|string|max:255',
+            'point' => 'required|numeric|min:0|max:100',
+            'description' => 'nullable|string|max:255',
+            'instructor_id' => 'required|exists:instructors,id',
             'student_id' => 'required|exists:students,id',
-            'year_id' => 'required|exists:years,id',
-            'semester_id' => 'required|exists:semesters,id',
-            'section_id' => 'required|exists:sections,id',
-            'course_id' => 'required|exists:courses,id',
-            'user_id' => 'required|exists:users,id',
-            'grade_id' => 'required|exists:grades,id',
-            'changed_by' => 'nullable|exists:users,id',
+            'weight_id' => 'required|exists:weights,id',
+            'grade_id' => 'nullable|exists:grades,id',
+
+            // If Changed
+            'changed_point' => 'nullable|string|max:255',
+            'changed_by' => 'nullable|exists:instructors,id',
             'changed_at' => 'nullable|date',
         ];
     }

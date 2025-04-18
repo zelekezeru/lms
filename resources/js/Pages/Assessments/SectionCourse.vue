@@ -18,6 +18,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    semester: {
+        type: Object,
+        required: true,
+    },
 });
 
 const tabs = [
@@ -40,8 +44,9 @@ const weightForm = useForm({
     name: "",
     weight_point: "",
     weight_description: "",
-    year_id: "",
     course_id: props.course.id,
+    section_id: props.section.id,
+    semester_id: props.semester.id,
 });
 
 const selectedTab = ref("details");
@@ -50,10 +55,7 @@ const createWeight = ref(false);
 
 const addWeight = () => {
     weightForm.post(
-        route("weights.store", {
-            redirectTo: route('assessments.section_course'),
-            params: { course: props.course.id, section: props.section.id },
-        }),
+        route("weights.store"),
         {
             onSuccess: () => {
                 Swal.fire(
@@ -64,34 +66,25 @@ const addWeight = () => {
                 createWeight.value = false;
                 weightForm.reset();
             },
+            onError: (errors) => {
+                if (errors.status === 403) {
+                    Swal.fire(
+                        "Unauthorized!",
+                        "You do not have permission to perform this action.",
+                        "error"
+                    );
+                } else {
+                    Swal.fire(
+                        "Error!",
+                        "An unexpected error occurred. Please try again.",
+                        "error"
+                    );
+                }
+            },
         }
     );
 };
 
-// Delete function with SweetAlert confirmation
-// const deletesection = (id) => {
-//     Swal.fire({
-//         title: "Are you sure?",
-//         text: "This action cannot be undone!",
-//         icon: "warning",
-//         showCancelButton: true,
-//         confirmButtonColor: "#d33",
-//         cancelButtonColor: "#3085d6",
-//         confirmButtonText: "Yes, delete it!",
-//     }).then((result) => {
-//         if (result.isConfirmed) {
-//             router.delete(route("sections.destroy", { section: id }), {
-//                 onSuccess: () => {
-//                     Swal.fire(
-//                         "Deleted!",
-//                         "The section entry has been successfully deleted.",
-//                         "success"
-//                     );
-//                 },
-//             });
-//         }
-//     });
-// };
 </script>
 
 <template>
@@ -245,7 +238,7 @@ const addWeight = () => {
                                                     Point (100%)
                                                 </th>
                                                 <th
-                                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                                 >
                                                     Description
                                                 </th>
@@ -265,7 +258,7 @@ const addWeight = () => {
                                                 class="border-b border-gray-300 dark:border-gray-600"
                                             >
                                                 <td
-                                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                                 >
                                                     {{ weight.name }}
                                                 </td>
@@ -275,7 +268,7 @@ const addWeight = () => {
                                                     {{ weight.weight_point }}
                                                 </td>
                                                 <td
-                                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                                                 >
                                                     {{ weight.weight_description }}
                                                 </td>
@@ -294,6 +287,25 @@ const addWeight = () => {
                                                     v-if="createWeight"
                                                     class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600"
                                                 >
+                                                    <TextInput
+                                                        v-weight="weightForm.course_id"
+                                                        type="text"
+                                                        :value="props.course.id"
+                                                        readonly hidden
+                                                    />
+                                                    <TextInput
+                                                        v-weight="weightForm.section_id"
+                                                        type="text"
+                                                        :value="props.section.id"
+                                                        readonly hidden
+                                                    />
+                                                    <TextInput
+                                                        v-weight="weightForm.semester_id"
+                                                        type="text"
+                                                        :value="props.semester.id"
+                                                        readonly hidden
+                                                    />
+
                                                     <td class="px-4 py-2">
                                                         <TextInput
                                                             v-weight="
@@ -308,7 +320,7 @@ const addWeight = () => {
                                                     <td class="px-3 py-2">
                                                         <TextInput
                                                             v-weight="
-                                                                weightForm.weight_description
+                                                                weightForm.weight_point
                                                             "
                                                             type="number"
                                                             placeholder="Weight Point"
@@ -329,18 +341,10 @@ const addWeight = () => {
                                                                 placeholder="Description"
                                                                 class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                                             />
-                                                            <TextInput
-                                                                v-weight="
-                                                                    weightForm.weight_point
-                                                                "
-                                                                type="number"
-                                                                placeholder="weight_point"
-                                                                class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
-                                                            />
                                                             <PrimaryButton
                                                                 class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                                                @click="addweight"
-                                                            >
+                                                                @click="addWeight"
+                                                            > 
                                                                 Save
                                                             </PrimaryButton>
                                                         </div>

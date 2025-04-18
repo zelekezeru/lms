@@ -14,7 +14,7 @@ class YearSeeder extends Seeder
     public function run(): void
     {
         DB::table('years')->insert([
-
+            
             [
                 'id' => 1,
                 'name' => '2025',

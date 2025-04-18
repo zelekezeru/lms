@@ -218,7 +218,7 @@ const deleteStudent = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.semester.name }}
+                            {{ student.name }}
                         </span>
                     </div>
                     <!-- Program -->
@@ -229,7 +229,7 @@ const deleteStudent = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.program.name }}
+                            {{ student.name }}
                         </span>
                     </div>
                     <!-- Department -->
@@ -240,7 +240,7 @@ const deleteStudent = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.department.name }}
+                            {{ student.name }}
                         </span>
                     </div>
                     <!-- Pastor's Name -->

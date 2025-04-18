@@ -25,10 +25,9 @@ class WeightStoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'weight_point' => 'required|numeric|min:0|max:100',
             'weight_description' => 'nullable|string|max:255',
-            'user_id' => 'required|exists:users,id',
-            'year_id' => 'required|exists:years,id',
-            'semester_id' => 'required|exists:semesters,id',
+            'user_id' => 'nullable|exists:users,id',
             'course_id' => 'required|exists:courses,id',
+            'semester_id' => 'required|exists:semesters,id',
         ];
     }
 }

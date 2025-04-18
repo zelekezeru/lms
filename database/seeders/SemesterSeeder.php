@@ -28,7 +28,7 @@ class SemesterSeeder extends Seeder
                 'id' => 2,
                 'name' => '2nd - 2025',
                 'year_id' => 1,
-                'status' => 'Inactive',
+                'status' => 'Active',
                 'is_approved' => 1,
                 'is_completed' => 1,
                 'created_at' => '2025-04-15 16:40:00',

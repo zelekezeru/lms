@@ -42,7 +42,7 @@ class WeightController extends Controller
     public function store(WeightStoreRequest $request)
     {
         $fields = $request->validated();
-
+        dd($fields);
         Weight::create($fields);
 
         return redirect()->route('weights.index')->with('success', 'Weight created successfully.');

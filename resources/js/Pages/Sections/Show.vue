@@ -4,14 +4,7 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
-    CogIcon,
-    AcademicCapIcon,
-    UsersIcon,
-} from "@heroicons/vue/24/solid";
+import { PencilIcon, EyeIcon, TrashIcon, CogIcon, AcademicCapIcon, UsersIcon, } from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import { formToJSON } from "axios";
@@ -31,9 +24,11 @@ const props = defineProps({
         required: false,
     },
 });
+// Add this near the top with your other imports
 
+// Add this in your setup
 const courseAssignmentForm = useForm({
-    courses: section.courses,
+    courses: [],
 });
 
 const submitCourseAssignment = () => {

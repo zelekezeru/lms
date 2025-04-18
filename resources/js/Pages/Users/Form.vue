@@ -10,6 +10,7 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     form: { type: Object, required: true }, // The form object passed from parent
     roles: { type: Array, required: true },
+    userRoles: { type: Array, required: true },
 });
 
 // Handle profile image selection and preview
@@ -65,15 +66,15 @@ const handleFileChange = (e) => {
                 >
                     <option disabled value="">Select Role</option>
                     <option
-                        v-for="role in roles"
-                        :key="role.id"
-                        :value="role.name"
-                    >
+                        v-for="role in role"
+                        :key="r.id"
+                        :value="role.name">
                         {{ role.name }}
                     </option>
                 </select>
                 <InputError :message="form.errors.role_name" />
             </div>
+
 
             <!-- Profile Image Upload & Preview -->
             <div>

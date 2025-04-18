@@ -8,6 +8,7 @@ import Form from "./Form.vue";
 const props = defineProps({
     user: { type: Object, required: true },
     roles: { type: Array, required: true },
+    userRoles: { type: Array, required: true },
 });
 
 // Initialize the form with the user data or empty values
@@ -67,6 +68,8 @@ const submit = (id) => {
                 <Form 
                     :form="form" 
                     :roles="roles" 
+                    :user="props.user"
+                    :userRoles="userRoles"
                     @submit="submit(props.user.id)" 
                 />
             </div>

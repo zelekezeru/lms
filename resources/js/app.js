@@ -23,8 +23,11 @@ createInertiaApp({
 
         app.use(plugin).use(ZiggyVue).use(PrimeVue, {
             theme: {
-                preset: Aura
-            }
+                preset: Aura,
+                options: {
+                    darkModeSelector: '.dark',
+                },
+            },
         });
 
         // Register Head globally

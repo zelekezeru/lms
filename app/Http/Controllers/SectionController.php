@@ -10,8 +10,10 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
@@ -71,10 +73,10 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
-        
-        $courses = Course::all();
+        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']));
+        $courses = CourseResource::collection(Course::all());
 
+        
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,

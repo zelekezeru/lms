@@ -15,7 +15,7 @@ import {
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import { formToJSON } from "axios";
-import { MultiSelect } from "primevue";
+import { Listbox, MultiSelect } from "primevue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 
@@ -33,7 +33,7 @@ const props = defineProps({
 });
 
 const courseAssignmentForm = useForm({
-    courses: [],
+    courses: section.courses,
 });
 
 const submitCourseAssignment = () => {
@@ -540,18 +540,20 @@ const deletesection = (id) => {
     <Modal
         :show="assignCourse"
         @close="assignCourse = !assignCourse"
-        class="h-[100%] p-24"
+        class="p-24 h-full"
     >
-        <div class="w-full h-96 px-16 py-8 ">
+        <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">Pick Courses You Would like To Assign To This Section</h1>
     
-            <MultiSelect
+            <Listbox
+                id="cousesList"
                 v-model="courseAssignmentForm.courses"
                 :options="courses"
                 optionLabel="name"
                 option-value="id"
                 appendTo="self"
                 filter
+                multiple
                 placeholder="Select Courses"
                 :maxSelectedLabels="3"
                 class="w-full"

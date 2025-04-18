@@ -5,21 +5,21 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 
 const props = defineProps({
-    form: Object,
-    users: Object,
-    years: Object,
-    semesters: Object,
-    courses: Object,
+  form: { type: Object, required: true },
+  courses: Array,
+  sections: Array,
+  years: Array,
+  semesters: Array,
 });
 </script>
 
 <template>
-    <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form @submit.prevent="emit('submit')">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Name -->
             <div>
                 <InputLabel for="name" value="Name" />
-                <TextInput id="name" type="text" v-model="form.name" required />
+                <TextInput id="name" type="text"class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.name" required />
                 <InputError :message="form.errors.name" />
             </div>
 
@@ -29,7 +29,7 @@ const props = defineProps({
                 <TextInput
                     id="weight_point"
                     type="number"
-                    v-model="form.weight_point"
+                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.weight_point"
                     required
                     min="0"
                     max="100"
@@ -43,27 +43,15 @@ const props = defineProps({
                 <TextInput
                     id="weight_description"
                     type="text"
-                    v-model="form.weight_description"
+                   class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.weight_description"
                 />
                 <InputError :message="form.errors.weight_description" />
-            </div>
-
-            <!-- User Dropdown -->
-            <div>
-                <InputLabel for="user_id" value="User" />
-                <select id="user_id" v-model="form.user_id" required>
-                    <option value="">Select User</option>
-                    <option v-for="user in users" :key="user.id" :value="user.id">
-                        {{ user.name }}
-                    </option>
-                </select>
-                <InputError :message="form.errors.user_id" />
             </div>
 
             <!-- Year Dropdown -->
             <div>
                 <InputLabel for="year_id" value="Year" />
-                <select id="year_id" v-model="form.year_id" required>
+                <select id="year_id"class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.year_id" required>
                     <option value="">Select Year</option>
                     <option v-for="year in years" :key="year.id" :value="year.id">
                         {{ year.name }}
@@ -75,7 +63,7 @@ const props = defineProps({
             <!-- Semester Dropdown -->
             <div>
                 <InputLabel for="semester_id" value="Semester" />
-                <select id="semester_id" v-model="form.semester_id" required>
+                <select id="semester_id"class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.semester_id" required>
                     <option value="">Select Semester</option>
                     <option
                         v-for="semester in semesters"
@@ -91,7 +79,7 @@ const props = defineProps({
             <!-- Course Dropdown -->
             <div>
                 <InputLabel for="course_id" value="Course" />
-                <select id="course_id" v-model="form.course_id" required>
+                <select id="course_id"class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" v-model="form.course_id" required>
                     <option value="">Select Course</option>
                     <option
                         v-for="course in courses"

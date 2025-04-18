@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WeightStoreRequest;
 use App\Http\Requests\WeightUpdateRequest;
 use App\Models\Weight;
+use App\Models\Instructor;
+use App\Models\Year;
+use App\Models\Semester;
+use App\Models\Course;
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 class WeightController extends Controller
@@ -20,7 +25,18 @@ class WeightController extends Controller
     
     public function create()
     {
-        return inertia('Weights/Create');
+        $instructors = Instructor::all();
+        $years = Year::all();
+        $semesters = Semester::all();
+        $courses = Course::all();
+        $sections = Section::all();
+
+        return inertia('Weights/Create', [
+            'instructors' => $instructors,
+            'years' => $years,
+            'semesters' => $semesters,
+            'courses' => $courses,
+        ]);
     }
 
     public function store(WeightStoreRequest $request)

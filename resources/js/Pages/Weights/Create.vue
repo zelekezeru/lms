@@ -4,10 +4,10 @@ import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
 
 defineProps({
-    users: Object,
-    years: Object,
-    semesters: Object,
-    courses: Object,
+    semesters: { type: Array, required: true },
+    years: { type: Array, required: true },
+    courses: { type: Array, required: true },
+    sections: { type: Array, required: true },
 });
 
 const form = useForm({
@@ -36,10 +36,10 @@ const submit = () => {
                 <Form
                     :form="form"
                     @submit="submit"
-                    :users="users"
                     :years="years"
                     :semesters="semesters"
                     :courses="courses"
+                    :sections="sections"
                 />
             </div>
         </div>

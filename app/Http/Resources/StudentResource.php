@@ -15,8 +15,6 @@ class StudentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
-
         return [
             'id' => $this->id,
             'student_name' => $this->student_name,
@@ -30,7 +28,6 @@ class StudentResource extends JsonResource
             'year_id' => $this->year_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'profileImg'  => Storage::url($this->user->profile_img),
             'user_id' => $this->user_id,
             'status' => $this->status,
             'is_approved' => $this->is_approved,
@@ -47,7 +44,10 @@ class StudentResource extends JsonResource
             'is_scholarship_deleted' => $this->is_scholarship_deleted,
             'is_scholarship_verified' => $this->is_scholarship_verified,
             'is_scholarship_enrolled' => $this->is_scholarship_enrolled,
-            
+
+            'profileImg'  => Storage::url($this->user->profile_img),
+            'user' => new UserResource($this->whenLoaded('user')),
+             
         ];
     }
 }

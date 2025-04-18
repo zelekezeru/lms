@@ -4,7 +4,7 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { PencilIcon, EyeIcon, TrashIcon, CogIcon, AcademicCapIcon, UsersIcon } from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
 
 // Define the props for the section with validation-related data
@@ -14,6 +14,14 @@ const props = defineProps({
         required: true,
     },
 });
+
+const tabs = [
+    { key: "details", label: "Details", icon: CogIcon },
+    { key: "courses", label: "Courses", icon: AcademicCapIcon },
+    { key: "students", label: "Students", icon: UsersIcon },
+];
+
+const selectedTab = ref("details");
 
 // Delete function with SweetAlert confirmation
 const deletesection = (id) => {
@@ -43,17 +51,36 @@ const deletesection = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-8xl mx-auto p-6">
+        <div class="max-w-5xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
                 {{ section.name }} Section
             </h1>
 
-            <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
-            >
-                <div class="grid grid-cols-2 gap-4">
+            <nav class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700" >
+                <button
+                    v-for="tab in tabs"
+                    :key="tab.key"
+                    @click="selectedTab = tab.key"
+                    :class="[
+                        'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
+                        selectedTab === tab.key
+                            ? 'border-b-2 border-indigo-500 text-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
+                    ]"
+                >
+                    <component :is="tab.icon" class="w-5 h-5" />
+                    <span>{{ tab.label }}</span>
+                </button>
+            </nav>
+
+            <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700" >
+
+                <!-- Details Panel -->
+
+                <div v-show="selectedTab === 'details'" class="grid grid-cols-2 gap-4">
+
                     <!-- Section Code -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -129,44 +156,258 @@ const deletesection = (id) => {
                     <!-- Semester name -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Semester
-                        </span>
+                            >Semester</span
+                        >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             {{ section.semester.name }}
                         </span>
                     </div>
+
+                    <!-- Edit and Delete Buttons -->
+                    
+                    <div class="flex justify-end col-span-2 mt-4">
+                        <Link
+                            v-if="userCan('update-sections')"
+                            :href="
+                                route('sections.edit', { section: section.id })
+                            "
+                            class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
+                        </Link>
+                        <button
+                            v-if="userCan('delete-sections')"
+                            @click="deletesection(section.id)"
+                            class="ml-4 inline-flex items-center space-x-2 text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
+                        </button>
+                    </div>
+
+                        <!-- Assign Courses to This section -->
+                        
+                </div>
+                
+                <!--  Courses Pannel -->
+                
+                <!-- Courses Panel -->
+                <div v-show="selectedTab === 'courses'" class="">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Courses
+                        </h2>
+                        <button
+                            @click="createCourse = !createCourse"
+                            class="flex items-center text-indigo-600 hover:text-indigo-800"
+                        >
+                            <component
+                                :is="
+                                    createCourse
+                                        ? XMarkIcon
+                                        : PlusCircleIcon
+                                "
+                                class="w-8 h-8"
+                            />
+                            Add Course
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <div
+                            class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                        >
+                            <div class="flex items-center justify-between mb-4">
+                                <h2
+                                    class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                                >
+                                    Courses
+                                </h2>
+                            </div>
+                            <!-- Section courses list -->
+                            <div class="overflow-x-auto">
+                                <table
+                                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                                >
+                                    <thead>
+                                        <tr class="bg-gray-50 dark:bg-gray-700">
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                Name
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                Course Code
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                            >
+                                                Credit Hours
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                course, index
+                                            ) in section.courses"
+                                            :key="course.id"
+                                            :class="
+                                                index % 2 === 0
+                                                    ? 'bg-white dark:bg-gray-800'
+                                                    : 'bg-gray-50 dark:bg-gray-700'
+                                            "
+                                            class="border-b border-gray-300 dark:border-gray-600"
+                                        >
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'courses.show',
+                                                            {
+                                                                course:
+                                                                    course.id,
+                                                            }
+                                                        )
+                                                    "
+                                                >
+                                                    {{ course.name }}
+                                                </Link>
+                                            </td>
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                {{ course.code }}
+                                            </td>
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                            >
+                                                {{ course.credit_hours }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-6">
-                    <Link
-                        v-if="userCan('update-sections')"
-                        :href="
-                            route('sections.edit', { section: section.name })
-                        "
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
-                    </Link>
-                    <button
-                        v-if="userCan('delete-sections')"
-                        @click="deletesection(section.name)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                    </button>
-                </div>
+                <!-- Students Panel -->
+                <div v-show="selectedTab === 'students'" class="">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Students
+                        </h2>
+                        <button
+                            @click="createStudent = !createStudent"
+                            class="flex items-center text-indigo-600 hover:text-indigo-800"
+                        >
+                            <component
+                                :is="
+                                    createStudent
+                                        ? XMarkIcon
+                                        : PlusCircleIcon
+                                "
+                                class="w-8 h-8"
+                            />
+                            Add Student
+                        </button>
+                    </div>
 
-                <!-- Assign Courses to This section -->
-                <Link
-                    v-if="userCan('section-courses')"
-                    :href="route('section.courses', { section: section.name })"
-                    class="text-blue-500 hover:text-blue-700"
-                >
-                </Link>
-            </div>
+                    <div class="overflow-x-auto">
+                        <div
+                            class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                        >
+                            <div class="flex items-center justify-between mb-4">
+                                <h2
+                                    class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                                >
+                                    Students
+                                </h2>
+                            </div>
+                            <!-- Section Students list -->
+                            <div class="overflow-x-auto">
+                                <table
+                                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                                >
+                                    <thead>
+                                        <tr class="bg-gray-50 dark:bg-gray-700">
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                Name
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                ID Number
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                            >
+                                                Program
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                student, index
+                                            ) in section.students"
+                                            :key="student.id"
+                                            :class="
+                                                index % 2 === 0
+                                                    ? 'bg-white dark:bg-gray-800'
+                                                    : 'bg-gray-50 dark:bg-gray-700'
+                                            "
+                                            class="border-b border-gray-300 dark:border-gray-600"
+                                        >
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'students.show',
+                                                            {
+                                                                student:
+                                                                    student.id,
+                                                            }
+                                                        )
+                                                    "
+                                                >
+                                                    {{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}
+                                                </Link>
+                                            </td>
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                {{ student.id_no }}
+                                            </td>
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                            >
+                                                {{ section.program.name }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
         </div>
     </AppLayout>
 </template>

@@ -228,17 +228,12 @@ const deleteProgram = (id) => {
                             Add Department
                         </button>
                     </div>
+
                     <div class="overflow-x-auto">
                         <div
                             class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
                         >
-                            <div class="flex items-center justify-between mb-4">
-                                <h2
-                                    class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                                >
-                                    Departments
-                                </h2>
-                            </div>
+                            <!-- Program Departments list -->
                             <div class="overflow-x-auto">
                                 <table
                                     class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -388,6 +383,7 @@ const deleteProgram = (id) => {
                             <PlusCircleIcon class="w-8 h-8" />
                         </button>
                     </div>
+                    <!-- Program Study Modes List -->
                     <div class="overflow-x-auto">
                         <div
                             class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"

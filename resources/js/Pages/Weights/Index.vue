@@ -12,7 +12,7 @@ import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
 
 defineProps({
-    weights: Object,
+    weights: Array,
     sortInfo: Object,
 });
 

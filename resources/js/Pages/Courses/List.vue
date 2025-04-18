@@ -37,7 +37,7 @@ defineProps({
                     <th scope="col" class="px-6 py-3">No.</th>
                     <th scope="col" class="px-6 py-3">Name</th>
                     <th scope="col" class="px-6 py-3">Code</th>
-                    <th scope="col" class="px-6 py-3">Duration</th>
+                    <th scope="col" class="px-6 py-3">Credit Hours</th>
                     <th scope="col" class="px-6 py-3">Actions</th>
                 </tr>
             </TableHeader>
@@ -54,7 +54,7 @@ defineProps({
                     </th>
                     
                     <td class="px-6 py-4">{{ course.code }}</td>
-                    <td class="px-6 py-4">{{ course.duration }}</td>
+                    <td class="px-6 py-4">{{ course.credit_hours }}</td>
                     <td class="px-6 py-4 flex space-x-6">
                         <!-- View -->
                         <div v-if="userCan('view-courses')">

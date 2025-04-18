@@ -24,6 +24,8 @@ class SectionResource extends JsonResource
             'department' => new DepartmentResource($this->whenLoaded('department')),
             'year' => new YearResource($this->whenLoaded('year')),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
-        ];
+            'students' => new StudentResource($this->whenLoaded('students')),
+            'courses' => new CourseResource($this->whenLoaded('courses')),
+        ]; 
     }
 }

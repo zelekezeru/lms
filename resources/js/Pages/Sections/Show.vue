@@ -542,12 +542,8 @@ const deletesection = (id) => {
         @close="assignCourse = !assignCourse"
         class="h-[100%] p-24"
     >
-        <div class="w-full h-96">
-            <InputLabel
-                for="courses"
-                value="Select Courses (at least one)"
-                class="block mb-1 text-gray-200"
-            />
+        <div class="w-full h-96 px-16 py-8 ">
+            <h1 class="text-lg mb-5">Pick Courses You Would like To Assign To This Section</h1>
     
             <MultiSelect
                 v-model="courseAssignmentForm.courses"
@@ -555,7 +551,7 @@ const deletesection = (id) => {
                 optionLabel="name"
                 option-value="id"
                 appendTo="self"
-                filtery
+                filter
                 placeholder="Select Courses"
                 :maxSelectedLabels="3"
                 class="w-full"

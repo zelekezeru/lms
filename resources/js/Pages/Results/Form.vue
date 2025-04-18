@@ -22,25 +22,25 @@ const props = defineProps({
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Result Point -->
             <div>
-                <InputLabel for="result_point" value="Result Point" />
+                <InputLabel for="point" value="Result Point" />
                 <TextInput
-                    id="result_point"
+                    id="point"
                     type="text"
-                    v-model="form.result_point"
+                    v-model="form.point"
                     required
                 />
-                <InputError :message="form.errors.result_point" />
+                <InputError :message="form.errors.point" />
             </div>
 
             <!-- Result Description -->
             <div>
-                <InputLabel for="result_description" value="Result Description" />
+                <InputLabel for="description" value="Result Description" />
                 <TextInput
-                    id="result_description"
+                    id="description"
                     type="text"
-                    v-model="form.result_description"
+                    v-model="form.description"
                 />
-                <InputError :message="form.errors.result_description" />
+                <InputError :message="form.errors.description" />
             </div>
 
             <!-- Changed Point -->

@@ -13,7 +13,6 @@ class Grade extends Model
         return $this->hasMany(Result::class);
     }
 
-
     public function student()
     {
         return $this->belongsTo(Student::class);

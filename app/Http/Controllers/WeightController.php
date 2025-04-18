@@ -11,6 +11,7 @@ use App\Models\Semester;
 use App\Models\Course;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WeightController extends Controller
 {
@@ -29,23 +30,29 @@ class WeightController extends Controller
         $years = Year::all();
         $semesters = Semester::all();
         $courses = Course::all();
-        $sections = Section::all();
+        $sections = Section::with(['program'])->get();
 
         return inertia('Weights/Create', [
             'instructors' => $instructors,
             'years' => $years,
             'semesters' => $semesters,
             'courses' => $courses,
+            'sections' => $sections,
         ]);
     }
 
     public function store(WeightStoreRequest $request)
     {
         $fields = $request->validated();
-        dd($fields);
-        Weight::create($fields);
+        
+        $fields['user_id'] = Auth::id(); // Set the user_id to the authenticated user's ID
 
-        return redirect()->route('weights.index')->with('success', 'Weight created successfully.');
+        $weight = Weight::create($fields);
+
+        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the departments.show method is the default
+        $redirectTo = $request->input('redirectTo', route('weights.show', $weight));
+
+        return redirect($redirectTo)->with('success', 'Weight created successfully.');
     }
 
     public function show(Weight $weight)
@@ -57,13 +64,26 @@ class WeightController extends Controller
 
     public function edit(Weight $weight)
     {
+        $instructors = Instructor::all();
+        $years = Year::all();
+        $semesters = Semester::get()->load('year');
+        $courses = Course::all();
+        $sections = Section::with(['program'])->get();
+
+        $weight = $weight->load(['instructor', 'year', 'semester', 'course']);
+
         return inertia('Weights/Edit', [
             'weight' => $weight,
+            'instructors' => $instructors,
+            'years' => $years,
+            'semesters' => $semesters,
+            'courses' => $courses,
+            'sections' => $sections,
         ]);
     }
 
     public function update(WeightUpdateRequest $request, Weight $weight)
-    {
+    {dd($weight);
         $fields = $request->validated();
 
         $weight->update($fields);
@@ -83,8 +103,8 @@ class WeightController extends Controller
         $query = $request->input('query');
 
         $weights = Weight::where('name', 'like', "%{$query}%")
-            ->orWhere('weight_point', 'like', "%{$query}%")
-            ->orWhere('weight_description', 'like', "%{$query}%")
+            ->orWhere('point', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%")
             ->with(['instructor', 'year', 'semester', 'course'])
             ->paginate(30); // Ensure pagination is used
 

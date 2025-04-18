@@ -13,17 +13,13 @@ return new class extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->integer('result_point');
-            $table->string('result_description')->nullable();
+            $table->integer('point');
+            $table->string('description')->nullable();
             $table->string('changed_point')->nullable();
 
             $table->foreignId('weight_id')->constrained();
             $table->foreignId('student_id')->constrained();
-            $table->foreignId('year_id')->constrained();
-            $table->foreignId('semester_id')->constrained();
-            $table->foreignId('section_id')->constrained();
-            $table->foreignId('course_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('instructor_id')->constrained();
             $table->foreignId('grade_id')->constrained();
 
             $table->foreignId('changed_by')->nullable();

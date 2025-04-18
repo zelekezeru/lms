@@ -15,8 +15,8 @@ defineProps({
 });
 
 const form = useForm({
-    result_point: "",
-    result_description: "",
+    point: "",
+    description: "",
     changed_point: "",
     weight_id: "",
     student_id: "",

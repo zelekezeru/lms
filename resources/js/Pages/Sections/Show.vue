@@ -246,24 +246,29 @@ const deletesection = (id) => {
                                     <thead>
                                         <tr class="bg-gray-50 dark:bg-gray-700">
                                             <th
-                                                class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 No.
                                             </th>
                                             <th
-                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 Name
                                             </th>
                                             <th
-                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 Course Code
                                             </th>
                                             <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                             >
                                                 Credit Hours
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                            >
+                                                Actions
                                             </th>
                                         </tr>
                                     </thead>
@@ -273,11 +278,11 @@ const deletesection = (id) => {
                                             :key="course.id"
                                             :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
                                             class="border-b border-gray-300 dark:border-gray-600">
-                                            <td class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                            <td class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                                 {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
                                             
                                             <td
-                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
                                                     :href="
@@ -299,10 +304,23 @@ const deletesection = (id) => {
                                                 {{ course.code }}
                                             </td>
                                             <td
-                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 {{ course.credit_hours }}
                                             </td>
+
+                                            <!-- Course Assessments -->
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                <Link
+                                                    :href="route('assessments.section_course', { course: course.id, section: section.id })"
+                                                    class="text-green-500 hover:text-green-700"
+                                                >
+                                                    <CogIcon class="w-5 h-5 inline-block" /> <span class="inline-block">Assessments</span>
+                                                </Link>
+                                            </td>
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -354,12 +372,12 @@ const deletesection = (id) => {
                                     <thead>
                                         <tr class="bg-gray-50 dark:bg-gray-700">
                                             <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 No.
                                             </th>
                                             <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 Name
                                             </th>
@@ -369,9 +387,14 @@ const deletesection = (id) => {
                                                 ID Number
                                             </th>
                                             <th
+                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                Department
+                                            </th>
+                                            <th
                                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                             >
-                                                Program
+                                                Assesment
                                             </th>
                                         </tr>
                                     </thead>
@@ -382,7 +405,7 @@ const deletesection = (id) => {
                                             :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
                                             class="border-b border-gray-300 dark:border-gray-600">
 
-                                            <td class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                            <td class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                                 {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
                                             <td
                                                 class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -407,9 +430,21 @@ const deletesection = (id) => {
                                                 {{ student.id_no }}
                                             </td>
                                             <td
-                                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
-                                                {{ section.program.name }}
+                                                {{ section.department.name }}
+                                            </td>
+                                            
+                                            <!-- Course Assessments -->
+                                            <td
+                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                <Link
+                                                    :href="route('assessments.section_student', { student: student.id, section: section.id })"
+                                                    class="text-green-500 hover:text-green-700"
+                                                >
+                                                    <CogIcon class="w-5 h-5 inline-block" /> <span class="inline-block">Assessments</span>
+                                                </Link>
                                             </td>
                                         </tr>
                                     </tbody>

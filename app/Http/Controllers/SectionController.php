@@ -15,6 +15,7 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Models\Course;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -71,9 +72,10 @@ class SectionController extends Controller
     public function show(Section $section)
     {
         $section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
-        
+        $courses = Course::all();
         return Inertia::render('Sections/Show', [
             'section' => $section,
+            'courses' => $courses,
         ]);
     }
     

@@ -4,8 +4,20 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon, CogIcon, AcademicCapIcon, UsersIcon } from "@heroicons/vue/24/solid";
+import {
+    PencilIcon,
+    EyeIcon,
+    TrashIcon,
+    CogIcon,
+    AcademicCapIcon,
+    UsersIcon,
+} from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import Modal from "@/Components/Modal.vue";
+import { formToJSON } from "axios";
+import { MultiSelect } from "primevue";
+import InputLabel from "@/Components/InputLabel.vue";
+import InputError from "@/Components/InputError.vue";
 
 // Define the props for the section with validation-related data
 const props = defineProps({
@@ -13,7 +25,21 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+
+    courses: {
+        type: Object,
+        required: false,
+    },
 });
+
+const courseAssignmentForm = useForm({
+    courses: [],
+});
+
+const submitCourseAssignment = () => {
+    
+    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}))
+}
 
 const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
@@ -31,6 +57,7 @@ const students = ref({
 });
 
 const selectedTab = ref("details");
+const assignCourse = ref(false);
 
 // Delete function with SweetAlert confirmation
 const deletesection = (id) => {
@@ -67,7 +94,9 @@ const deletesection = (id) => {
                 {{ section.name }} Section
             </h1>
 
-            <nav class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700" >
+            <nav
+                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
+            >
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
@@ -84,12 +113,15 @@ const deletesection = (id) => {
                 </button>
             </nav>
 
-            <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700" >
-
+            <div
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
                 <!-- Details Panel -->
 
-                <div v-show="selectedTab === 'details'" class="grid grid-cols-2 gap-4">
-
+                <div
+                    v-show="selectedTab === 'details'"
+                    class="grid grid-cols-2 gap-4"
+                >
                     <!-- Section Code -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
@@ -175,7 +207,7 @@ const deletesection = (id) => {
                     </div>
 
                     <!-- Edit and Delete Buttons -->
-                    
+
                     <div class="flex justify-end col-span-2 mt-4">
                         <Link
                             v-if="userCan('update-sections')"
@@ -197,12 +229,11 @@ const deletesection = (id) => {
                         </button>
                     </div>
 
-                        <!-- Assign Courses to This section -->
-                        
+                    <!-- Assign Courses to This section -->
                 </div>
-                
+
                 <!--  Courses Pannel -->
-                
+
                 <!-- Courses Panel -->
                 <div v-show="selectedTab === 'courses'" class="">
                     <div class="flex items-center justify-between mb-4">
@@ -212,18 +243,14 @@ const deletesection = (id) => {
                             Courses
                         </h2>
                         <button
-                            @click="createCourse = !createCourse"
+                            @click="assignCourse = !assignCourse"
                             class="flex items-center text-indigo-600 hover:text-indigo-800"
                         >
                             <component
-                                :is="
-                                    createCourse
-                                        ? XMarkIcon
-                                        : PlusCircleIcon
-                                "
+                                :is="createCourse ? XMarkIcon : PlusCircleIcon"
                                 class="w-8 h-8"
                             />
-                            Add Course
+                            Assign Course
                         </button>
                     </div>
 
@@ -274,25 +301,38 @@ const deletesection = (id) => {
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(course, index) in section.courses"
+                                            v-for="(
+                                                course, index
+                                            ) in section.courses"
                                             :key="course.id"
-                                            :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
-                                            class="border-b border-gray-300 dark:border-gray-600">
-                                            <td class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                                {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
-                                            
+                                            :class="
+                                                index % 2 === 0
+                                                    ? 'bg-white dark:bg-gray-800'
+                                                    : 'bg-gray-50 dark:bg-gray-700'
+                                            "
+                                            class="border-b border-gray-300 dark:border-gray-600"
+                                        >
+                                            <td
+                                                class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                {{
+                                                    index +
+                                                    1 +
+                                                    (students.meta
+                                                        .current_page -
+                                                        1) *
+                                                        students.meta.per_page
+                                                }}
+                                            </td>
+
                                             <td
                                                 class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
                                                     :href="
-                                                        route(
-                                                            'courses.show',
-                                                            {
-                                                                course:
-                                                                    course.id,
-                                                            }
-                                                        )
+                                                        route('courses.show', {
+                                                            course: course.id,
+                                                        })
                                                     "
                                                 >
                                                     {{ course.name }}
@@ -314,13 +354,26 @@ const deletesection = (id) => {
                                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
-                                                    :href="route('assessments.section_course', { course: course.id, section: section.id })"
+                                                    :href="
+                                                        route(
+                                                            'assessments.section_course',
+                                                            {
+                                                                course: course.id,
+                                                                section:
+                                                                    section.id,
+                                                            }
+                                                        )
+                                                    "
                                                     class="text-green-500 hover:text-green-700"
                                                 >
-                                                    <CogIcon class="w-5 h-5 inline-block" /> <span class="inline-block">Assessments</span>
+                                                    <CogIcon
+                                                        class="w-5 h-5 inline-block"
+                                                    />
+                                                    <span class="inline-block"
+                                                        >Assessments</span
+                                                    >
                                                 </Link>
                                             </td>
-
                                         </tr>
                                     </tbody>
                                 </table>
@@ -342,11 +395,7 @@ const deletesection = (id) => {
                             class="flex items-center text-indigo-600 hover:text-indigo-800"
                         >
                             <component
-                                :is="
-                                    createStudent
-                                        ? XMarkIcon
-                                        : PlusCircleIcon
-                                "
+                                :is="createStudent ? XMarkIcon : PlusCircleIcon"
                                 class="w-8 h-8"
                             />
                             Add Student
@@ -400,28 +449,44 @@ const deletesection = (id) => {
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(student, index) in section.students"
+                                            v-for="(
+                                                student, index
+                                            ) in section.students"
                                             :key="student.id"
-                                            :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
-                                            class="border-b border-gray-300 dark:border-gray-600">
-
-                                            <td class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                                {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
+                                            :class="
+                                                index % 2 === 0
+                                                    ? 'bg-white dark:bg-gray-800'
+                                                    : 'bg-gray-50 dark:bg-gray-700'
+                                            "
+                                            class="border-b border-gray-300 dark:border-gray-600"
+                                        >
+                                            <td
+                                                class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                {{
+                                                    index +
+                                                    1 +
+                                                    (students.meta
+                                                        .current_page -
+                                                        1) *
+                                                        students.meta.per_page
+                                                }}
+                                            </td>
                                             <td
                                                 class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
                                                     :href="
-                                                        route(
-                                                            'students.show',
-                                                            {
-                                                                student:
-                                                                    student.id,
-                                                            }
-                                                        )
+                                                        route('students.show', {
+                                                            student: student.id,
+                                                        })
                                                     "
                                                 >
-                                                    {{ student.student_name }} {{ student.father_name }} {{ student.grand_father_name }}
+                                                    {{ student.student_name }}
+                                                    {{ student.father_name }}
+                                                    {{
+                                                        student.grand_father_name
+                                                    }}
                                                 </Link>
                                             </td>
                                             <td
@@ -434,16 +499,31 @@ const deletesection = (id) => {
                                             >
                                                 {{ section.department.name }}
                                             </td>
-                                            
+
                                             <!-- Course Assessments -->
                                             <td
                                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
-                                                    :href="route('assessments.section_student', { student: student.id, section: section.id })"
+                                                    :href="
+                                                        route(
+                                                            'assessments.section_student',
+                                                            {
+                                                                student:
+                                                                    student.id,
+                                                                section:
+                                                                    section.id,
+                                                            }
+                                                        )
+                                                    "
                                                     class="text-green-500 hover:text-green-700"
                                                 >
-                                                    <CogIcon class="w-5 h-5 inline-block" /> <span class="inline-block">Assessments</span>
+                                                    <CogIcon
+                                                        class="w-5 h-5 inline-block"
+                                                    />
+                                                    <span class="inline-block"
+                                                        >Assessments</span
+                                                    >
                                                 </Link>
                                             </td>
                                         </tr>
@@ -453,7 +533,46 @@ const deletesection = (id) => {
                         </div>
                     </div>
                 </div>
-            </div>  
+            </div>
         </div>
     </AppLayout>
+
+    <Modal
+        :show="assignCourse"
+        @close="assignCourse = !assignCourse"
+        class="h-[100%] p-24"
+    >
+        <div class="w-full h-96">
+            <InputLabel
+                for="courses"
+                value="Select Courses (at least one)"
+                class="block mb-1 text-gray-200"
+            />
+    
+            <MultiSelect
+                v-model="courseAssignmentForm.courses"
+                :options="courses"
+                optionLabel="name"
+                option-value="id"
+                appendTo="self"
+                filtery
+                placeholder="Select Courses"
+                :maxSelectedLabels="3"
+                class="w-full"
+            />
+    
+            <InputError
+                :message="courseAssignmentForm.errors.programs"
+                class="mt-2 text-sm text-red-500"
+            />
+                  <div class="flex justify-end mt-4">
+        <button
+          @click="submitCourseAssignment"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+        >
+          Assign
+        </button>
+      </div>
+        </div>
+    </Modal>
 </template>

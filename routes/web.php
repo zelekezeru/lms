@@ -47,6 +47,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Assignment routes
     // Attaching Section to courses, instructors, and students
+    Route::get('/sections/{section}/courses', [AssignmentController::class, 'section_courses'])->name('section.courses');
+    Route::post('/sections/{section}/courses', [AssignmentController::class, 'attach_section_courses'])->name('section-courses.attach');
+    Route::post('/sections/{section}/courses/{course}', [AssignmentController::class, 'detach_section_courses'])->name('section-courses.detach');
+
     Route::get('/programs/{program}/courses', [AssignmentController::class, 'program_courses'])->name('program.courses');
     Route::post('/programs/{program}/courses', [AssignmentController::class, 'attach_program_courses'])->name('program-courses.attach');
     Route::post('/programs/{program}/courses/{course}', [AssignmentController::class, 'detach_program_courses'])->name('program-courses.detach');

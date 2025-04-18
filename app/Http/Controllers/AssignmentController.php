@@ -37,6 +37,13 @@ class AssignmentController extends Controller
         return redirect()->route('programs.show', $program)->with('success', 'Courses Assigned successfully.');
     }
 
+    public function attach_section_courses(Request $request, Section $section)
+    {
+        $section->courses()->sync($request['courses']);
+
+        return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
+    }
+
 
     //Assigning Departments to Course
     public function course_departments($course)

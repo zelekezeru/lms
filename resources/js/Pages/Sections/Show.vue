@@ -21,6 +21,15 @@ const tabs = [
     { key: "students", label: "Students", icon: UsersIcon },
 ];
 
+// Initialize students with a default structure
+const students = ref({
+    data: [],
+    meta: {
+        current_page: 1,
+        per_page: 10,
+    },
+});
+
 const selectedTab = ref("details");
 
 // Delete function with SweetAlert confirmation
@@ -237,12 +246,17 @@ const deletesection = (id) => {
                                     <thead>
                                         <tr class="bg-gray-50 dark:bg-gray-700">
                                             <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                No.
+                                            </th>
+                                            <th
+                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 Name
                                             </th>
                                             <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 Course Code
                                             </th>
@@ -255,17 +269,13 @@ const deletesection = (id) => {
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(
-                                                course, index
-                                            ) in section.courses"
+                                            v-for="(course, index) in section.courses"
                                             :key="course.id"
-                                            :class="
-                                                index % 2 === 0
-                                                    ? 'bg-white dark:bg-gray-800'
-                                                    : 'bg-gray-50 dark:bg-gray-700'
-                                            "
-                                            class="border-b border-gray-300 dark:border-gray-600"
-                                        >
+                                            :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
+                                            class="border-b border-gray-300 dark:border-gray-600">
+                                            <td class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                                {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
+                                            
                                             <td
                                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
@@ -346,6 +356,11 @@ const deletesection = (id) => {
                                             <th
                                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                             >
+                                                No.
+                                            </th>
+                                            <th
+                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                            >
                                                 Name
                                             </th>
                                             <th
@@ -362,19 +377,15 @@ const deletesection = (id) => {
                                     </thead>
                                     <tbody>
                                         <tr
-                                            v-for="(
-                                                student, index
-                                            ) in section.students"
+                                            v-for="(student, index) in section.students"
                                             :key="student.id"
-                                            :class="
-                                                index % 2 === 0
-                                                    ? 'bg-white dark:bg-gray-800'
-                                                    : 'bg-gray-50 dark:bg-gray-700'
-                                            "
-                                            class="border-b border-gray-300 dark:border-gray-600"
-                                        >
+                                            :class=" index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
+                                            class="border-b border-gray-300 dark:border-gray-600">
+
+                                            <td class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                                {{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
                                             <td
-                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                                class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
                                                 <Link
                                                     :href="
@@ -396,7 +407,7 @@ const deletesection = (id) => {
                                                 {{ student.id_no }}
                                             </td>
                                             <td
-                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                                             >
                                                 {{ section.program.name }}
                                             </td>

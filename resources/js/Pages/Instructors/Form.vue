@@ -120,10 +120,8 @@ const handleFileChange = (e) => {
                             <option disabled value="">
                                 Select Employment Type
                             </option>
-                            <option value="Full-time">Full-Time</option>
-                            <option value="Part-time">Part-Time</option>
-                            <option value="Contract">Contract</option>
-                            <option value="Guest">Guest</option>
+                            <option value="full-time">Full-Time</option>
+                            <option value="part-time">Part-Time</option>
                         </select>
                         <InputError :message="form.errors.employment_type" />
                     </div>

@@ -12,12 +12,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\InstructorResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
+use App\Models\Instructor;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -73,12 +75,14 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']));
+        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
         $courses = CourseResource::collection(Course::all());
-
+        $instructors = InstructorResource::collection(Instructor::all());
+        
         return Inertia::render('Sections/Show', [
-            'section' => new SectionResource($section),
-            'courses' => CourseResource::collection(Course::all()),
+            'section' => $section,
+            'courses' => $courses,
+            'instructors' => $instructors,
         ]);
     }
     

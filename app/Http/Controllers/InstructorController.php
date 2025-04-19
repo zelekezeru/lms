@@ -92,6 +92,7 @@ class InstructorController extends Controller
 
         $instructor = Instructor::create([
             'user_id' => $user->id,
+            'tenant_id' => 1,
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
             'bio' => $fields['bio'],

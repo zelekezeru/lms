@@ -4,62 +4,42 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon, CogIcon, AcademicCapIcon, UsersIcon, } from "@heroicons/vue/24/solid";
-import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import {
+    PencilIcon,
+    EyeIcon,
+    TrashIcon,
+    CogIcon,
+    AcademicCapIcon,
+    UsersIcon,
+} from "@heroicons/vue/24/solid";
+import { PencilSquareIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import { formToJSON } from "axios";
 import { Listbox, MultiSelect } from "primevue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 
-// Define the props for the section with validation-related data
+
 const props = defineProps({
     section: {
         type: Object,
         required: true,
     },
-
     courses: {
         type: Object,
         required: false,
     },
-});
-// Add this near the top with your other imports
-
-// Add this in your setup
-const courseAssignmentForm = useForm({
-    courses: props.section.courses.map(course => course.id),
+    instructors: {
+        type: Object,
+        required: false,
+    },
 });
 
-const closeCourseAssignemnt = () => {
-    assignCourse.value = false;
-    courseAssignmentForm.reset();
-    courseAssignmentForm.clearErrors()
-}
+const selectedTab = ref('details');
+const assignCourses = ref(false);
+const assignInstructor = ref(false);
+const assignToCourse = ref({});
 
-const submitCourseAssignment = () => {
-    console.log('hi');
-    
-    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}), {
-        onSuccess: () =>{
-            Swal.fire(
-                    "Succesfull!",
-                    "Courses Assigned successfully.",
-                    "success"
-                );
-            assignCourse.value = false;
-            courseAssignmentForm.reset();
-        }
-    })
-}
-
-const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "courses", label: "Courses", icon: AcademicCapIcon },
-    { key: "students", label: "Students", icon: UsersIcon },
-];
-
-// Initialize students with a default structure
 const students = ref({
     data: [],
     meta: {
@@ -68,27 +48,91 @@ const students = ref({
     },
 });
 
-const selectedTab = ref("details");
-const assignCourse = ref(false);
+const tabs = [
+    { key: 'details', label: 'Details', icon: CogIcon },
+    { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
+    { key: 'students', label: 'Students', icon: UsersIcon },
+];
 
-// Delete function with SweetAlert confirmation
+const courseAssignmentForm = useForm({
+    courses: props.section.courses.map(course => course.id),
+});
+
+const closeCourseAssignemnt = () => {
+    assignCourses.value = false;
+    courseAssignmentForm.reset();
+    courseAssignmentForm.clearErrors();
+};
+
+const submitCourseAssignment = () => {
+    courseAssignmentForm.post(
+        route('section-courses.attach', { section: props.section.id }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    'Successful!',
+                    'Courses assigned successfully.',
+                    'success'
+                );
+                assignCourses.value = false;
+                courseAssignmentForm.reset();
+            },
+        }
+    );
+};
+
+const instructorAssignmentForm = useForm({
+    instructor_id: "",
+    course_id: ""
+});
+
+const opneInstructorAssignemnt = (course) => {
+    assignInstructor.value = true;
+    assignToCourse.value = course;
+    instructorAssignmentForm.course_id = course.id;
+    instructorAssignmentForm.instructor_id = course.instructor.id;
+};
+
+const closeInstructorAssignemnt = () => {
+    assignInstructor.value = false;
+    instructorAssignmentForm.reset();
+    instructorAssignmentForm.clearErrors();
+};
+
+const submitInstructorAssignment = () => {
+    instructorAssignmentForm.post(
+        route('section-course-instructor.attach', { section: props.section.id }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    'Successful!',
+                    'Instructors assigned successfully.',
+                    'success'
+                );
+                assignInstructor.value = false;
+                instructorAssignmentForm.reset();
+            },
+        }
+    );
+};
+
 const deletesection = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone!",
-        icon: "warning",
+        title: 'Are you sure?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+    }).then(result => {
         if (result.isConfirmed) {
-            router.delete(route("sections.destroy", { section: id }), {
+            router.delete(route('sections.destroy', { section: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The section entry has been successfully deleted.",
-                        "success"
+                        'Deleted!',
+                        'The section entry has been successfully deleted.',
+                        'success'
                     );
                 },
             });
@@ -255,7 +299,7 @@ const deletesection = (id) => {
                             Courses
                         </h2>
                         <button
-                            @click="assignCourse = !assignCourse"
+                            @click="assignCourses = !assignCourses"
                             class="flex items-center text-indigo-600 hover:text-indigo-800"
                         >
                             Assign Course
@@ -299,6 +343,11 @@ const deletesection = (id) => {
                                                 class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                             >
                                                 Credit Hours
+                                            </th>
+                                            <th
+                                                class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                            >
+                                                Instructor
                                             </th>
                                             <th
                                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -354,9 +403,25 @@ const deletesection = (id) => {
                                             <td
                                                 class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
-                                                {{ course.credit_hours }}
+                                                {{ course.creditHour }}
                                             </td>
 
+                                            <td
+                                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            >
+                                                <span v-if="course.instructor" class="flex justify-between">
+                                                    {{course.instructor.name}}
+                                                        <PencilSquareIcon @click="opneInstructorAssignemnt(course)" class="w-5 text-green-600"/>
+                                                </span>
+                                                <span v-else>
+                                                    <button
+                                                        @click="opneInstructorAssignemnt(course)"
+                                                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-1 rounded-lg shadow-md transition mr-5"
+                                                    >
+                                                        Assign
+                                                    </button>
+                                                </span>
+                                            </td>
                                             <!-- Course Assessments -->
                                             <td
                                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -541,14 +606,16 @@ const deletesection = (id) => {
     </AppLayout>
 
     <Modal
-        :show="assignCourse"
-        @close="assignCourse = !assignCourse"
+        :show="assignCourses"
+        @close="assignCourses = !assignCourses"
         :maxWidth="'6xl'"
         class="p-24 h-full"
     >
         <div class="w-full px-16 py-8">
-            <h1 class="text-lg mb-5">Pick Courses You Would like To Assign To This Section</h1>
-    
+            <h1 class="text-lg mb-5">
+                Pick Courses You Would like To Assign To This Section
+            </h1>
+
             <Listbox
                 id="cousesList"
                 v-model="courseAssignmentForm.courses"
@@ -557,32 +624,128 @@ const deletesection = (id) => {
                 option-value="id"
                 appendTo="self"
                 filter
+                checkmark
                 multiple
                 list-style="max-height: 500px"
                 placeholder="Select Courses"
                 :maxSelectedLabels="3"
                 class="w-full"
             />
-    
+
             <InputError
                 :message="courseAssignmentForm.errors.programs"
                 class="mt-2 text-sm text-red-500"
             />
-                  <div class="flex justify-end mt-4">
-        <button
-          @click="submitCourseAssignment"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
-        >
-          Assign
-        </button>
+            <div class="flex justify-end mt-4">
+                <button
+                    @click="submitCourseAssignment"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
+                >
+                    Assign
+                </button>
 
-        <button
-          @click="closeCourseAssignemnt"
-          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
-        >
-          Close
-        </button>
-      </div>
+                <button
+                    @click="closeCourseAssignemnt"
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </Modal>
+    <Modal
+        :show="assignCourses"
+        @close="assignCourses = !assignCourses"
+        :maxWidth="'6xl'"
+        class="p-24 h-full"
+    >
+        <div class="w-full px-16 py-8">
+            <h1 class="text-lg mb-5">
+                Pick Courses You Would like To Assign To This Section
+            </h1>
+
+            <Listbox
+                id="cousesList"
+                v-model="courseAssignmentForm.courses"
+                :options="courses"
+                optionLabel="name"
+                option-value="id"
+                appendTo="self"
+                filter
+                checkmark
+                multiple
+                list-style="max-height: 500px"
+                placeholder="Select Courses"
+                :maxSelectedLabels="3"
+                class="w-full"
+            />
+
+            <InputError
+                :message="courseAssignmentForm.errors.programs"
+                class="mt-2 text-sm text-red-500"
+            />
+            <div class="flex justify-end mt-4">
+                <button
+                    @click="submitCourseAssignment"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
+                >
+                    Assign
+                </button>
+
+                <button
+                    @click="closeCourseAssignemnt"
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </Modal>
+
+    <Modal
+        :show="assignInstructor"
+        @close="closeInstructorAssignemnt"
+        :maxWidth="'6xl'"
+        class="p-24 h-full"
+    >
+        <div class="w-full px-16 py-8">
+            <h1 class="text-lg mb-5">
+                Select Instructor You Would like To Assign To The Course "{{ assignToCourse.name }}" In Section {{ section.name }}
+            </h1>
+
+            <Listbox
+                id="cousesList"
+                v-model="instructorAssignmentForm.instructor_id"
+                :options="instructors"
+                optionLabel="name"
+                option-value="id"
+                appendTo="self"
+                filter
+                list-style="max-height: 500px"
+                placeholder="Select Instructor"
+                :maxSelectedLabels="3"
+                class="w-full"
+            />
+
+            <InputError
+                :message="instructorAssignmentForm.errors.programs"
+                class="mt-2 text-sm text-red-500"
+            />
+            <div class="flex justify-end mt-4">
+                <button
+                    @click="submitInstructorAssignment"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
+                >
+                    Assign
+                </button>
+
+                <button
+                    @click="closeInstructorAssignemnt"
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                >
+                    Close
+                </button>
+            </div>
         </div>
     </Modal>
 </template>

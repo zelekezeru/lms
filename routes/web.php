@@ -59,8 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/departments/{department}/courses', [AssignmentController::class, 'attach_department_courses'])->name('department-courses.attach');
     Route::post('/departments/{department}/courses/{course}', [AssignmentController::class, 'detach_department_courses'])->name('department-courses.detach');
     
-    Route::get('/sections/{section}/instructors', [AssignmentController::class, 'section_instructors'])->middleware('can:assign-section-instructors')->name('section.instructors');
-    Route::post('/sections/{section}/instructors', [AssignmentController::class, 'attach_section_instructors'])->middleware('can:attach-section-instructors')->name('section-instructors.attach');
+    Route::post('/sections/{section}/instructor', [AssignmentController::class, 'attach_section_course_instructor'])->name('section-course-instructor.attach');
     Route::post('/sections/{section}/instructors/{instructor}', [AssignmentController::class, 'detach_section_instructors'])->middleware('can:detach-section-instructors')->name('section-instructors.detach');
 
     Route::get('/sections/{section}/students', [AssignmentController::class, 'section_students'])->middleware('can:assign-section-students')->name('section.students');

@@ -25,7 +25,20 @@ class SectionResource extends JsonResource
             'year' => new YearResource($this->whenLoaded('year')),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'students' => StudentResource::collection($this->whenLoaded('students')),
-            'courses' => CourseResource::collection($this->whenLoaded('courses')),
-        ]; 
+            'courses' => $this->whenLoaded('courseSectionAssignments', function () {
+                return $this->courseSectionAssignments->map(function ($assignment) {
+                    return [
+                        'id' => $assignment->course->id,
+                        'name' => $assignment->course->name,
+                        'code' => $assignment->course->code,
+                        'creditHour' => $assignment->course->credit_hours,
+                        'instructor' => $assignment->instructor ? [
+                            'id' => $assignment->instructor->id,
+                            'name' => $assignment->instructor->user->name,
+                        ] : null,
+                    ];
+                });
+            }),
+        ];
     }
 }

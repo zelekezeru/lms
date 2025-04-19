@@ -33,7 +33,7 @@ class Section extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class)->withPivot('instructor_id');
     }
 
     public function instructors(): BelongsToMany
@@ -71,4 +71,8 @@ class Section extends Model
         return $this->hasMany(Grade::class);
     }
     
+    public function courseSectionAssignments()
+    {
+        return $this->hasMany(CourseSectionAssignment::class);
+    }
 }

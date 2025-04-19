@@ -21,7 +21,7 @@ class Course extends Model
 
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class);
+        return $this->belongsToMany(Section::class)->withPivot('instructor_id');
     }
 
     public function instructors(): BelongsToMany

@@ -535,6 +535,7 @@ const deletesection = (id) => {
     <Modal
         :show="assignCourse"
         @close="assignCourse = !assignCourse"
+        :maxWidth="'6xl'"
         class="p-24 h-full"
     >
         <div class="w-full px-16 py-8">
@@ -549,6 +550,7 @@ const deletesection = (id) => {
                 appendTo="self"
                 filter
                 multiple
+                list-style="max-height: 500px"
                 placeholder="Select Courses"
                 :maxSelectedLabels="3"
                 class="w-full"

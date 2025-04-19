@@ -45,8 +45,8 @@ class WeightController extends Controller
     {
         $fields = $request->validated();
         
-        $fields['user_id'] = Auth::id(); // Set the user_id to the authenticated user's ID
-
+        $fields['instructor_id'] = Auth::id(); // Set the instructor_id to the authenticated user's ID
+        
         $weight = Weight::create($fields);
 
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the departments.show method is the default

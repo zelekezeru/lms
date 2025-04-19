@@ -73,13 +73,11 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']));
-        $courses = CourseResource::collection(Course::all());
-
+        $section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
         
         return Inertia::render('Sections/Show', [
-            'section' => $section,
-            'courses' => $courses,
+            'section' => new SectionResource($section),
+            'courses' => CourseResource::collection(Course::all()),
         ]);
     }
     

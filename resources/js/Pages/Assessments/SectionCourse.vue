@@ -1,14 +1,18 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { defineProps, ref, computed } from "vue"; // Import computed
+import { defineProps, ref, computed } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon,XMarkIcon, CogIcon, PlusCircleIcon, DocumentTextIcon , PresentationChartBarIcon, CheckBadgeIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import {
+    PencilIcon, EyeIcon, XMarkIcon, CogIcon,
+    PlusCircleIcon, DocumentTextIcon, PresentationChartBarIcon,
+    CheckBadgeIcon, TrashIcon
+} from "@heroicons/vue/24/solid";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-// Define the props for the section with validation-related data
+// Props
 const props = defineProps({
     section: {
         type: Object,
@@ -28,39 +32,28 @@ const props = defineProps({
     },
 });
 
+// Computed
 const sumOfWeightPoints = computed(() => {
     return props.weights.reduce((sum, weight) => {
         return sum + (parseFloat(weight.point) || 0);
     }, 0);
 });
 
-
-
+// Tabs
 const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
     { key: "results", label: "results", icon: DocumentTextIcon },
     { key: "weights", label: "weights", icon: PresentationChartBarIcon },
-    { key: "grades", label: "Grades", icon: CheckBadgeIcon  },
+    { key: "grades", label: "Grades", icon: CheckBadgeIcon },
 ];
 
-// Initialize students with a default structure
+// States
 const students = ref({
     data: [],
     meta: {
         current_page: 1,
         per_page: 10,
     },
-});
-
-const resultForm = useForm({
-    name: "",
-    point: "",
-    description: "",
-    weight_id: "",
-    student_id: "",
-    grade_id: "",
-    changed_point: "",
-    changed_by: "",
 });
 
 const weightForm = useForm({
@@ -73,31 +66,164 @@ const weightForm = useForm({
 });
 
 const selectedTab = ref("details");
-
 const createResult = ref(false);
-
 const createWeight = ref(false);
 
-const addResult = () => {
-    resultForm.post(
-        route("results.store", {
-            redirectTo: route('assessments.section_course',{course: props.course.id, section: props.section.id}),
-            params: { section: props.section.id, course: props.course.id },
-        }),
-        {
-            onSuccess: () => {
-                Swal.fire(
-                    "Added!",
-                    "Result added successfully.",
-                    "success"
-                );
-                createResult.value = false;
-                resultForm.reset();
-            },
+// Result entry states
+const activeWeightId = ref(null);
+
+const resultForm = ref({});
+
+// Activate a weight column
+const activateWeight = (weightId) => {
+    activeWeightId.value = weightId;
+    if (!resultForm.value[weightId]) {
+        resultForm.value[weightId] = {};
+    }
+
+    // Scroll to the active weight column
+    setTimeout(() => {
+        const column = document.querySelector(`[data-weight-id="${weightId}"]`);
+        if (column) {
+            column.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    );
+    }, 100);
 };
 
+//  Total Result of Student
+const getStudentTotalPoints = (studentId) => {
+    let total = 0;
+
+    props.weights.forEach((weight) => {
+        // If it's the active weight, use the input value (unsaved yet)
+        if (activeWeightId.value === weight.id) {
+            const value = parseFloat(resultForm.value[weight.id]?.[studentId]);
+            if (!isNaN(value)) total += value;
+        } else {
+            // Otherwise use the saved result
+            const result = weight.results.find(r => r.student_id === studentId);
+            if (result) {
+                const point = parseFloat(result.point);
+                if (!isNaN(point)) total += point;
+            }
+        }
+    });
+
+    return total.toFixed(2); // Rounded to 2 decimal places
+};
+
+const getStudentGradeLetter = (studentId) => {
+    const total = parseFloat(getStudentTotalPoints(studentId));
+
+    if (isNaN(total)) return 'N/A';
+
+    if (total >= 94) return 'A (4.0)';
+    if (total >= 90) return 'A- (3.7)';
+    if (total >= 87) return 'B+ (3.3)';
+    if (total >= 84) return 'B (3.0)';
+    if (total >= 80) return 'B- (2.7)';
+    if (total >= 77) return 'C+ (2.3)';
+    if (total >= 74) return 'C (2.0)';
+    if (total >= 70) return 'C- (1.7)';
+    if (total >= 67) return 'D+ (1.3)';
+    if (total >= 64) return 'D (1.0)';
+    if (total >= 60) return 'D- (0.7)';
+    return 'F (0.0)';
+};
+
+
+
+// Get result value for an input
+const getResultValue = (studentId, weightId) => {
+    // Return the newly typed value if exists
+    if (resultForm.value[weightId]?.[studentId] !== undefined) {
+        return resultForm.value[weightId][studentId];
+    }
+
+    // Otherwise, return the existing result from weight.results
+    const weight = props.weights.find(w => w.id === weightId);
+    if (weight && weight.results) {
+        const existing = weight.results.find(r => r.student_id === studentId);
+        return existing ? existing.point : '';
+    }
+
+    return '';
+};
+
+// Set result value when user types
+const setResultValue = (studentId, weightId, value) => {
+    if (!resultForm.value[weightId]) {
+        resultForm.value[weightId] = {};
+    }
+    resultForm.value[weightId][studentId] = value;
+};
+
+// Submit results for the active weight
+const submitWeightResults = () => {
+    const weightId = activeWeightId.value;
+    const weight = props.weights.find(w => w.id === weightId);
+
+    if (!weightId || !resultForm.value[weightId]) {
+        Swal.fire({
+            icon: "warning",
+            title: "No active weight",
+            text: "Please activate a weight column before submitting.",
+        });
+        return;
+    }
+
+    const rawResults = resultForm.value[weightId];
+    
+    const results = [];
+
+    for (const [student_id, point] of Object.entries(rawResults)) {
+        const numericPoint = parseFloat(point);
+
+        if (isNaN(numericPoint) || numericPoint < 0 || numericPoint > weight.point) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Input",
+                text: `Please enter a valid point between 0 and ${weight.point} for all students.`,
+            });
+            return;
+        }
+
+        results.push({
+            weight_id: weightId,
+            student_id: parseInt(student_id),
+            point: numericPoint,
+        });
+    }
+
+    if (results.length === 0) {
+        Swal.fire({
+            icon: "info",
+            title: "Nothing to Submit",
+            text: "You haven't entered any valid results.",
+        });
+        return;
+    }
+
+    router.post(route('results.store'), { results }, {
+        onSuccess: () => {
+            Swal.fire({
+                icon: "success",
+                title: "Saved!",
+                text: `Results for "${weight.name}" saved successfully.`,
+                timer: 2000,
+                showConfirmButton: false,
+            });
+            activeWeightId.value = null;
+        },
+        onError: () => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong while saving. Please try again.",
+            });
+        }
+    });
+};
 
 const addWeight = () => {
     weightForm.post(
@@ -118,7 +244,6 @@ const addWeight = () => {
         }
     );
 };
-
 </script>
 
 <template>
@@ -206,170 +331,108 @@ const addWeight = () => {
                 <!-- Results Panel -->
 
                 <div v-show="selectedTab === 'results'">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-center mb-2">
                         <h2
                             class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                         >
                             Assessment Results
                         </h2>
-                        <button
-                            @click="createResult = !createResult"
-                            class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
-                        >
-                            <PlusCircleIcon class="w-8 h-8" />
-                            <span class="hidden sm:inline"
-                                >Add Result</span
-                            >
-                        </button>
                     </div>
                     <!-- Assesment  Results List -->
                     <div class="overflow-x-auto">
                     
                         <div
-                        class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                        class="mt-4 border-t border-b border-gray-300 dark:border-gray-600 pt-2 pb-4"
                         >
-                            <div class="flex items-center justify-between mb-4">
-                                <h2
-                                    class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                                >
-                                    Students
-                                </h2>
-                            </div>
                             <!-- Section Students list -->
                             <div class="overflow-x-auto">
-                                <table
-                                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                                >
-                                    <thead>
-                                        <tr class="bg-gray-50 dark:bg-gray-700">
-                                            <th
-                                                class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                No.
-                                            </th>
-                                            <th
-                                                class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                Name
-                                            </th>
-
-                                            <!-- For Each Weight Enter Student Result -->
-
-                                            <template v-for="weight in weights" :key="weight.id">
-                                                <th
-                                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                                >
-                                                    {{ weight.name }}  ( {{ weight.point }}% )
+                                <div v-if="selectedTab === 'results'" class="overflow-x-auto mt-6">
+                                    <table class="min-w-full divide-y divide-gray-200 border rounded shadow-sm bg-white dark:bg-gray-900">
+                                        <thead class="bg-gray-100 dark:bg-gray-800 text-sm font-semibold text-gray-700 dark:text-gray-200">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left">#</th>
+                                                <th class="px-4 py-2 text-left">Student</th>
+                                                <th v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">
+                                                    <div class="flex items-center justify-between">
+                                                        <span>{{ weight.name }} ({{ weight.point }}pt)</span>
+                                                        <button
+                                                            v-if="!activeWeightId"
+                                                            @click="activateWeight(weight.id)"
+                                                            class="ml-2 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded"
+                                                        >
+                                                            <PencilIcon class="w-5 h-5" />
+                                                        </button>
+                                                    </div>
                                                 </th>
-                                            </template>
-                                            <!-- End For Each Weight Enter Student Result -->
-                                            
-                                            <th
-                                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                                <th class="px-4 py-2 text-left">Total ({{ sumOfWeightPoints }}pt)</th>
+                                                <th class="px-4 py-2 text-left">Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <!-- Section Students itteration -->
+                                            <tr
+                                                v-for="(student, index) in section.students"
+                                                :key="student.id"
+                                                class="border-t border-gray-200 dark:border-gray-700"
                                             >
-                                                Total ( {{ sumOfWeightPoints }}% )
-                                            </th>
-                                            <th
-                                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                Grade
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(
-                                                student, index
-                                            ) in section.students"
-                                            :key="student.id"
-                                            :class="
-                                                index % 2 === 0
-                                                    ? 'bg-white dark:bg-gray-800'
-                                                    : 'bg-gray-50 dark:bg-gray-700'
-                                            "
-                                            class="border-b border-gray-300 dark:border-gray-600"
-                                        >
-                                            <td
-                                                class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                {{
-                                                    index +
-                                                    1 +
-                                                    (students.meta
-                                                        .current_page -
-                                                        1) *
-                                                        students.meta.per_page
-                                                }}
-                                            </td>
-                                            <td
-                                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                <Link
-                                                    :href="
-                                                        route('students.show', {
-                                                            student: student.id,
-                                                        })
-                                                    "
-                                                >
-                                                    {{ student.student_name }}
-                                                    {{ student.father_name }}
-                                                </Link>
-                                            </td>
-                                            
-                                            <template v-for="weight in weights" :key="weight.id">
+                                                <td class="px-4 py-2 border-gray-300 dark:border-gray-600">{{ index + 1 }}</td>
+                                                <td class="px-4 py-2">{{ student.student_name }} {{ student.father_name }}</td>
+                                                
+                                                <!-- Section Course Weights -->
                                                 <td
-                                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                                    v-for="weight in props.weights"
+                                                    :key="weight.id"
+                                                    class="px-4 py-2 text-center border-gray-300 dark:border-gray-600"
                                                 >
-                                                    <template v-if="weight.results">
-                                                        <template v-if="weight.results.find(r => r.student_id === student.id)">
-                                                            <!-- Show the matching student's point -->
-                                                            {{ weight.results.find(r => r.student_id === student.id).point }}
-                                                        </template>
-                                                        <template v-else>
-                                                            <!-- No result for this student, show input -->                                                            
-                                                            <TextInput
-                                                                v-model="
-                                                                    resultForm.point
-                                                                "
-                                                                type="number"
-                                                                placeholder="-"
-                                                                min="0"
-                                                                class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100 text-center"
-                                                            />
-                                                        </template>
-                                                    </template>
-                                                    <template v-else>
-                                                        <!-- No results array at all, fallback input -->
-                                                        <TextInput
-                                                            v-model="weight.point"
+                                                    <!-- Editable Input for Active Weight -->
+                                                    <span v-if="activeWeightId === weight.id">
+                                                        <input
                                                             type="number"
-                                                            placeholder="Enter Point"
+                                                            step="0.01"
                                                             min="0"
-                                                            class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                                            max="100"
+                                                            class="px-1 py-0.5 h-7 rounded-md dark:bg-gray-800 dark:text-gray-100 text-center"
+                                                            :value="getResultValue(student.id, weight.id)"
+                                                            @input="setResultValue(student.id, weight.id, $event.target.value)"
                                                         />
-                                                    </template>
+                                                    </span>
+
+                                                    <!-- Result or N/A when not active -->
+                                                    <span v-else>
+                                                        <span v-if="weight.results.some(result => result.student_id === student.id)" class="text-gray-900 dark:text-gray-100">
+                                                            {{ weight.results.find(result => result.student_id === student.id)?.point }}
+                                                        </span>
+                                                        <span v-else class="text-gray-400">N/A</span>
+                                                    </span>
                                                 </td>
-                                            </template>
 
+                                                <!-- Total Points Column -->
+                                                <td class="px-4 py-2 border-gray-300 dark:border-gray-600">
+                                                    {{ getStudentTotalPoints(student.id) }}
 
-                                            <td
-                                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                <!-- Student results Total -->
-                                                {{
-                                                    student.results && student.results.length > 0
-                                                        ? student.results.reduce((total, result) => total + (parseFloat(result.point) || 0), 0)
-                                                        : 0
-                                                }}
-                                            </td>
-                                            <td
-                                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                            >
-                                                {{ student.grade }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                </td>
+
+                                                <td class="px-4 py-2 border-gray-300 dark:border-gray-600">
+                                                    {{ getStudentGradeLetter(student.id) }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="100%" class="px-4 py-3 text-center bg-gray-50 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-600">
+                                                    <button
+                                                        v-if="activeWeightId"
+                                                        @click="submitWeightResults"
+                                                        class="text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                                                    >
+                                                        Save Results
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -394,7 +457,7 @@ const addWeight = () => {
                             >
                         </button>
                     </div>
-                    <!-- Program  weights List -->
+                    <!--  weights List -->
                     <div class="overflow-x-auto">
                         <div
                             class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"

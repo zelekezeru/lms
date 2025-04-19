@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('weight_id')->constrained();
             $table->foreignId('student_id')->constrained();
             $table->foreignId('instructor_id')->constrained();
-            $table->foreignId('grade_id')->constrained();
+            $table->foreignId('grade_id')->nullable()->constrained();
 
             $table->foreignId('changed_by')->nullable();
             $table->date('changed_at')->nullable();

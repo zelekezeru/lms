@@ -33,7 +33,7 @@ class Section extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withPivot('instructor_id');
+        return $this->belongsToMany(Course::class);
     }
 
     public function instructors(): BelongsToMany

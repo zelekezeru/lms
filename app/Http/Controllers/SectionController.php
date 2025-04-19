@@ -71,24 +71,15 @@ class SectionController extends Controller
         return redirect(route('sections.show', $section))->with('success', 'Section created successfully.');
     }
 
-    // public function show(Section $section)
-    // {
-    //     $section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
-        
-    //     $courses = Course::all();
-
-    //     return Inertia::render('Sections/Show', [
-    //         'section' => $section,
-    //         'courses' => $courses,
-    //     ]);
-    // }
     public function show(Section $section)
     {
-        $section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']);
+        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courses']));
+        $courses = CourseResource::collection(Course::all());
+
         
         return Inertia::render('Sections/Show', [
-            'section' => new SectionResource($section),
-            'courses' => CourseResource::collection(Course::all()),
+            'section' => $section,
+            'courses' => $courses,
         ]);
     }
     

@@ -24,16 +24,31 @@ const props = defineProps({
         required: false,
     },
 });
-// Add this near the top with your other imports
+const assignCourse = ref(false);
 
-// Add this in your setup
 const courseAssignmentForm = useForm({
-    courses: [],
+    courses: props.section.courses.map(course => course.id),
 });
+
+const closeCourseAssignemnt = () => {
+    assignCourse.value = false;
+    courseAssignmentForm.reset();
+    courseAssignmentForm.clearErrors()
+}
 
 const submitCourseAssignment = () => {
     
-    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}))
+    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}), {
+        onSuccess: () => {
+            Swal.fire(
+                    "Added!",
+                    "Department added successfully.",
+                    "success"
+                );
+            assignCourse.value = false;
+            courseAssignmentForm.reset();
+        }
+    })
 }
 
 const tabs = [
@@ -52,7 +67,6 @@ const students = ref({
 });
 
 const selectedTab = ref("details");
-const assignCourse = ref(false);
 
 // Delete function with SweetAlert confirmation
 const deletesection = (id) => {
@@ -290,7 +304,7 @@ const deletesection = (id) => {
                                             <th
                                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                             >
-                                                Actions
+                                                Instructor
                                             </th>
                                         </tr>
                                     </thead>
@@ -348,26 +362,16 @@ const deletesection = (id) => {
                                             <td
                                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                             >
-                                                <Link
-                                                    :href="
-                                                        route(
-                                                            'assessments.section_course',
-                                                            {
-                                                                course: course.id,
-                                                                section:
-                                                                    section.id,
-                                                            }
-                                                        )
-                                                    "
+                                                <button
                                                     class="text-green-500 hover:text-green-700"
                                                 >
                                                     <CogIcon
                                                         class="w-5 h-5 inline-block"
                                                     />
                                                     <span class="inline-block"
-                                                        >Assessments</span
+                                                        >{{  }}</span
                                                     >
-                                                </Link>
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -535,6 +539,7 @@ const deletesection = (id) => {
     <Modal
         :show="assignCourse"
         @close="assignCourse = !assignCourse"
+        max-width="5xl"
         class="p-24 h-full"
     >
         <div class="w-full px-16 py-8">
@@ -547,6 +552,7 @@ const deletesection = (id) => {
                 optionLabel="name"
                 option-value="id"
                 appendTo="self"
+                listStyle="max-height:400px"
                 filter
                 multiple
                 placeholder="Select Courses"
@@ -561,9 +567,15 @@ const deletesection = (id) => {
                   <div class="flex justify-end mt-4">
         <button
           @click="submitCourseAssignment"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
         >
           Assign
+        </button>
+        <button
+          @click="closeCourseAssignemnt"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+        >
+          Close
         </button>
       </div>
         </div>

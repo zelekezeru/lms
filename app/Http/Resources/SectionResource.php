@@ -19,14 +19,13 @@ class SectionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'code' => $this->code,
-            // ... other fields
-            'user' => $this->user,
-            'program' => $this->program,
-            'department' => $this->department,
-            'year' => $this->year,
-            'semester' => $this->semester,
-            'students' => $this->students,
-            'courses' => $this->courses,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'program' => new ProgramResource($this->whenLoaded('program')),
+            'department' => new DepartmentResource($this->whenLoaded('department')),
+            'year' => new YearResource($this->whenLoaded('year')),
+            'semester' => new SemesterResource($this->whenLoaded('semester')),
+            'students' => StudentResource::collection($this->whenLoaded('students')),
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
         ]; 
     }
 }

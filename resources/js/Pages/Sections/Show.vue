@@ -28,12 +28,29 @@ const props = defineProps({
 
 // Add this in your setup
 const courseAssignmentForm = useForm({
-    courses: [],
+    courses: props.section.courses.map(course => course.id),
 });
 
+const closeCourseAssignemnt = () => {
+    assignCourse.value = false;
+    courseAssignmentForm.reset();
+    courseAssignmentForm.clearErrors()
+}
+
 const submitCourseAssignment = () => {
+    console.log('hi');
     
-    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}))
+    courseAssignmentForm.post(route('section-courses.attach', {section: props.section.id}), {
+        onSuccess: () =>{
+            Swal.fire(
+                    "Succesfull!",
+                    "Courses Assigned successfully.",
+                    "success"
+                );
+            assignCourse.value = false;
+            courseAssignmentForm.reset();
+        }
+    })
 }
 
 const tabs = [
@@ -241,10 +258,6 @@ const deletesection = (id) => {
                             @click="assignCourse = !assignCourse"
                             class="flex items-center text-indigo-600 hover:text-indigo-800"
                         >
-                            <component
-                                :is="createCourse ? XMarkIcon : PlusCircleIcon"
-                                class="w-8 h-8"
-                            />
                             Assign Course
                         </button>
                     </div>
@@ -386,13 +399,8 @@ const deletesection = (id) => {
                             Students
                         </h2>
                         <button
-                            @click="createStudent = !createStudent"
                             class="flex items-center text-indigo-600 hover:text-indigo-800"
                         >
-                            <component
-                                :is="createStudent ? XMarkIcon : PlusCircleIcon"
-                                class="w-8 h-8"
-                            />
                             Add Student
                         </button>
                     </div>
@@ -563,9 +571,16 @@ const deletesection = (id) => {
                   <div class="flex justify-end mt-4">
         <button
           @click="submitCourseAssignment"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
         >
           Assign
+        </button>
+
+        <button
+          @click="closeCourseAssignemnt"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+        >
+          Close
         </button>
       </div>
         </div>

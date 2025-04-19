@@ -83,7 +83,7 @@ class WeightController extends Controller
     }
 
     public function update(WeightUpdateRequest $request, Weight $weight)
-    {dd($weight);
+    {
         $fields = $request->validated();
 
         $weight->update($fields);

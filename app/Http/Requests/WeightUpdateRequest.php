@@ -28,7 +28,6 @@ class WeightUpdateRequest extends FormRequest
             'semester_id' => 'required|exists:semesters,id',
             'course_id' => 'required|exists:courses,id',
             'section_id' => 'nullable|exists:sections,id',
-            'instructor_id' => 'nullable|exists:instructors,id',
         ];
     }
 }

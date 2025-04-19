@@ -8,6 +8,7 @@ use App\Http\Resources\InstructorResource;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Requests\InstructorStoreRequest;
 use App\Http\Requests\InstructorUpdateRequest;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -71,7 +72,9 @@ class InstructorController extends Controller
 
         $instructor_id = 'IN/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
 
-        $fields['tenant_id'] = 1; // Hardcoded tenant ID for now
+        $tenant = Tenant::first();
+
+        $fields['tenant_id'] = $tenant->id; // Use the tenant ID from the retrieved tenant
         // Profile   of Instructor
         if ($profileImg) {
             $profile_path = $profileImg->store('profile-images', 'public');
@@ -92,7 +95,9 @@ class InstructorController extends Controller
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
             'bio' => $fields['bio'],
+            'status' => $fields['status'],
             'hire_date' => $fields['hire_date'],
+            'tenant_id' => $tenant->id,
         ]);
         
         $user->assignRole('INSTRUCTOR');

@@ -40,20 +40,70 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, $role = null, $model= null): RedirectResponse
-    {
+    {   
         $fields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'phone' => ['nullable', 'string', 'max:15'],
-            'default_password' => ['nullable', 'string', 'max:15'],
+            'contact_phone' => ['nullable', 'string', 'max:15'],
         ]);
+
+        // Professional Email
+        $fullName = trim($request->name); // Remove extra spaces
+        $nameParts = explode(' ', $fullName);
+
+        // Fallback values in case there’s only one name part
+        $firstName = strtolower($nameParts[0]);
+        $secondName = isset($nameParts[1]) ? strtolower($nameParts[1]) : 'user';
+
+        // Create the email
+        $email = $firstName . '.' . $secondName . '@sits.edu.et';
+
+
+        // ID Generation
+        $userUuid = $this->userUuid($role, $model, $tenant_id = null);
+
+        if ($userUuid) {
+            $fields['uuid'] = $userUuid;
+        }else{
+            'Not Set';
+        }
+
+        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+
+        if($tenant_id == null){
+            $tenant = Tenant::first();
+        }else{
+            $tenant = Tenant::find($tenant_id);
+        }
+        if(!$tenant){
+
+            return redirect(route('tenants.create'));
+        }
+        // Fields Form fill
+
+        $fields = [
+            'name'=> $request['name'],
+            'user_uuid' => $userUuid,
+            'phone'=> $request->contact_phone,
+            'email' => $email,
+            'tenant_id' => $tenant->id,
+            'password' => Hash::make($request['password']),
+            'default_password' => $request['default_password'],
+            'profile_img' => $request->hasFile('profile_img') 
+                ? $request->file('profile_img')->store('profile_images') 
+                : null, // or you can use a default image path here
+        ];
 
         // SUPER-ADMIN User
 
         if(User::where('id', 1)->first() == null){
-            // Get the user with id 1
-            $year = substr(Carbon::now()->year, -2); // get current year's last two digits
+            
+            $fields = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'phone' => ['nullable', 'string', 'max:15'],
+                'default_password' => ['nullable', 'string', 'max:15'],
+                'email'=> $email,
+            ]);
 
             $user = User::create([
                 'id' => 1,
@@ -63,7 +113,6 @@ class RegisteredUserController extends Controller
                 'email' => $request->email,
                 'phone' => $request->contact,
                 'profile_img' => $request->profile_img,
-                'default_password' => $request->password,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -77,26 +126,7 @@ class RegisteredUserController extends Controller
         }
 
         // TENANT-ADMIN User
-        elseif($request->contact_phone != null){
-
-            $userUuid = $this->userUuid('TENANT-ADMIN', 'Tenant');
-
-            $tenant = Tenant::first();
-
-            $fields['tenant_id'] = $tenant->id;
-
-            $fullName = trim($request->name); // Remove extra spaces
-            $nameParts = explode(' ', $fullName);
-
-            // Fallback values in case there’s only one name part
-            $firstName = strtolower($nameParts[0]);
-            $secondName = isset($nameParts[1]) ? strtolower($nameParts[1]) : 'user';
-
-            // Create the email
-            $email = $firstName . '.' . $secondName . '@sits.edu.et';
-
-        // Assign to your fields array
-        $fields['email'] = $email;
+        elseif($role == 'TENANT-ADMIN'){
             
             $user = User::create([
                 'tenant_id' => $fields['tenant_id'],
@@ -107,64 +137,44 @@ class RegisteredUserController extends Controller
                 'default_password' => $request->password,
                 'profile_img' => $request->profile_img,
                 'password' => Hash::make($request->password),
-                'password_changed' => $request->password_changed
 
             ]);
-                $user->assignRole('TENANT-ADMIN');
+
+            $user->assignRole('TENANT-ADMIN');
 
             event(new Registered($user));
 
-            return $user;
+            return redirect(route('tenants.show', $tenant->id))->with('success', 'Instructor created successfully.');
 
         }
+
         //Instructor User
-        elseif($request->contact_phone != null && $request->contact_email == null){
-            $userUuid = $this->userUuid('INSTRUCTOR', 'Instructor');
-            $fields['name'] = $request->contact_person;
-            $fields['phone'] = $request->contact_phone;
-            $fields['default_password'] = $request->password;
-            $fields['profile_img'] = $request->profile_img;
+        elseif($role == 'INSTRUCTOR'){
             
-            $user = User::create([
-                'tenant_id' => 1,
-                'name' => $fields['name'],
-                'user_uuid' => $userUuid,
-                'email' => $request->contact_email,
-                'phone'=> $fields['phone'],
-                'profile_img' => $fields['profile_img'],
-                'default_password' => $fields['default_password'],
-                'password' => Hash::make($fields['default_password']),
-            ]);
+            $user = User::create($fields);
+
             $user->assignRole('INSTRUCTOR');
 
             return redirect(route('instructors.show', $user->id))->with('success', 'Instructor created successfully.');
         }
+        // Employee User
+        elseif($role == 'EMPLOYEE')
+        {
+            $user = User::create($fields);
 
-        // Student User
-        elseif($request->contact_email != null){
-            $userUuid = $this->userUuid('STUDENT', 'Student');
-            $fields['name'] = $request->contact_email;
-            $fields['phone'] = $request->contact_phone;
-            $fields['default_password'] = $request->password;
-            $fields['profile_img'] = $request->profile_img;
+            $user->assignRole();
             
+            return redirect(route('employees.show', $user->id))->with('success','Employee created successfully.');
         }
+
         // All other Users
         else{
+            
+            $user = User::create($fields);
 
-            $userUuid = $this->userUuid('USER', 'User');
+            $user->assignRole('USER');
 
-            $user = User::create([
-                'tenant_id' => 1,
-                'name' => $request->name,
-                'user_uuid' => $userUuid,
-                'email' => $request->email,
-                'phone'=> $request->contact,
-                'profile_img' => $request->profile_img,
-                'default_password' => $request->password,
-                'password' => Hash::make($request->password),
-            ]);
-                $user->assignRole('USER');
+            return redirect(route('users.show', $user->id))->with('success','User created successfully.');
         }
     }
 
@@ -186,17 +196,17 @@ class RegisteredUserController extends Controller
             $year = substr(Carbon::now()->year, -2); // get current year's last two digits
             
             if($role == 'TENANT-ADMIN') {
-                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
             }elseif($role == 'ADMIN') {
-                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
             }elseif($role == 'USER') {
-                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
             }  elseif($role == 'EMPLOYEE') {
-                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
+            } elseif($role == 'INSTRUCTOR') {
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
             }elseif($role == 'STUDENT') {
                 $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-            } elseif($role == 'INSTRUCTOR') {
-                $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
             }
         }
         return $userUuid;

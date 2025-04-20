@@ -20,7 +20,7 @@ class EmployeeStoreRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {dd($this->all());
+    {
         return [
             // User table validations
             'name'      => 'required|string|max:255',
@@ -30,7 +30,7 @@ class EmployeeStoreRequest extends FormRequest
             // Employee table validations
             'profile_img'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
             'job_position'   => 'required|string|max:255',
-            'employment_type'=> 'required|in:FULL_TIME,PART_TIME,CONTRACT',
+            'employment_type'=> 'required|in:Full-time,Part-time,Contract',
             'office_hours'   => 'nullable|string|max:255',
         ];
     }

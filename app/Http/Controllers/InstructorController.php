@@ -84,14 +84,15 @@ class InstructorController extends Controller
         
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = $fields['name'] . '@' . $user_phone;
+        $user_password = 'instructor@' . $user_phone;
 
         // Merge the default password into the request
         $request->merge([
             'password' => $user_password,
-            'password_confirmation' => $user_password, // needed for 'confirmed' rule
+            'default_password' => $user_password, // needed for 'confirmed' rule
+            'profile_img' => $profile_path,
         ]);
-        
+
         $registeredUserController = new RegisteredUserController();
 
         $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User');

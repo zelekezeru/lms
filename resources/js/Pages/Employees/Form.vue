@@ -13,6 +13,8 @@ const props = defineProps({
     roles: { type: Array, required: true },
 });
 
+const emits = defineEmits(["submit"]);
+
 // Handle profile image selection and preview
 const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -30,7 +32,10 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-    <form @submit.prevent="props.form.submit">
+    <form 
+        @submit.prevent="emits('submit')"
+        enctype="multipart/form-data">
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
             <div>
@@ -97,9 +102,9 @@ const handleFileChange = (e) => {
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                 >
                     <option disabled value="">Select Type</option>
-                    <option value="FULL_TIME">Full-time</option>
-                    <option value="PART_TIME">Part-time</option>
-                    <option value="CONTRACT">Contract</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
                 </select>
 
                 <InputError :message="props.form.errors.employment_type" />
@@ -149,7 +154,6 @@ const handleFileChange = (e) => {
             </div>
         </div>
 
-        <!-- Submit Button -->
         <div class="mt-6 flex justify-center">
             <button
                 type="submit"

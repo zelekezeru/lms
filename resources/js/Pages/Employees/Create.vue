@@ -38,7 +38,7 @@ const submit = () => {
             </div>
 
             <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
-                <Form :form="form" :departments="departments" :roles="roles" @submit="submit" />
+                <Form :form="form" :departments="departments" :roles="roles" @submit="submit"/>
             </div>
         </div>
     </AppLayout>

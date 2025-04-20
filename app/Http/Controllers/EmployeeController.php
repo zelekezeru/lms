@@ -63,54 +63,40 @@ class EmployeeController extends Controller
     public function store(EmployeeStoreRequest $request)
     {
         $fields = $request->validated();
-        dd($fields);
 
-        $image = $fields['profile_img'] ?? null;
+        $profileImg = $fields['profile_img'] ?? null;
         
-        $registeredUserController = new RegisteredUserController();
-
-        $admin = \Illuminate\Support\Facades\Auth::user();
-
-        // Check if the admin is authenticated and has a tenant_id
-        if (!$admin || !property_exists($admin, 'tenant_id')) {
-            abort(403, 'Unauthorized action or missing tenant_id.');
-        }else{
-            $tenant_id = $admin->tenant_id;
-        }
-
-
-        $userUuid = $registeredUserController->userUuid('EMPLOYEE', 'User', $tenant = Tenant::first());
-
-        dd('HIT');
-
-        // $userUuid = $this->userUuid($fields['role_name']);
-        // $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        // $instructor_id = 'EM/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
-
-        
-        if ($image) {
-            $profile_path = $image->store('profile-images', 'public');
+        // Profile   of Instructor
+        if ($profileImg) {
+            $profile_path = $profileImg->store('profile-images', 'public');
         }else{
             $profile_path = null;
         }
-        
-        $user = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'profile_img' => $profile_path,
-            'user_uuid' => $userUuid,
-            'password' => Hash::make('pwd@default'),
-        ]);
 
+        // Create a new Instructor User in User table
+        
+        $user_phone = substr($fields['contact_phone'], -4);
+
+        $user_password = 'employee@' . $user_phone;
+
+        // Merge the default password into the request
+        $request->merge([
+            'password' => $user_password,
+            'default_password' => $user_password, // needed for 'confirmed' rule
+            'profile_img' => $profile_path,
+        ]);
+        
+        $registeredUserController = new RegisteredUserController();
+
+        
+        $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee');
+        
         $employee = Employee::create([
             'user_id' => $user->id,
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],
         ]);
-        
-        $user->assignRole($fields['role_name']);
         
         return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }

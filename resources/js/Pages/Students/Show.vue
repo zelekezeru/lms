@@ -305,119 +305,171 @@ const deleteStudent = (id) => {
                 </div> <!-- Closing the div for Academic Panel -->
 
                 <!-- Enrolled courses list Pannel -->
-                <div v-show="selectedTab === 'courses'">                   
-                    
-                    <div class="grid grid-cols-2 gap-4">
+                <div v-show="selectedTab === 'courses'">     
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Course Enrolments
+                        </h2>
+                        
+                            
+                        <div class="flex justify-center mb-6">
+                            <button
+                                @click="router.visit(route('students.profile', { student: student.id }))"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                Assign to Courses
+                            </button>
+                        </div> 
+                    </div>
 
-                        <div v-if="student.courses" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Enrolled Courses</span
-                            >
-                            <ul class="list-disc pl-5">
-                                <li
-                                    v-for="course in student.courses"
-                                    :key="course.id"
-                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ course.name }}
-                                </li>
-                            </ul>
-                        </div>
-                        <div v-else class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >No Courses Enrolled</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.name }}
-                                has not enrolled in any courses yet.
-                            </span>
-                        </div>
-                    </div> <!-- Closing the div for Enrolled courses list -->
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">           
+                    
+                            <div class="grid grid-cols-2 gap-4">
+
+                                <div v-if="student.courses" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Enrolled Courses</span
+                                    >
+                                    <ul class="list-disc pl-5">
+                                        <li
+                                            v-for="course in student.courses"
+                                            :key="course.id"
+                                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ course.name }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-else class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >No Courses Enrolled</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.name }}
+                                        has not enrolled in any courses yet.
+                                    </span>
+                                </div>
+                            </div> <!-- Closing the div for Enrolled courses list -->
+                        </div>  
+                    </div>
                 </div> <!-- Closing the div for Enrolled courses list Pannel -->
 
                 <!-- Registrations Panel -->
                 <div v-show="selectedTab === 'registrations'">
-
-                    
-                    
-                    <div class="grid grid-cols-2 gap-4">
-
-                        <div v-if="student.registrations" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Registrations</span
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Registration Details
+                        </h2>
+                        
+                            
+                        <div class="flex justify-center mb-6">
+                            <button
+                                @click="router.visit(route('students.profile', { student: student.id }))"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
-                            <ul class="list-disc pl-5">
-                                <li
-                                    v-for="registration in student.registrations"
-                                    :key="registration.id"
-                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ registration.name }}
-                                </li>
-                            </ul>
+                                Complete Registration
+                            </button>
+                        </div> 
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
+                            <div class="grid grid-cols-2 gap-4">
+
+                                <div v-if="student.registrations" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Registrations</span
+                                    >
+                                    <ul class="list-disc pl-5">
+                                        <li
+                                            v-for="registration in student.registrations"
+                                            :key="registration.id"
+                                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ registration.name }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-else class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >No Registrations</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.name }}
+                                        has not registered for any events yet.
+                                    </span>
+                                </div>  <!-- Closing the div for No Registrations --> 
+                            </div> <!-- Closing the div for Registrations list -->
                         </div>
-                        <div v-else class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >No Registrations</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.name }}
-                                has not registered for any events yet.
-                            </span>
-                        </div>  <!-- Closing the div for No Registrations --> 
-                    </div> <!-- Closing the div for Registrations list -->
+                    </div>
                 </div> <!-- Closing the div for Registrations Panel -->
 
                 <!-- Church Details Panel -->
                 <div v-show="selectedTab === 'church'">
-                    
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div v-if="student.church_name" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Church</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.church_name }}
-                            </span>
-                        </div>
-                        <div v-if="student.church_address" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Address</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.church_address }}
-                            </span>
-                        </div> <!-- Closing the div for Church Address -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Church Information
+                        </h2>
+                    </div>
+                    <
 
-                        <div v-if="student.pastor_name" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Pastor's Name</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.pastor_name }}
-                            </span>
-                        </div> <!-- Closing the div for Pastor's Name -->
-                        <div v-if="student.pastor_phone" class="flex flex-col">
-                            <span class="text-sm text-gray-500 dark:text-gray-400"
-                                >Pastor's Phone</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.pastor_phone }}
-                            </span>
-                        </div> <!-- Closing the div for Pastor's Phone -->
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div v-if="student.church_name" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Church</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.church_name }}
+                                    </span>
+                                </div>
+                                <div v-if="student.church_address" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Address</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.church_address }}
+                                    </span>
+                                </div> <!-- Closing the div for Church Address -->
+
+                                <div v-if="student.pastor_name" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Pastor's Name</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.pastor_name }}
+                                    </span>
+                                </div> <!-- Closing the div for Pastor's Name -->
+                                <div v-if="student.pastor_phone" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Pastor's Phone</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ student.pastor_phone }}
+                                    </span>
+                                </div> <!-- Closing the div for Pastor's Phone -->
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- Closing the div for Church Details Panel -->
 

@@ -51,18 +51,9 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    form.value.processing = true; // Optional: Add a processing state if needed
-    router.post(route('students.store'), form.value, {
-        onSuccess: () => {
-            alert('Student registered successfully!');
-        },
-        onError: (errors) => {
-            form.value.errors = errors; // Capture validation errors
-        },
-        onFinish: () => {
-            form.value.processing = false; // Reset processing state
-        },
-    });
+    console.log(form);
+    
+    form.post(route("students.store"));
 };
 
 </script>

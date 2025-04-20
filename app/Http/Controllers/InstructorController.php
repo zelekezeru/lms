@@ -47,8 +47,10 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
+        $instructor = new InstructorResource($instructor->load('user', 'courses'));
+
         return Inertia::render('Instructors/Show', [
-            'instructor' => new InstructorResource($instructor->load('user')) 
+            'instructor'=> $instructor,
         ]);
     }
     
@@ -140,6 +142,7 @@ class InstructorController extends Controller
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
+            'phone'=> $fields['contact_phone'],
         ]);
 
         // Update instructor details

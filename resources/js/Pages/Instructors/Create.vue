@@ -10,8 +10,6 @@ defineProps({
 const form = useForm({
     name: "",
     email: "",
-    password: "instructors@default",
-    password_confirmation: "instructors@default",
     role_name: "",
     contact_phone: "",
     hire_date: "",
@@ -19,7 +17,6 @@ const form = useForm({
     specialization: "",
     bio: "",
     employment_type: "",
-    office_hours: "",
     profile_img: "",
     status: "Inactive",
 });

@@ -59,7 +59,7 @@ class StudentResource extends JsonResource
             'is_scholarship_deleted' => $this->is_scholarship_deleted,
             'is_scholarship_verified' => $this->is_scholarship_verified,
             'is_scholarship_enrolled' => $this->is_scholarship_enrolled,
-
+            
             'profileImg'  => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
             'courses' => $this->whenLoaded('courses'), 

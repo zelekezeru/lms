@@ -14,13 +14,12 @@ const form = useForm({
     name: props.instructor?.name || "",
     email: props.instructor?.email || "",
     role_name: props.instructor?.roleName || "",
-    job_position: props.instructor?.jobPosition || "",
+    contact_phone: props.instructor?.ContactPhone || "",
     hire_date: props.instructor?.hireDate || "",
     specialization: props.instructor?.specialization || "",
     bio: props.instructor?.bio || "",
     status: props.instructor?.status || "",
     employment_type: props.instructor?.employmentType || "",
-    office_hours: props.instructor?.officeHours || "",
     status : props.instructor?.status || "",
     profile_img: props.instructor?.profileImg || "",
     role_id: props.instructor?.roleId || "",
@@ -42,6 +41,7 @@ const handleImageLoad = () => {
 const submit = (id) => {
     form.post(route("instructors.update", { instructor: id }));
 };
+
 </script>
 
 <template>

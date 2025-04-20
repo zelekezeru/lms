@@ -40,6 +40,12 @@ const tabs = [
 
 const imageLoaded = ref(false);
 
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
+
 const deleteStudent = (id) => {
     Swal.fire({
         title: "Are you sure?",
@@ -103,18 +109,19 @@ const deleteStudent = (id) => {
                 <!-- Details Panel -->
                 <div v-show="selectedTab === 'details'" >
 
-                    <!-- Profile Image -->
+                    <!-- student Image -->
                     <div class="flex justify-center mb-8">
                         <div
                             v-if="!imageLoaded"
                             class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                         ></div>
+
                         <img
                             v-show="imageLoaded"
                             class="rounded-full w-44 h-44 object-contain bg-gray-400"
                             :src="student.profileImg"
-                            :alt="`profile image of ` + student.name"
-                            @load="imageLoaded = true"
+                            :alt="`Logo of ` + student.name"
+                            @load="handleImageLoad"
                         />
                     </div>
                     
@@ -127,7 +134,7 @@ const deleteStudent = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.profileImg }}
+                            {{ student.id_no }}
                         </span>
                     </div>
                     <div class="flex flex-col">

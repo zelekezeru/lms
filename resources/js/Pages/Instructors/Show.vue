@@ -4,7 +4,20 @@ import { defineProps, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import Modal from "@/Components/Modal.vue";
+import { Listbox, MultiSelect } from "primevue";
+import {
+    PencilIcon,
+    EyeIcon,
+    TrashIcon,
+    CogIcon,
+    AcademicCapIcon,
+    UsersIcon,
+    PencilSquareIcon, 
+    PlusCircleIcon,
+    BookOpenIcon,
+    HomeModernIcon,
+} from "@heroicons/vue/24/solid";
 
 // Define the props for the instructor
 defineProps({
@@ -13,6 +26,17 @@ defineProps({
         required: true,
     },
 });
+
+// Multi nav header options
+const selectedTab = ref('details');
+
+
+const tabs = [
+    { key: 'details', label: 'Details', icon: CogIcon },
+    { key: 'academics', label: 'Academics', icon: BookOpenIcon },
+    { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
+    { key: 'sections', label: 'Sections', icon: UsersIcon },
+];
 
 const imageLoaded = ref(false);
 
@@ -57,124 +81,291 @@ const deleteInstructor = (id) => {
                 {{ instructor.user.name }}
             </h1>
 
-            <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            <nav
+                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
-                <!-- Instructor Image -->
-                <div class="flex justify-center mb-8">
-                    <div
-                        v-if="!imageLoaded"
-                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
-                    ></div>
+                <button
+                    v-for="tab in tabs"
+                    :key="tab.key"
+                    @click="selectedTab = tab.key"
+                    :class="[
+                        'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
+                        selectedTab === tab.key
+                            ? 'border-b-2 border-indigo-500 text-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
+                    ]"
+                >
+                    <component :is="tab.icon" class="w-5 h-5" />
+                    <span>{{ tab.label }}</span>
+                </button>
+            </nav>
 
-                    <img
-                        v-show="imageLoaded"
-                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="instructor.profileImg"
-                        :alt="`Logo of ` + instructor.name"
-                        @load="handleImageLoad"
-                    />
-                </div>
+            
+                <!-- Details Panel -->
+                <div v-show="selectedTab === 'details'" >
 
-                <!-- instructor Full Name -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Full Name</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.user.name }}</span
-                    >
-                </div>
+                    <div class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700">
+                            <!-- Instructor Image -->
+                            <div class="flex justify-center mb-8">
+                                <div
+                                    v-if="!imageLoaded"
+                                    class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                                ></div>
 
-                <!-- Email -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Email</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.user.email }}</span
-                    >
-                </div>
+                                <img
+                                    v-show="imageLoaded"
+                                    class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                                    :src="instructor.profileImg"
+                                    :alt="`Logo of ` + instructor.name"
+                                    @load="handleImageLoad"
+                                />
+                            </div>
 
-                <!-- Hire Date -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Hire Date</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.hireDate }}</span
-                    >
-                </div>
+                            <div class="grid grid-cols-2 gap-4">
 
-                <!-- Employment Type -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Employment Type</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.employmentType }}</span
-                    >
-                </div>
+                                <!-- instructor Full Name -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Full Name</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >{{ instructor.user.name }}</span
+                                    >
+                                </div>
 
-                <!-- Bio -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Bio</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.bio }}</span
-                    >
-                </div>
+                                <!-- Email -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Email</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >{{ instructor.user.email }}</span
+                                    >
+                                </div>
 
-                <!-- Status -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Status</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                    >
-                        <div v-if="instructor.status == 0" class="text-red-500">
-                            Inactive
+                                <!-- Phone -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Phone</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >{{ instructor.user.phone }}</span
+                                    >
+                                </div>
+
+                                <!-- Employment Type -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Employment Type</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >{{ instructor.employmentType }}</span
+                                    >
+                                </div>
+
+                                <!-- Bio -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Bio</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >{{ instructor.bio }}</span
+                                    >
+                                </div>
+
+                                <!-- Status -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Status</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        <div v-if="instructor.status == 0" class="text-red-500">
+                                            Inactive
+                                        </div>
+                                        <div v-else class="text-green-500">Active</div>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Edit and Delete Buttons -->
+                            <div class="flex justify-end mt-6 space-x-6">
+                                <!-- Edit Button, only show if user has permission -->
+                                <div v-if="userCan('update-instructors')">
+                                    <Link
+                                        :href="
+                                            route('instructors.edit', {
+                                                instructor: instructor.id,
+                                            })
+                                        "
+                                        class="text-blue-500 hover:text-blue-700"
+                                    >
+                                        <PencilIcon class="w-5 h-5" />
+                                        <span>Edit</span>
+                                    </Link>
+                                </div>
+
+                                <!-- Delete Button, only show if user has permission -->
+                                <div v-if="userCan('delete-instructors')">
+                                    <button
+                                        @click="deleteInstructor(instructor.id)"
+                                        class="text-red-500 hover:text-red-700"
+                                    >
+                                        <TrashIcon class="w-5 h-5" />
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
                         </div>
-                        <div v-else class="text-green-500">Active</div>
-                    </span>
-                </div>
-            </div>
+                    </div>
 
-            <!-- Edit and Delete Buttons -->
-            <div class="flex justify-end mt-6 space-x-6">
-                <!-- Edit Button, only show if user has permission -->
-                <div v-if="userCan('update-instructors')">
-                    <Link
-                        :href="
-                            route('instructors.edit', {
-                                instructor: instructor.id,
-                            })
-                        "
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
-                        <span>Edit</span>
-                    </Link>
+                    
+                <!-- Academic Panel -->
+                <div v-show="selectedTab === 'academics'">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Academic Information
+                        </h2>
+                        
+                            
+                        <div class="flex justify-center mb-6">
+                            
+
+                        </div> 
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
+                    
+                            <!-- instructor details -->
+                            <div class="grid grid-cols-2 gap-4">
+
+
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Delete Button, only show if user has permission -->
-                <div v-if="userCan('delete-instructors')">
-                    <button
-                        @click="deleteInstructor(instructor.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                        <span>Delete</span>
-                    </button>
-                </div>
+                <!-- Courses Pannel -->
+                <div v-show="selectedTab === 'courses'">     
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Course Assignments
+                        </h2>
+                        
+                            
+                        <div class="flex justify-center mb-6">
+                            <button
+                                @click=""
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                Assign to Courses
+                            </button>
+                        </div> 
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">           
+                    
+                            <div class="grid grid-cols-2 gap-4">
+
+                                <div v-if="instructor.courses" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Assigned Courses</span
+                                    >
+                                    <ul class="list-disc pl-5">
+                                        <li
+                                            v-for="course in instructor.courses"
+                                            :key="course.id"
+                                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ course.name }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-else class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >No Courses Assigned</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ instructor.name }}
+                                        has not been assigned to any Courses yet.
+                                    </span>
+                                </div>
+                            </div> 
+                        </div>  
+                    </div>
+                </div> 
+
+                <!-- Section Panel -->
+                <div v-show="selectedTab === 'sections'">     
+                    <div class="flex items-center justify-between mb-4">
+                        <h2
+                            class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                            Section Assignments
+                        </h2>
+                        
+                            
+                        <div class="flex justify-center mb-6">
+                            <button
+                                @click="router.visit(route('instructors.profile', { instructor: instructor.id }))"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                Assign to Sections
+                            </button>
+                        </div> 
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">           
+                    
+                            <div class="grid grid-cols-2 gap-4">
+
+                                <div v-if="instructor.sections" class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >Assigned Sections</span
+                                    >
+                                    <ul class="list-disc pl-5">
+                                        <li
+                                            v-for="section in instructor.sections"
+                                            :key="section.id"
+                                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ section.name }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-else class="flex flex-col">
+                                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                                        >No Sections Assigned</span
+                                    >
+                                    <span
+                                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                    >
+                                        {{ instructor.name }}
+                                        has not been assigned to any Sections yet.
+                                    </span>
+                                </div>
+                            </div> 
+                        </div>  
+                    </div>
+                </div> 
+
             </div>
-        </div>
     </AppLayout>
 </template>

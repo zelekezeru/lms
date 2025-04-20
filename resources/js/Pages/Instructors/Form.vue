@@ -128,18 +128,6 @@ const handleFileChange = (e) => {
                         <InputError :message="form.errors.employment_type" />
                     </div>
 
-                    <!-- Office Hours -->
-                    <div>
-                        <InputLabel for="office_hours" value="Office Hours" />
-                        <TextInput
-                            id="office_hours"
-                            type="text"
-                            v-model="form.office_hours"
-                            class="w-full"
-                        />
-                        <InputError :message="form.errors.office_hours" />
-                    </div>
-
                     <!-- Hire Date -->
                     <div>
                         <InputLabel for="hire_date" value="Hire Date" />

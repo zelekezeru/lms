@@ -93,13 +93,11 @@ class InstructorController extends Controller
             'profile_img' => $profile_path,
         ]);
 
-        $registeredUserController = new RegisteredUserController();
-
-        $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User');
-        
         $instructor = Instructor::create([
             'name' => $fields['name'],
-            'user_id' => $user->id,
+            
+            // User id temporary
+            'user_id' => 1,
             'tenant_id' => 1,
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
@@ -107,6 +105,11 @@ class InstructorController extends Controller
             'status' => $fields['status'],
             'hire_date' => $fields['hire_date'],
         ]);
+
+        $registeredUserController = new RegisteredUserController();
+
+        $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
+        
         dd($instructor);
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }

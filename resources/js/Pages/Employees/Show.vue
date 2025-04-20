@@ -76,7 +76,7 @@ const deleteEmployee = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ instructor.user.name }}
+                {{ employee.user.name }}
             </h1>
 
             <nav
@@ -237,7 +237,7 @@ const deleteEmployee = (id) => {
                     <div class="overflow-x-auto">
                         <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
                     
-                            <!-- instructor details -->
+                            <!-- Employee details -->
                             <div class="grid grid-cols-2 gap-4">
 
 
@@ -245,7 +245,8 @@ const deleteEmployee = (id) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
+            </div>
         </div>
     </AppLayout>
 </template>

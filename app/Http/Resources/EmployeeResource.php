@@ -23,6 +23,8 @@ class EmployeeResource extends JsonResource
             'jobPosition'  => $this->job_position,
             'employmentType' => $this->employment_type,
             'officeHours'  => $this->office_hours,
+
+            'user' => $this->whenLoaded('user'),
             'profileImg'  => Storage::url($this->user->profile_img),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,

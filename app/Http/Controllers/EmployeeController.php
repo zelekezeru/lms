@@ -86,17 +86,18 @@ class EmployeeController extends Controller
             'profile_img' => $profile_path,
         ]);
         
-        $registeredUserController = new RegisteredUserController();
-
-        
-        $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee');
-        
         $employee = Employee::create([
-            'user_id' => $user->id,
+            // User id temporary
+            'user_id' => 1,
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],
         ]);
+
+        $registeredUserController = new RegisteredUserController();
+        
+        $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee', $employee);
+        
         
         return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }

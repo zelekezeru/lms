@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request, $role = null, $model= null): RedirectResponse
+    public function store(Request $request, $role = null, $model= null, $parent = null): RedirectResponse
     {   
         $fields = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -153,20 +153,27 @@ class RegisteredUserController extends Controller
             
             $user = User::create($fields);
 
-            $user->assignRole('INSTRUCTOR');
+            $parent->update([
+                'user_id' => $user->id,
+            ]);
 
-            return redirect(route('instructors.show', $user->id))->with('success', 'Instructor created successfully.');
+            $user->assignRole('INSTRUCTOR');
+            
+            return redirect(route('instructors.show', $parent->id))->with('success', 'Instructor created successfully.');
         }
         // Employee User
         elseif($role == 'EMPLOYEE')
         {
             $user = User::create($fields);
 
+            $parent->update([
+                'user_id' => $user->id,
+            ]);
+
             $user->assignRole();
             
-            return redirect(route('employees.show', $user->id))->with('success','Employee created successfully.');
+            return redirect(route('employees.show', $parent->id))->with('success', 'Employee created successfully.');
         }
-
         // All other Users
         else{
             

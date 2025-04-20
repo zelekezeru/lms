@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Starting Seeder
-        $this->call(RolePermissionSeeder::class);
+        // $this->call(RolePermissionSeeder::class);
         
         //After creating the roles, permissions, SuperAdmin and Tenants
         // $this->call(TenantSeeder::class);
@@ -28,6 +28,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(SemesterSeeder::class);
         // $this->call(SectionSeeder::class);
         // $this->call(StudentSeeder::class);
-        // $this->call(InstructorSeeder::class);
+        // $this->call(InstructorSeeder::class);\
     }
 }

@@ -41,68 +41,24 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request, $role = null, $model= null, $parent = null): RedirectResponse
     {   
-        $fields = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'contact_phone' => ['nullable', 'string', 'max:15'],
-        ]);
-
-        // Professional Email
-        $fullName = trim($request->name); // Remove extra spaces
-        $nameParts = explode(' ', $fullName);
-
-        // Fallback values in case there’s only one name part
-        $firstName = strtolower($nameParts[0]);
-        $secondName = isset($nameParts[1]) ? strtolower($nameParts[1]) : 'user';
-
-        // Create the email
-        $email = $firstName . '.' . $secondName . '@sits.edu.et';
-
-
-        // ID Generation
-        $userUuid = $this->userUuid($role, $model, $tenant_id = null);
-
-        if ($userUuid) {
-            $fields['uuid'] = $userUuid;
-        }else{
-            'Not Set';
+        // Check if the user with id 1 already exists
+        if(User::where('id', 1)->exists()){
+            return redirect(route('employees.create'));
         }
 
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-        if($tenant_id == null){
-            $tenant = Tenant::first();
-        }else{
-            $tenant = Tenant::find($tenant_id);
-        }
-        if(!$tenant){
+        // SUPER-ADMIN Registration
 
-            return redirect(route('tenants.create'));
-        }
-        // Fields Form fill
-
-        $fields = [
-            'name'=> $request['name'],
-            'user_uuid' => $userUuid,
-            'phone'=> $request->contact_phone,
-            'email' => $email,
-            'tenant_id' => $tenant->id,
-            'password' => Hash::make($request['password']),
-            'default_password' => $request['default_password'],
-            'profile_img' => $request->hasFile('profile_img') 
-                ? $request->file('profile_img')->store('profile_images') 
-                : null, // or you can use a default image path here
-        ];
-
-        // SUPER-ADMIN User
-
+        // Check if the user with id 1 already exists
         if(User::where('id', 1)->first() == null){
             
             $fields = $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'phone' => ['nullable', 'string', 'max:15'],
-                'default_password' => ['nullable', 'string', 'max:15'],
-                'email'=> $email,
+                'email'=> ['required', 'email', 'unique:users,email'],
+                'profile_img' => ['nullable', 'image:jpg,jpeg,png,gif,svg,webp|max:5150'],
             ]);
 
             $user = User::create([
@@ -111,8 +67,10 @@ class RegisteredUserController extends Controller
                 'tenant_id' => 1,
                 'user_uuid' => 'SA' .  '/' . $year,
                 'email' => $request->email,
-                'phone' => $request->contact,
-                'profile_img' => $request->profile_img,
+                'phone' => $request->contact_phone,
+                'profile_img' => $request->hasFile('profile_img') 
+                    ? $request->file('profile_img')->store('profile_images') 
+                    : null,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -125,63 +83,112 @@ class RegisteredUserController extends Controller
             return redirect(route('dashboard'));
         }
 
-        // TENANT-ADMIN User
-        elseif($role == 'TENANT-ADMIN'){
-            
-            $user = User::create([
-                'tenant_id' => $fields['tenant_id'],
-                'name' => $request->name,
-                'user_uuid' => $userUuid,
-                'email' => $request->email,
-                'phone'=> $request->contact_phone,
-                'default_password' => $request->password,
-                'profile_img' => $request->profile_img,
-                'password' => Hash::make($request->password),
 
-            ]);
-
-            $user->assignRole('TENANT-ADMIN');
-
-            event(new Registered($user));
-
-            return redirect(route('tenants.show', $tenant->id))->with('success', 'Instructor created successfully.');
-
-        }
-
-        //Instructor User
-        elseif($role == 'INSTRUCTOR'){
-            
-            $user = User::create($fields);
-
-            $parent->update([
-                'user_id' => $user->id,
-            ]);
-
-            $user->assignRole('INSTRUCTOR');
-            
-            return redirect(route('instructors.show', $parent->id))->with('success', 'Instructor created successfully.');
-        }
-        // Employee User
-        elseif($role == 'EMPLOYEE')
-        {
-            $user = User::create($fields);
-
-            $parent->update([
-                'user_id' => $user->id,
-            ]);
-
-            $user->assignRole();
-            
-            return redirect(route('employees.show', $parent->id))->with('success', 'Employee created successfully.');
-        }
-        // All other Users
         else{
+                // Construct Form Elements
+
+                $fields = $request->validate([
+                    'name' => ['required', 'string', 'max:255'],
+                    'contact_phone' => ['nullable', 'string', 'max:15'],
+                ]);
+
+                // Professional Email
+                $fullName = trim($request->name); // Remove extra spaces
+                $nameParts = explode(' ', $fullName);
+
+                // Fallback values in case there’s only one name part
+                $firstName = strtolower($nameParts[0]);
+                $secondName = isset($nameParts[1]) ? strtolower($nameParts[1]) : 'user';
+
+                // Create the email
+                $email = $firstName . '.' . $secondName . '@sits.edu.et';
+
+
+                // ID Generation
+                $userUuid = $this->userUuid($role, $model, $tenant_id = null);
+
+                if ($userUuid) {
+                    $fields['uuid'] = $userUuid;
+                }else{
+                    'Not Set';
+                }
+
+                if($tenant_id == null){
+                    $tenant = Tenant::first();
+                }else{
+                    $tenant = Tenant::find($tenant_id);
+                }
+                if(!$tenant){
+
+                    return redirect(route('tenants.create'));
+                }
+                // Fields Form fill
+
+                $fields = [
+                    'name'=> $request['name'],
+                    'user_uuid' => $userUuid,
+                    'phone'=> $request->contact_phone,
+                    'email' => $email,
+                    'tenant_id' => $tenant->id,
+                    'password' => Hash::make($request['password']),
+                    'default_password' => $request['default_password'],
+                    'profile_img' => $request->hasFile('profile_img') 
+                        ? $request->file('profile_img')->store('profile_images') 
+                        : null, // or you can use a default image path here
+                ];
             
-            $user = User::create($fields);
+            // TENANT-ADMIN User
+            if($role == 'TENANT-ADMIN'){
+                
+                $user = User::create($fields);
+                
+                $parent->update([
+                    'user_id' => $user->id,
+                ]);
 
-            $user->assignRole('USER');
+                $user->assignRole('TENANT-ADMIN');
 
-            return redirect(route('users.show', $user->id))->with('success','User created successfully.');
+                event(new Registered($user));
+
+                return redirect(route('tenants.show', $user->tenant_id))->with('success', 'Tenant created successfully.');
+
+            }
+
+            //Instructor User
+            elseif($role == 'INSTRUCTOR'){
+                
+                $user = User::create($fields);
+
+                $parent->update([
+                    'user_id' => $user->id,
+                ]);
+
+                $user->assignRole('INSTRUCTOR');
+                
+                return redirect(route('instructors.show', $parent->id))->with('success', 'Instructor created successfully.');
+            }
+            // Employee User
+            elseif($role == 'EMPLOYEE')
+            {
+                $user = User::create($fields);
+
+                $parent->update([
+                    'user_id' => $user->id,
+                ]);
+
+                $user->assignRole();
+                
+                return redirect(route('employees.show', $parent->id))->with('success', 'Employee created successfully.');
+            }
+            // All other Users
+            else{
+                
+                $user = User::create($fields);
+
+                $user->assignRole('USER');
+
+                return redirect(route('users.show', $user->id))->with('success','User created successfully.');
+            }
         }
     }
 

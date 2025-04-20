@@ -122,7 +122,7 @@ class TenantController extends Controller
         
         $registeredUserController = new RegisteredUserController();
 
-        $registeredUserController->store($request, 'TENANT-ADMIN', 'User');
+        $registeredUserController->store($request, 'TENANT-ADMIN', 'User', $tenant);
         
         return redirect()->route('tenants.show', $tenant)->with('success', 'Tenant created successfully.');
     }

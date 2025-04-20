@@ -21,10 +21,10 @@ class InstructorStoreRequest extends FormRequest
             // Instructor table validations
             'specialization' => 'nullable|string|max:255',
             'employment_type' => 'required|in:Full-time,Part-time,Contract,Guest',
-            
             'hire_date' => 'required|date',
             'status' => 'required|in:Active,Inactive,Suspended',
             'bio' => 'nullable|string',
+            'courses' => 'required|min:1|array',
         ];
     }
 }

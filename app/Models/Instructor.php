@@ -12,7 +12,6 @@ class Instructor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tenant_id',
         'user_id',
         'specialization',
         'employment_type',
@@ -22,21 +21,23 @@ class Instructor extends Model
         'profile_image',
     ];
 
+    // BelongsTo relationships
     public function user()
     {
         return $this->belongsTo(User::class);
-    }  
+    }
 
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
-    
+
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
-    
+
+    // BelongsToMany relationships
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class);
@@ -47,6 +48,7 @@ class Instructor extends Model
         return $this->belongsToMany(Section::class);
     }
 
+    // HasMany relationships
     public function weights(): HasMany
     {
         return $this->hasMany(Weight::class);

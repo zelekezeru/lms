@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Resources\CourseResource;
+use App\Models\Course;
 
 class InstructorController extends Controller
 {
@@ -59,10 +61,12 @@ class InstructorController extends Controller
     {
         $instructors = InstructorResource::collection(Instructor::all());
         $roles = Role::all();
+        $courses = CourseResource::collection(Course::all());
 
         return Inertia::render('Instructors/Create', [
             'departments' => Department::all(['id', 'name']),
             'roles' => $roles,
+            'courses' => $courses,
         ]);
     }
 
@@ -71,6 +75,7 @@ class InstructorController extends Controller
     {
         $fields = $request->validated();
 
+        $courses = $fields['courses'] ?? [];
         $profileImg = $fields['profile_img'] ?? null;
         
         // Profile   of Instructor
@@ -105,12 +110,15 @@ class InstructorController extends Controller
             'status' => $fields['status'],
             'hire_date' => $fields['hire_date'],
         ]);
+        
+        //Assign the created instructor to the courses
+        $instructor->courses()->sync($courses);
 
         $registeredUserController = new RegisteredUserController();
 
         $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
         
-        dd($instructor);
+        
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
     

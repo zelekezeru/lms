@@ -6,11 +6,13 @@ import Form from "./Form.vue";
 
 defineProps({
     roles: { type: Object, required: true },
+    courses: { type: Object, required: true },
 });
 
 const form = useForm({
     name: "",
     email: "",
+    courses: [],
     role_name: "",
     contact_phone: "",
     hire_date: "",
@@ -44,7 +46,7 @@ const submit = () => {
             </div>
 
             <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
-                <Form :form="form" :departments="departments" :roles="roles" @submit="submit"/>
+                <Form :form="form" :courses="courses" :departments="departments" :roles="roles" @submit="submit"/>
             </div>
         </div>
     </AppLayout>

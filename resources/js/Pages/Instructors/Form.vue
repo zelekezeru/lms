@@ -5,12 +5,14 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { PhotoIcon } from "@heroicons/vue/24/outline";
+import { MultiSelect } from "primevue";
 
 // Define the expected props
 const props = defineProps({
     form: Object,
     departments: { type: Array, required: true },
     roles: { type: Array, required: true },
+    courses: { type: Array, required: true },
 });
 
 const emits = defineEmits(["submit"]);
@@ -133,6 +135,29 @@ const handleFileChange = (e) => {
                 <InputError :message="form.errors.specialization" />
             </div>
 
+            <div>
+                <InputLabel
+                    for="courses"
+                    value="Select Courses This Instructor Can Teach (at least one)"
+                    class="block mb-1 text-gray-200"
+                />
+
+                <MultiSelect
+                    v-model="form.courses"
+                    :options="courses"
+                    optionLabel="name"
+                    option-value="id"
+                    filter
+                    placeholder="Select Courses This Instructor Can Teach"
+                    :maxSelectedLabels="3"
+                    class="w-full md:w-80"
+                />
+
+                <InputError
+                    :message="form.errors.courses"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
             <!-- Status -->
             <div>
                 <label

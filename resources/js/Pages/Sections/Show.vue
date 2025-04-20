@@ -11,8 +11,9 @@ import {
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
+    PencilSquareIcon, 
+    PlusCircleIcon
 } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import { formToJSON } from "axios";
 import { Listbox, MultiSelect } from "primevue";
@@ -40,25 +41,25 @@ const assignCourses = ref(false);
 const assignInstructor = ref(false);
 const assignToCourse = ref({});
 
-const students = ref({
-    data: [],
-    meta: {
-        current_page: 1,
-        per_page: 10,
-    },
-});
-
 const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
     { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
     { key: 'students', label: 'Students', icon: UsersIcon },
 ];
 
+
+const students = ref({
+    data: [],
+    meta: {
+        current_page: 1,
+        per_page: 50,
+    },
+});
 const courseAssignmentForm = useForm({
     courses: props.section.courses.map(course => course.id),
 });
 
-const closeCourseAssignemnt = () => {
+const closeCourseAssignment = () => {
     assignCourses.value = false;
     courseAssignmentForm.reset();
     courseAssignmentForm.clearErrors();
@@ -287,8 +288,6 @@ const deletesection = (id) => {
 
                     <!-- Assign Courses to This section -->
                 </div>
-
-                <!--  Courses Pannel -->
 
                 <!-- Courses Panel -->
                 <div v-show="selectedTab === 'courses'" class="">
@@ -645,7 +644,7 @@ const deletesection = (id) => {
                 </button>
 
                 <button
-                    @click="closeCourseAssignemnt"
+                    @click="closeCourseAssignment"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
                 >
                     Close
@@ -693,7 +692,7 @@ const deletesection = (id) => {
                 </button>
 
                 <button
-                    @click="closeCourseAssignemnt"
+                    @click="closeCourseAssignment"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
                 >
                     Close

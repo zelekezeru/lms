@@ -19,7 +19,7 @@ class InstructorUpdateRequest extends FormRequest
             'contact_phone' => 'nullable|string|max:15',
 
             'specialization' => 'sometimes|string|max:255',
-            'employment_type' => 'required|in:Full-time,Part-time,Contract,Guest',
+            'employment_type' => 'required|in:Full-time,Part-time,Contract,Visitor',
             'hire_date' => 'required|date',
             'status' => 'required|in:Active,Inactive,Suspended',
             'bio' => 'sometimes|string',

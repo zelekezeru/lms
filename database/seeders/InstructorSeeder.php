@@ -21,7 +21,7 @@ class InstructorSeeder extends Seeder
             'Leadership', 'Apologetics'
         ];
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             $name = fake()->name;
             $email = fake()->unique()->safeEmail;
             $phone = fake()->phoneNumber;
@@ -46,7 +46,7 @@ class InstructorSeeder extends Seeder
                 'user_id'         => $user->id,
                 'tenant_id'       => 1,
                 'specialization'  => $specialization,
-                'employment_type' => fake()->randomElement(['Full-time', 'Part-time', 'Contract', 'Guest']),
+                'employment_type' => fake()->randomElement(['Full-time', 'Part-time', 'Contract', 'Visitor']),
                 'hire_date'       => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
                 'status'          => fake()->randomElement(['Active', 'Inactive']),
                 'bio'             => fake()->sentence(),

@@ -103,7 +103,7 @@ const handleFileChange = (e) => {
                     <option value="Full-time">Full-Time</option>
                     <option value="Part-time">Part-Time</option>
                     <option value="Contract">Contract</option>
-                    <option value="Guest">Guest</option>
+                    <option value="Visitor">Visitor</option>
                 </select>
                 <InputError :message="form.errors.employment_type" />
             </div>

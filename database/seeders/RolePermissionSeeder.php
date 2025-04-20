@@ -181,6 +181,7 @@ class RolePermissionSeeder extends Seeder
             'SUPER-ADMIN',
             'TENANT-ADMIN',
             'ADMIN',
+            'EMPLOYEE',
             'PRESIDENT',
             'DEPARTMENT-HEAD',
             'PROGRAM-DIRECTOR',

@@ -77,6 +77,7 @@ const submitCourseAssignment = () => {
                 );
                 assignCourses.value = false;
                 courseAssignmentForm.reset();
+                courseAssignmentForm.courses = props.section.courses.map(course => course.id);
             },
         }
     );
@@ -410,7 +411,7 @@ const deletesection = (id) => {
                                             >
                                                 <span v-if="course.instructor" class="flex justify-between">
                                                     {{course.instructor.name}}
-                                                        <PencilSquareIcon @click="opneInstructorAssignemnt(course)" class="w-5 text-green-600"/>
+                                                        <PencilSquareIcon @click="opneInstructorAssignemnt(course)" class="w-5 text-green-600 cursor-pointer"/>
                                                 </span>
                                                 <span v-else>
                                                     <button
@@ -686,9 +687,10 @@ const deletesection = (id) => {
             <div class="flex justify-end mt-4">
                 <button
                     @click="submitCourseAssignment"
+                    :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    Assign
+                    {{ courseAssignmentForm.processing ? "Assigning..." : "Assign" }}
                 </button>
 
                 <button
@@ -719,6 +721,7 @@ const deletesection = (id) => {
                 optionLabel="name"
                 option-value="id"
                 appendTo="self"
+                checkmark
                 filter
                 list-style="max-height: 500px"
                 placeholder="Select Instructor"
@@ -733,9 +736,10 @@ const deletesection = (id) => {
             <div class="flex justify-end mt-4">
                 <button
                     @click="submitInstructorAssignment"
+                    :disabled="instructorAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    Assign
+                    {{ instructorAssignmentForm.processing ? "Assigning..." : "Assign" }}
                 </button>
 
                 <button

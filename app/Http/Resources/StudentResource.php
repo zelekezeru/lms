@@ -61,7 +61,13 @@ class StudentResource extends JsonResource
             'is_scholarship_enrolled' => $this->is_scholarship_enrolled,
 
             'profileImg'  => Storage::url($this->user->profile_img),
-            'user' => new UserResource($this->whenLoaded('user')),
+            'user' => $this->whenLoaded('user'),
+            'courses' => $this->whenLoaded('courses'), 
+            'program' => $this->whenLoaded('program'),
+            'department' => $this->whenLoaded('department'),
+            'section' => $this->whenLoaded('section'),
+            'year' => $this->whenLoaded('year'),
+            'semester' => $this->whenLoaded('semester'),
              
         ];
     }

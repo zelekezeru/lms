@@ -72,8 +72,8 @@ class RegisteredUserController extends Controller
             event(new Registered($user));
     
             Auth::login($user);
-
-            return redirect()->route('tenants.create');
+    
+            return redirect(route('dashboard'));
         }
 
         // TENANT-ADMIN User
@@ -84,12 +84,25 @@ class RegisteredUserController extends Controller
             $tenant = Tenant::first();
 
             $fields['tenant_id'] = $tenant->id;
+
+            $fullName = trim($request->name); // Remove extra spaces
+            $nameParts = explode(' ', $fullName);
+
+            // Fallback values in case there’s only one name part
+            $firstName = strtolower($nameParts[0]);
+            $secondName = isset($nameParts[1]) ? strtolower($nameParts[1]) : 'user';
+
+            // Create the email
+            $email = $firstName . '.' . $secondName . '@sits.edu.et';
+
+        // Assign to your fields array
+        $fields['email'] = $email;
             
             $user = User::create([
                 'tenant_id' => $fields['tenant_id'],
-                'name' => $request->contact_person,
+                'name' => $request->name,
                 'user_uuid' => $userUuid,
-                'email' => $request->contact_email,
+                'email' => $request->email,
                 'phone'=> $request->contact_phone,
                 'default_password' => $request->password,
                 'profile_img' => $request->profile_img,
@@ -98,10 +111,35 @@ class RegisteredUserController extends Controller
 
             ]);
                 $user->assignRole('TENANT-ADMIN');
-                
-        
-            return redirect(route('tenants.show', $tenant));
+
+            event(new Registered($user));
+
+            return $user;
+
         }
+        //Instructor User
+        elseif($request->contact_phone != null && $request->contact_email == null){
+            $userUuid = $this->userUuid('INSTRUCTOR', 'Instructor');
+            $fields['name'] = $request->contact_person;
+            $fields['phone'] = $request->contact_phone;
+            $fields['default_password'] = $request->password;
+            $fields['profile_img'] = $request->profile_img;
+            
+            $user = User::create([
+                'tenant_id' => 1,
+                'name' => $fields['name'],
+                'user_uuid' => $userUuid,
+                'email' => $request->contact_email,
+                'phone'=> $fields['phone'],
+                'profile_img' => $fields['profile_img'],
+                'default_password' => $fields['default_password'],
+                'password' => Hash::make($fields['default_password']),
+            ]);
+            $user->assignRole('INSTRUCTOR');
+
+            return redirect(route('instructors.show', $user->id))->with('success', 'Instructor created successfully.');
+        }
+
         // Student User
         elseif($request->contact_email != null){
             $userUuid = $this->userUuid('STUDENT', 'Student');
@@ -128,12 +166,6 @@ class RegisteredUserController extends Controller
             ]);
                 $user->assignRole('USER');
         }
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard'));
     }
 
     public function userUuid($role, $type, $tenant_id = null)

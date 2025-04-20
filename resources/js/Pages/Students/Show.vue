@@ -24,30 +24,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    program: {
-        type: Object,
-        required: true,
-    },
-    department: {
-        type: Object,
-        required: true,
-    },
-    year: {
-        type: Object,
-        required: true,
-    },
-    semester: {
-        type: Object,
-        required: true,
-    },
-    semester: {
-        type: Object,
-        required: true,
-    },
-    user: {
-        type: Object,
-        required: true,
-    },
 });
 
 // Multi nav header options
@@ -151,7 +127,7 @@ const deleteStudent = (id) => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.id_no }}
+                            {{ student.profileImg }}
                         </span>
                     </div>
                     <div class="flex flex-col">
@@ -229,6 +205,34 @@ const deleteStudent = (id) => {
                             {{ student.sex }}
                         </span>
                     </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end mt-6 space-x-6">
+                        <!-- Edit Button -->
+                        <div v-if="userCan('update-students')">
+                            <Link
+                                :href="
+                                    route('students.edit', {
+                                        student: student.id,
+                                    })
+                                "
+                                class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                            >
+                                <PencilIcon class="w-5 h-5" />
+                                <span>Edit</span>
+                            </Link>
+                        </div>
+                        <!-- Delete Button -->
+                        <div v-if="userCan('delete-students')">
+                            <button
+                                @click="deleteStudent(student.id)"
+                                class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                            >
+                                <TrashIcon class="w-5 h-5" />
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 </div> <!-- Closing the div for Details Panel -->
 
@@ -259,44 +263,44 @@ const deleteStudent = (id) => {
                     
                             <!-- Student details -->
                             <div class="grid grid-cols-2 gap-4">
-                                <div v-if="program" class="flex flex-col">
+                                <div v-if="student.program" class="flex flex-col">
                                     <span class="text-sm text-gray-500 dark:text-gray-400"
                                         >Program</span
                                     >
                                     <span
                                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        {{ program.name }}
+                                        {{ student.program.name }}
                                     </span>
                                 </div>
-                                <div v-if="department" class="flex flex-col">
+                                <div v-if="student.department" class="flex flex-col">
                                     <span class="text-sm text-gray-500 dark:text-gray-400"
                                         >Department</span
                                     >
                                     <span
                                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        {{ department.name }}
+                                        {{ student.department.name }}
                                     </span>
                                 </div>
-                                <div v-if="year" class="flex flex-col">
+                                <div v-if="student.year" class="flex flex-col">
                                     <span class="text-sm text-gray-500 dark:text-gray-400"
                                         >Academic Year</span
                                     >
                                     <span
                                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        {{ year.name }}
+                                        {{ student.year.name }}
                                     </span>
                                 </div> <!-- Closing the div for Academic Year -->
-                                <div v-if="semester" class="flex flex-col">
+                                <div v-if="student.semester" class="flex flex-col">
                                     <span class="text-sm text-gray-500 dark:text-gray-400"
                                         >Semester</span
                                     >
                                     <span
                                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                                     >
-                                        {{ semester.name }}
+                                        {{ student.semester.name }}
                                     </span>
                                 </div> <!-- Closing the div for Semester -->
                             </div>
@@ -422,7 +426,6 @@ const deleteStudent = (id) => {
                             Church Information
                         </h2>
                     </div>
-                    <
 
                     <div class="overflow-x-auto">
                         <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
@@ -473,33 +476,6 @@ const deleteStudent = (id) => {
                     </div>
                 </div> <!-- Closing the div for Church Details Panel -->
 
-                <!-- Action Buttons -->
-                <div class="flex justify-end mt-6 space-x-6">
-                    <!-- Edit Button -->
-                    <div v-if="userCan('update-students')">
-                        <Link
-                            :href="
-                                route('students.edit', {
-                                    student: student.id,
-                                })
-                            "
-                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
-                        >
-                            <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                        </Link>
-                    </div>
-                    <!-- Delete Button -->
-                    <div v-if="userCan('delete-students')">
-                        <button
-                            @click="deleteStudent(student.id)"
-                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
-                        >
-                            <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </AppLayout>

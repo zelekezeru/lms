@@ -18,6 +18,7 @@ class InstructorStoreRequest extends FormRequest
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:users,email',
             'password'  => 'required|string|min:8|confirmed',
+            'contact_phone' => 'nullable|string|max:15',
             
             // Instructor table validations
             'specialization' => 'nullable|string|max:255',

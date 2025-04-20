@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 class InstructorController extends Controller
 {
@@ -65,16 +66,10 @@ class InstructorController extends Controller
 
     public function store(InstructorStoreRequest $request)
     {
-
         $fields = $request->validated();
+
         $profileImg = $fields['profile_img'] ?? null;
-        $year = substr(Carbon::now()->year, -2);
-
-        $instructor_id = 'IN/' .  '000/'. User::count()  .  '/' .$fields['name'] .  '/' .$year;  
-
-        $tenant = Tenant::first();
-
-        $fields['tenant_id'] = $tenant->id; // Use the tenant ID from the retrieved tenant
+        
         // Profile   of Instructor
         if ($profileImg) {
             $profile_path = $profileImg->store('profile-images', 'public');
@@ -82,15 +77,24 @@ class InstructorController extends Controller
             $profile_path = null;
         }
 
-        $user = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'profile_img' => $profile_path,
-            'user_uuid' => $instructor_id,
-            'password' => Hash::make('pwd@default'),
-        ]);
+        // Create a new Instructor User in User table
+        
+        $user_phone = substr($fields['contact_phone'], -4);
 
+        $user_password = $fields['name'] . '@' . $user_phone;
+
+        // Merge the default password into the request
+        $request->merge([
+            'password' => $user_password,
+            'password_confirmation' => $user_password, // needed for 'confirmed' rule
+        ]);
+        
+        $registeredUserController = new RegisteredUserController();
+
+        $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User');
+        
         $instructor = Instructor::create([
+            'name' => $fields['name'],
             'user_id' => $user->id,
             'tenant_id' => 1,
             'specialization' => $fields['specialization'],
@@ -98,11 +102,8 @@ class InstructorController extends Controller
             'bio' => $fields['bio'],
             'status' => $fields['status'],
             'hire_date' => $fields['hire_date'],
-            'tenant_id' => $tenant->id,
         ]);
-        
-        $user->assignRole('INSTRUCTOR');
-        
+        dd($instructor);
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
     

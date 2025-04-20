@@ -73,14 +73,14 @@ const handleFileChange = (e) => {
                     
                     <!-- Job Position -->
                     <div>
-                        <InputLabel for="job_position" value="Job Position" />
+                        <InputLabel for="contact_phone" value="Contact Phone" />
                         <TextInput
-                            id="job_position"
+                            id="contact_phone"
                             type="text"
-                            v-model="form.job_position"
+                            v-model="form.contact_phone"
                             class="w-full"
                         />
-                        <InputError :message="form.errors.job_position" />
+                        <InputError :message="form.errors.contact_phone" />
                     </div>
                     
                     <!-- Role -->
@@ -120,8 +120,10 @@ const handleFileChange = (e) => {
                             <option disabled value="">
                                 Select Employment Type
                             </option>
-                            <option value="full-time">Full-Time</option>
-                            <option value="part-time">Part-Time</option>
+                            <option value="Full-time">Full-Time</option>
+                            <option value="Part-time">Part-Time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Guest">Guest</option>
                         </select>
                         <InputError :message="form.errors.employment_type" />
                     </div>

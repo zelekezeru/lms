@@ -68,16 +68,11 @@ class StudentController extends Controller
     
     public function show(Student $student)
     {
-        $student = new StudentResource($student->load('user'));
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section'));
+        $student->user->profile_img = $student->user->profile_img ? url($student->user->profile_img) : null;
         
         return Inertia::render('Students/Show', [            
             'student' => $student,
-            'program' => $student->program,
-            'department' => $student->department,
-            'year' => $student->year,
-            'semester' => $student->semester,
-            'section' => $student->section,
-            'user' => $student->user,
         ]);
     }
     

@@ -13,7 +13,7 @@ const form = useForm({
     password: "instructors@default",
     password_confirmation: "instructors@default",
     role_name: "",
-    job_position: "",
+    contact_phone: "",
     hire_date: "",
     status: "",
     specialization: "",

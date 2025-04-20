@@ -11,10 +11,8 @@ defineProps({
 // Initialize the form data
 const form = useForm({
     name: "",
-    email: "",
-    password: "employees@default",  // Default password
-    password_confirmation: "employees@default",  // Default confirmation
     role_name: "",
+    contact_phone: "",
     job_position: "",
     employment_type: "",
     office_hours: "",

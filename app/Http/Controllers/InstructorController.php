@@ -57,6 +57,7 @@ class InstructorController extends Controller
 
     public function create(): Response
     {
+        $instructors = InstructorResource::collection(Instructor::all());
         $roles = Role::all();
 
         return Inertia::render('Instructors/Create', [

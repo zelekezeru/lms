@@ -20,13 +20,13 @@ class EmployeeStoreRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {dd($this->all());
         return [
             // User table validations
             'name'      => 'required|string|max:255',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'sometimes|required|string|min:8|confirmed',
+            'contact_phone' => 'required|string|max:15',
             'role_name'   => 'required|exists:roles,name',
+            
             // Employee table validations
             'profile_img'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
             'job_position'   => 'required|string|max:255',

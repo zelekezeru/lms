@@ -32,14 +32,19 @@ const submit = () => {
 
 <template>
     <AppLayout>
-        <div class="mb-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Add Instructor
-            </h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                Fill in the details to register a new instructor.
-            </p>
+        <div class="max-w-4xl mx-auto p-6">
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Create Instructor
+                </h2>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    Fill in the details to add a new Instructor.
+                </p>
+            </div>
+
+            <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
+                <Form :form="form" :departments="departments" :roles="roles" @submit="submit"/>
+            </div>
         </div>
-        <Form :form="form" :departments="departments" :roles="roles" @submit="submit"/>
     </AppLayout>
 </template>

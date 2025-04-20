@@ -7,6 +7,8 @@ import { useForm} from "@inertiajs/vue3";
 const props = defineProps({
     instructor: { type: Object, required: true },
     roles: { type: Object, required: true },
+    departments: {
+        type: Array, required: true },
 });
 
 // Initialize form data
@@ -47,28 +49,38 @@ const submit = (id) => {
 <template>
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Edit {{ props.instructor.name }}
-            </h2>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Modify the instructor details below.
-            </p>
-
-            <!-- Instructor Image -->
-            <div class="flex justify-center mb-8">
-                <div v-if="!imageLoaded" class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse" ></div>
-                
-                <img v-show="imageLoaded" class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                    :src="instructor.profileImg" :alt="`Logo of ` + instructor.name"
-                    @load="handleImageLoad"/>
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Edit {{ props.instructor.name }}
+                </h2>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    Modify the Instructor details below.
+                </p>
             </div>
+            <!-- instructor Image -->
+            <div class="flex justify-center mb-8">
+                <div
+                    v-if="!imageLoaded"
+                    class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                ></div>
+                <img
+                    v-show="imageLoaded"
+                    class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                    :src="instructor.profileImg"
+                    :alt="`profile image of ` + instructor.name"
+                    @load="imageLoaded = true"
+                />
+            </div>
+
+            <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
             
-            <Form
-                :form="form"
-                :departments="departments"
-                :roles="roles"
-                @submit="submit(instructor.id)"
-            />
+                <Form
+                    :form="form"
+                    :departments="departments"
+                    :roles="roles"
+                    @submit="submit(instructor.id)"
+                />
+            </div>
         </div>
     </AppLayout>
 </template>

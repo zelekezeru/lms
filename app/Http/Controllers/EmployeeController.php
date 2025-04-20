@@ -63,6 +63,7 @@ class EmployeeController extends Controller
     public function store(EmployeeStoreRequest $request)
     {
         $fields = $request->validated();
+        dd($fields);
 
         $image = $fields['profile_img'] ?? null;
         

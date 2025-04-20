@@ -16,7 +16,6 @@ class InstructorStoreRequest extends FormRequest
         return [
             // User table validations
             'name'      => 'required|string|max:255',
-            'email'     => 'required|email|unique:users,email',
             'contact_phone' => 'nullable|string|max:15',
             
             // Instructor table validations

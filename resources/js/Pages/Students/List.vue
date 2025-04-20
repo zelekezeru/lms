@@ -35,7 +35,7 @@ defineProps({
             <TableHeader>
                 <tr>
                     <Thead>No.</Thead>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Student Name</Thead>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'student_name'">Student Name</Thead>
                     <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'id_no'">ID Number</Thead>
                     <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'mobile_phone'">Phone</Thead>
                     <Thead>Actions</Thead>

@@ -20,11 +20,18 @@ class SectionResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'user' => new UserResource($this->whenLoaded('user')),
-            'program' => new ProgramResource($this->whenLoaded('program')),
-            'department' => new DepartmentResource($this->whenLoaded('department')),
-            'year' => new YearResource($this->whenLoaded('year')),
-            'semester' => new SemesterResource($this->whenLoaded('semester')),
-            'students' => StudentResource::collection($this->whenLoaded('students')),
+            'students' => $this->whenLoaded('students'),
+            'semester' => $this->whenLoaded('semester'),
+            'year' => $this->whenLoaded('year'),
+            'program' => $this->whenLoaded('program'),
+            'department' => $this->whenLoaded('department'),
+            'studyMode' => $this->whenLoaded('studyMode'),
+            'courses' => $this->whenLoaded('courses'),
+            'instructors' => $this->whenLoaded('instructors'),
+            
+            'status' => $this->status,
+            'is_approved' => $this->is_approved,
+            'is_completed' => $this->is_completed,
             'courses' => $this->whenLoaded('courseSectionAssignments', function () {
                 return $this->courseSectionAssignments->map(function ($assignment) {
                     return [

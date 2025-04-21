@@ -49,7 +49,7 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
-        $instructor = new InstructorResource($instructor->load('user', 'courses'));
+        $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignment.section', 'courseSectionAssignment.course'));
 
         return Inertia::render('Instructors/Show', [
             'instructor'=> $instructor,

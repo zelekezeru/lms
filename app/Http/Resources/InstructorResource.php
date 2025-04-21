@@ -31,6 +31,14 @@ class InstructorResource extends JsonResource
             'user' => $this->whenLoaded('user'),
             'sections' => $this->whenLoaded('sections'),
             'courses' => $this->whenLoaded('courses'),
+            'sections' => $this->whenLoaded('courseSectionAssignments', function() {
+                return $this->courseSectionAssignments->map(function($courseSectionAssignment) {
+                    return 
+                    [
+                        'name' => $courseSectionAssignment->section->name
+                    ]
+                })
+            }),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
         ];

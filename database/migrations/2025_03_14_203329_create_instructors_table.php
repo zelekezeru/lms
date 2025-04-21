@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('instructors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
             
             $table->string('specialization', 255);
             $table->enum('employment_type', ['Full-time', 'Part-time', 'Contract', 'Visitor']);

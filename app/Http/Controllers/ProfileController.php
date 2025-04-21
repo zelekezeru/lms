@@ -62,11 +62,11 @@ class ProfileController extends Controller
             if ($section) {
                 // Detach from previous sections
                 $student->user->update(['section_id' => $section->id]);
-
+                
                 // Attach section courses to student, avoid duplicates
                 foreach ($section->courses as $course) {
                     if (!$student->courses->contains($course->id)) {
-                        $student->courses()->attach($course->id);
+                        $student->courses()->sync($course->id);
                     }
                 }
             }

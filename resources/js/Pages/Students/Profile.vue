@@ -22,8 +22,9 @@ const form = useForm({
     profile_img: null,
     payment_status: student.value.is_approved || 0,
     section_id: student.value.section_id || "",
-    enroll: student.value.enroll || 1,
-    document_submitted: student.value.document_submitted || 0,
+    enroll: student.value.is_enrolled || 0,
+    student_id: student.value.student_id || "",
+    document_submitted: student.value.is_completed || 0,
     is_scholarship: student.value.is_scholarship || 0,
 });
 

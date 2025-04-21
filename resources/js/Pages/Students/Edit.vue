@@ -21,6 +21,7 @@ const form = ref({
     marital_status: props.student.marital_status || '', 
     sex: props.student.sex || '', 
     address: props.student.address || '', 
+    email: props.student.email || '',
     year_id: props.student.year_id || '', 
     semester_id: props.student.semester_id || '', 
     program_id: props.student.program_id || '', 

@@ -19,6 +19,20 @@ class AssessmentController extends Controller
 
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
         
+        // Section Course Instructor
+        $instructor = $section->courses()->where('course_id', $course->id)->first()->instructors()->where('section_id', $section->id)->first();
+
+        // if ($instructor && $instructor->pivot) {
+        //     $instructorId = $instructor->pivot->instructor_id;
+        //     $instructor = $instructorId ? $instructor->instructors()->find($instructorId) : null;
+        // }
+
+        dd($instructor);
+
+        if ($instructor) {
+            $instructor->load(['user']);
+        }
+        
         // Check if the section and course exist
         if (!$section || !$course) {
             return redirect()->back()->with('error', 'Section or Course not found.');

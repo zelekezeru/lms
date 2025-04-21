@@ -718,7 +718,7 @@ const deletesection = (id) => {
                 id="cousesList"
                 v-model="instructorAssignmentForm.instructor_id"
                 :options="instructors"
-                optionLabel="name"
+                :optionLabel="(option) => `${option.name} - (${option.specialization})`"
                 option-value="id"
                 appendTo="self"
                 checkmark

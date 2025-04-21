@@ -30,6 +30,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    instructor: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Computed
@@ -311,6 +315,18 @@ const addWeight = () => {
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             {{ course.name }}
+                        </span>
+                    </div>
+
+                    <!-- Instructor Name -->
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Instructor</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ section.instructor.name }}
                         </span>
                     </div>
 

@@ -11,40 +11,36 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::find($section)->load(['user', 'program', 'department','students']);
-        
-        $course = $section->courses()->find($course)->load(['instructors', 'students', ]);
-        
-        $semester = Semester::where('status', "Active")->first()->load(['year']); // Current Active semester 
+        $section = Section::with(['user', 'program', 'department', 'students'])->findOrFail($section);
 
-        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
-        
-        // Section Course Instructor
-        $instructor = $section->courses()->where('course_id', $course->id)->first()->instructors()->where('section_id', $section->id)->first();
+        $course = $section->courses()->with(['instructors', 'students'])->findOrFail($course);
 
-        // if ($instructor && $instructor->pivot) {
-        //     $instructorId = $instructor->pivot->instructor_id;
-        //     $instructor = $instructorId ? $instructor->instructors()->find($instructorId) : null;
-        // }
+        $semester = Semester::where('status', 'Active')->with('year')->firstOrFail(); // Current Active Semester
 
-        dd($instructor);
+        $weights = $course->weights()
+            ->where('semester_id', $semester->id)
+            ->where('course_id', $course->id)
+            ->where('section_id', $section->id)
+            ->with('results')
+            ->get();
 
-        if ($instructor) {
-            $instructor->load(['user']);
-        }
-        
-        // Check if the section and course exist
-        if (!$section || !$course) {
-            return redirect()->back()->with('error', 'Section or Course not found.');
-        }
+        // Get instructor assigned to this course & section via pivot table
 
-        return inertia('Assessments/SectionCourse', [
+        $courseSectionAssignment = $course->sections()
+            ->where('section_id', $section->id)
+            ->first();
+
+        $instructor = $courseSectionAssignment ? $courseSectionAssignment->pivot->instructor_id : null;
+dd($instructor);
+        return response()->json([
             'section' => $section,
             'course' => $course,
             'semester' => $semester,
             'weights' => $weights,
+            'instructor' => $instructor,
         ]);
     }
+
 
     public function section_student($section, $student)
     {

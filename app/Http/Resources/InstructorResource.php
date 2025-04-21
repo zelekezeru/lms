@@ -37,7 +37,15 @@ class InstructorResource extends JsonResource
                 return $this->courseSectionAssignments->map(function($courseSectionAssignment) {
                     return 
                     [
-                        'name' => $courseSectionAssignment->section->name
+                        'id' => $courseSectionAssignment->section->id,
+                        'name' => $courseSectionAssignment->section->name,
+                        'code' => $courseSectionAssignment->section->code,
+                        'course' => [
+                            'id' => $courseSectionAssignment->course->id,
+                            'name' => $courseSectionAssignment->course->name,
+                            'code' => $courseSectionAssignment->course->code,
+                            'creaditHours' => $courseSectionAssignment->course->creadit_hours,
+                        ]
                     ];
                 });
             }),

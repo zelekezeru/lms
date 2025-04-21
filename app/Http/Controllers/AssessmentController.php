@@ -6,33 +6,34 @@ use App\Models\Section;
 use Illuminate\Http\Request;
 use App\Models\Semester;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Instructor;
 
 class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::with(['user', 'program', 'department', 'students'])->findOrFail($section);
+        $section = Section::find($section)->load(['user', 'program', 'department','students']);
+        
+        $course = $section->courses()->find($course)->load(['instructors', 'students', ]);
+        
+        $semester = Semester::where('status', "Active")->first()->load(['year']); // Current Active semester 
 
-        $course = $section->courses()->with(['instructors', 'students'])->findOrFail($course);
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
+        
 
-        $semester = Semester::where('status', 'Active')->with('year')->firstOrFail(); // Current Active Semester
-
-        $weights = $course->weights()
-            ->where('semester_id', $semester->id)
+        $instructor = $section->courses()
             ->where('course_id', $course->id)
-            ->where('section_id', $section->id)
-            ->with('results')
-            ->get();
+            ->first()->pivot->instructor_id;
 
-        // Get instructor assigned to this course & section via pivot table
+        // Load the instructor details
+        $instructor = Instructor::find($instructor)->load(['user']);
 
-        $courseSectionAssignment = $course->sections()
-            ->where('section_id', $section->id)
-            ->first();
+        // Check if the section and course exist
+        if (!$section || !$course) {
+            return redirect()->back()->with('error', 'Section or Course not found.');
+        }
 
-        $instructor = $courseSectionAssignment ? $courseSectionAssignment->pivot->instructor_id : null;
-dd($instructor);
-        return response()->json([
+        return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,
             'semester' => $semester,
@@ -40,7 +41,6 @@ dd($instructor);
             'instructor' => $instructor,
         ]);
     }
-
 
     public function section_student($section, $student)
     {

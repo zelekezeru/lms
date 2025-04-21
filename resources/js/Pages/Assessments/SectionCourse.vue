@@ -326,7 +326,7 @@ const addWeight = () => {
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ section.instructor.name }}
+                            {{ instructor.user.name }}
                         </span>
                     </div>
 
@@ -435,15 +435,18 @@ const addWeight = () => {
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="100%" class="px-4 py-3 text-center bg-gray-50 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-600">
+                                                <div class="relative group inline-block">
                                                     <button
-                                                        v-if="activeWeightId"
-                                                        @click="submitWeightResults"
-                                                        class="text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                                                        @click="addWeight"
+                                                        :disabled="sumOfWeightPoints >= 100"
+                                                        class="text-sm px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                                                     >
-                                                        Save Results
+                                                        Add Weight
                                                     </button>
-                                                </td>
+                                                    <div v-if="sumOfWeightPoints >= 100" class="absolute top-full mt-1 w-max px-2 py-1 text-xs text-white bg-red-600 rounded shadow">
+                                                        Weight total cannot exceed 100%
+                                                    </div>
+                                                </div>
                                             </tr>
                                         </tfoot>
                                     </table>

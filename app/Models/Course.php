@@ -21,16 +21,12 @@ class Course extends Model
 
     public function sections(): BelongsToMany
     {
-        return $this->belongsToMany(Section::class, 'course_section_assignments')
-            ->withPivot('instructor_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Section::class)->withPivot('instructor_id');
     }
 
-    public function instructors()
+    public function instructors(): BelongsToMany
     {
-        return $this->belongsToMany(Instructor::class, 'course_section_assignments')
-            ->using(CourseSectionAssignment::class)
-            ->withPivot('section_id');
+        return $this->belongsToMany(Instructor::class);
     }
 
     public function departmentS(): BelongsToMany

@@ -33,9 +33,12 @@ class Section extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'course_section_assignments')
-            ->withPivot('instructor_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Course::class)->withPivot('instructor_id');
+    }
+
+    public function instructors(): BelongsToMany
+    {
+        return $this->belongsToMany(Instructor::class);
     }
     
     public function semester()

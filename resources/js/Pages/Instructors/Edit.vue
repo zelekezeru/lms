@@ -7,6 +7,7 @@ import { useForm} from "@inertiajs/vue3";
 const props = defineProps({
     instructor: { type: Object, required: true },
     roles: { type: Object, required: true },
+    courses: { type: Object, required: true },
     departments: {
         type: Array, required: true },
 });
@@ -15,6 +16,7 @@ const props = defineProps({
 const form = useForm({
     name: props.instructor?.name || "",
     email: props.instructor?.email || "",
+    courses: props.instructor.courses.map(course => course.id) || "",
     role_name: props.instructor?.roleName || "",
     contact_phone: props.instructor?.ContactPhone || "",
     hire_date: props.instructor?.hireDate || "",
@@ -78,6 +80,7 @@ const submit = (id) => {
                     :form="form"
                     :departments="departments"
                     :roles="roles"
+                    :courses="courses"
                     @submit="submit(instructor.id)"
                 />
             </div>

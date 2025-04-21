@@ -63,4 +63,9 @@ class Instructor extends Model
     {
         return $this->hasMany(Grade::class);
     }
+
+    public function courseSectionAssignments(): HasMany
+    {
+        return $this->hasMany(CourseSectionAssignment::class);
+    }
 }

@@ -37,8 +37,8 @@ const props = defineProps({
 });
 
 const selectedTab = ref('details');
-const assignCourses = ref(false);
 const assignInstructor = ref(false);
+const assignCourses = ref(false);
 const assignToCourse = ref({});
 
 const tabs = [

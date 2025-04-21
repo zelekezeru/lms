@@ -43,6 +43,12 @@ class AssignmentController extends Controller
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
     }
+    public function attach_instructor_courses(Request $request, Instructor $instructor)
+    {
+        $instructor->courses()->sync($request['courses']);
+
+        return redirect()->route('instructors.show', $instructor->id)->with('success', 'Courses Assigned successfully.');
+    }
 
     public function attach_section_course_instructor(Request $request, Section $section)
     {

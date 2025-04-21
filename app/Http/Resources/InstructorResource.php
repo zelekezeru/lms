@@ -30,14 +30,22 @@ class InstructorResource extends JsonResource
             'profileImg'  => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
             'sections' => $this->whenLoaded('sections'),
-            'courses' => $this->whenLoaded('courses'),
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'sections' => $this->whenLoaded('courseSectionAssignments', function() {
                 return $this->courseSectionAssignments->map(function($courseSectionAssignment) {
                     return 
                     [
-                        'name' => $courseSectionAssignment->section->name
-                    ]
-                })
+                        'id' => $courseSectionAssignment->section->id,
+                        'name' => $courseSectionAssignment->section->name,
+                        'code' => $courseSectionAssignment->section->code,
+                        'course' => [
+                            'id' => $courseSectionAssignment->course->id,
+                            'name' => $courseSectionAssignment->course->name,
+                            'code' => $courseSectionAssignment->course->code,
+                            'creaditHours' => $courseSectionAssignment->course->creadit_hours,
+                        ]
+                    ];
+                });
             }),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,

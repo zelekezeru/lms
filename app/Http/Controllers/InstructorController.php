@@ -49,10 +49,12 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
-        $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignment.section', 'courseSectionAssignment.course'));
+        $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course'));
+        $courses = CourseResource::collection(Course::all());
 
         return Inertia::render('Instructors/Show', [
             'instructor'=> $instructor,
+            'courses'=> $courses,
         ]);
     }
     
@@ -62,6 +64,7 @@ class InstructorController extends Controller
         $instructors = InstructorResource::collection(Instructor::all());
         $roles = Role::all();
         $courses = CourseResource::collection(Course::all());
+
 
         return Inertia::render('Instructors/Create', [
             'departments' => Department::all(['id', 'name']),
@@ -128,17 +131,20 @@ class InstructorController extends Controller
     public function edit(Instructor $instructor)
     {
         $roles = Role::all();
+        $courses = CourseResource::collection(Course::all());
 
         return inertia('Instructors/Edit', [
-            'instructor' => new InstructorResource($instructor->load('user', 'department')),
+            'instructor' => new InstructorResource($instructor->load('user', 'department', 'courses')),
             'departments' => Department::all(['id', 'name']),
-            'roles' => $roles,
+            'roles' => $roles, 
+            'courses' => $courses, 
         ]);
     }
 
     public function update(InstructorUpdateRequest $request, Instructor $instructor)
     {
         $fields = $request->validated();
+        $courses = $fields['courses'] ?? [];
         $profileImg = $fields['profile_img'] ?? null;
         $user = $instructor->user;
 
@@ -167,6 +173,7 @@ class InstructorController extends Controller
             'bio' => $fields['bio'],
         ]);
 
+        $instructor->courses()->sync($courses);
         // Update roles if provided
         if (!empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);

@@ -5,23 +5,13 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
-    section: {
-        type: Object,
-        required: true,
-    },
-    courses: {
-        type: Object,
-        required: false,
-    },
-    instructors: {
-        type: Object,
-        required: false,
-    },
+    program: { type: Object, required: true },
 });
+
 </script>
 
 <template>
-    <div v-show="selectedTab === 'details'" class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">CODE</span>
             <span

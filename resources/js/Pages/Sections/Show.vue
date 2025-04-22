@@ -11,18 +11,17 @@ import {
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PencilSquareIcon, 
-    PlusCircleIcon
+    PencilSquareIcon,
+    PlusCircleIcon,
 } from "@heroicons/vue/24/solid";
 import Modal from "@/Components/Modal.vue";
 import { formToJSON } from "axios";
 import { Listbox, MultiSelect } from "primevue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import ShowDetails from "./Partials/ShowDetails.vue";
-import ShowCourses from "./Partials/ShowCourses.vue";
-import ShowStudents from "./Partials/ShowStudents.vue";
-
+import ShowDetails from "./Tabs/ShowDetails.vue";
+import ShowCourses from "./Tabs/ShowCourses.vue";
+import ShowStudents from "./Tabs/ShowStudents.vue";
 
 const props = defineProps({
     section: {
@@ -39,15 +38,13 @@ const props = defineProps({
     },
 });
 
-const selectedTab = ref('details');
-
+const selectedTab = ref("details");
 
 const tabs = [
-    { key: 'details', label: 'Details', icon: CogIcon },
-    { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
-    { key: 'students', label: 'Students', icon: UsersIcon },
+    { key: "details", label: "Details", icon: CogIcon },
+    { key: "courses", label: "Courses", icon: AcademicCapIcon },
+    { key: "students", label: "Students", icon: UsersIcon },
 ];
-
 
 const students = ref({
     data: [],
@@ -57,24 +54,23 @@ const students = ref({
     },
 });
 
-
 const deletesection = (id) => {
     Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone!',
-        icon: 'warning',
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-    }).then(result => {
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route('sections.destroy', { section: id }), {
+            router.delete(route("sections.destroy", { section: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        'Deleted!',
-                        'The section entry has been successfully deleted.',
-                        'success'
+                        "Deleted!",
+                        "The section entry has been successfully deleted.",
+                        "success"
                     );
                 },
             });
@@ -93,18 +89,18 @@ const deletesection = (id) => {
             </h1>
 
             <nav
-                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
+                class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
                     @click="selectedTab = tab.key"
-                    :class="[
-                        'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
+                    class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                    :class="
                         selectedTab === tab.key
                             ? 'border-b-2 border-indigo-500 text-indigo-600'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
-                    ]"
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    "
                 >
                     <component :is="tab.icon" class="w-5 h-5" />
                     <span>{{ tab.label }}</span>
@@ -125,19 +121,31 @@ const deletesection = (id) => {
                     leave-to-class="opacity-0 scale-75"
                 >
                     <div :key="selectedTab">
-                        <ShowDetails v-if="selectedTab === 'details'" :courses="courses" :section="section" :instructors="instructors" />
+                        <ShowDetails
+                            v-if="selectedTab === 'details'"
+                            :courses="courses"
+                            :section="section"
+                            :instructors="instructors"
+                        />
 
                         <!-- Courses Panel -->
-                        <ShowCourses v-else-if="selectedTab === 'courses'" :courses="courses" :section="section" :instructors="instructors" />
+                        <ShowCourses
+                            v-else-if="selectedTab === 'courses'"
+                            :courses="courses"
+                            :section="section"
+                            :instructors="instructors"
+                        />
 
                         <!-- Students Panel -->
-                        <ShowStudents v-else-if="selectedTab === 'students'" :courses="courses" :section="section" :instructors="instructors" />
+                        <ShowStudents
+                            v-else-if="selectedTab === 'students'"
+                            :courses="courses"
+                            :section="section"
+                            :instructors="instructors"
+                        />
                     </div>
                 </transition>
             </div>
         </div>
     </AppLayout>
-
-
-
 </template>

@@ -97,8 +97,8 @@ const deleteSection = (id) => {
                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="px-6 py-3">Section</th>
                         <th scope="col" class="px-6 py-3">Program</th>
+                        <th scope="col" class="px-6 py-3">Section</th>
                         <th scope="col" class="px-6 py-3">Year</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
@@ -120,11 +120,11 @@ const deleteSection = (id) => {
                                     })
                                 "
                             >
-                                {{ section.name }}
+                                {{ section.program.name }}
                             </Link>
                         </th>
                         <td class="px-6 py-4">
-                            {{ section.program.name }}
+                            {{ section.name }}
                         </td>
                         <td class="px-6 py-4">
                             {{ section.year.name }}

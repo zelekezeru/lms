@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
     {   
         // Check if the user with id 1 already exists
         if(User::where('id', 1)->exists()){
-            return redirect(route('employees.create'));
+            return redirect(route('register'));
         }
 
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits

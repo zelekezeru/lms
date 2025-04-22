@@ -54,7 +54,7 @@ class YearSeeder extends Seeder
             [
                 'id' => 5,
                 'name' => '2021',
-                'status' => 'Active',
+                'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 1,
                 'created_at' => '2025-04-15 05:45:01',

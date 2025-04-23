@@ -22,8 +22,9 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\CurriculumCourseController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -63,7 +64,6 @@ Route::middleware(['auth'])->group(function () {
     // Curriculum routes
     Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
     Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
-
 
     $resourceRoutes = [
         'departments' => 'department',

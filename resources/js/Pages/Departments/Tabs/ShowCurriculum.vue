@@ -4,7 +4,6 @@ import { Link, useForm, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import Modal from "@/Components/Modal.vue";
 import InputError from "@/Components/InputError.vue";
-import Input from '@/Components/Input.vue'; 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Listbox } from 'primevue';
 import {
@@ -19,7 +18,6 @@ import {
     BookOpenIcon,
     HomeModernIcon,
 } from "@heroicons/vue/24/solid";
-import { Input } from "postcss";
 
 const props = defineProps({
     department: Object,
@@ -94,113 +92,93 @@ const assignCurriculum = () => {
             :show="showModal" 
             @close="closeModal" 
             :maxWidth="'6xl'"
+            class="p-24 h-full"
         >
-            <div class="w-full px-16 py-8">
-                <h1 class="text-lg font-semibold mb-5">
-                    Pick Courses You Would Like To Assign To This Curriculum
-                </h1>
-
-                <!-- Curriculum Name -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Curriculum Name</label>
-                    <Input type="text" v-model="form.name" placeholder="e.g., Software Engineering Curriculum" class="w-full" />
-                    <InputError :message="form.errors.name" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Program Selection (optional if multiple exist) -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Program</label>
-                    <select v-model="form.program_id" class="w-full border rounded px-3 py-2">
-                        <option value="">-- Select Program --</option>
-                        <option v-for="program in department.programs" :key="program.id" :value="program.id">
-                            {{ program.name }}
-                        </option>
-                    </select>
-                    <InputError :message="form.errors.program_id" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Curriculum Type -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Curriculum Type</label>
-                    <select v-model="form.type" class="w-full border rounded px-3 py-2">
-                        <option value="">-- Select Type --</option>
-                        <option value="Undergraduate">Undergraduate</option>
-                        <option value="Graduate">Graduate</option>
-                        <option value="Diploma">Diploma</option>
-                    </select>
-                    <InputError :message="form.errors.type" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Effective Date -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Effective Date</label>
-                    <Input type="date" v-model="form.effective_date" class="w-full" />
-                    <InputError :message="form.errors.effective_date" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Year -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Year</label>
-                    <Input type="number" v-model="form.year" class="w-full" />
-                    <InputError :message="form.errors.year" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Semester -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-1">Semester</label>
-                    <Input type="number" v-model="form.semester" class="w-full" />
-                    <InputError :message="form.errors.semester" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Course Selection -->
-                <div class="mb-6">
-                    <label class="block text-sm font-medium mb-1">Select Courses</label>
-                    <Listbox
-                        v-model="form.courses"
-                        :options="courses"
-                        option-label="name"
-                        option-value="id"
-                        appendTo="self"
-                        filter
-                        multiple
-                        placeholder="Select Courses"
-                        class="w-full"
-                        list-style="max-height: 300px"
-                    />
-                    <InputError :message="form.errors.courses" class="mt-2 text-sm text-red-500" />
-                </div>
-
-                <!-- Hidden Department ID -->
-                <Input type="hidden" name="department_id" :value="department.id" />
-
-                <!-- Action Buttons -->
-                <div class="flex justify-end space-x-4 mt-6">
-                    <button
-                        @click="assignCurriculum"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                    >
-                        Assign
-                    </button>
-                    <button
-                        @click="closeModal"
-                        class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-                    >
-                        Cancel
+            <form @submit.prevent="assignCurriculum">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-end mb-6 mx-6 my-4">
+                    <button type="button" @click="closeModal" class="text-red-500 hover:text-red-700 dark:hover:text-red-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
-            </div>
 
-            <template #footer>
-                <div class="flex justify-end px-6 pb-4">
-                    <button
-                        @click="closeModal"
-                        class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-                    >
-                        Close
-                    </button>
+                <!-- Title -->
+                <div class="flex justify-center items-center mb-6">
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100">
+                        {{ department.name }} - Curriculum Design
+                    </h1>
                 </div>
-            </template>
+
+                <!-- Input Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-16 py-8">
+                    <!-- Year -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Year</label>
+                        <input type="number" v-model="form.year" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100" />
+                        <InputError :message="form.errors.year" class="mt-2 text-sm text-red-500" />
+                    </div>
+
+                    <!-- Semester -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Semester</label>
+                        <input type="number" v-model="form.semester" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100" />
+                        <InputError :message="form.errors.semester" class="mt-2 text-sm text-red-500" />
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Curriculum Description</label>
+                        <input type="text" v-model="form.description" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100" />
+                        <InputError :message="form.errors.description" class="mt-2 text-sm text-red-500" />
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Curriculum Status</label>
+                        <select v-model="form.status" class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
+                            <option value="">-- Select Status --</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <InputError :message="form.errors.status" class="mt-2 text-sm text-red-500" />
+                    </div>
+                </div>
+
+                <!-- Course Selection and Buttons -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-16 py-8">
+                    <!-- Course Selection -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Select Courses</label>
+                        <Listbox
+                            v-model="form.courses"
+                            :options="courses"
+                            option-label="name"
+                            option-value="id"
+                            appendTo="self"
+                            filter
+                            multiple
+                            placeholder="Select Courses"
+                            class="w-full"
+                            list-style="max-height: 200px"
+                        />
+                        <InputError :message="form.errors.courses" class="mt-2 text-sm text-red-500" />
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class=" justify-end space-x-2 mt-6">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Assign
+                        </button>
+                        <button type="button" @click="closeModal" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
         </Modal>
+
 
     </div>
 </template>

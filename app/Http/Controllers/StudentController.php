@@ -29,54 +29,54 @@ use Illuminate\Support\Facades\Auth;
 class StudentController extends Controller
 {
     public function index(Request $request): Response
-{
-    $query = Student::query();
+    {
+        $query = Student::with('user');
 
-    // Apply search filter
-    if ($request->has('search') && $request->search !== '') {
-        $search = $request->search;
+        // Apply search filter
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
 
-        $query->where(function ($q) use ($search) {
-            $q->where('student_name', 'LIKE', "%{$search}%")
-              ->orWhere('father_name', 'LIKE', "%{$search}%")
-              ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
-              ->orWhere('id_no', 'LIKE', "%{$search}%");
-        });
+            $query->where(function ($q) use ($search) {
+                $q->where('student_name', 'LIKE', "%{$search}%")
+                    ->orWhere('father_name', 'LIKE', "%{$search}%")
+                    ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
+                    ->orWhere('id_no', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Set up sorting
+        $allowedSorts = ['student_name', 'father_name', 'grand_father_name', 'id_no', 'created_at'];
+        $sortColumn = $request->input('sortColumn', 'student_name');
+        $sortDirection = $request->input('sortDirection', 'asc');
+
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        // Paginate and transform
+        $paginatedStudents = $query->paginate(30)->withQueryString();
+        $students = StudentResource::collection($paginatedStudents);
+
+        // Return with Inertia
+        return inertia('Students/Index', [
+            'students' => $students,
+            'search' => $request->search,
+            'sortInfo' => [
+                "currentSortColumn" => $sortColumn,
+                "currentSortDirection" => $sortDirection,
+            ]
+        ]);
     }
 
-    // Set up sorting
-    $allowedSorts = ['student_name', 'father_name', 'grand_father_name', 'id_no', 'created_at'];
-    $sortColumn = $request->input('sortColumn', 'student_name');
-    $sortDirection = $request->input('sortDirection', 'asc');
 
-    if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
-        $query->orderBy($sortColumn, $sortDirection);
-    }
-
-    // Paginate and transform
-    $paginatedStudents = $query->paginate(30)->withQueryString();
-    $students = StudentResource::collection($paginatedStudents);
-
-    // Return with Inertia
-    return inertia('Students/Index', [
-        'students' => $students,
-        'search' => $request->search,
-        'sortInfo' => [
-            "currentSortColumn" => $sortColumn,
-            "currentSortDirection" => $sortDirection,
-        ]
-    ]);
-}
-
-    
     public function show(Student $student)
     {
         $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section'));
-        
-        return Inertia::render('Students/Show', [            
+
+        return Inertia::render('Students/Show', [
             'student' => $student,
         ]);
-    }    
+    }
 
     public function create(): Response
     {
@@ -90,44 +90,44 @@ class StudentController extends Controller
 
         return inertia('Students/Create', [
             'departments' => $departments,
-            'programs'=> $programs,
+            'programs' => $programs,
             'years' => $years,
             'semesters' => $semesters,
         ]);
     }
-    
+
     public function store(StudentStoreRequest $request)
     {
-        $fields = $request->validated(); 
+        $fields = $request->validated();
 
         // Create a new Tenant Admin in User table
         $user_phone = substr($fields['mobile_phone'], -4);
 
         $default_password = $fields['student_name'] . '@' . $user_phone;
-        
+
         $fields['id_no'] = $this->student_id();
 
-        $name = $fields['student_name']. ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
-        
+        $name = $fields['student_name'] . ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
+
         $fields['tenant_id'] = Tenant::first()->id; // Updated to use tenant ID
-        
+
         $student_email = $this->student_email($fields);
-        
+
         $user_data = [
-            'name'=> $name,
-            'email'=> $student_email,
-            'phone_number'=> $fields['mobile_phone'],
-            'password'=> bcrypt($default_password),
+            'name' => $name,
+            'email' => $student_email,
+            'phone_number' => $fields['mobile_phone'],
+            'password' => bcrypt($default_password),
             'default_password' => $default_password,
             'user_uuid' => $fields['id_no'],
             'phone' => $fields['mobile_phone'],
         ];
 
-        $user = User::create($user_data);        
+        $user = User::create($user_data);
 
         $fields['user_id'] = $user->id;
-        
-        $student = Student::create($fields);  
+
+        $student = Student::create($fields);
 
         // Create the student
         return redirect(route('students.show', $student))->with('success', 'Student created successfully.');
@@ -200,14 +200,15 @@ class StudentController extends Controller
         $year = substr(Carbon::now()->year, -2); // get current year's last two di
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
-        
+
         $userUuid = $tenant . '-' . $year . '-' . 'ST-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-            
+
         return $userUuid;
     }
 
-    public function student_email($fields){
-        $username = $fields['student_name']. ' ' . $fields['father_name'];
+    public function student_email($fields)
+    {
+        $username = $fields['student_name'] . ' ' . $fields['father_name'];
 
         $email = strtolower(str_replace(' ', '.', $username)) . '@sits.edu.et';
 
@@ -232,7 +233,7 @@ class StudentController extends Controller
             'semester_id' => $fields['semester_id'],
             'program_id' => $fields['program_id'],
             'department_id' => $fields['department_id'],
-            
+
             //Church details
             'pastor_name' => $fields['pastor_name'],
             'pastor_phone' => $fields['pastor_phone'],

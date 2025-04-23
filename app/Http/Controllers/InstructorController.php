@@ -25,7 +25,7 @@ class InstructorController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Instructor::query();
+        $query = Instructor::with('user');
     
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;

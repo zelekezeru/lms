@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Registration;
 
 class Course extends Model
 { 
@@ -63,5 +64,32 @@ class Course extends Model
     {
         return $this->hasMany(Grade::class);
     }
+    
+    public function curricula()
+    {
+        return $this->belongsToMany(Curriculum::class, 'curriculum_course')
+            ->withPivot(['year', 'semester', 'course_type'])
+            ->withTimestamps();
+    }
+
+    public function prerequisites() {
+        return $this->belongsToMany(Course::class, 'course_prerequisites', 'course_id', 'prerequisite_id');
+    }
+    
+    public function isEligible($studentId) {
+        $prereqs = $this->prerequisites;
+    
+        foreach ($prereqs as $pre) {
+            $passed = Student::where('id', $studentId)
+                ->where('status', 'completed')
+                ->whereHas('curriculum', function ($q) use ($pre) {
+                    $q->where('course_id', $pre->id);
+                })->exists();
+    
+            if (!$passed) return false;
+        }
+        return true;
+    }
+    
 
 }

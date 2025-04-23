@@ -19,7 +19,7 @@ class TenantSeeder extends Seeder
         DB::table('users')->insert([
             [
             'id' => 2,
-            'name' => 'Tenant User',
+            'name' => 'Endale Sebsibe',
             'user_uuid' => 'AD-25-001',
             'email' => 'admin@sits.edu.et',
             'default_password' => '123456789',

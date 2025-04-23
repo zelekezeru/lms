@@ -149,6 +149,12 @@ class RolePermissionSeeder extends Seeder
             'update-grades',
             'delete-grades',
 
+            // Curriculum (CRUD)
+            'view-curriculums',
+            'create-curriculums',
+            'update-curriculums',
+            'delete-curriculums',
+            
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -305,6 +311,11 @@ class RolePermissionSeeder extends Seeder
                     'create-grades',
                     'update-grades',
                     'delete-grades',
+                    
+                    'view-curriculums',
+                    'create-curriculums',
+                    'update-curriculums',
+                    'delete-curriculums',
                     
                     'section-courses',
                     'attach-section-courses',

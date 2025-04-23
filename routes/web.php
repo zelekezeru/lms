@@ -20,6 +20,8 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\YearController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\CurriculumController;
+use App\Http\Controllers\CurriculumCourseController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -86,7 +88,10 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
-    
+        
+    // Curriculum routes
+    Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
+    Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
 
     $resourceRoutes = [
         'departments' => 'department',
@@ -108,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
         'results' => 'result',
         'weights' => 'weight',
         'grades' => 'grade',
+        'curriculums' => 'curricula',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {

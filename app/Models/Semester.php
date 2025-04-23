@@ -6,13 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Semester extends Model
 {
-    protected $fillable = [
-        'name',
-        'year_id',
-        'status',
-        'is_approved',
-        'is_completed',
-    ];
+    protected $guarded = [];
 
     public function year()
     {
@@ -33,10 +27,12 @@ class Semester extends Model
     {
         return $this->hasMany(User::class, 'user_id');
     }
+
     public function programs()
     {
         return $this->hasMany(Program::class);
     }
+    
     public function courses()
     {
         return $this->hasMany(Course::class);

@@ -64,7 +64,7 @@ const props = defineProps({
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>Edit Program</span>
+                <span>Edit</span>
             </Link>
             <button
                 v-if="userCan('delete-programs')"

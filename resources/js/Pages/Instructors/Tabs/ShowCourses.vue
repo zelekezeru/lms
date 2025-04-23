@@ -26,6 +26,7 @@ const props = defineProps({
 });
 
 const assignCourses = ref(false);
+
 const assignToCourse = ref({});
 
 const courseAssignmentForm = useForm({
@@ -56,44 +57,8 @@ const submitCourseAssignment = () => {
     );
 };
 
-// Multi nav header options
-const selectedTab = ref("details");
-
-const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "academics", label: "Academics", icon: BookOpenIcon },
-    { key: "courses", label: "Courses", icon: AcademicCapIcon },
-    { key: "sections", label: "Sections", icon: UsersIcon },
-];
-
 const imageLoaded = ref(false);
 
-
-
-// Delete function with SweetAlert confirmation
-const deleteInstructor = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("instructors.destroy", { instructor: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The instructor has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
-};
 </script>
 
 <template>

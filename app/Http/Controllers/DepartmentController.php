@@ -14,6 +14,10 @@ use App\Http\Resources\ProgramResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\CourseResource;
+use App\Http\Resources\CurriculumResource; // Ensure this class exists in the specified namespace
+use App\Models\Course;
+use App\Models\Curriculum;
 
 class DepartmentController extends Controller
 {
@@ -96,10 +100,16 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        $department = new DepartmentResource($department->load('program'));
+        $department = new DepartmentResource($department->load('program', 'courses', 'sections', 'curriculums'));
+        
+        $courses = CourseResource::collection(Course::all());
 
+        $curriculums = CurriculumResource::collection(Curriculum::all());
+        
         return inertia('Departments/Show', [
             'department' => $department,
+            'courses' => $courses,
+            'curriculums' => $curriculums,
 
         ]);
     }
@@ -155,5 +165,17 @@ class DepartmentController extends Controller
             ->latest()
             ->paginate(15);
         return Inertia::render('Departments/Index', compact('departments'));
+    }
+
+    public function attach(Request $request, Department $department)
+    {
+        $validated = $request->validate([
+            'courses' => 'required|array',
+            'courses.*' => 'exists:courses,id',
+        ]);
+
+        $department->curriculums()->sync($validated['courses']); // sync to update the curricula list
+
+        return redirect()->back()->with('success', 'Courses assigned to curricula successfully.');
     }
 }

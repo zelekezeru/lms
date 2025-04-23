@@ -98,8 +98,10 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware("can:view-$route")->get("$route", [$controller, 'index'])->name("$route.index");
         Route::middleware("can:view-$route")->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
 
-        Route::middleware("can:update-$route")->put("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
-        Route::middleware("can:update-$route")->patch("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
+        Route::middleware("can:update-$route")
+        ->match(['put', 'patch'], "$route/{{$singular}}", [$controller, 'update'])
+        ->name("$route.update");
+    
         Route::middleware("can:update-$route")->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");

@@ -81,7 +81,7 @@ const deletesection = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-5xl mx-auto p-6">
+        <div class="max-w-7xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
@@ -107,9 +107,7 @@ const deletesection = (id) => {
                 </button>
             </nav>
 
-            <div
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
+
                 <!-- Details Panel -->
                 <transition
                     mode="out-in"
@@ -120,7 +118,10 @@ const deletesection = (id) => {
                     leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-75"
                 >
-                    <div :key="selectedTab">
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                >
                         <ShowDetails
                             v-if="selectedTab === 'details'"
                             :courses="courses"
@@ -134,18 +135,17 @@ const deletesection = (id) => {
                             :courses="courses"
                             :section="section"
                             :instructors="instructors"
-                        />
-
-                        <!-- Students Panel -->
-                        <ShowStudents
+                            />
+                            
+                            <!-- Students Panel -->
+                            <ShowStudents
                             v-else-if="selectedTab === 'students'"
                             :courses="courses"
                             :section="section"
                             :instructors="instructors"
-                        />
-                    </div>
-                </transition>
-            </div>
+                            />
+                        </div>
+                    </transition>
         </div>
     </AppLayout>
 </template>

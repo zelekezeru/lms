@@ -39,7 +39,7 @@ const closeCourseAssignment = () => {
 
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
-        route('section-courses.attach', { section: props.section.id }),
+        route('courses-section.assign', { section: props.section.id }),
         {
             onSuccess: () => {
                 Swal.fire(
@@ -57,13 +57,11 @@ const submitCourseAssignment = () => {
 
 const instructorAssignmentForm = useForm({
     instructor_id: "",
-    course_id: ""
 });
 
 const openInstructorAssignemnt = (course) => {
     assignInstructor.value = true;
     assignToCourse.value = course;
-    instructorAssignmentForm.course_id = course.id;
     instructorAssignmentForm.instructor_id = course.instructor.id;
 };
 
@@ -75,7 +73,7 @@ const closeInstructorAssignemnt = () => {
 
 const submitInstructorAssignment = () => {
     instructorAssignmentForm.post(
-        route('section-course-instructor.attach', { section: props.section.id }),
+        route('instructor-courseSection.assign', { section: props.section.id, course: assignToCourse.value.id}),
         {
             onSuccess: () => {
                 Swal.fire(
@@ -207,7 +205,9 @@ const submitInstructorAssignment = () => {
                                         v-if="course.instructor"
                                         class="flex justify-between"
                                     >
-                                        {{ course.instructor.name }}
+                                        <Link :href="route('instructors.show', {instructor: course.instructor})">
+                                            {{ course.instructor.name }}
+                                        </Link>
                                         <PencilSquareIcon
                                             @click="
                                                 openInstructorAssignemnt(course)
@@ -290,9 +290,10 @@ const submitInstructorAssignment = () => {
             <div class="flex justify-end mt-4">
                 <button
                     @click="submitCourseAssignment"
+                    :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    Assign
+                    {{ courseAssignmentForm.processing ? "Assigning..." : "Assign" }}
                 </button>
 
                 <button

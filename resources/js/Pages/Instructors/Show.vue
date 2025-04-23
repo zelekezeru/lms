@@ -46,6 +46,31 @@ const tabs = [
 ];
 
 const imageLoaded = ref(false);
+
+// Delete function with SweetAlert confirmation
+const deleteInstructor = (id) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(route("instructors.destroy", { instructor: id }), {
+                onSuccess: () => {
+                    Swal.fire(
+                        "Deleted!",
+                        "The instructor has been deleted.",
+                        "success"
+                    );
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>
@@ -76,34 +101,43 @@ const imageLoaded = ref(false);
                 </button>
             </nav>
 
-            <div
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
             >
-                <transition
-                    mode="out-in"
-                    enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition duration-200 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
                 >
-                    <div :key="selectedTab">
-                        <!-- Details Panel -->
-                        <ShowDetails v-if="selectedTab == 'details'" :instructor="instructor"/>
+                    <!-- Details Panel -->
+                    <ShowDetails
+                        v-if="selectedTab == 'details'"
+                        :instructor="instructor"
+                    />
 
-                        <!-- Academic Panel -->
-                        <ShowAcademic v-else-if="selectedTab == 'academics'" />
-                        
-                        <!-- Courses Panel -->
-                        <ShowCourses v-else-if="selectedTab == 'courses'" :instructor="instructor" :courses="courses" />
-                        
-                        <!-- Section Panel -->
-                        <ShowSections v-else-if="selectedTab == 'sections'" :instructor="instructor" :courses="courses" />
+                    <!-- Academic Panel -->
+                    <ShowAcademic v-else-if="selectedTab == 'academics'" />
 
-                    </div>
-                </transition>
-            </div>
+                    <!-- Courses Panel -->
+                    <ShowCourses
+                        v-else-if="selectedTab == 'courses'"
+                        :instructor="instructor"
+                        :courses="courses"
+                    />
+
+                    <!-- Section Panel -->
+                    <ShowSections
+                        v-else-if="selectedTab == 'sections'"
+                        :instructor="instructor"
+                        :courses="courses"
+                    />
+                </div>
+            </transition>
         </div>
     </AppLayout>
 </template>

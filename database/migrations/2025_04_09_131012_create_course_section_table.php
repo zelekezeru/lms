@@ -17,6 +17,9 @@ return new class extends Migration
             $table->foreignId('section_id')->constrained()->onDelete('cascade');
             $table->foreignId('instructor_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
+
+            $table->unique(['course_id', 'section_id']);           // A course in a section is unique
+            $table->unique(['instructor_id', 'section_id']);       // An instructor per section is unique
         });
     }
 

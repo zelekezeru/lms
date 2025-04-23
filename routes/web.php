@@ -27,7 +27,6 @@ use Inertia\Inertia;
 
 
 
-
 Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
@@ -47,41 +46,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/roles/{role}/permissions', [RoleController::class, 'attach'])->middleware('can:attach-permissions-roles')->name('roles.attach');
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->middleware('can:detach-permissions-roles')->name('roles.detach');
 
-    // Assignment routes
-    // Attaching Section to courses, instructors, and students
-    Route::get('/sections/{section}/courses', [AssignmentController::class, 'section_courses'])->name('section.courses');
-    Route::post('/sections/{section}/courses', [AssignmentController::class, 'attach_section_courses'])->name('section-courses.attach');
-    Route::post('/sections/{section}/courses/{course}', [AssignmentController::class, 'detach_section_courses'])->name('section-courses.detach');
+    Route::post('/courses-section/{section}', [AssignmentController::class, 'assignCoursesToSections'])->name('courses-section.assign');
 
-    Route::get('/instructors/{instructor}/courses', [AssignmentController::class, 'instructor_courses'])->name('instructor.courses');
-    Route::post('/instructors/{instructor}/courses', [AssignmentController::class, 'attach_instructor_courses'])->name('instructor-courses.attach');
-    Route::post('/instructors/{instructor}/courses/{course}', [AssignmentController::class, 'detach_instructor_courses'])->name('instructor-courses.detach');
+    Route::post('/courses-instructor/{instructor}', [AssignmentController::class, 'assignCoursesToInstructor'])->name('courses-instructor.assign');
 
-    Route::get('/programs/{program}/courses', [AssignmentController::class, 'program_courses'])->name('program.courses');
-    Route::post('/programs/{program}/courses', [AssignmentController::class, 'attach_program_courses'])->name('program-courses.attach');
-    Route::post('/programs/{program}/courses/{course}', [AssignmentController::class, 'detach_program_courses'])->name('program-courses.detach');
+    Route::post('/instructor-courseSection/{section}/{course}', [AssignmentController::class, 'assignInstructorToCourseSection'])->name('instructor-courseSection.assign');
 
-    Route::get('/departments/{department}/courses', [AssignmentController::class, 'department_courses'])->name('department.courses');
-    Route::post('/departments/{department}/courses', [AssignmentController::class, 'attach_department_courses'])->name('department-courses.attach');
-    Route::post('/departments/{department}/courses/{course}', [AssignmentController::class, 'detach_department_courses'])->name('department-courses.detach');
-    
-    Route::post('/sections/{section}/instructor', [AssignmentController::class, 'attach_section_course_instructor'])->name('section-course-instructor.attach');
-    Route::post('/sections/{section}/instructors/{instructor}', [AssignmentController::class, 'detach_section_instructors'])->middleware('can:detach-section-instructors')->name('section-instructors.detach');
-
-    Route::get('/sections/{section}/students', [AssignmentController::class, 'section_students'])->middleware('can:assign-section-students')->name('section.students');
-    Route::post('/sections/{section}/students', [AssignmentController::class, 'attach_section_students'])->middleware('can:attach-section-students')->name('section-students.attach');
-    Route::post('/sections/{section}/students/{student}', [AssignmentController::class, 'detach_section_students'])->middleware('can:detach-section-students')->name('section-students.detach');
-
-    // Attaching Course to instructors and students
-    Route::get('/courses/{course}/instructors', [AssignmentController::class, 'course_instructors'])->name('course.instructors');
-    Route::post('/courses/{course}/instructors', [AssignmentController::class, 'attach_course_instructors'])->name('course-instructors.attach');
-    Route::post('/courses/{course}/instructors/{instructor}', [AssignmentController::class, 'detach_course_instructors'])->name('course-instructors.detach');
-
-    Route::get('/courses/{course}/students', [AssignmentController::class, 'course_students'])->name('course.students');
-    Route::post('/courses/{course}/students', [AssignmentController::class, 'attach_course_students'])->name('course-students.attach');
-    Route::post('/courses/{course}/students/{student}', [AssignmentController::class, 'detach_course_students'])->name('course-students.detach');
-
-        //Student Managment
+    //Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
 
@@ -92,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     // Curriculum routes
     Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
     Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
+
 
     $resourceRoutes = [
         'departments' => 'department',
@@ -122,17 +94,16 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware("can:create-$route")->post("$route", [$controller, 'store'])->name("$route.store");
         Route::middleware("can:create-$route")->get("$route/create", [$controller, 'create'])->name("$route.create");
-        
+
         Route::middleware("can:view-$route")->get("$route", [$controller, 'index'])->name("$route.index");
         Route::middleware("can:view-$route")->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
-        
+
         Route::middleware("can:update-$route")->put("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
         Route::middleware("can:update-$route")->patch("$route/{{$singular}}", [$controller, 'update'])->name("$route.update");
         Route::middleware("can:update-$route")->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
     }
-
 });
 
 

@@ -1,11 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import { router, Head } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import BasicInfoForm from './BasicInfoForm.vue';
-import AcademicInfoForm from './AcademicInfoForm.vue';
-import ChurchInfoForm from './ChurchInfoForm.vue';
-
+import { ref } from "vue";
+import { router, Head } from "@inertiajs/vue3";
+import AppLayout from "@/Layouts/AppLayout.vue";
+import BasicInfoForm from "./BasicInfoForm.vue";
+import AcademicInfoForm from "./AcademicInfoForm.vue";
+import ChurchInfoForm from "./ChurchInfoForm.vue";
 
 const props = defineProps({
     programs: { type: Array, required: true },
@@ -15,30 +14,29 @@ const props = defineProps({
 });
 
 const form = ref({
-    student_name: '',
-    father_name: '',
-    grand_father_name: '',
-    mobile_phone: '',
-    office_phone: '',
-    date_of_birth: '',
-    email: '',
-    marital_status: '',
-    sex: '',
-    address: '',
-    year_id: '',
-    semester_id: '',
-    program_id: '',
-    department_id: '',
-    section_id: '',
-    pastor_name: '',
-    pastor_phone: '',
-    position_denomination: '',
-    church_name: '',
-    church_address: '',
-    student_signature: '',
-    office_use_notes: ''
+    student_name: "",
+    father_name: "",
+    grand_father_name: "",
+    mobile_phone: "",
+    office_phone: "",
+    date_of_birth: "",
+    email: "",
+    marital_status: "",
+    sex: "",
+    address: "",
+    year_id: "",
+    semester_id: "",
+    program_id: "",
+    department_id: "",
+    section_id: "",
+    pastor_name: "",
+    pastor_phone: "",
+    position_denomination: "",
+    church_name: "",
+    church_address: "",
+    student_signature: "",
+    office_use_notes: "",
 });
-
 
 const currentStep = ref(1);
 
@@ -52,30 +50,49 @@ const previousStep = () => {
 
 const submit = () => {
     console.log(form);
-    
+
     form.post(route("students.store"));
 };
-
 </script>
 
 <template>
     <Head title="Register Student" />
     <AppLayout>
-        <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition">
-            <div v-if="currentStep === 1">
-                <BasicInfoForm :form="form" @next="nextStep" />
+        <transition
+            mode="out-in"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-75"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-75"
+        >
+            <div
+                :key="currentStep"
+                class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
+            >
+                <div v-if="currentStep === 1">
+                    <BasicInfoForm :form="form" @next="nextStep" />
+                </div>
+                <div v-else-if="currentStep === 2">
+                    <AcademicInfoForm
+                        :form="form"
+                        :programs="programs"
+                        :departments="departments"
+                        :years="years"
+                        :semesters="semesters"
+                        @next="nextStep"
+                        @previous="previousStep"
+                    />
+                </div>
+                <div v-else-if="currentStep === 3">
+                    <ChurchInfoForm
+                        :form="form"
+                        @submit="submit"
+                        @previous="previousStep"
+                    />
+                </div>
             </div>
-            <div v-else-if="currentStep === 2">
-                <AcademicInfoForm :form="form" 
-                    :programs="programs"
-                    :departments="departments"
-                    :years="years"
-                    :semesters="semesters"
-                @next="nextStep" @previous="previousStep" />
-            </div>
-            <div v-else-if="currentStep === 3">
-                <ChurchInfoForm :form="form" @submit="submit" @previous="previousStep" />
-            </div>
-        </div>
+        </transition>
     </AppLayout>
 </template>

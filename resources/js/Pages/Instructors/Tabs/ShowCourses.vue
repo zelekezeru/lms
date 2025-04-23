@@ -40,7 +40,7 @@ const closeCourseAssignment = () => {
 
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
-        route('instructor-courses.attach', { instructor: props.instructor.id }),
+        route('courses-instructor.assign', { instructor: props.instructor.id }),
         {
             onSuccess: () => {
                 Swal.fire(
@@ -193,16 +193,8 @@ const deleteInstructor = (id) => {
                                 <td
                                     class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{
-                                        instructor.sections
-                                            .filter(
-                                                (section) =>
-                                                    section.course.id ==
-                                                    course.id
-                                            )
-                                            ?.map((section) => section.name)
-                                            .join(", ")
-                                    }}
+                                <Link v-for="(section, index) in instructor.sections.filter((section) => section.course.id == course.id)" :href="route('sections.show', {section: section.id})" :key="section.id">
+                                    {{ section.name }}{{ (index + 1) == instructor.sections.filter((section) => section.course.id == course.id).length ? "" : ", " }}</Link>
                                 </td>
                                 <!-- Course Assessments -->
                                 <td
@@ -259,9 +251,10 @@ const deleteInstructor = (id) => {
             <div class="flex justify-end mt-4">
                 <button
                     @click="submitCourseAssignment"
+                    :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    Assign
+                    {{ courseAssignmentForm.processing ? "Assign..." : "Assign"}}
                 </button>
 
                 <button

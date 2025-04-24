@@ -75,7 +75,7 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section'));
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section', 'status', 'church'));
 
         return Inertia::render('Students/Show', [
             'student' => $student,
@@ -104,7 +104,7 @@ class StudentController extends Controller
     {
         // Validate the request
         $fields = $request->validated();
-dd($fields);
+
         // Generate student-specific data
         $fields['id_no'] = $this->student_id();
         $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
@@ -202,7 +202,7 @@ dd($fields);
     {
         // Validate the request
         $fields = $request->validated();
-
+        
         // Update the associated user record
         $this->updateStudentUser($student, $fields);
 

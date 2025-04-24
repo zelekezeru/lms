@@ -13,8 +13,8 @@ class Church extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function status()
+    public function student()
     {
-        return $this->hasOne(Status::class);
+        return $this->hasOne(Student::class);
     }
 }

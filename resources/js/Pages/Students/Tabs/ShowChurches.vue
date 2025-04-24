@@ -20,7 +20,7 @@ import {
 } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
-    student: {
+    church: {
         type: Object,
         required: true,
     },
@@ -40,45 +40,45 @@ const props = defineProps({
     <div class="overflow-x-auto">
         <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
             <div class="grid grid-cols-2 gap-4">
-                <div v-if="student.church_name" class="flex flex-col">
+                <div v-if="church.church_name" class="flex flex-col">
                     <span class="text-sm text-gray-500 dark:text-gray-400"
                         >Church</span
                     >
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.church_name }}
+                        {{ church.church_name }}
                     </span>
                 </div>
-                <div v-if="student.church_address" class="flex flex-col">
+                <div v-if="church.church_address" class="flex flex-col">
                     <span class="text-sm text-gray-500 dark:text-gray-400"
                         >Address</span
                     >
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.church_address }}
+                        {{ church.church_address }}
                     </span>
                 </div> <!-- Closing the div for Church Address -->
 
-                <div v-if="student.pastor_name" class="flex flex-col">
+                <div v-if="church.pastor_name" class="flex flex-col">
                     <span class="text-sm text-gray-500 dark:text-gray-400"
                         >Pastor's Name</span
                     >
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.pastor_name }}
+                        {{ church.pastor_name }}
                     </span>
                 </div> <!-- Closing the div for Pastor's Name -->
-                <div v-if="student.pastor_phone" class="flex flex-col">
+                <div v-if="church.pastor_phone" class="flex flex-col">
                     <span class="text-sm text-gray-500 dark:text-gray-400"
                         >Pastor's Phone</span
                     >
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.pastor_phone }}
+                        {{ church.pastor_phone }}
                     </span>
                 </div> <!-- Closing the div for Pastor's Phone -->
             </div>

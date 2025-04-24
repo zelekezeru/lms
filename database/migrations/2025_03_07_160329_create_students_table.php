@@ -14,21 +14,15 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('id_no', 20)->unique();
-            $table->string('student_name', 100);
-            $table->string('father_name', 100);
-            $table->string('grand_father_name', 100)->nullable();
+            $table->string('first_name', 100);
+            $table->string('middle_name', 100);
+            $table->string('last_name', 100)->nullable();
             $table->string('mobile_phone', 15);
             $table->string('office_phone', 15)->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('marital_status', 10)->nullable();
             $table->char('sex', 6);
-            
             $table->string('address', 200)->nullable();
-            $table->string('pastor_name', 100)->nullable();
-            $table->string('pastor_phone', 100)->nullable();
-            $table->string('church_name', 100)->nullable();
-            $table->string('church_address', 200)->nullable();
-            $table->string('position_denomination', 100)->nullable();
             
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
@@ -43,28 +37,6 @@ return new class extends Migration
             
             $table->foreignId('section_id')->nullable()->constrained();
             
-            $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
-            $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->foreignId('approved_by')->nullable()->constrained('users');
-            $table->foreignId('completed_by')->nullable()->constrained('users');
-            $table->foreignId('is_scholarship_verified_by')->nullable()->constrained('users');
-            $table->boolean('is_active')->nullable()->default(1);
-            $table->boolean('is_approved')->nullable()->default(0);
-            $table->boolean('is_completed')->nullable()->default(0);
-            
-            $table->boolean('is_deleted')->nullable()->default(0);
-            $table->boolean('is_verified')->nullable()->default(0);
-            $table->boolean('is_enrolled')->nullable()->default(0);
-            $table->boolean('is_graduated')->nullable()->default(0);
-            $table->boolean('is_scholarship')->nullable()->default(0);
-            $table->boolean('is_scholarship_approved')->nullable()->default(0);
-            $table->boolean('is_scholarship_verified')->nullable()->default(0);
-            
-            $table->date('deleted_at')->nullable();
-            $table->date('approved_at')->nullable();
-            $table->date('completed_at')->nullable();
-            $table->date('is_scholarship_verified_at')->nullable();
             $table->timestamps();
         });
     }

@@ -11,9 +11,9 @@ const props = defineProps({ student: Object, programs: Array, departments: Array
 const form = ref({ 
     ...props.student,
     student_id: props.student.student_id || '', 
-    student_name: props.student.student_name || '', 
-    father_name: props.student.father_name || '', 
-    grand_father_name: props.student.grand_father_name || '', 
+    first_name: props.student.first_name || '', 
+    middle_name: props.student.middle_name || '', 
+    last_name: props.student.last_name || '', 
     mobile_phone: props.student.mobile_phone || '', 
     office_phone: props.student.office_phone || '', 
     date_of_birth: props.student.date_of_birth || '', 

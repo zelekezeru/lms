@@ -25,6 +25,10 @@ use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Status;
 
 class StudentController extends Controller
 {
@@ -37,16 +41,16 @@ class StudentController extends Controller
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-                $q->where('student_name', 'LIKE', "%{$search}%")
-                    ->orWhere('father_name', 'LIKE', "%{$search}%")
-                    ->orWhere('grand_father_name', 'LIKE', "%{$search}%")
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('middle_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
                     ->orWhere('id_no', 'LIKE', "%{$search}%");
             });
         }
 
         // Set up sorting
-        $allowedSorts = ['student_name', 'father_name', 'grand_father_name', 'id_no', 'created_at'];
-        $sortColumn = $request->input('sortColumn', 'student_name');
+        $allowedSorts = ['first_name', 'middle_name', 'last_name', 'id_no', 'created_at'];
+        $sortColumn = $request->input('sortColumn', 'first_name');
         $sortDirection = $request->input('sortDirection', 'asc');
 
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
@@ -98,23 +102,41 @@ class StudentController extends Controller
 
     public function store(StudentStoreRequest $request)
     {
+        // Validate the request
         $fields = $request->validated();
-
-        // Create a new Tenant Admin in User table
-        $user_phone = substr($fields['mobile_phone'], -4);
-
-        $default_password = $fields['student_name'] . '@' . $user_phone;
-
+dd($fields);
+        // Generate student-specific data
         $fields['id_no'] = $this->student_id();
-
-        $name = $fields['student_name'] . ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
-
-        $fields['tenant_id'] = Tenant::first()->id; // Updated to use tenant ID
-
+        $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
         $student_email = $this->student_email($fields);
 
+        // Create a new user for the student
+        $user = $this->createStudentUser($fields, $student_email);
+
+        // Link the user ID to the student fields
+        $fields['user_id'] = $user->id;
+
+        // Create the student record
+        $student = Student::create($fields);
+
+        // Create related records (status and church)
+        $this->createStudentStatus($student);
+        $this->createStudentChurch($student, $fields);
+
+        // Redirect to the student's show page with a success message
+        return redirect(route('students.show', $student))->with('success', 'Student created successfully.');
+    }
+
+    /**
+     * Create a new user for the student.
+     */
+    private function createStudentUser(array $fields, string $student_email): User
+    {
+        $user_phone = substr($fields['mobile_phone'], -4);
+        $default_password = $fields['first_name'] . '@' . $user_phone;
+
         $user_data = [
-            'name' => $name,
+            'name' => $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'],
             'email' => $student_email,
             'phone_number' => $fields['mobile_phone'],
             'password' => bcrypt($default_password),
@@ -123,14 +145,38 @@ class StudentController extends Controller
             'phone' => $fields['mobile_phone'],
         ];
 
-        $user = User::create($user_data);
+        return User::create($user_data);
+    }
 
-        $fields['user_id'] = $user->id;
+    /**
+     * Create a status record for the student.
+     */
+    private function createStudentStatus(Student $student): void
+    {
+        $status = new Status();
+        $status->student_id = $student->id;
+        $status->user_id = $student->user->id; // Link to the user who created the status
+        $status->is_active = true; // Default status is active
+        $status->created_by_name = Auth::user()->name; // Set the creator's name
+        $status->created_at = now(); // Set the creation timestamp
+        $status->save();
+    }
 
-        $student = Student::create($fields);
+    /**
+     * Create a church record for the student.
+     */
+    private function createStudentChurch(Student $student, array $fields): void
+    {
+        $church_data = [
+            'student_id' => $student->id,
+            'pastor_name' => $fields['pastor_name'],
+            'pastor_phone' => $fields['pastor_phone'],
+            'position_denomination' => $fields['position_denomination'],
+            'church_name' => $fields['church_name'],
+            'church_address' => $fields['church_address'],
+        ];
 
-        // Create the student
-        return redirect(route('students.show', $student))->with('success', 'Student created successfully.');
+        $student->church()->create($church_data);
     }
 
     public function edit(Student $student): Response
@@ -152,15 +198,30 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(StudentStoreRequest $request, Student $student)
+    public function update(StudentUpdateRequest $request, Student $student)
     {
+        // Validate the request
         $fields = $request->validated();
 
         // Update the associated user record
+        $this->updateStudentUser($student, $fields);
+
+        // Update the student record
+        $this->updateStudentRecord($student, $fields);
+
+        // Redirect to the student's show page with a success message
+        return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
+    }
+
+    /**
+     * Update the associated user record for the student.
+     */
+    private function updateStudentUser(Student $student, array $fields): void
+    {
         $user = $student->user; // Assuming a relationship exists between Student and User
 
         if ($user) {
-            $name = $fields['student_name'] . ' ' . $fields['father_name'] . ' ' . $fields['grand_father_name'];
+            $name = $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'];
             $student_email = $this->student_email($fields);
 
             $user->update([
@@ -169,26 +230,123 @@ class StudentController extends Controller
                 'phone' => $fields['mobile_phone'],
             ]);
         }
+    }
+
+    /**
+     * Update the student record.
+     */
+    private function updateStudentRecord(Student $student, array $fields): void
+    {
+        // Ensure the user ID is linked
+        $fields['user_id'] = $student->user->id ?? null;
 
         // Update the student record
-        $fields['user_id'] = $user->id; // Ensure the user ID is linked
-
         $student->update($fields);
-
-        return redirect()->route('students.show', $student)->with('success', 'Student updated successfully.');
     }
 
     public function destroy(Student $student)
     {
-        $student->delete();
+        // Soft delete the student
+        $student->is_deleted = true;
+        $student->deleted_at = now();
+        $student->deleted_by_name = Auth::user()->id;
+        $student->save();
+        // Optionally, you can also delete the associated user record
+        $user = $student->user;
+        if ($user) {
+            $user->is_deleted = true;
+            $user->deleted_at = now();
+            $user->deleted_by_name = Auth::user()->id;
+            $user->save();
+        }
 
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 
+    public function verify(Request $request, $studentId)
+    {
+        // 1. Validate the request data
+        $validator = Validator::make($request->all(), [
+            'studentId' => 'required|integer|exists:students,id', // Ensure student ID exists
+            'is_active' => 'sometimes|boolean', // 'sometimes' allows the field to be absent
+            'is_approved' => 'sometimes|boolean',
+            'is_completed' => 'sometimes|boolean',
+            'is_verified' => 'sometimes|boolean',
+            'is_enrolled' => 'sometimes|boolean',
+            'is_graduated' => 'sometimes|boolean',
+            'is_scholarship' => 'sometimes|boolean',
+            'is_scholarship_approved' => 'sometimes|boolean',
+            'is_scholarship_verified' => 'sometimes|boolean',
+        ]);
+
+        $student = Student::findOrFail($studentId);
+
+        $status = $student->status;
+
+        if (!$status) {
+            // Create a new status record if it doesn't exist
+            $status = new Status();
+            $status->student_id = $student->id;
+            $status->user_id = $student->user->id; // Assuming you want to set the current user as the one who created the status
+        }
+
+        // 3. Update the student's attributes.  Only update fields that are present in the request.
+        if ($request->has('is_active')) {
+            $status->is_active = $request->input('is_active');
+            $status->updated_by_name = Auth::user()->id;
+            $status->updated_at = now();
+        }
+        if ($request->has('is_approved')) {
+            $status->is_approved = $request->input('is_approved');
+            $status->approved_by_name = Auth::user()->id;
+            $status->approved_at = now();
+        }
+        if ($request->has('is_completed')) {
+            $status->is_completed = $request->input('is_completed');
+            $status->completed_by_name = Auth::user()->id;
+            $status->completed_at = now();
+        }
+        if ($request->has('is_verified')) {
+            $status->is_verified = $request->input('is_verified');
+            $status->verified_by_name = Auth::user()->id;
+            $status->verified_at = now();
+        }
+        if ($request->has('is_enrolled')) {
+            $status->is_enrolled = $request->input('is_enrolled');
+            $status->enrolled_by_name = Auth::user()->id;
+            $status->enrolled_at = now();
+        }
+        if ($request->has('is_graduated')) {
+            $status->is_graduated = $request->input('is_graduated');
+            $status->graduated_by_name = Auth::user()->id;
+            $status->graduated_at = now();
+        }
+        if ($request->has('is_scholarship')) {
+            $status->is_scholarship = $request->input('is_scholarship');
+            $status->scholarship_by_name = Auth::user()->id;
+            $status->scholarship_at = now();
+        }
+        if ($request->has('is_scholarship_approved')) {
+            $status->is_scholarship_approved = $request->input('is_scholarship_approved');
+            $status->scholarship_approved_by_name = Auth::user()->id;
+            $status->scholarship_approved_at = now();
+        }
+        if ($request->has('is_scholarship_verified')) {
+            $status->is_scholarship_verified = $request->input('is_scholarship_verified');
+            $status->scholarship_verified_by_name = Auth::user()->id;
+            $status->scholarship_verified_at = now();
+        }
+
+        $status->save();
+
+        return back()->with('success', 'Student status updated successfully.');
+    }
+
+
     public function search(Request $request)
     {
         $search = $request->search;
-        $students = Student::where('student_name', 'like', "%$search%")
+        $students = Student::where('first_name', 'like', "%$search%")
             ->orWhere('student_id', 'like', "%$search%")
             ->latest()
             ->paginate(15);
@@ -208,7 +366,7 @@ class StudentController extends Controller
 
     public function student_email($fields)
     {
-        $username = $fields['student_name'] . ' ' . $fields['father_name'];
+        $username = $fields['first_name'] . ' ' . $fields['middle_name'];
 
         $email = strtolower(str_replace(' ', '.', $username)) . '@sits.edu.et';
 
@@ -219,9 +377,9 @@ class StudentController extends Controller
     {
         $student_data = [
             // Personal details
-            'student_name' => $fields['student_name'],
-            'father_name' => $fields['father_name'],
-            'grand_father_name' => $fields['grand_father_name'],
+            'first_name' => $fields['first_name'],
+            'middle_name' => $fields['middle_name'],
+            'last_name' => $fields['last_name'],
             'mobile_phone' => $fields['mobile_phone'],
             'office_phone' => $fields['office_phone'],
             'date_of_birth' => $fields['date_of_birth'],

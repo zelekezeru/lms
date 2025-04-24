@@ -28,7 +28,8 @@ const props = defineProps({
     student: {
         type: Object,
         required: true,
-    },
+    },    
+    showVerifyModal: Boolean,
 });
 
 // Multi nav header options
@@ -84,8 +85,9 @@ const deleteStudent = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ student.student_name }}
-                {{ student.father_name }}
+                {{ student.first_name }}
+                {{ student.middle_name }}
+                {{ student.last_name }}
             </h1>
 
             <nav
@@ -148,6 +150,7 @@ const deleteStudent = (id) => {
                     <ShowRegistrations
                         v-else-if="selectedTab === 'registrations'"
                         :student="student"
+                        :showVerifyModal="showVerifyModal"
                     />
                     <!-- Church Panel -->
                     <ShowChurches

@@ -9,7 +9,7 @@ defineProps({
 
 <template>
     <AppLayout>
-        <Head :title="`Result: ${result.student_name}`" />
+        <Head :title="`Result: ${result.first_name}`" />
 
         <div class="max-w-5xl mx-auto p-6">
             <!-- Page Title -->
@@ -30,7 +30,7 @@ defineProps({
                             Student Name
                         </h3>
                         <p class="text-gray-600 dark:text-gray-400">
-                            {{ result.student_name }}
+                            {{ result.first_name }}
                         </p>
                     </div>
 

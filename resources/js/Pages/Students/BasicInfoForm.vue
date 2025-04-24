@@ -19,41 +19,41 @@ const emit = defineEmits(['next']);
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <InputLabel for="student_name" value="Student Name" />
+            <InputLabel for="first_name" value="Student Name" />
             <TextInput
-            id="student_name"
+            id="first_name"
             type="text"
-            v-model="form.student_name"
+            v-model="form.first_name"
             class="w-full"
             placeholder="Full Name"
             />
-            <InputError :message="form.errors?.student_name" class="mt-2" />
+            <InputError :message="form.errors?.first_name" class="mt-2" />
         </div>
 
         <div>
-            <InputLabel for="father_name" value="Father's Name" />
+            <InputLabel for="middle_name" value="Father's Name" />
             <TextInput
-            id="father_name"
+            id="middle_name"
             type="text"
-            v-model="form.father_name"
+            v-model="form.middle_name"
             class="w-full"
             placeholder="Father's Name"
             />
-            <InputError :message="form.errors?.father_name" class="mt-2" />
+            <InputError :message="form.errors?.middle_name" class="mt-2" />
         </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
-            <InputLabel for="grand_father_name" value="Grandfather's Name" />
+            <InputLabel for="last_name" value="Grandfather's Name" />
             <TextInput
-            id="grand_father_name"
+            id="last_name"
             type="text"
-            v-model="form.grand_father_name"
+            v-model="form.last_name"
             class="w-full"
             placeholder="Grandfather's Name"
             />
-            <InputError :message="form.errors?.grand_father_name" class="mt-2" />
+            <InputError :message="form.errors?.last_name" class="mt-2" />
         </div>
 
         <div>

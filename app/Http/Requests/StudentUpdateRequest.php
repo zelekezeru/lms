@@ -15,9 +15,9 @@ class StudentUpdateRequest extends FormRequest
     {
         return [
             //Personal Information
-            'student_name' => 'required|string|max:100',
-            'father_name' => 'required|string|max:100',
-            'grand_father_name' => 'sometimes|string|max:100',
+            'first_name' => 'required|string|max:100',
+            'middle_name' => 'required|string|max:100',
+            'last_name' => 'sometimes|string|max:100',
             'mobile_phone' => 'sometimes|string|max:15',
             'office_phone' => 'sometimes|string|max:15',
             'date_of_birth' => 'sometimes|date',

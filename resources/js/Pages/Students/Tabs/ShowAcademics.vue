@@ -2,9 +2,13 @@
 import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { CogIcon} from "@heroicons/vue/24/solid";
-
-
+import {
+    CogIcon,
+    PencilSquareIcon} from "@heroicons/vue/24/solid";
+import Modal from "@/Components/Modal.vue";
+import InputError from "@/Components/InputError.vue";
+import { Listbox } from "primevue";
+import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     student: {
@@ -82,4 +86,5 @@ const props = defineProps({
             </div>
         </div> <!-- Closing the div for Academic Information -->
     </div> <!-- Closing the div for overflow-x-auto -->
+
 </template>

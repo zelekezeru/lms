@@ -104,9 +104,9 @@ const props = defineProps({
                                             })
                                         "
                                     >
-                                        {{ student.student_name }}
-                                        {{ student.father_name }}
-                                        {{ student.grand_father_name }}
+                                        {{ student.first_name }}
+                                        {{ student.middle_name }}
+                                        {{ student.last_name }}
                                     </Link>
                                 </td>
                                 <td

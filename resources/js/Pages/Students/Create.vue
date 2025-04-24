@@ -14,9 +14,9 @@ const props = defineProps({
 });
 
 const form = ref({
-    student_name: "",
-    father_name: "",
-    grand_father_name: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
     mobile_phone: "",
     office_phone: "",
     date_of_birth: "",

@@ -197,22 +197,32 @@ const deleteTenant = (id) => {
                     </div>
                 </div>
 
-                <!-- Edit and Delete Buttons -->
+                <!-- Action Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
-                    <Link
-                        :href="route('tenants.edit', { tenant: tenant.id })"
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
-                        <span>Edit</span>
-                    </Link>
-                    <button
-                        @click="deleteTenant(tenant.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                        <span>Delete</span>
-                    </button>
+                    <!-- Edit Button -->
+                    <div v-if="userCan('update-tenants')">
+                        <Link
+                            :href="
+                                route('tenants.edit', {
+                                    tenant: tenant.id,
+                                })
+                            "
+                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                        >
+                            <PencilIcon class="w-5 h-5" />
+                            <span>Edit</span>
+                        </Link>
+                    </div>
+                    <!-- Delete Button -->
+                    <div v-if="userCan('delete-tenants')">
+                        <button
+                            @click="deletetenant(tenant.id)"
+                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                            <span>Delete</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

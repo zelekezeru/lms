@@ -187,15 +187,8 @@ const afterLeave = (el) => {
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="userCanAny(['view-tenants', 'create-tenants'])"
-                >
-                    <SidebarDrowpdownLink
-                        v-show="userCan('create-tenants')"
-                        :href="route('tenants.create')"
-                    >
-                        <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Add Tenant</span>
-                    </SidebarDrowpdownLink>
+                    v-show="userCanAny(['view-tenants'])"
+                >                    
                     <SidebarDrowpdownLink
                         v-show="userCan('view-tenants')"
                         :href="route('tenants.index')"

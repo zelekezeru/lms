@@ -169,15 +169,13 @@ class TenantController extends Controller
         $tenant->update($fields);
 
         // Update the tenant representative if necessary
-        $user = User::where('tenant_id', $tenant->id)->first();
-        if ($user) {
-            $phone_end = substr($fields['contact_phone'], -4);
-            $user_password = $fields['name'] . '@' . $phone_end;
+        $user = User::find($tenant->user_id);
 
+        if ($user) {
+            
             $user->update([
                 'name' => $fields['contact_person'],
                 'email' => $fields['contact_email'],
-                'password' => Hash::make($user_password),
             ]);
         }
 

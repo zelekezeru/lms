@@ -133,23 +133,26 @@ const afterLeave = (el) => {
                 'justify-center': !isMobile,
             }"
         >
-            <div class="flex gap-4 items-center justify-center h-full">
-                <img
-                    src="/img/logo.png"
-                    class="w-[48px] rounded-full"
-                    alt="Logo"
-                />
+            <a href="/">
+                <div class="flex gap-4 items-center justify-center h-full">
+                    
+                        <img
+                            src="/img/logo.png"
+                            class="w-[48px] rounded-full"
+                            alt="Logo"
+                        />
 
-                <transition name="fade">
-                    <h1
-                        v-if="sidebarVisible || sidebarHovered"
-                        class="text-xl font-bold tracking-wide truncate"
-                        style="font-family: transity"
-                    >
-                        SITS
-                    </h1>
-                </transition>
-            </div>
+                        <transition name="fade">
+                            <h1
+                                v-if="sidebarVisible || sidebarHovered"
+                                class="text-xl font-bold tracking-wide truncate"
+                                style="font-family: transity"
+                            >
+                                SITS LMS
+                            </h1>
+                        </transition>
+                </div>
+            </a>
             <button v-if="isMobile" @click="sidebarVisible = false">
                 <XMarkIcon
                     class="w-8 h-8 text-gray-200 hover:text-red-500 transition"

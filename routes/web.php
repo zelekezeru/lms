@@ -65,6 +65,35 @@ Route::middleware(['auth'])->group(function () {
     Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
     Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
 
+    Route::get('/student', function () {
+        return Inertia::render('Student');
+    })->name('student.dashboard');
+    
+
+    Route::get('/payment', function () {
+        return Inertia::render('Student/Payment');
+    })->name('student.payment');
+    
+
+    Route::get('/student/registration', function () {
+        return Inertia::render('Student/Registration');
+    })->name('student.registration');
+    
+
+    Route::get('/student/add', function () {
+        return Inertia::render('Student/AddDropCourses');
+    })->name('student.add');
+    
+    
+    Route::get('/student/course', function () {
+        return Inertia::render('Student/Course');
+    })->name('student.course');
+    
+    
+    Route::get('/student/result', function () {
+        return Inertia::render('Student/StudentResults');
+    })->name('student.result');
+    
     $resourceRoutes = [
         'departments' => 'department',
         'students' => 'student',

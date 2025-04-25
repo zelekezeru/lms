@@ -158,6 +158,7 @@ const deleteStudent = (id) => {
                     <ShowRegistrations
                         v-else-if="selectedTab === 'registrations'"
                         :student="student"
+                        :status="status"
                         :showVerifyModal="showVerifyModal"
                     />
                     <!-- Church Panel -->

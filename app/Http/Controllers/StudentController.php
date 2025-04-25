@@ -17,6 +17,7 @@ use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\SectionResource;
+use App\Http\Resources\StatusResource;
 use App\Models\Year;
 use App\Models\User;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -24,11 +25,11 @@ use App\Models\Semester;
 use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Status;
 
 class StudentController extends Controller
 {
@@ -75,10 +76,12 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section', 'status', 'church'));
-
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section', 'church'));
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
+            'user' => new UserResource($student->user),
+            'status' => new StatusResource($student->status),
         ]);
     }
 
@@ -202,7 +205,7 @@ class StudentController extends Controller
     {
         // Validate the request
         $fields = $request->validated();
-        
+
         // Update the associated user record
         $this->updateStudentUser($student, $fields);
 
@@ -267,8 +270,8 @@ class StudentController extends Controller
     {
         // 1. Validate the request data
         $validator = Validator::make($request->all(), [
-            'studentId' => 'required|integer|exists:students,id', // Ensure student ID exists
-            'is_active' => 'sometimes|boolean', // 'sometimes' allows the field to be absent
+            'studentId' => 'required|integer|exists:students,id',
+            'is_active' => 'sometimes|boolean', 
             'is_approved' => 'sometimes|boolean',
             'is_completed' => 'sometimes|boolean',
             'is_verified' => 'sometimes|boolean',
@@ -293,47 +296,47 @@ class StudentController extends Controller
         // 3. Update the student's attributes.  Only update fields that are present in the request.
         if ($request->has('is_active')) {
             $status->is_active = $request->input('is_active');
-            $status->updated_by_name = Auth::user()->id;
+            $status->updated_by_name = Auth::user()->name;
             $status->updated_at = now();
         }
         if ($request->has('is_approved')) {
             $status->is_approved = $request->input('is_approved');
-            $status->approved_by_name = Auth::user()->id;
+            $status->approved_by_name = Auth::user()->name;
             $status->approved_at = now();
         }
         if ($request->has('is_completed')) {
             $status->is_completed = $request->input('is_completed');
-            $status->completed_by_name = Auth::user()->id;
+            $status->completed_by_name = Auth::user()->name;
             $status->completed_at = now();
         }
         if ($request->has('is_verified')) {
             $status->is_verified = $request->input('is_verified');
-            $status->verified_by_name = Auth::user()->id;
+            $status->verified_by_name = Auth::user()->name;
             $status->verified_at = now();
         }
         if ($request->has('is_enrolled')) {
             $status->is_enrolled = $request->input('is_enrolled');
-            $status->enrolled_by_name = Auth::user()->id;
+            $status->enrolled_by_name = Auth::user()->name;
             $status->enrolled_at = now();
         }
         if ($request->has('is_graduated')) {
             $status->is_graduated = $request->input('is_graduated');
-            $status->graduated_by_name = Auth::user()->id;
+            $status->graduated_by_name = Auth::user()->name;
             $status->graduated_at = now();
         }
         if ($request->has('is_scholarship')) {
             $status->is_scholarship = $request->input('is_scholarship');
-            $status->scholarship_by_name = Auth::user()->id;
+            $status->scholarship_by_name = Auth::user()->name;
             $status->scholarship_at = now();
         }
         if ($request->has('is_scholarship_approved')) {
             $status->is_scholarship_approved = $request->input('is_scholarship_approved');
-            $status->scholarship_approved_by_name = Auth::user()->id;
+            $status->scholarship_approved_by_name = Auth::user()->name;
             $status->scholarship_approved_at = now();
         }
         if ($request->has('is_scholarship_verified')) {
             $status->is_scholarship_verified = $request->input('is_scholarship_verified');
-            $status->scholarship_verified_by_name = Auth::user()->id;
+            $status->scholarship_verified_by_name = Auth::user()->name;
             $status->scholarship_verified_at = now();
         }
 

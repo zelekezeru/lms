@@ -26,24 +26,26 @@ const showVerifyModal = ref(false);
 // Initial data
 const props = defineProps({
     student: Object,
-    updateRoute: String // No longer directly used, but can be kept for other purposes if needed.
+    updateRoute: String,
+    status: Object,
 })
 
-// Clone and track the student
+// Clone and track the status
 const student = ref({ ...props.student })
+const status = ref({ ...props.status })
 
 // Use Inertia's useForm to manage submission
 const form = useForm({
-    id: student.value.id,
-    is_active: student.value.is_active,
-    is_approved: student.value.is_approved,
-    is_completed: student.value.is_completed,
-    is_verified: student.value.is_verified,
-    is_enrolled: student.value.is_enrolled,
-    is_graduated: student.value.is_graduated,
-    is_scholarship: student.value.is_scholarship,
-    is_scholarship_approved: student.value.is_scholarship_approved,
-    is_scholarship_verified: student.value.is_scholarship_verified,
+    id: status.value.id ,
+    is_active: status.value.is_active,
+    is_approved: status.value.is_approved,
+    is_completed: status.value.is_completed,
+    is_verified: status.value.is_verified,
+    is_enrolled: status.value.is_enrolled,
+    is_graduated: status.value.is_graduated,
+    is_scholarship: status.value.is_scholarship,
+    is_scholarship_approved: status.value.is_scholarship_approved,
+    is_scholarship_verified: status.value.is_scholarship_verified,
     _method: 'PATCH', // Consider if this is still needed.  POST is usually used for new data.
 })
 
@@ -61,12 +63,14 @@ function submitStatusChange(field, value) {
         route('students.verify', { student: student.value.id }), // Use the named route, include student ID as route parameter.
         postData, // Send the data object
         {
-            preserveScroll: true,
             onSuccess: () => {
-                console.log(`${field} updated to ${value}`);
-            },
-            onError: (errors) => {
-                console.error("Update failed", errors);
+                Swal.fire(
+                    "Validated!",
+                    "Department Validated successfully.",
+                    "success"
+                );
+                createDepartment.value = false;
+                departmentForm.reset();
             },
         }
     );
@@ -142,15 +146,15 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.created_by_name }}
+                                {{ student.status.created_by_name }}
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_active,
-                                    'text-red-500 dark:text-red-400': !student.is_active
+                                    'text-green-500 dark:text-green-400': student.status.is_active,
+                                    'text-red-500 dark:text-red-400': !student.status.is_active
                                 }">
-                                    {{ student.is_active ? 'Active' : 'Inactive' }}
+                                    {{ student.status.is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
                             <td
@@ -158,20 +162,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_active"
-                                        @change="updateAndSubmit('is_active', student.is_active)"
+                                        v-model="student.status.is_active"
+                                        @change="updateAndSubmit('is_active', student.status.is_active)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_active,
-                                            'bg-red-500': !student.is_active
+                                            'bg-green-500': student.status.is_active,
+                                            'bg-red-500': !student.status.is_active
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_active }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_active }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -186,15 +190,15 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.approved_by_name }}
+                                {{ student.status.approved_by_name }}
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_approved,
-                                    'text-red-500 dark:text-red-400': !student.is_approved
+                                    'text-green-500 dark:text-green-400': student.status.is_approved,
+                                    'text-red-500 dark:text-red-400': !student.status.is_approved
                                 }">
-                                    {{ student.is_approved ? 'Approved' : 'Not Approved' }}
+                                    {{ student.status.is_approved ? 'Approved' : 'Not Approved' }}
                                 </span>
                             </td>
                             <td
@@ -202,20 +206,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_approved"
-                                        @change="updateAndSubmit('is_approved', student.is_approved)"
+                                        v-model="student.status.is_approved"
+                                        @change="updateAndSubmit('is_approved', student.status.is_approved)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_approved,
-                                            'bg-red-500': !student.is_approved
+                                            'bg-green-500': student.status.is_approved,
+                                            'bg-red-500': !student.status.is_approved
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_approved }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_approved }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -230,14 +234,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.completed_by_name }}
+                                {{ student.status.completed_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_completed,
-                                    'text-red-500 dark:text-red-400': !student.is_completed
+                                    'text-green-500 dark:text-green-400': student.status.is_completed,
+                                    'text-red-500 dark:text-red-400': !student.status.is_completed
                                 }">
-                                    {{ student.is_completed ? 'Completed' : 'Not Completed' }}
+                                    {{ student.status.is_completed ? 'Completed' : 'Not Completed' }}
                                 </span>
                             </td>
                             <td
@@ -245,20 +249,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_completed"
-                                        @change="updateAndSubmit('is_completed', student.is_completed)"
+                                        v-model="student.status.is_completed"
+                                        @change="updateAndSubmit('is_completed', student.status.is_completed)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_completed,
-                                            'bg-red-500': !student.is_completed
+                                            'bg-green-500': student.status.is_completed,
+                                            'bg-red-500': !student.status.is_completed
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_completed }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_completed }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -273,14 +277,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.verified_by_name }}
+                                {{ student.status.verified_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_verified,
-                                    'text-red-500 dark:text-red-400': !student.is_verified
+                                    'text-green-500 dark:text-green-400': student.status.is_verified,
+                                    'text-red-500 dark:text-red-400': !student.status.is_verified
                                 }">
-                                    {{ student.is_verified ? 'Verified' : 'Not Verified' }}
+                                    {{ student.status.is_verified ? 'Verified' : 'Not Verified' }}
                                 </span>
                             </td>
                             <td
@@ -288,20 +292,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_verified"
-                                        @change="updateAndSubmit('is_verified', student.is_verified)"
+                                        v-model="student.status.is_verified"
+                                        @change="updateAndSubmit('is_verified', student.status.is_verified)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_verified,
-                                            'bg-red-500': !student.is_verified
+                                            'bg-green-500': student.status.is_verified,
+                                            'bg-red-500': !student.status.is_verified
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_verified }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_verified }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -317,14 +321,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.enrolled_by_name }}
+                                {{ student.status.enrolled_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_enrolled,
-                                    'text-red-500 dark:text-red-400': !student.is_enrolled
+                                    'text-green-500 dark:text-green-400': student.status.is_enrolled,
+                                    'text-red-500 dark:text-red-400': !student.status.is_enrolled
                                 }">
-                                    {{ student.is_enrolled ? 'Enrolled' : 'Not Enrolled' }}
+                                    {{ student.status.is_enrolled ? 'Enrolled' : 'Not Enrolled' }}
                                 </span>
                             </td>
                             <td
@@ -332,20 +336,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_enrolled"
-                                        @change="updateAndSubmit('is_enrolled', student.is_enrolled)"
+                                        v-model="student.status.is_enrolled"
+                                        @change="updateAndSubmit('is_enrolled', student.status.is_enrolled)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_enrolled,
-                                            'bg-red-500': !student.is_enrolled
+                                            'bg-green-500': student.status.is_enrolled,
+                                            'bg-red-500': !student.status.is_enrolled
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_enrolled }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_enrolled }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -360,14 +364,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.graduated_by_name }}
+                                {{ student.status.graduated_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_graduated,
-                                    'text-red-500 dark:text-red-400': !student.is_graduated
+                                    'text-green-500 dark:text-green-400': student.status.is_graduated,
+                                    'text-red-500 dark:text-red-400': !student.status.is_graduated
                                 }">
-                                    {{ student.is_graduated ? 'Graduated' : 'Not Graduated' }}
+                                    {{ student.status.is_graduated ? 'Graduated' : 'Not Graduated' }}
                                 </span>
                             </td>
                             <td
@@ -375,20 +379,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_graduated"
-                                        @change="updateAndSubmit('is_graduated', student.is_graduated)"
+                                        v-model="student.status.is_graduated"
+                                        @change="updateAndSubmit('is_graduated', student.status.is_graduated)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_graduated,
-                                            'bg-red-500': !student.is_graduated
+                                            'bg-green-500': student.status.is_graduated,
+                                            'bg-red-500': !student.status.is_graduated
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_graduated }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_graduated }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -403,14 +407,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.scholarship_by_name }}
+                                {{ student.status.scholarship_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_scholarship,
-                                    'text-red-500 dark:text-red-400': !student.is_scholarship
+                                    'text-green-500 dark:text-green-400': student.status.is_scholarship,
+                                    'text-red-500 dark:text-red-400': !student.status.is_scholarship
                                 }">
-                                    {{ student.is_scholarship ? 'Scholarship' : 'Not Scholarship' }}
+                                    {{ student.status.is_scholarship ? 'Scholarship' : 'Not Scholarship' }}
                                 </span>
                             </td>
                             <td
@@ -418,20 +422,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_scholarship"
-                                        @change="updateAndSubmit('is_scholarship', student.is_scholarship)"
+                                        v-model="student.status.is_scholarship"
+                                        @change="updateAndSubmit('is_scholarship', student.status.is_scholarship)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_scholarship,
-                                            'bg-red-500': !student.is_scholarship
+                                            'bg-green-500': student.status.is_scholarship,
+                                            'bg-red-500': !student.status.is_scholarship
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_scholarship }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_scholarship }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -446,14 +450,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.scholarship_approved_by_name }}
+                                {{ student.status.scholarship_approved_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_scholarship_approved,
-                                    'text-red-500 dark:text-red-400': !student.is_scholarship_approved
+                                    'text-green-500 dark:text-green-400': student.status.is_scholarship_approved,
+                                    'text-red-500 dark:text-red-400': !student.status.is_scholarship_approved
                                 }">
-                                    {{ student.is_scholarship_approved ? 'Approved' : 'Not Approved' }}
+                                    {{ student.status.is_scholarship_approved ? 'Approved' : 'Not Approved' }}
                                 </span>
                             </td>
                             <td
@@ -461,20 +465,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_scholarship_approved"
-                                        @change="updateAndSubmit('is_scholarship_approved', student.is_scholarship_approved)"
+                                        v-model="student.status.is_scholarship_approved"
+                                        @change="updateAndSubmit('is_scholarship_approved', student.status.is_scholarship_approved)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_scholarship_approved,
-                                            'bg-red-500': !student.is_scholarship_approved
+                                            'bg-green-500': student.status.is_scholarship_approved,
+                                            'bg-red-500': !student.status.is_scholarship_approved
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_scholarship_approved }"></div>
+                                        :class="{ 'translate-x-full': student.status.is_scholarship_approved }"></div>
                                 </label>
                             </td>
                         </tr>
@@ -489,14 +493,14 @@ function updateAndSubmit(field, value) {
                             </td>
 
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                                {{ student.scholarship_verified_by_name }}
+                                {{ student.status.scholarship_verified_by_name }}
                             </td>
                             <td class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                                 <span class="text-lg mx-4" :class="{
-                                    'text-green-500 dark:text-green-400': student.is_scholarship_verified,
-                                    'text-red-500 dark:text-red-400': !student.is_scholarship_verified
+                                    'text-green-500 dark:text-green-400': student.status.is_scholarship_verified,
+                                    'text-red-500 dark:text-red-400': !student.status.is_scholarship_verified
                                 }">
-                                    {{ student.is_scholarship_verified ? 'Verified' : 'Not Verified' }}
+                                    {{ student.status.is_scholarship_verified ? 'Verified' : 'Not Verified' }}
                                 </span>
                             </td>
                             <td
@@ -504,20 +508,20 @@ function updateAndSubmit(field, value) {
                                 <label class="mx-2 relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        v-model="student.is_scholarship_verified"
-                                        @change="updateAndSubmit('is_scholarship_verified', student.is_scholarship_verified)"
+                                        v-model="student.status.is_scholarship_verified"
+                                        @change="updateAndSubmit('is_scholarship_verified', student.status.is_scholarship_verified)"
                                         class="sr-only peer"/>
 
                                     <div
                                         class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                         :class="{
-                                            'bg-green-500': student.is_scholarship_verified,
-                                            'bg-red-500': !student.is_scholarship_verified
+                                            'bg-green-500': student.status.is_scholarship_verified,
+                                            'bg-red-500': !student.status.is_scholarship_verified
                                         }"></div>
 
                                     <div
                                         class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
-                                        :class="{ 'translate-x-full': student.is_scholarship_verified
+                                        :class="{ 'translate-x-full': student.status.is_scholarship_verified
                                         }"></div>
                                 </label>
                             </td>

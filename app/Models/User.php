@@ -57,6 +57,16 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    public function status()
+    {
+        return $this->hasOne(Status::class);
+    }
+    
+    public function church()
+    {
+        return $this->hasOne(Church::class);
+    }
+
     //Program Director
     public function director()
     {

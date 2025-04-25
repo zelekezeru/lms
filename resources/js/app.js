@@ -9,7 +9,7 @@ import { Head } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'LMS';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

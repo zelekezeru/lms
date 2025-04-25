@@ -74,9 +74,9 @@ const emit = defineEmits(["submit"]);
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
-                            {{ student.student_name }}
-                            {{ student.father_name }}
-                            {{ student.grand_father_name }}
+                            {{ student.first_name }}
+                            {{ student.middle_name }}
+                            {{ student.last_name }}
                         </span>
                     </div>
                     <!-- Student ID -->

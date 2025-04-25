@@ -44,7 +44,7 @@ const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
     { key: "courses", label: "Courses", icon: AcademicCapIcon },
     { key: "students", label: "Students", icon: UsersIcon },
-];
+];  
 
 const students = ref({
     data: [],
@@ -108,44 +108,44 @@ const deletesection = (id) => {
             </nav>
 
 
-                <!-- Details Panel -->
-                <transition
-                    mode="out-in"
-                    enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition duration-200 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
-                >
-                <div
-                    :key="selectedTab"
-                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-                >
-                        <ShowDetails
-                            v-if="selectedTab === 'details'"
-                            :courses="courses"
-                            :section="section"
-                            :instructors="instructors"
-                        />
+            <!-- Details Panel -->
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <ShowDetails
+                    v-if="selectedTab === 'details'"
+                    :courses="courses"
+                    :section="section"
+                    :instructors="instructors"
+                />
 
-                        <!-- Courses Panel -->
-                        <ShowCourses
-                            v-else-if="selectedTab === 'courses'"
-                            :courses="courses"
-                            :section="section"
-                            :instructors="instructors"
-                            />
-                            
-                            <!-- Students Panel -->
-                            <ShowStudents
-                            v-else-if="selectedTab === 'students'"
-                            :courses="courses"
-                            :section="section"
-                            :instructors="instructors"
-                            />
-                        </div>
-                    </transition>
+                <!-- Courses Panel -->
+                <ShowCourses
+                    v-else-if="selectedTab === 'courses'"
+                    :courses="courses"
+                    :section="section"
+                    :instructors="instructors"
+                    />
+                    
+                    <!-- Students Panel -->
+                    <ShowStudents
+                    v-else-if="selectedTab === 'students'"
+                    :courses="courses"
+                    :section="section"
+                    :instructors="instructors"
+                    />
+                </div>
+            </transition>
         </div>
     </AppLayout>
 </template>

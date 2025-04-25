@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['course_id', 'section_id']);           // A course in a section is unique
-            $table->unique(['instructor_id', 'section_id']);       // An instructor per section is unique
         });
     }
 

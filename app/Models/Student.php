@@ -16,7 +16,17 @@ class Student extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    } 
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Status::class);
+    }
+
+    public function church()
+    {
+        return $this->hasOne(Church::class);
+    }
     
     public function program()
     {

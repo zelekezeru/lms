@@ -392,7 +392,7 @@ const addWeight = () => {
                                                 class="border-t border-gray-200 dark:border-gray-700"
                                             >
                                                 <td class="px-4 py-2 border-gray-300 dark:border-gray-600">{{ index + 1 }}</td>
-                                                <td class="px-4 py-2">{{ student.student_name }} {{ student.father_name }}</td>
+                                                <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
                                                 
                                                 <!-- Section Course Weights -->
                                                 <td

@@ -21,33 +21,45 @@ class TenantController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Tenant::query();
-    
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('code', 'LIKE', "%{$search}%")
-                  ->orWhere('email', 'LIKE', "%{$search}%")
-                  ->orWhere('phone', 'LIKE', "%{$search}%");
+        if(Tenant::count() == 0){
+            return redirect()->route('tenants.create')->with('info', 'No tenants found. Please create a tenant.');
         }
+        elseif (count(Tenant::where('status', 1)->get()) == 1) {
+            // Get the first tenant
+            $tenant = Tenant::where('status', 1)->first();
+            // Redirect to the tenant's show page
+            return redirect()->route('tenants.show', $tenant);
+    
+        }else{
+            $query = Tenant::query();
         
-        $allowedSorts = ['name', 'code', 'email', 'phone'];
-        $sortColumn = $request->sortColumn;
-        $sortDirection = $request->sortDirection;
-        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
-            $query->orderBy($sortColumn, $sortDirection);
-        }
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $query->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('code', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%");
+            }
+            
+            $allowedSorts = ['name', 'code', 'email', 'phone'];
+            $sortColumn = $request->sortColumn;
+            $sortDirection = $request->sortDirection;
+            if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+                $query->orderBy($sortColumn, $sortDirection);
+            }
 
-        $tenants = TenantResource::collection($query->paginate(15)->withQueryString());
-    
-        return inertia('Tenants/Index', [
-            'tenants' => $tenants,
-            'search' => $request->search, // Keep the search term in the frontend
-            'sortInfo' => [
-                "currentSortColumn" => $sortColumn,
-                "currentSortDirection" => $sortDirection,
-            ]
-        ]);
+            $tenants = TenantResource::collection($query->paginate(15)->withQueryString());
+        
+            return inertia('Tenants/Index', [
+                'tenants' => $tenants,
+                'search' => $request->search, // Keep the search term in the frontend
+                'sortInfo' => [
+                    "currentSortColumn" => $sortColumn,
+                    "currentSortDirection" => $sortDirection,
+                ]
+            ]);
+            
+        }
     }
     
     /**
@@ -169,15 +181,13 @@ class TenantController extends Controller
         $tenant->update($fields);
 
         // Update the tenant representative if necessary
-        $user = User::where('tenant_id', $tenant->id)->first();
-        if ($user) {
-            $phone_end = substr($fields['contact_phone'], -4);
-            $user_password = $fields['name'] . '@' . $phone_end;
+        $user = User::find($tenant->user_id);
 
+        if ($user) {
+            
             $user->update([
                 'name' => $fields['contact_person'],
                 'email' => $fields['contact_email'],
-                'password' => Hash::make($user_password),
             ]);
         }
 

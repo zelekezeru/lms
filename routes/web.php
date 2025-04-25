@@ -66,6 +66,31 @@ Route::middleware(['auth'])->group(function () {
     Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
     Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
 
+    Route::get('/instructor', function () {
+        return Inertia::render('Instructor');
+    })->name('instructor.dashboard');
+    
+
+    Route::get('/instructor/course', function () {
+        return Inertia::render('Instructor/InstructorCourses');
+    })->name('instructor.course');
+    
+
+    Route::get('/instructor/attendance', function () {
+        return Inertia::render('Instructor/InstructorAttendance');
+    })->name('instructor.attendance');
+    
+
+    Route::get('/instructor/grades', function () {
+        return Inertia::render('Instructor/InstructorGrades');
+    })->name('instructor.attendance');
+    
+
+    Route::get('/instructor/schedule', function () {
+        return Inertia::render('Instructor/Schedule');
+    })->name('instructor.schedule');
+    
+
     Route::get('/student', function () {
         return Inertia::render('Student');
     })->name('student.dashboard');

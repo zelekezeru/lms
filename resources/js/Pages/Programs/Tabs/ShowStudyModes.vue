@@ -11,7 +11,6 @@ const props = defineProps({
     program: { type: Object, required: true },
 });
 
-
 const modeForm = useForm({
     program_id: props.program.id,
     mode: "",
@@ -19,7 +18,7 @@ const modeForm = useForm({
     fees: "",
 });
 
-const departmentForm = useForm({
+const trackForm = useForm({
     name: "",
     description: "",
     program_id: props.program.id,
@@ -47,7 +46,6 @@ const addMode = () => {
         }
     );
 };
-
 </script>
 
 <template>

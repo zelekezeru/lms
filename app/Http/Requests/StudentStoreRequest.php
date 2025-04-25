@@ -12,7 +12,8 @@ class StudentStoreRequest extends FormRequest
     }
 
     public function rules(): array
-    {dd($this->all());
+    {
+        dd($this->all());
         return [
             // Personal Information
             'first_name' => 'required|string|max:100',
@@ -37,7 +38,7 @@ class StudentStoreRequest extends FormRequest
             // Foreign Keys
             'tenant_id' => 'nullable|exists:tenants,id',
             'program_id' => 'required|exists:programs,id',
-            'department_id' => 'required|exists:departments,id',
+            'track_id' => 'required|exists:tracks,id',
             'year_id' => 'required|exists:years,id',
             'semester_id' => 'required|exists:semesters,id',
             'section_id' => 'nullable|exists:sections,id',

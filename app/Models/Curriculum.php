@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Curriculum extends Model
 {
     protected $guarded = [];
-    
+
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'curriculum_course')
@@ -15,9 +15,8 @@ class Curriculum extends Model
             ->withTimestamps();
     }
 
-    public function department()
+    public function track()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Track::class);
     }
-    
 }

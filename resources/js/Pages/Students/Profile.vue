@@ -12,7 +12,7 @@ const props = defineProps({
     user: Object,
     sections: Array,
     program: Object,
-    department: Object,
+    track: Object,
 });
 
 const student = ref(props.student);
@@ -178,11 +178,11 @@ const emit = defineEmits(["submit"]);
                             <InputError :message="form.errors.profile_img" />
                         </div>
 
-                        <!-- Department Section Select -->
+                        <!-- Track Section Select -->
                         <div>
                             <InputLabel
                                 for="section_id"
-                                value="Select Department Section"
+                                value="Select Track Section"
                             />
                             <select
                                 id="section_id"
@@ -195,7 +195,7 @@ const emit = defineEmits(["submit"]);
                                     :key="section.id"
                                     :value="section.id"
                                 >
-                                    {{ department.name }} - {{ section.name }}
+                                    {{ track.name }} - {{ section.name }}
                                 </option>
                             </select>
                             <InputError

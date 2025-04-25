@@ -27,10 +27,9 @@ const form = useForm({
 // Submit the form
 const submit = () => {
     console.log(form);
-    
+
     form.post(route("instructors.store"));
 };
- 
 </script>
 
 <template>
@@ -46,7 +45,13 @@ const submit = () => {
             </div>
 
             <div class="dark:bg-gray-900 bg-white-100 shadow-lg rounded-lg p-6">
-                <Form :form="form" :courses="courses" :departments="departments" :roles="roles" @submit="submit"/>
+                <Form
+                    :form="form"
+                    :courses="courses"
+                    :tracks="tracks"
+                    :roles="roles"
+                    @submit="submit"
+                />
             </div>
         </div>
     </AppLayout>

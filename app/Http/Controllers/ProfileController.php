@@ -15,28 +15,27 @@ use App\Http\Resources\SectionResource;
 use App\Models\Student;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\ProgramResource;
 
 class ProfileController extends Controller
 {
     // Student Verification
 
-    
+
 
     //Student goto Profile
     public function profile(Student $student)
-    {   
-        $sections = SectionResource::collection(Section::where('department_id', $student->department_id)->get());
-        
+    {
+        $sections = SectionResource::collection(Section::where('track_id', $student->track_id)->get());
+
         return inertia('Students/Profile', [
             'student' => new StudentResource($student),
             'user' => new UserResource($student->user),
             'sections' => $sections,
-            'department' => new DepartmentResource($student->department),
+            'track' => new TrackResource($student->track),
             'program' => new ProgramResource($student->program),
         ]);
-
     }
     //Student Profile Image and Status
     public function updateProfile(Request $request, Student $student)
@@ -62,7 +61,7 @@ class ProfileController extends Controller
             if ($section) {
                 // Detach from previous sections
                 $student->user->update(['section_id' => $section->id]);
-                
+
                 // Attach section courses to student, avoid duplicates
                 foreach ($section->courses as $course) {
                     if (!$student->courses->contains($course->id)) {
@@ -70,7 +69,6 @@ class ProfileController extends Controller
                     }
                 }
             }
-            
         }
 
         // Payment Status Handling
@@ -104,7 +102,7 @@ class ProfileController extends Controller
         if ($request->has('section_id')) {
             $student['section_id'] = $request->input('section_id');
         }
-        
+
         $student->update([
             'is_verified' => $student->is_verified,
             'is_approved' => $student->is_approved,
@@ -116,7 +114,7 @@ class ProfileController extends Controller
             'completed_by' => $student->completed_by,
             'completed_at' => $student->completed_at,
         ]);
-        
+
         return redirect()->route('students.show', $student)->with('success', 'Profile image updated successfully.');
     }
     /**

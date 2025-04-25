@@ -7,7 +7,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, EyeIcon } from "@heroicons/vue/24/solid";
 import { CogIcon } from "@heroicons/vue/24/outline";
 import ShowDetails from "./Tabs/ShowDetails.vue";
-import ShowDepartments from "./Tabs/ShowDepartments.vue";
+import ShowTracks from "./Tabs/ShowTracks.vue";
 import ShowStudyModes from "./Tabs/ShowStudyModes.vue";
 
 const props = defineProps({
@@ -17,7 +17,7 @@ const props = defineProps({
 
 const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
-    { key: "departments", label: "Departments", icon: PencilIcon },
+    { key: "tracks", label: "Tracks", icon: PencilIcon },
     { key: "modes", label: "Study Modes", icon: EyeIcon },
 ];
 const selectedTab = ref("details");
@@ -88,16 +88,25 @@ const deleteProgram = (id) => {
                     leave-to-class="opacity-0 scale-75"
                 >
                     <div :key="selectedTab">
-                        <ShowDetails v-show="selectedTab == 'details'" :program="program"/>
+                        <ShowDetails
+                            v-show="selectedTab == 'details'"
+                            :program="program"
+                        />
 
-                        <!-- Departments Panel -->
-                        <ShowDepartments v-show="selectedTab == 'departments'" :program="program" :users="users"/>
+                        <!-- Tracks Panel -->
+                        <ShowTracks
+                            v-show="selectedTab == 'tracks'"
+                            :program="program"
+                            :users="users"
+                        />
 
-                        <ShowStudyModes v-show="selectedTab == 'modes'" :program="program" />
+                        <ShowStudyModes
+                            v-show="selectedTab == 'modes'"
+                            :program="program"
+                        />
                     </div>
                 </transition>
             </div>
         </div>
     </AppLayout>
-
 </template>

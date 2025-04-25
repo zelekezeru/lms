@@ -24,11 +24,11 @@ class SectionResource extends JsonResource
             'semester' => $this->whenLoaded('semester'),
             'year' => $this->whenLoaded('year'),
             'program' => $this->whenLoaded('program'),
-            'department' => $this->whenLoaded('department'),
+            'track' => $this->whenLoaded('track'),
             'studyMode' => $this->whenLoaded('studyMode'),
             'courses' => $this->whenLoaded('courses'),
             'instructors' => $this->whenLoaded('instructors'),
-            
+
             'status' => $this->status,
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,

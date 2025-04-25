@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
-use App\Models\Department;
+use App\Models\Track;
 use App\Models\Tenant;
 use App\Models\Program;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\StudentStoreRequest;
@@ -76,8 +76,8 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'department', 'year', 'semester', 'section', 'church'));
-        
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church'));
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),
@@ -87,7 +87,7 @@ class StudentController extends Controller
 
     public function create(): Response
     {
-        $departments = DepartmentResource::collection(Department::all());
+        $tracks = TrackResource::collection(Track::all());
 
         $programs = ProgramResource::collection(Program::all());
 
@@ -96,7 +96,7 @@ class StudentController extends Controller
         $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
 
         return inertia('Students/Create', [
-            'departments' => $departments,
+            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
             'semesters' => $semesters,
@@ -184,7 +184,7 @@ class StudentController extends Controller
 
     public function edit(Student $student): Response
     {
-        $departments = DepartmentResource::collection(Department::all());
+        $tracks = TrackResource::collection(Track::all());
 
         $programs = ProgramResource::collection(Program::all());
 
@@ -194,7 +194,7 @@ class StudentController extends Controller
 
         return Inertia::render('Students/Edit', [
             'student' => $student,
-            'departments' => $departments,
+            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
             'semesters' => $semesters,
@@ -271,7 +271,7 @@ class StudentController extends Controller
         // 1. Validate the request data
         $validator = Validator::make($request->all(), [
             'studentId' => 'required|integer|exists:students,id',
-            'is_active' => 'sometimes|boolean', 
+            'is_active' => 'sometimes|boolean',
             'is_approved' => 'sometimes|boolean',
             'is_completed' => 'sometimes|boolean',
             'is_verified' => 'sometimes|boolean',
@@ -393,7 +393,7 @@ class StudentController extends Controller
             'year_id' => $fields['year_id'],
             'semester_id' => $fields['semester_id'],
             'program_id' => $fields['program_id'],
-            'department_id' => $fields['department_id'],
+            'track_id' => $fields['track_id'],
 
             //Church details
             'pastor_name' => $fields['pastor_name'],

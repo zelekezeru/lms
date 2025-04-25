@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Track extends Model
 {
     protected $guarded = [];
 
@@ -22,7 +22,7 @@ class Department extends Model
     {
         return $this->belongsToMany(Course::class);
     }
-    
+
     public function sections()
     {
         return $this->hasMany(Section::class);
@@ -37,5 +37,4 @@ class Department extends Model
     {
         return $this->hasMany(Curriculum::class);
     }
-    
 }

@@ -7,11 +7,11 @@ use App\Models\Program;
 use App\Models\Semester;
 use App\Models\Year;
 use App\Models\User;
-use App\Models\Department;
+use App\Models\Track;
 use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
 use App\Http\Resources\CourseResource;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SectionResource;
@@ -27,17 +27,17 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = Section::with(['user', 'program', 'department', 'year', 'semester'])->get();
+        $sections = Section::with(['user', 'program', 'track', 'year', 'semester'])->get();
 
         return Inertia::render('Sections/Index', [
             'sections' => $sections
         ]);
     }
-    
+
 
     public function create()
     {
-        $departments = DepartmentResource::collection(Department::all());
+        $tracks = TrackResource::collection(Track::all());
 
         $programs = ProgramResource::collection(Program::all());
 
@@ -48,17 +48,17 @@ class SectionController extends Controller
         $users = UserResource::collection(User::all()->sortBy('name'));
 
         return Inertia::render('Sections/Create', [
-            'departments' => $departments,
+            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
             'semesters' => $semesters,
             'users' => $users,
         ]);
     }
-    
+
 
     public function store(SectionRequest $request)
-    {   
+    {
         $fields = $request->validated();
         // Section code generation logic
 
@@ -67,20 +67,20 @@ class SectionController extends Controller
         $section_id = 'SC' . '-' . $year .  '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
-        
+
         $section = Section::create($fields);
-    
+
         return redirect(route('sections.show', $section))->with('success', 'Section created successfully.');
     }
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'department', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
-        
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
+
         $courses = CourseResource::collection(Course::all()->sortBy('code'));
-        
+
         $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
-        
+
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,
@@ -91,7 +91,7 @@ class SectionController extends Controller
             'isCompleted' => $section->is_completed,
         ]);
     }
-    
+
     public function update(SectionRequest $request, Section $section)
     {
         $fields = $request->validated();
@@ -105,15 +105,15 @@ class SectionController extends Controller
     public function edit(Section $section)
     {
         return Inertia::render('Sections/Edit', [
-            'section' => $section->load(['user', 'program', 'department', 'year', 'semester']),
+            'section' => $section->load(['user', 'program', 'track', 'year', 'semester']),
             'programs' => Program::all(),
-            'departments' => Department::all(),
+            'tracks' => Track::all(),
             'users' => User::all(),
             'years' => Year::all(),
             'semesters' => Semester::all(),
         ]);
     }
-    
+
 
     public function destroy(Section $section)
     {

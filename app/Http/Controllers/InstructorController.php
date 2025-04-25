@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instructor;
-use App\Models\Department;
+use App\Models\Track;
 use App\Http\Resources\InstructorResource;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Requests\InstructorStoreRequest;
 use App\Http\Requests\InstructorUpdateRequest;
 use App\Models\Tenant;
@@ -26,39 +26,39 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         $query = Instructor::with('user');
-    
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-    
+
             // Adjusted for correct column names
             $query->where('specialization', 'LIKE', "%{$search}%")
-                  ->orWhere('employment_type', 'LIKE', "%{$search}%");
+                ->orWhere('employment_type', 'LIKE', "%{$search}%");
         }
-    
+
         $instructors = InstructorResource::collection($query->paginate(15)->withQueryString());
-    
+
         return inertia('Instructors/Index', [
             'instructors' => $instructors,
             'search' => $request->search,
         ]);
     }
-    
-    
+
+
     /**
      * Display the specified resource.
      */
     public function show(Instructor $instructor)
     {
         $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course'));
-        
+
         $courses = CourseResource::collection(Course::all());
 
         return Inertia::render('Instructors/Show', [
-            'instructor'=> $instructor,
-            'courses'=> $courses,
+            'instructor' => $instructor,
+            'courses' => $courses,
         ]);
     }
-    
+
 
     public function create(): Response
     {
@@ -68,7 +68,7 @@ class InstructorController extends Controller
 
 
         return Inertia::render('Instructors/Create', [
-            'departments' => Department::all(['id', 'name']),
+            'tracks' => Track::all(['id', 'name']),
             'roles' => $roles,
             'courses' => $courses,
         ]);
@@ -81,16 +81,16 @@ class InstructorController extends Controller
 
         $courses = $fields['courses'] ?? [];
         $profileImg = $fields['profile_img'] ?? null;
-        
+
         // Profile   of Instructor
         if ($profileImg) {
             $profile_path = $profileImg->store('profile-images', 'public');
-        }else{
+        } else {
             $profile_path = null;
         }
 
         // Create a new Instructor User in User table
-        
+
         $user_phone = substr($fields['contact_phone'], -4);
 
         $user_password = 'instructor@' . $user_phone;
@@ -104,7 +104,7 @@ class InstructorController extends Controller
 
         $instructor = Instructor::create([
             'name' => $fields['name'],
-            
+
             // User id temporary
             'user_id' => 1,
             'tenant_id' => 1,
@@ -114,18 +114,18 @@ class InstructorController extends Controller
             'status' => $fields['status'],
             'hire_date' => $fields['hire_date'],
         ]);
-        
+
         //Assign the created instructor to the courses
         $instructor->courses()->sync($courses);
 
         $registeredUserController = new RegisteredUserController();
 
         $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
-        
-        
+
+
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -135,10 +135,10 @@ class InstructorController extends Controller
         $courses = CourseResource::collection(Course::all());
 
         return inertia('Instructors/Edit', [
-            'instructor' => new InstructorResource($instructor->load('user', 'department', 'courses')),
-            'departments' => Department::all(['id', 'name']),
-            'roles' => $roles, 
-            'courses' => $courses, 
+            'instructor' => new InstructorResource($instructor->load('user', 'track', 'courses')),
+            'tracks' => Track::all(['id', 'name']),
+            'roles' => $roles,
+            'courses' => $courses,
         ]);
     }
 
@@ -162,7 +162,7 @@ class InstructorController extends Controller
             'name' => $fields['name'],
             'email' => $fields['email'],
             'profile_img' => $profile_path ?? $user->profile_img,
-            'phone'=> $fields['contact_phone'],
+            'phone' => $fields['contact_phone'],
         ]);
 
         // Update instructor details
@@ -189,11 +189,11 @@ class InstructorController extends Controller
         if ($user->profile_img) {
             Storage::disk('public')->delete($user->profile_img);
         }
-        
+
         $instructor->delete();
 
         $user->delete();
 
-        return to_route('instructors.index', $instructor)->with('success', 'Instructor deleted successfully.');  
+        return to_route('instructors.index', $instructor)->with('success', 'Instructor deleted successfully.');
     }
 }

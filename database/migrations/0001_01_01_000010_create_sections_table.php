@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->foreignId('user_id')->constrained()->nullable();
             $table->foreignId('program_id')->constrained()->nullable();
-            $table->foreignId('department_id')->constrained()->nullable();
+            $table->foreignId('track_id')->constrained()->nullable();
             $table->foreignId('year_id')->constrained()->nullable();
             $table->foreignId('semester_id')->constrained()->nullable();
             $table->timestamps();

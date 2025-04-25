@@ -76,9 +76,9 @@ const deleteProgram = (id) => {
     });
 };
 
-// Ensure program.user, program.departments, and program.studyModes have fallbacks
+// Ensure program.user, program.tracks, and program.studyModes have fallbacks
 const programUser = props.program.user || { name: "N/A" };
-const programDepartments = props.program.departments || [];
+const programTracks = props.program.tracks || [];
 const studyModes = props.program.studyModes || [];
 </script>
 
@@ -176,20 +176,20 @@ const studyModes = props.program.studyModes || [];
                     </button>
                 </div>
 
-                <!-- Departments -->
+                <!-- Tracks -->
                 <div class="mt-10">
                     <Link
-                        v-if="userCan('create-departments')"
-                        :href="route('departments.create')"
+                        v-if="userCan('create-tracks')"
+                        :href="route('tracks.create')"
                         class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
-                        + Add Department
+                        + Add Track
                     </Link>
 
                     <div class="text-center">
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >Departments</span
+                            >Tracks</span
                         >
                     </div>
                     <table class="mt-2 w-full text-left border-collapse">
@@ -203,7 +203,7 @@ const studyModes = props.program.studyModes || [];
                                 <th
                                     class="text-md font-medium text-gray-900 dark:text-gray-100"
                                 >
-                                    Department Name
+                                    Track Name
                                 </th>
                                 <th
                                     class="text-md font-medium text-gray-900 dark:text-gray-100"
@@ -219,19 +219,19 @@ const studyModes = props.program.studyModes || [];
                         </thead>
                         <tbody>
                             <tr
-                                v-for="department in programDepartments"
-                                :key="department.id"
+                                v-for="track in programTracks"
+                                :key="track.id"
                                 class="border-b dark:border-gray-700 p-2 cursor-pointer"
                             >
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ department.code || "N/A" }}
+                                    {{ track.code || "N/A" }}
                                 </td>
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
                                 >
-                                    {{ department.name || "N/A" }}
+                                    {{ track.name || "N/A" }}
                                 </td>
                                 <td
                                     class="text-sm text-gray-500 dark:text-gray-400"
@@ -239,13 +239,13 @@ const studyModes = props.program.studyModes || [];
                                     {{ program.duration || "N/A" }}
                                 </td>
                                 <td>
-                                    <div v-if="userCan('view-departments')">
+                                    <div v-if="userCan('view-tracks')">
                                         <Link
                                             prefetch="hover"
                                             cache-for="3"
                                             :href="
-                                                route('departments.show', {
-                                                    department: department.id,
+                                                route('tracks.show', {
+                                                    track: track.id,
                                                 })
                                             "
                                             class="text-blue-500 hover:text-blue-700"

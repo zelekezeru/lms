@@ -30,13 +30,13 @@ class StudentResource extends JsonResource
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
 
-            'courses' => $this->whenLoaded('courses'), 
+            'courses' => $this->whenLoaded('courses'),
             'program' => $this->whenLoaded('program'),
-            'department' => $this->whenLoaded('department'),
+            'track' => $this->whenLoaded('track'),
             'section' => $this->whenLoaded('section'),
             'year' => $this->whenLoaded('year'),
             'semester' => $this->whenLoaded('semester'),
-             
+
         ];
     }
 }

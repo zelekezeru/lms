@@ -1,24 +1,24 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Form from "@/Pages/Departments/Form.vue";
+import Form from "@/Pages/Tracks/Form.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 
-defineProps({ department: Object, users: Array, programs: Array });
+defineProps({ track: Object, users: Array, programs: Array });
 
 const form = useForm({
-    name: usePage().props.department.name,
-    user_id: usePage().props.department.user_id,
-    description: usePage().props.department.description,
-    program_id: usePage().props.department.program_id,
+    name: usePage().props.track.name,
+    user_id: usePage().props.track.user_id,
+    description: usePage().props.track.description,
+    program_id: usePage().props.track.program_id,
 });
 
 const submit = (id) => {
-    form.patch(route("departments.update", { department: id }), {
+    form.patch(route("tracks.update", { track: id }), {
         onSuccess: () =>
             Swal.fire(
                 "Updated",
-                "The department has been updated successfully",
+                "The track has been updated successfully",
                 "success"
             ),
     });
@@ -31,10 +31,10 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit "{{ department.name }}"
+                    Edit "{{ track.name }}"
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to Update the department.
+                    Please fill out the form below to Update the track.
                 </p>
             </div>
 
@@ -44,7 +44,7 @@ const submit = (id) => {
             >
                 <Form
                     :form="form"
-                    @submit="submit(department.id)"
+                    @submit="submit(track.id)"
                     :users="users"
                     :programs="programs"
                 />

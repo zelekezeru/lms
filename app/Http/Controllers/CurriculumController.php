@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Curriculum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Department;
+use App\Models\Track;
 use App\Models\Course;
 use App\Models\Semester;
 use App\Models\User;
@@ -19,8 +19,8 @@ class CurriculumController extends Controller
     {
         dd(request()->all());
         return Inertia::render('Curriculums/Index', [
-            'curricula' => Curriculum::with(['course', 'department', 'semester', 'instructor'])->get(),
-            'departments' => Department::all(),
+            'curricula' => Curriculum::with(['course', 'track', 'semester', 'instructor'])->get(),
+            'tracks' => Track::all(),
             'courses' => Course::all(),
             'semesters' => Semester::all(),
             'instructors' => User::where('role', 'instructor')->get()
@@ -41,14 +41,14 @@ class CurriculumController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'department_id' => 'required',
+            'track_id' => 'required',
             'course_id' => 'required',
             'semester_id' => 'required',
             // additional fields...
         ]);
-    
+
         Curriculum::create($request->all());
-    
+
         return redirect()->back();
     }
 

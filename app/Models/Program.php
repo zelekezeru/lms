@@ -16,9 +16,9 @@ class Program extends Model
         'description',
     ];
 
-    public function departments()
+    public function tracks()
     {
-        return $this->hasMany(Department::class);
+        return $this->hasMany(Track::class);
     }
 
     public function students()
@@ -35,12 +35,12 @@ class Program extends Model
     {
         return $this->hasMany(Section::class);
     }
-    
+
     public function semesters()
     {
         return $this->hasMany(Semester::class);
     }
-    
+
     public function years()
     {
         return $this->hasMany(Year::class);
@@ -55,5 +55,4 @@ class Program extends Model
     {
         return $this->belongsToMany(Course::class);
     }
-    
 }

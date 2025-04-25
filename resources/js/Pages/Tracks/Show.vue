@@ -23,9 +23,9 @@ import ShowCurriculum from "./Tabs/ShowCurriculum.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
 
-// Define the props for the department
+// Define the props for the track
 const props = defineProps({
-    department: {
+    track: {
         type: Object,
         required: true,
     },
@@ -49,7 +49,6 @@ const tabs = [
     { key: "courses", label: "Courses", icon: AcademicCapIcon },
     { key: "sections", label: "Sections", icon: UsersIcon },
 ];
-
 </script>
 
 <template>
@@ -58,9 +57,9 @@ const tabs = [
             <h1
                 class="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100"
             >
-                {{ department.name }} Department
+                {{ track.name }} Track
             </h1>
-            
+
             <nav
                 class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
@@ -94,21 +93,34 @@ const tabs = [
                 >
                     <div :key="selectedTab">
                         <!-- Details Panel -->
-                        <ShowDetails v-if="selectedTab == 'details'" :department="department" />
+                        <ShowDetails
+                            v-if="selectedTab == 'details'"
+                            :track="track"
+                        />
 
                         <!-- Curriculum Panel -->
-                        <ShowCurriculum v-else-if="selectedTab == 'curriculums'" :department="department" :curriculums="curriculums" :courses="courses"/>
-                        
-                        <!-- Courses Panel -->
-                        <ShowCourses v-else-if="selectedTab == 'courses'" :department="department" />
-                        
-                        <!-- Section Panel -->
-                        <ShowSections v-else-if="selectedTab == 'sections'" :department="department"  :courses="courses" />
+                        <ShowCurriculum
+                            v-else-if="selectedTab == 'curriculums'"
+                            :track="track"
+                            :curriculums="curriculums"
+                            :courses="courses"
+                        />
 
+                        <!-- Courses Panel -->
+                        <ShowCourses
+                            v-else-if="selectedTab == 'courses'"
+                            :track="track"
+                        />
+
+                        <!-- Section Panel -->
+                        <ShowSections
+                            v-else-if="selectedTab == 'sections'"
+                            :track="track"
+                            :courses="courses"
+                        />
                     </div>
                 </transition>
             </div>
-
         </div>
     </AppLayout>
 </template>

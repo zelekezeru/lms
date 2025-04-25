@@ -7,25 +7,25 @@ import { useForm } from "@inertiajs/vue3";
 const props = defineProps({
     users: { type: Array, required: true },
     programs: { type: Array, required: true },
-    departments: { type: Array, required: true },
+    tracks: { type: Array, required: true },
     years: { type: Array, required: true },
     semesters: { type: Array, required: true },
 });
 
 // Form initialization
 const form = useForm({
-    name: '',
-    code: '',
-    user_id: '',
-    program_id: '',
-    department_id: '',
-    year_id: '',
-    semester_id: '',
+    name: "",
+    code: "",
+    user_id: "",
+    program_id: "",
+    track_id: "",
+    year_id: "",
+    semester_id: "",
 });
 
 // Submit handler
 const submit = () => {
-    form.post(route('sections.store'), {
+    form.post(route("sections.store"), {
         preserveScroll: true,
     });
 };
@@ -35,7 +35,9 @@ const submit = () => {
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create Section</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Create Section
+                </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Fill in the details to create a new section.
                 </p>
@@ -44,7 +46,7 @@ const submit = () => {
                 :form="form"
                 :users="users"
                 :programs="programs"
-                :departments="departments"
+                :tracks="tracks"
                 :years="years"
                 :semesters="semesters"
                 @submit="submit"

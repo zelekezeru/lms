@@ -96,7 +96,7 @@ const searchInstructors = () => {
                 <input
                     type="text"
                     v-model="search"
-                    placeholder="Search by Name, Email, Department"
+                    placeholder="Search by Name, Email, Track"
                     class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
                     @input="searchInstructors"
                 />
@@ -125,9 +125,16 @@ const searchInstructors = () => {
         </div>
 
         <!-- Instructors Table OR No Results Message -->
-        <div v-if="instructors.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <div
+            v-if="instructors.data.length > 0"
+            class="overflow-x-auto shadow-md sm:rounded-lg"
+        >
+            <table
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+            >
+                <thead
+                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                >
                     <tr>
                         <th scope="col" class="px-6 py-3">Name</th>
                         <th scope="col" class="px-6 py-3">Email</th>
@@ -141,23 +148,51 @@ const searchInstructors = () => {
                         :key="instructor.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                     >
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Link :href="route('instructors.show', { instructor: instructor.id })">
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                            <Link
+                                :href="
+                                    route('instructors.show', {
+                                        instructor: instructor.id,
+                                    })
+                                "
+                            >
                                 {{ instructor.name }}
                             </Link>
                         </th>
                         <td class="px-6 py-4">{{ instructor.email }}</td>
-                        <td class="px-6 py-4">{{ instructor.employmentType }}</td>
+                        <td class="px-6 py-4">
+                            {{ instructor.employmentType }}
+                        </td>
                         <td class="px-6 py-4 flex justify-between">
-                            <Link :href="route('instructors.show', { instructor: instructor.id })" class="text-blue-500 hover:text-blue-700">
+                            <Link
+                                :href="
+                                    route('instructors.show', {
+                                        instructor: instructor.id,
+                                    })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link :href="route('instructors.edit', { instructor: instructor.id })" class="text-green-500 hover:text-green-700">
+                            <Link
+                                :href="
+                                    route('instructors.edit', {
+                                        instructor: instructor.id,
+                                    })
+                                "
+                                class="text-green-500 hover:text-green-700"
+                            >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button @click="deleteInstructor(instructor.id)" class="text-red-500 hover:text-red-700">
+                            <button
+                                @click="deleteInstructor(instructor.id)"
+                                class="text-red-500 hover:text-red-700"
+                            >
                                 <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                                <span>Delete</span>
                             </button>
                         </td>
                     </tr>

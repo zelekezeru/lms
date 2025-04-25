@@ -7,7 +7,7 @@ use App\Http\Controllers\TenantController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudyModeController;
-use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\TrackController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InventoryController;
@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/instructor/grades', function () {
         return Inertia::render('Instructor/InstructorGrades');
-    })->name('instructor.attendance');
+    })->name('instructor.grades');
     
 
     Route::get('/instructor/schedule', function () {
@@ -121,7 +121,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('student.result');
     
     $resourceRoutes = [
-        'departments' => 'department',
+        'tracks' => 'track',
         'students' => 'student',
         'programs' => 'program',
         'courses' => 'course',

@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Form from "@/Pages/Departments/Form.vue";
+import Form from "@/Pages/Tracks/Form.vue";
 import { useForm } from "@inertiajs/vue3";
 
 defineProps({ users: Array, programs: Array });
@@ -12,7 +12,7 @@ const form = useForm({
     program_id: "",
 });
 
-const submit = () => form.post(route("departments.store"));
+const submit = () => form.post(route("tracks.store"));
 </script>
 
 <template>
@@ -21,10 +21,10 @@ const submit = () => form.post(route("departments.store"));
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Department Creation Form
+                    Track Creation Form
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to create a new department.
+                    Please fill out the form below to create a new track.
                 </p>
             </div>
 

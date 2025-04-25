@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Registration;
 
 class Course extends Model
-{ 
+{
     protected $guarded = [];
 
-    public function department()
+    public function track()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Track::class);
     }
 
     public function students(): BelongsToMany
@@ -30,11 +30,11 @@ class Course extends Model
         return $this->belongsToMany(Instructor::class);
     }
 
-    public function departmentS(): BelongsToMany
+    public function trackS(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class);
+        return $this->belongsToMany(Track::class);
     }
-    
+
     public function years()
     {
         return $this->belongsTo(Year::class);
@@ -54,7 +54,7 @@ class Course extends Model
     {
         return $this->hasMany(Result::class);
     }
-    
+
     public function weights()
     {
         return $this->hasMany(Weight::class);
@@ -64,7 +64,7 @@ class Course extends Model
     {
         return $this->hasMany(Grade::class);
     }
-    
+
     public function curricula()
     {
         return $this->belongsToMany(Curriculum::class, 'curriculum_course')
@@ -72,24 +72,24 @@ class Course extends Model
             ->withTimestamps();
     }
 
-    public function prerequisites() {
+    public function prerequisites()
+    {
         return $this->belongsToMany(Course::class, 'course_prerequisites', 'course_id', 'prerequisite_id');
     }
-    
-    public function isEligible($studentId) {
+
+    public function isEligible($studentId)
+    {
         $prereqs = $this->prerequisites;
-    
+
         foreach ($prereqs as $pre) {
             $passed = Student::where('id', $studentId)
                 ->where('status', 'completed')
                 ->whereHas('curriculum', function ($q) use ($pre) {
                     $q->where('course_id', $pre->id);
                 })->exists();
-    
+
             if (!$passed) return false;
         }
         return true;
     }
-    
-
 }

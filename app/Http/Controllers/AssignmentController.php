@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
-use App\Models\Department;
+use App\Models\Track;
 use App\Models\Section;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -18,11 +18,11 @@ class AssignmentController extends Controller
      * every post method that actually assigns the lists of model entities from request to a model is  start with "assign" 
      * then follows the entities(targets) that are going to be followed by a Owner of targets
 
-    * so a name like assignCoursesToSection -> accepts an array of ids of courses to be assigned to a section which should be accepted by laravel's route model binding as argument
+     * so a name like assignCoursesToSection -> accepts an array of ids of courses to be assigned to a section which should be accepted by laravel's route model binding as argument
 
-    * and a name like assignInstructorToCourseSection -> relates a single instructor to a CourseSection model later to be filtered inside the method
+     * and a name like assignInstructorToCourseSection -> relates a single instructor to a CourseSection model later to be filtered inside the method
 
-    */
+     */
 
     public function assignCoursesToSections(Request $request, Section $section)
     {

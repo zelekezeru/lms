@@ -10,7 +10,7 @@ import { MultiSelect } from "primevue";
 // Define the expected props
 const props = defineProps({
     form: Object,
-    departments: { type: Array, required: true },
+    tracks: { type: Array, required: true },
     roles: { type: Array, required: true },
     courses: { type: Array, required: true },
 });
@@ -20,7 +20,7 @@ const emits = defineEmits(["submit"]);
 const handleFileChange = (e) => {
     const file = e.target.files[0];
     props.form.profile_img = file; // Assign file to form
-    
+
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -34,13 +34,10 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-    <form
-        @submit.prevent="emits('submit')"
-        enctype="multipart/form-data">
-
+    <form @submit.prevent="emits('submit')" enctype="multipart/form-data">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
-                <!-- User Name -->
+            <!-- User Name -->
             <div>
                 <InputLabel for="name" value="Name" />
                 <TextInput
@@ -52,7 +49,7 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
-            
+
             <!-- Phone -->
             <div>
                 <InputLabel for="contact_phone" value="Contact Phone" />
@@ -64,7 +61,7 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.contact_phone" />
             </div>
-            
+
             <!-- Role -->
             <div>
                 <InputLabel for="role" value="Select Role" />
@@ -89,17 +86,12 @@ const handleFileChange = (e) => {
 
             <!-- Employment Type -->
             <div>
-                <InputLabel
-                    for="employment_type"
-                    value="Employment Type"
-                />
+                <InputLabel for="employment_type" value="Employment Type" />
                 <select
                     v-model="form.employment_type"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    <option disabled value="">
-                        Select Employment Type
-                    </option>
+                    <option disabled value="">Select Employment Type</option>
                     <option value="FULL-TIME">FULL-TIME</option>
                     <option value="PART-TIME">PART-TIME</option>
                     <option value="Contract">Contract</option>
@@ -122,10 +114,7 @@ const handleFileChange = (e) => {
 
             <!-- Specialization -->
             <div>
-                <InputLabel
-                    for="specialization"
-                    value="Specialization"
-                />
+                <InputLabel for="specialization" value="Specialization" />
                 <TextInput
                     id="specialization"
                     type="text"
@@ -175,10 +164,7 @@ const handleFileChange = (e) => {
                     <option value="Suspended">Suspended</option>
                     <option value="Terminated">Terminated</option>
                 </select>
-                <div
-                    v-if="form.errors.status"
-                    class="text-red-500 text-sm"
-                >
+                <div v-if="form.errors.status" class="text-red-500 text-sm">
                     {{ form.errors.status }}
                 </div>
             </div>

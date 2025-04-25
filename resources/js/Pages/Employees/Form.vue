@@ -6,10 +6,10 @@ import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { PhotoIcon } from "@heroicons/vue/24/outline";
 
-// Define the expected props: form data and departments/roles for the dropdowns
+// Define the expected props: form data and tracks/roles for the dropdowns
 const props = defineProps({
     form: { type: Object, required: true }, // The form object passed from parent
-    departments: { type: Array, required: true },
+    tracks: { type: Array, required: true },
     roles: { type: Array, required: true },
 });
 
@@ -32,10 +32,7 @@ const handleFileChange = (e) => {
 </script>
 
 <template>
-    <form 
-        @submit.prevent="emits('submit')"
-        enctype="multipart/form-data">
-        
+    <form @submit.prevent="emits('submit')" enctype="multipart/form-data">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- User Details -->
             <div>
@@ -48,7 +45,7 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="props.form.errors.name" />
             </div>
-            
+
             <!-- Phone -->
             <div>
                 <InputLabel for="contact_phone" value="Contact Phone" />
@@ -120,7 +117,6 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="props.form.errors.office_hours" />
             </div>
-            
 
             <!-- Profile Image Upload & Preview -->
             <div>

@@ -8,16 +8,16 @@ class SectionRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; 
+        return true;
     }
 
     public function rules()
-        {
-            return [
+    {
+        return [
             'name' => 'required|string|max:255',
             'user_id' => 'exists:users,id',
             'program_id' => 'exists:programs,id',
-            'department_id' => 'exists:departments,id',
+            'track_id' => 'exists:tracks,id',
             'year_id' => 'exists:years,id',
             'semester_id' => 'exists:semesters,id',
         ];

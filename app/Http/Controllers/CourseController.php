@@ -6,7 +6,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Http\Resources\CourseResource;
 use Carbon\Carbon;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\CourseStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
@@ -24,8 +24,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = CourseResource::collection(Course::with('department')->paginate(15));
-        
+        $courses = CourseResource::collection(Course::with('track')->paginate(15));
+
         return inertia('Courses/Index', [
             'courses' => $courses
         ]);
@@ -35,9 +35,9 @@ class CourseController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {           
-        $programs = ProgramResource::collection(Program::with('departments')->get());
-        $programs = ProgramResource::collection(Program::with('departments')->get());
+    {
+        $programs = ProgramResource::collection(Program::with('tracks')->get());
+        $programs = ProgramResource::collection(Program::with('tracks')->get());
         return inertia('Courses/Create', [
             'programs' => $programs
         ]);
@@ -51,21 +51,21 @@ class CourseController extends Controller
         $fields = $request->validated();
 
         $programs = $fields['programs'] ?? [];
-        $departments = $fields['departments'] ?? [];
+        $tracks = $fields['tracks'] ?? [];
         unset($fields['programs']);
-        unset($fields['departments']);
+        unset($fields['tracks']);
 
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;  
+        $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $course_id;
-        
+
         $course = Course::create($fields);
-        
+
         $course->programs()->attach($programs);
-        $course->departments()->attach($departments);
-        
+        $course->tracks()->attach($tracks);
+
         return redirect(route('courses.show', $course))->with('success', 'Course created successfully.');
     }
 
@@ -74,7 +74,7 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course = $course->load('department');
+        $course = $course->load('track');
 
         return inertia('Courses/Show', compact('course'));
     }
@@ -84,8 +84,8 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        $course = $course->load('departments', 'programs');
-        $programs = ProgramResource::collection(Program::with('departments')->get());
+        $course = $course->load('tracks', 'programs');
+        $programs = ProgramResource::collection(Program::with('tracks')->get());
 
         return inertia('Courses/Edit', [
             'course' => new CourseResource($course),
@@ -100,31 +100,31 @@ class CourseController extends Controller
     {
         $fields = $request->validated();
         $programs = $fields['programs'] ?? [];
-        $departments = $fields['departments'] ?? [];
+        $tracks = $fields['tracks'] ?? [];
         unset($fields['programs']);
-        unset($fields['departments']);
-        
+        unset($fields['tracks']);
+
         // Optionally regenerate the course code if needed
         if (!$course->code) {
             $year = substr(Carbon::now()->year, -2);
             $course_id = 'CR' . '/' . str_pad(Course::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
             $fields['code'] = $course_id;
         }
-        
+
         $course->update($fields);
         $course->programs()->sync($programs);
-        $course->departments()->sync($departments);
+        $course->tracks()->sync($tracks);
 
         return redirect(route('courses.show', $course))->with('success', 'Course updated successfully.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Course $course)
     {
         $course->delete();
-        
+
         return redirect(route('courses.index'))->with('success', 'Course deleted successfully.');
     }
 

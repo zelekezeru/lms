@@ -23,21 +23,26 @@ class StudentUpdateRequest extends FormRequest
             'date_of_birth' => 'sometimes|date',
             'email' => 'sometimes|string|max:100',
             'marital_status' => 'sometimes|string|max:10',
-            'sex' => 'required|in:M,F',            
+            'sex' => 'required|in:M,F',
             'address' => 'required|string|max:200',
 
             //Academic Information
-            'year_id'=> 'sometimes', 'exists:years,id',
-            'semester_id' => 'sometimes', 'exists:semesters,id',
+            'year_id' => 'sometimes',
+            'exists:years,id',
+            'semester_id' => 'sometimes',
+            'exists:semesters,id',
             'id_no' => 'sometimes|string|max:100',
-            'program_id' => 'sometimes', 'exists:programs,id',
-            'department_id' => 'sometimes', 'exists:departments,id',
-            'section_id' => 'sometimes', 'exists:sections,id',
+            'program_id' => 'sometimes',
+            'exists:programs,id',
+            'track_id' => 'sometimes',
+            'exists:tracks,id',
+            'section_id' => 'sometimes',
+            'exists:sections,id',
             'student_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'student_signature' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'total_credit_hours' => 'sometimes|integer',
             'total_amount_paid' => 'sometimes|numeric',
-            
+
             //Church Information
             'pastor_name' => 'sometimes|string|max:100',
             'pastor_phone' => 'sometimes|string|max:100',

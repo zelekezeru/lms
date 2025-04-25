@@ -27,17 +27,17 @@ class Student extends Model
     {
         return $this->hasOne(Church::class);
     }
-    
+
     public function program()
     {
         return $this->belongsTo(Program::class);
     }
 
-    public function department()
+    public function track()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Track::class);
     }
-    
+
 
     public function courses(): BelongsToMany
     {
@@ -53,7 +53,7 @@ class Student extends Model
     {
         return $this->belongsTo(Semester::class);
     }
-    
+
     public function year()
     {
         return $this->belongsTo(Year::class);

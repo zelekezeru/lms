@@ -27,9 +27,9 @@ class Instructor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function department()
+    public function track()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Track::class);
     }
 
     public function tenant()

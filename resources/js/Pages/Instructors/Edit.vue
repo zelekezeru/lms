@@ -2,21 +2,23 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
 import Form from "./Form.vue";
-import { useForm} from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     instructor: { type: Object, required: true },
     roles: { type: Object, required: true },
     courses: { type: Object, required: true },
-    departments: {
-        type: Array, required: true },
+    tracks: {
+        type: Array,
+        required: true,
+    },
 });
 
 // Initialize form data
 const form = useForm({
     name: props.instructor?.name || "",
     email: props.instructor?.email || "",
-    courses: props.instructor.courses.map(course => course.id) || "",
+    courses: props.instructor.courses.map((course) => course.id) || "",
     role_name: props.instructor?.roleName || "",
     contact_phone: props.instructor?.ContactPhone || "",
     hire_date: props.instructor?.hireDate || "",
@@ -24,13 +26,13 @@ const form = useForm({
     bio: props.instructor?.bio || "",
     status: props.instructor?.status || "",
     employment_type: props.instructor?.employmentType || "",
-    status : props.instructor?.status || "",
+    status: props.instructor?.status || "",
     profile_img: props.instructor?.profileImg || "",
     role_id: props.instructor?.roleId || "",
     password: "instructors@default",
-    password_confirmation: "instructors@default",    
+    password_confirmation: "instructors@default",
     profile_img: "",
-    _method: 'PATCH',
+    _method: "PATCH",
 });
 
 const imageLoaded = ref(false);
@@ -45,7 +47,6 @@ const handleImageLoad = () => {
 const submit = (id) => {
     form.post(route("instructors.update", { instructor: id }));
 };
-
 </script>
 
 <template>
@@ -75,10 +76,9 @@ const submit = (id) => {
             </div>
 
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
-            
                 <Form
                     :form="form"
-                    :departments="departments"
+                    :tracks="tracks"
                     :roles="roles"
                     :courses="courses"
                     @submit="submit(instructor.id)"

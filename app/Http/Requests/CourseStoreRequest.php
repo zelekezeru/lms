@@ -19,7 +19,7 @@ class CourseStoreRequest extends FormRequest
             'duration' => ['required', 'integer', 'min:1'],
             'description' => ['nullable', 'string'],
             'programs' => ['required', 'array', 'min:1'],
-            'departments' => ['required', 'array', 'min:1'],
+            'tracks' => ['required', 'array', 'min:1'],
             'is_training' => ['boolean'],
             'status' => ['boolean'],
             'is_published' => ['boolean'],

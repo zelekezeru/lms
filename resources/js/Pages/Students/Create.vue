@@ -8,7 +8,7 @@ import ChurchInfoForm from "./ChurchInfoForm.vue";
 
 const props = defineProps({
     programs: { type: Array, required: true },
-    departments: { type: Array, required: true },
+    tracks: { type: Array, required: true },
     years: { type: Array, required: true },
     semesters: { type: Array, required: true },
 });
@@ -27,7 +27,7 @@ const form = ref({
     year_id: "",
     semester_id: "",
     program_id: "",
-    department_id: "",
+    track_id: "",
     section_id: "",
     pastor_name: "",
     pastor_phone: "",
@@ -49,7 +49,7 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    form.post(route('students.store'), {
+    form.post(route("students.store"), {
         forceFormData: true,
     });
 };
@@ -78,7 +78,7 @@ const submit = () => {
                     <AcademicInfoForm
                         :form="form"
                         :programs="programs"
-                        :departments="departments"
+                        :tracks="tracks"
                         :years="years"
                         :semesters="semesters"
                         @next="nextStep"

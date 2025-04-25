@@ -47,7 +47,7 @@ const props = defineProps({
 
 const openMenus = ref({
     userPages: false,
-    departmentsMenu: false,
+    tracksMenu: false,
     programsMenu: false,
     employeesMenu: false,
     studentsMenu: false,
@@ -135,22 +135,21 @@ const afterLeave = (el) => {
         >
             <a href="/">
                 <div class="flex gap-4 items-center justify-center h-full">
-                    
-                        <img
-                            src="/img/logo.png"
-                            class="w-[48px] rounded-full"
-                            alt="Logo"
-                        />
+                    <img
+                        src="/img/logo.png"
+                        class="w-[48px] rounded-full"
+                        alt="Logo"
+                    />
 
-                        <transition name="fade">
-                            <h1
-                                v-if="sidebarVisible || sidebarHovered"
-                                class="text-xl font-bold tracking-wide truncate"
-                                style="font-family: transity"
-                            >
-                                SITS LMS
-                            </h1>
-                        </transition>
+                    <transition name="fade">
+                        <h1
+                            v-if="sidebarVisible || sidebarHovered"
+                            class="text-xl font-bold tracking-wide truncate"
+                            style="font-family: transity"
+                        >
+                            SITS LMS
+                        </h1>
+                    </transition>
                 </div>
             </a>
             <button v-if="isMobile" @click="sidebarVisible = false">
@@ -188,7 +187,7 @@ const afterLeave = (el) => {
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
                     v-show="userCanAny(['view-tenants'])"
-                >                    
+                >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-tenants')"
                         :href="route('tenants.index')"
@@ -258,7 +257,7 @@ const afterLeave = (el) => {
                     v-show="
                         userCanAny([
                             'view-programs',
-                            'view-departments',
+                            'view-tracks',
                             'view-studyModes',
                             'view-courses',
                             'view-sections',
@@ -274,13 +273,13 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
-                        v-show="userCan('view-departments')"
-                        :href="route('departments.index')"
+                        v-show="userCan('view-tracks')"
+                        :href="route('tracks.index')"
                     >
                         <BuildingOffice2Icon
                             class="w-4 h-5 mr-2 text-gray-200"
                         />
-                        <span class="text-sm">Manage Department</span>
+                        <span class="text-sm">Manage Track</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
@@ -306,11 +305,7 @@ const afterLeave = (el) => {
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="
-                        userCanAny([
-                            'view-sections',
-                        ])
-                    "
+                    v-show="userCanAny(['view-sections'])"
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-sections')"
@@ -319,7 +314,7 @@ const afterLeave = (el) => {
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Sections</span>
                     </SidebarDrowpdownLink>
-                    
+
                     <SidebarDrowpdownLink
                         v-show="userCan('view-results')"
                         :href="route('results.index')"
@@ -344,12 +339,7 @@ const afterLeave = (el) => {
                     :icon="UserIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="
-                        userCanAny([
-                            'view-instructors',
-                            'view-employees',
-                        ])
-                    "
+                    v-show="userCanAny(['view-instructors', 'view-employees'])"
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-instructors')"
@@ -381,11 +371,7 @@ const afterLeave = (el) => {
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
-                    v-show="
-                        userCanAny([
-                            'view-students',
-                        ])
-                    "
+                    v-show="userCanAny(['view-students'])"
                 >
                     <SidebarDrowpdownLink
                         v-show="userCan('view-students')"

@@ -5,9 +5,9 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { CogIcon } from "@heroicons/vue/24/solid";
 
-// Define the props for the department
+// Define the props for the track
 const props = defineProps({
-    department: {
+    track: {
         type: Object,
         required: true,
     },
@@ -18,9 +18,8 @@ const props = defineProps({
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Department Sections
+                Track Sections
             </h2>
-            
         </div>
 
         <div class="overflow-x-auto">
@@ -58,7 +57,7 @@ const props = defineProps({
                 </thead>
                 <tbody>
                     <tr
-                        v-for="(section, index) in department.sections"
+                        v-for="(section, index) in track.sections"
                         :key="section.id"
                         :class="
                             index % 2 === 0

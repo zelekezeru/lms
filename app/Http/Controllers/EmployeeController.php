@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\EmployeeResource;
-use App\Models\Department;
+use App\Models\Track;
 use App\Models\Employee;
 use App\Models\Tenant;
 use App\Models\User;
@@ -23,22 +23,22 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         $employees = Employee::query()
             ->when($search, function ($query, $search) {
                 $query->whereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%");
                 })->orWhere('job_position', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(15)
             ->appends(['search' => $search]);
-    
+
         return inertia('Employees/Index', [
             'employees' => EmployeeResource::collection($employees),
             'search' => $search,
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
     public function create()
     {
         $roles = Role::all();
-        
+
         return inertia('Employees/Create', [
             'roles' => $roles,
         ]);
@@ -65,16 +65,16 @@ class EmployeeController extends Controller
         $fields = $request->validated();
 
         $profileImg = $fields['profile_img'] ?? null;
-        
+
         // Profile   of Instructor
         if ($profileImg) {
             $profile_path = $profileImg->store('profile-images', 'public');
-        }else{
+        } else {
             $profile_path = null;
         }
 
         // Create a new Instructor User in User table
-        
+
         $user_phone = substr($fields['contact_phone'], -4);
 
         $user_password = 'employee@' . $user_phone;
@@ -85,7 +85,7 @@ class EmployeeController extends Controller
             'default_password' => $user_password, // needed for 'confirmed' rule
             'profile_img' => $profile_path,
         ]);
-        
+
         $employee = Employee::create([
             // User id temporary
             'user_id' => 1,
@@ -95,10 +95,10 @@ class EmployeeController extends Controller
         ]);
 
         $registeredUserController = new RegisteredUserController();
-        
+
         $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee', $employee);
-        
-        
+
+
         return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }
 
@@ -111,7 +111,7 @@ class EmployeeController extends Controller
             'employee' => new EmployeeResource($employee->load('user')),
         ]);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -163,7 +163,7 @@ class EmployeeController extends Controller
 
         return redirect(route('employees.show', $employee))->with('success', 'Employee updated successfully.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -173,11 +173,11 @@ class EmployeeController extends Controller
         if ($user->profile_img) {
             Storage::disk('public')->delete($user->profile_img);
         }
-        
+
         $employee->delete();
 
         $user->delete();
-        
+
         return to_route('employees.index')->with('success', 'Employee deleted successfully.');
     }
 

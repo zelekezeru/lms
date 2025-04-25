@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DepartmentUpdateRequest extends FormRequest
+class TrackUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class DepartmentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|max:255|unique:departments,name,' . $this->department->id,
+            'name' => 'sometimes|string|max:255|unique:tracks,name,' . $this->track->id,
             'description' => 'nullable|string',
             'duration' => 'sometimes',
-            
+
             'user_id' => ['sometimes', 'exists:users,id'],
             'program_id' => ['sometimes', 'exists:programs,id'],
         ];

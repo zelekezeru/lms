@@ -12,11 +12,11 @@ defineProps({
     showPrograms: { type: Boolean, required: false, default: true },
 });
 
-const emits = defineEmits(['submit'])
+const emits = defineEmits(["submit"]);
 </script>
 
 <template>
-    <form @submit.prevent="emits('submit')"> 
+    <form @submit.prevent="emits('submit')">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Program Dropdown -->
             <div v-if="showPrograms">
@@ -45,11 +45,11 @@ const emits = defineEmits(['submit'])
                 />
             </div>
 
-            <!-- Department Name -->
+            <!-- Track Name -->
             <div>
                 <InputLabel
                     for="name"
-                    value="Department Name"
+                    value="Track Name"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -85,11 +85,11 @@ const emits = defineEmits(['submit'])
                 />
             </div>
 
-            <!-- Department Head Dropdown -->
+            <!-- Track Head Dropdown -->
             <div>
                 <InputLabel
                     for="user_id"
-                    value="Select Department Head"
+                    value="Select Track Head"
                     class="block mb-1 text-gray-200"
                 />
                 <select
@@ -97,7 +97,7 @@ const emits = defineEmits(['submit'])
                     v-model="form.user_id"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    <option value="">Select Department Head</option>
+                    <option value="">Select Track Head</option>
                     <option
                         v-for="user in users"
                         :key="user.id"

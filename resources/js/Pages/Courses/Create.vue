@@ -8,15 +8,15 @@ defineProps({
     programs: {
         type: Object,
         required: true,
-    }
-})
+    },
+});
 const form = useForm({
     name: "",
     credit_hours: "",
     duration: "",
     description: "",
     programs: [],
-    departments: [],
+    tracks: [],
     is_training: false,
     status: false,
     is_published: false,
@@ -25,7 +25,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    console.log('hii')
+    console.log("hii");
     form.post(route("courses.store"));
 };
 </script>

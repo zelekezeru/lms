@@ -21,15 +21,15 @@ class RolePermissionSeeder extends Seeder
 
         $permissions = [
             // Roles permissions (CRUD)
-            'view-roles', 
-            'create-roles', 
-            'update-roles', 
-            'delete-roles',  
+            'view-roles',
+            'create-roles',
+            'update-roles',
+            'delete-roles',
 
             // Additional routes for roles
-            'assign-permissions-roles', 
-            'attach-permissions-roles', 
-            'detach-permissions-roles', 
+            'assign-permissions-roles',
+            'attach-permissions-roles',
+            'detach-permissions-roles',
 
             // Permissions resource (CRUD)
             'view-permissions',
@@ -55,11 +55,11 @@ class RolePermissionSeeder extends Seeder
             'update-studyModes',
             'delete-studyModes',
 
-            // Departments (CRUD)
-            'view-departments',
-            'create-departments',
-            'update-departments',
-            'delete-departments',
+            // Tracks (CRUD)
+            'view-tracks',
+            'create-tracks',
+            'update-tracks',
+            'delete-tracks',
 
             // Courses (CRUD)
             'view-courses',
@@ -154,7 +154,7 @@ class RolePermissionSeeder extends Seeder
             'create-curriculums',
             'update-curriculums',
             'delete-curriculums',
-            
+
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -189,7 +189,7 @@ class RolePermissionSeeder extends Seeder
             'ADMIN',
             'EMPLOYEE',
             'PRESIDENT',
-            'DEPARTMENT-HEAD',
+            'TRACK-HEAD',
             'PROGRAM-DIRECTOR',
             'CAMPUS-DEAN',
             'SCHOOL-HEAD',
@@ -205,17 +205,16 @@ class RolePermissionSeeder extends Seeder
             $role = Role::firstOrCreate(['name' => $roleName]);
             if (in_array($roleName, ['SUPER-ADMIN'])) {
                 $role->syncPermissions($permissions);
-            } 
-            elseif (in_array($roleName, ['TENANT-ADMIN', 'ADMIN'])) {
+            } elseif (in_array($roleName, ['TENANT-ADMIN', 'ADMIN'])) {
                 $tenantAdminPermissions = array_diff($permissions, [
-                    'view-roles', 
-                    'create-roles', 
-                    'update-roles', 
-                    'delete-roles',  
+                    'view-roles',
+                    'create-roles',
+                    'update-roles',
+                    'delete-roles',
 
-                    'assign-permissions-roles', 
-                    'attach-permissions-roles', 
-                    'detach-permissions-roles', 
+                    'assign-permissions-roles',
+                    'attach-permissions-roles',
+                    'detach-permissions-roles',
 
                     'view-permissions',
                     'create-permissions',
@@ -232,11 +231,11 @@ class RolePermissionSeeder extends Seeder
                     'update-studyModes',
                     'delete-studyModes',
 
-                    'view-departments',
-                    'create-departments',
-                    'update-departments',
-                    'delete-departments',
-                    
+                    'view-tracks',
+                    'create-tracks',
+                    'update-tracks',
+                    'delete-tracks',
+
                     'view-courses',
                     'create-courses',
                     'update-courses',
@@ -296,27 +295,27 @@ class RolePermissionSeeder extends Seeder
                     'create-sections',
                     'update-sections',
                     'delete-sections',
-                    
+
                     'view-results',
                     'create-results',
                     'update-results',
                     'delete-results',
-                    
+
                     'view-weights',
                     'create-weights',
                     'update-weights',
                     'delete-weights',
-                    
+
                     'view-grades',
                     'create-grades',
                     'update-grades',
                     'delete-grades',
-                    
+
                     'view-curriculums',
                     'create-curriculums',
                     'update-curriculums',
                     'delete-curriculums',
-                    
+
                     'section-courses',
                     'attach-section-courses',
                     'detach-section-courses',
@@ -332,7 +331,7 @@ class RolePermissionSeeder extends Seeder
                     'course-instructors',
                     'attach-course-instructors',
                     'detach-course-instructors',
-                    
+
                     'course-students',
                     'attach-course-students',
                     'detach-course-students',

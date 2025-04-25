@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
-use App\Models\Department;
+use App\Models\Track;
 use App\Models\User;
 use App\Models\Program;
 use Illuminate\Http\Request;
@@ -21,12 +21,12 @@ class ProgramController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $query = Program::query();
-        
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            
+
             $query = Program::with('user')
                 ->when($search, function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%")
@@ -40,11 +40,11 @@ class ProgramController extends Controller
         $allowedSorts = ['name', 'language'];
         $sortColumn = $request->sortColumn;
         $sortDirection = $request->sortDirection;
-        
+
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
             $query->orderBy($sortColumn, $sortDirection);
         }
-        
+
         $programs = ProgramResource::collection($query->paginate(15));
 
         return inertia('Programs/Index', [
@@ -61,7 +61,7 @@ class ProgramController extends Controller
      */
     public function show(Program $program)
     {
-        $program = new ProgramResource($program->load('departments', 'director', 'studyModes')); 
+        $program = new ProgramResource($program->load('tracks', 'director', 'studyModes'));
 
         return inertia('Programs/Show', [
             'program' => $program,
@@ -100,7 +100,7 @@ class ProgramController extends Controller
         $user->assignRole('PROGRAM-DIRECTOR');
 
         $program = Program::create($fields);
-        
+
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }
 
@@ -109,7 +109,7 @@ class ProgramController extends Controller
      */
     public function edit(Program $program)
     {
-        $program->load('departments', 'director');
+        $program->load('tracks', 'director');
 
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
@@ -143,8 +143,8 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        // Delete all departments linked to this program
-        $program->departments()->delete();
+        // Delete all tracks linked to this program
+        $program->tracks()->delete();
 
         $program->delete();
 

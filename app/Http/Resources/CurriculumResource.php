@@ -15,14 +15,14 @@ class CurriculumResource extends JsonResource
     public function toArray(Request $request): array
     {
         return parent::toArray($request);
-        
+
         return [
             'id' => $this->id,
             'course_id' => $this->course_id,
             'program_id' => $this->program_id,
             'semester_id' => $this->semester_id,
             'year_id' => $this->year_id,
-            'department_id' => $this->department_id,
+            'track_id' => $this->track_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

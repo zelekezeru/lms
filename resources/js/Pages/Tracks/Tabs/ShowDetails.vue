@@ -18,16 +18,16 @@ import {
     BookOpenIcon,
     HomeModernIcon,
 } from "@heroicons/vue/24/solid";
-// Define the props for the department
+// Define the props for the track
 const props = defineProps({
-    department: {
+    track: {
         type: Object,
         required: true,
     },
 });
 
 // Delete function with SweetAlert confirmation
-const deleteDepartment = (id) => {
+const deleteTrack = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -38,11 +38,11 @@ const deleteDepartment = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("departments.destroy", { department: id }), {
+            router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The department has been deleted.",
+                        "The track has been deleted.",
                         "success"
                     );
                 },
@@ -53,47 +53,43 @@ const deleteDepartment = (id) => {
 </script>
 
 <template>
-    
     <div
         class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700"
     >
         <div class="grid gap-4 sm:grid-cols-2">
-            <!-- Department Code -->
+            <!-- Track Code -->
             <div>
-                <span
-                    class="block text-sm text-gray-500 dark:text-gray-400"
+                <span class="block text-sm text-gray-500 dark:text-gray-400"
                     >Code</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ department.code }}
+                    {{ track.code }}
                 </span>
             </div>
 
-            <!-- Department Program -->
+            <!-- Track Program -->
             <div>
-                <span
-                    class="block text-sm text-gray-500 dark:text-gray-400"
+                <span class="block text-sm text-gray-500 dark:text-gray-400"
                     >Program</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ department.program.name }}
+                    {{ track.program.name }}
                 </span>
             </div>
 
             <!-- Description -->
             <div>
-                <span
-                    class="block text-sm text-gray-500 dark:text-gray-400"
+                <span class="block text-sm text-gray-500 dark:text-gray-400"
                     >Description</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ department.description }}
+                    {{ track.description }}
                 </span>
             </div>
         </div>
@@ -101,10 +97,10 @@ const deleteDepartment = (id) => {
         <!-- Edit and Delete Buttons -->
         <div class="flex justify-end col-span-2 mt-4">
             <Link
-                v-if="userCan('update-departments')"
+                v-if="userCan('update-tracks')"
                 :href="
-                    route('departments.edit', {
-                        department: department.id,
+                    route('tracks.edit', {
+                        track: track.id,
                     })
                 "
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
@@ -113,8 +109,8 @@ const deleteDepartment = (id) => {
                 <span>Edit</span>
             </Link>
             <button
-                v-if="userCan('delete-departments')"
-                @click="deleteDepartment(program.id)"
+                v-if="userCan('delete-tracks')"
+                @click="deleteTrack(program.id)"
                 class="ml-4 inline-flex items-center space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />

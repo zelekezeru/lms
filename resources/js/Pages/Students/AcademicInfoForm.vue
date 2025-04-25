@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from "vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
@@ -12,7 +12,7 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    departments: {
+    tracks: {
         type: Array,
         required: true,
     },
@@ -31,8 +31,7 @@ const props = defineProps({
 });
 
 // Emits
-const emit = defineEmits(['next', 'previous']);
-
+const emit = defineEmits(["next", "previous"]);
 </script>
 
 <template>
@@ -40,7 +39,6 @@ const emit = defineEmits(['next', 'previous']);
         <h2 class="text-lg font-bold mb-4">Academic Information</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
             <!-- Academic Year Dropdown -->
             <div>
                 <InputLabel for="year_id" value="Select Registration year" />
@@ -80,53 +78,51 @@ const emit = defineEmits(['next', 'previous']);
                 </select>
                 <InputError :message="form.errors?.semester_id" class="mt-2" />
             </div>
-            </div>
+        </div>
+    </div>
+
+    <!-- Program Input -->
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+        <div>
+            <InputLabel for="program_id" value="Select Program" />
+            <select
+                id="program_id"
+                v-model="form.program_id"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            >
+                <option value="">Select Program</option>
+                <option
+                    v-for="program in programs"
+                    :key="program.id"
+                    :value="program.id"
+                >
+                    {{ program.name }}
+                </option>
+            </select>
+            <InputError :message="form.errors?.program_id" class="mt-2" />
         </div>
 
-        <!-- Program Input -->
-         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-            <div>
-                <InputLabel for="program_id" value="Select Program" />
-                <select
-                    id="program_id"
-                    v-model="form.program_id"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+        <div>
+            <InputLabel for="track_id" value="Select Track" />
+            <select
+                id="track_id"
+                v-model="form.track_id"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            >
+                <option value="" disabled>Select Track</option>
+                <option
+                    v-for="track in tracks"
+                    :key="track.id"
+                    :value="track.id"
                 >
-                    <option value="">Select Program</option>
-                    <option
-                        v-for="program in programs"
-                        :key="program.id"
-                        :value="program.id"
-                    >
-                        {{ program.name }}
-                    </option>
-                </select>
-                <InputError :message="form.errors?.program_id" class="mt-2" />
-            </div>
+                    {{ track.name }}
+                </option>
+            </select>
+            <InputError :message="form.errors?.track_id" class="mt-2" />
+        </div>
 
-            <div>
-                <InputLabel for="department_id" value="Select Department" />
-                <select
-                    id="department_id"
-                    v-model="form.department_id"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                >
-                    <option value="" disabled>Select Department</option>
-                    <option
-                        v-for="department in departments"
-                        :key="department.id"
-                        :value="department.id"
-                    >
-                        {{ department.name }}
-                    </option>
-                </select>
-                <InputError :message="form.errors?.department_id" class="mt-2" />
-            </div>
-
-            <div>
-
-            </div>
+        <div></div>
         <div class="flex justify-end mt-4">
             <button
                 @click="$emit('previous')"

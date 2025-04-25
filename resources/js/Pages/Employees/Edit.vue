@@ -16,13 +16,14 @@ const form = useForm({
     name: props.employee.name || "",
     email: props.employee.email || "",
     password: props.employee.password || "employees@default", // Set default if no password provided
-    password_confirmation: props.employee.password_confirmation || "employees@default",
+    password_confirmation:
+        props.employee.password_confirmation || "employees@default",
     role_name: props.employee.userRole || "",
     job_position: props.employee.jobPosition || "",
     employment_type: props.employee.employmentType || "",
     office_hours: props.employee.officeHours || "",
     profile_img: props.employee.profile_img || "",
-    _method: "PUT",  // Indicates PUT method for the update
+    _method: "PUT", // Indicates PUT method for the update
 });
 
 // Submit the form, passing the employee ID to the route
@@ -59,11 +60,11 @@ const submit = (id) => {
 
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
                 <!-- Pass the form to the Form component, and handle submit with employee.id -->
-                <Form 
-                    :form="form" 
-                    :departments="departments" 
-                    :roles="roles" 
-                    @submit="submit(props.employee.id)" 
+                <Form
+                    :form="form"
+                    :tracks="tracks"
+                    :roles="roles"
+                    @submit="submit(props.employee.id)"
                 />
             </div>
         </div>

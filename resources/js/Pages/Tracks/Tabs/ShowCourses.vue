@@ -13,19 +13,17 @@ import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
 
-// Define the props for the department
+// Define the props for the track
 const props = defineProps({
-    department: {
+    track: {
         type: Object,
         required: true,
     },
 });
-
 </script>
 
 <template>
     <div class="">
-        
         <div class="overflow-x-auto">
             <div
                 class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
@@ -37,7 +35,7 @@ const props = defineProps({
                         Courses
                     </h2>
                 </div>
-                <!-- department courses list -->
+                <!-- track courses list -->
                 <div class="overflow-x-auto">
                     <table
                         class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -63,7 +61,7 @@ const props = defineProps({
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(course, index) in department.courses"
+                                v-for="(course, index) in track.courses"
                                 :key="course.id"
                                 :class="
                                     index % 2 === 0
@@ -103,5 +101,4 @@ const props = defineProps({
             </div>
         </div>
     </div>
-    
 </template>

@@ -23,7 +23,7 @@ class WeightController extends Controller
             'weights' => $weights,
         ]);
     }
-    
+
     public function create()
     {
         $instructors = Instructor::all();
@@ -44,12 +44,12 @@ class WeightController extends Controller
     public function store(WeightStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $fields['instructor_id'] = Auth::id(); // Set the instructor_id to the authenticated user's ID
-        
+
         $weight = Weight::create($fields);
 
-        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the departments.show method is the default
+        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
         $redirectTo = $request->input('redirectTo', route('weights.show', $weight));
 
         return redirect($redirectTo)->with('success', 'Weight created successfully.');

@@ -12,14 +12,14 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::find($section)->load(['user', 'program', 'department','students']);
-        
-        $course = $section->courses()->find($course)->load(['instructors', 'students', ]);
-        
+        $section = Section::find($section)->load(['user', 'program', 'track', 'students']);
+
+        $course = $section->courses()->find($course)->load(['instructors', 'students',]);
+
         $semester = Semester::where('status', "Active")->first()->load(['year']); // Current Active semester 
 
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
-        
+
 
         $instructor = $section->courses()
             ->where('course_id', $course->id)

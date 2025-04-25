@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { CogIcon} from "@heroicons/vue/24/solid";
+import { CogIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     section: {
@@ -69,7 +69,7 @@ const props = defineProps({
                                 <th
                                     class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    Department
+                                    Track
                                 </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -117,7 +117,7 @@ const props = defineProps({
                                 <td
                                     class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ section.department.name }}
+                                    {{ section.track.name }}
                                 </td>
 
                                 <!-- Course Assessments -->

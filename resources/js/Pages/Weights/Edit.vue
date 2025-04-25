@@ -7,7 +7,7 @@ const props = defineProps({
     weight: Object,
     users: Array,
     programs: Array,
-    departments: Array,
+    tracks: Array,
     years: Array,
     semesters: Array,
     courses: Array,
@@ -36,7 +36,9 @@ const submit = () => {
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Weight</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Edit Weight
+                </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Modify the details of the weight.
                 </p>
@@ -45,7 +47,7 @@ const submit = () => {
                 :form="form"
                 :users="users"
                 :programs="programs"
-                :departments="departments"
+                :tracks="tracks"
                 :years="years"
                 :semesters="semesters"
                 :courses="courses"

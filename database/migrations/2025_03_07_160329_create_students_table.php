@@ -23,24 +23,24 @@ return new class extends Migration
             $table->string('marital_status', 10)->nullable();
             $table->char('sex', 6);
             $table->string('address', 200)->nullable();
-            
+
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
             $table->string('profile_image')->nullable();
-            
+
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->foreignId('program_id')->constrained();
-            $table->foreignId('department_id')->constrained();
+            $table->foreignId('track_id')->constrained();
             $table->foreignId('year_id')->constrained();
             $table->foreignId('semester_id')->constrained();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            
+
             $table->foreignId('section_id')->nullable()->constrained();
-            
+
             $table->timestamps();
         });
     }
-    
+
 
     /**
      * Reverse the migrations.

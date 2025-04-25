@@ -6,7 +6,7 @@ import { PhotoIcon } from "@heroicons/vue/24/outline";
 import Form from "./Form.vue";
 
 defineProps({
-    departments: { type: Object, required: true },
+    tracks: { type: Object, required: true },
     roles: { type: Object, required: true },
 });
 

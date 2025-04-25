@@ -1,11 +1,8 @@
 <script setup>
-
 import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    PencilIcon,
-    TrashIcon} from "@heroicons/vue/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     section: {
@@ -21,7 +18,6 @@ const props = defineProps({
         required: false,
     },
 });
-
 </script>
 
 <template>
@@ -62,13 +58,11 @@ const props = defineProps({
             </span>
         </div>
 
-        <!-- Department  -->
+        <!-- Track  -->
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Department</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Track</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.department.name }}
+                {{ section.track.name }}
             </span>
         </div>
 

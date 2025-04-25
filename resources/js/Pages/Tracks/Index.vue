@@ -12,7 +12,7 @@ import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
 
 defineProps({
-    departments: {
+    tracks: {
         type: Object,
         required: true,
     },
@@ -27,10 +27,10 @@ const search = ref(usePage().props.search || "");
 // Refresh function
 const refreshData = () => {
     refreshing.value = true;
-    router.flush("/departments", { method: "get" });
+    router.flush("/tracks", { method: "get" });
 
-    router.visit(route("departments.index"), {
-        only: ["departments"],
+    router.visit(route("tracks.index"), {
+        only: ["tracks"],
         onFinish: () => {
             refreshing.value = false;
         },
@@ -38,16 +38,16 @@ const refreshData = () => {
 };
 
 // Search function
-const searchDepartments = () => {
+const searchTracks = () => {
     router.get(
-        route("departments.index"),
+        route("tracks.index"),
         { ...route().params, search: search.value },
-        { preserveState: true },
+        { preserveState: true }
     );
 };
 
 // Delete function with SweetAlert confirmation
-const deleteDepartment = (id) => {
+const deleteTrack = (id) => {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -58,11 +58,11 @@ const deleteDepartment = (id) => {
         confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("departments.destroy", { department: id }), {
+            router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
                     Swal.fire(
                         "Deleted!",
-                        "The department has been deleted.",
+                        "The track has been deleted.",
                         "success"
                     );
                 },
@@ -74,34 +74,47 @@ const deleteDepartment = (id) => {
 
 <template>
     <AppLayout>
-        <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-            Department Details
+        <h1
+            class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+        >
+            Track Details
         </h1>
 
         <!-- Search Bar and Button Section -->
         <div class="flex justify-between items-center mb-3">
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"/>
+                    <svg
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"
+                        />
                     </svg>
                 </span>
                 <input
                     type="text"
                     v-model="search"
-                    placeholder="Search Departments..."
+                    placeholder="Search Tracks..."
                     class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
-                    @input="searchDepartments"
+                    @input="searchTracks"
                 />
             </div>
 
             <div class="flex space-x-6">
                 <Link
-                    v-if="userCan('create-departments')"
-                    :href="route('departments.create')"
+                    v-if="userCan('create-tracks')"
+                    :href="route('tracks.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + Add Department
+                    + Add Track
                 </Link>
 
                 <button
@@ -109,7 +122,10 @@ const deleteDepartment = (id) => {
                     class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     title="Refresh Data"
                 >
-                    <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }"/>
+                    <ArrowPathIcon
+                        class="w-5 h-5 mr-2"
+                        :class="{ 'animate-spin': refreshing }"
+                    />
                     Refresh Data
                 </button>
             </div>
@@ -119,38 +135,77 @@ const deleteDepartment = (id) => {
             <Table>
                 <TableHeader>
                     <tr>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Department Name</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">Code</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'description'">Description</Thead>
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'name'"
+                            >Track Name</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'code'"
+                            >Code</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'description'"
+                            >Description</Thead
+                        >
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
                     <TableZebraRows
-                        v-for="department in departments.data"
-                        :key="department.id"
+                        v-for="track in tracks.data"
+                        :key="track.id"
                     >
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Link :href="route('departments.show', { department: department.id })">
-                                {{ department.name }}
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                            <Link
+                                :href="
+                                    route('tracks.show', { track: track.id })
+                                "
+                            >
+                                {{ track.name }}
                             </Link>
                         </th>
-                        <td class="px-6 py-4">{{ department.code }}</td>
-                        <td class="px-6 py-4">{{ department.description }}</td>
+                        <td class="px-6 py-4">{{ track.code }}</td>
+                        <td class="px-6 py-4">{{ track.description }}</td>
                         <td class="px-6 py-4 flex space-x-6">
-                            <div v-if="userCan('view-departments')">
-                                <Link :href="route('departments.show', { department: department.id })" class="text-blue-500 hover:text-blue-700">
-                                    <EyeIcon class="w-5 h-5"/>
+                            <div v-if="userCan('view-tracks')">
+                                <Link
+                                    :href="
+                                        route('tracks.show', {
+                                            track: track.id,
+                                        })
+                                    "
+                                    class="text-blue-500 hover:text-blue-700"
+                                >
+                                    <EyeIcon class="w-5 h-5" />
                                 </Link>
                             </div>
-                            <div v-if="userCan('update-departments')">
-                                <Link :href="route('departments.edit', { department: department.id })" class="text-green-500 hover:text-green-700">
-                                    <PencilSquareIcon class="w-5 h-5"/>
+                            <div v-if="userCan('update-tracks')">
+                                <Link
+                                    :href="
+                                        route('tracks.edit', {
+                                            track: track.id,
+                                        })
+                                    "
+                                    class="text-green-500 hover:text-green-700"
+                                >
+                                    <PencilSquareIcon class="w-5 h-5" />
                                 </Link>
                             </div>
-                            <div v-if="userCan('delete-departments')">
-                                <button @click="deleteDepartment(department.id)" class="text-red-500 hover:text-red-700">
-                                    <TrashIcon class="w-5 h-5"/>
+                            <div v-if="userCan('delete-tracks')">
+                                <button
+                                    @click="deleteTrack(track.id)"
+                                    class="text-red-500 hover:text-red-700"
+                                >
+                                    <TrashIcon class="w-5 h-5" />
                                 </button>
                             </div>
                         </td>
@@ -162,7 +217,7 @@ const deleteDepartment = (id) => {
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-6">
             <Link
-                v-for="link in departments.meta.links"
+                v-for="link in tracks.meta.links"
                 :key="link.label"
                 :href="link.url ? `${link.url}&search=${search}` : '#'"
                 class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"

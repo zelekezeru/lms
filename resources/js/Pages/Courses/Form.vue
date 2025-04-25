@@ -14,22 +14,24 @@ const props = defineProps({
     },
 });
 
-const selectedProgramsDepartments = ref(props.form.programs.flatMap(
-            (programId) => {
-                    const program = props.programs.find(p => p.id == programId);
-                    return program.departments
-            }));
+const selectedProgramsTracks = ref(
+    props.form.programs.flatMap((programId) => {
+        const program = props.programs.find((p) => p.id == programId);
+        return program.tracks;
+    })
+);
 
-// watch and updated the list of departments
+// watch and updated the list of tracks
 watch(
     () => props.form.programs,
     () => {
-        selectedProgramsDepartments.value = props.form.programs.flatMap(
+        selectedProgramsTracks.value = props.form.programs.flatMap(
             (programId) => {
-                    const program = props.programs.find(p => p.id == programId);
-                    return program.departments
-            })
-        props.form.departments = [];
+                const program = props.programs.find((p) => p.id == programId);
+                return program.tracks;
+            }
+        );
+        props.form.tracks = [];
     }
 );
 const emits = defineEmits(["submit"]);
@@ -105,29 +107,29 @@ const emits = defineEmits(["submit"]);
                 />
             </div>
 
-            <!-- Department field -->
+            <!-- Track field -->
             <div>
                 <InputLabel
-                    for="departments"
-                    value="Select Departments In the Programs You Selected (at least one)"
+                    for="tracks"
+                    value="Select Tracks In the Programs You Selected (at least one)"
                     class="block mb-1 text-gray-200"
                 />
 
                 <MultiSelect
-                    v-model="form.departments"
-                    :options="selectedProgramsDepartments"
+                    v-model="form.tracks"
+                    :options="selectedProgramsTracks"
                     optionLabel="name"
                     option-value="id"
-                    empty-message="No departments available (make sure you select program first)"
-                    empty-filter-message="No departments available"
+                    empty-message="No tracks available (make sure you select program first)"
+                    empty-filter-message="No tracks available"
                     filter
-                    placeholder="Select Departments (Select Program First)"
+                    placeholder="Select Tracks (Select Program First)"
                     :maxSelectedLabels="3"
                     class="w-full md:w-80"
                 />
 
                 <InputError
-                    :message="form.errors.departments"
+                    :message="form.errors.tracks"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>

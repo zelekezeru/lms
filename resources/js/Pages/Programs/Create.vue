@@ -13,6 +13,9 @@ defineProps({
     users: {
         type: Object,
     },
+    courses: {
+        type: Object,
+    },
 });
 
 // Initialize the form with the program fields
@@ -21,11 +24,12 @@ const form = useForm({
     description: "",
     language: "",
     duration: "",
-    user_id: "", // Allow null value for optional field
+    courses: [],
+    user_id: "", 
 });
 
 const submit = () => {
-    form.post(route("programs.store")); // Assuming this is the correct route for storing the program
+    form.post(route("programs.store")); 
 };
 </script>
 
@@ -46,23 +50,8 @@ const submit = () => {
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form :form="form" @submit="submit" :users="users" />
+                <Form :courses="courses" :form="form" @submit="submit" :users="users" />
             </div>
         </div>
     </AppLayout>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-.fade-enter-to,
-.fade-leave-from {
-    opacity: 1;
-}
-</style>

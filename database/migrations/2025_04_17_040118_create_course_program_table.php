@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_id')->constrained()->onDelete('CASCADE');
             $table->foreignId('program_id')->constrained()->onDelete('CASCADE');
+            $table->boolean('is_common')->default(false);
             $table->timestamps();
         });
     }

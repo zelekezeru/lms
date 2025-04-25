@@ -49,8 +49,17 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    form.post(route("students.store"), {
-        forceFormData: true,
+    form.value.processing = true;
+    router.post(route('students.store'), form.value, {
+        onSuccess: () => {
+            alert('Student registered successfully!');
+        },
+        onError: (errors) => {
+            form.value.errors = errors;
+        },
+        onFinish: () => {
+            form.value.processing = false;
+        },
     });
 };
 </script>

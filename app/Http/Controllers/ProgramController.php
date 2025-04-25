@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
+use App\Models\Course;
 use App\Models\Track;
 use App\Models\User;
 use App\Models\Program;
@@ -75,9 +77,11 @@ class ProgramController extends Controller
     public function create()
     {
         $users = UserResource::collection(User::all());
+        $courses = CourseResource::collection(Course::all());
 
         return  inertia('Programs/Create', [
             'users' => $users,
+            'courses' => $courses,
         ]);
     }
 
@@ -87,6 +91,8 @@ class ProgramController extends Controller
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
+        $commonCourses = $fields['courses'] ?? []; 
+        unset($fields['courses']);
 
         $year = substr(Carbon::now()->year, -2);
 
@@ -100,6 +106,14 @@ class ProgramController extends Controller
         $user->assignRole('PROGRAM-DIRECTOR');
 
         $program = Program::create($fields);
+
+        $syncData = [];
+
+        foreach($commonCourses as $commonCourse) {
+            $syncData[$commonCourse] = ['is_common' => true];
+        }
+        
+        $program->courses()->sync($syncData);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }

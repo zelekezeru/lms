@@ -89,6 +89,10 @@ class TrackController extends Controller
 
         $track = Track::create($fields);
 
+        $commonCourses = $track->program->courses()->wherePivot('is_common', true)->pluck('courses.id');
+
+        $track->courses()->syncWithoutDetaching($commonCourses);
+
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
         $redirectTo = $request->input('redirectTo', route('tracks.show', $track));
 

@@ -20,7 +20,6 @@ const trackForm = useForm({
     name: "",
     description: "",
     program_id: props.program.id,
-    user_id: "",
 });
 
 const addTrack = () => {
@@ -79,11 +78,6 @@ const addTrack = () => {
                                 >
                                     Description
                                 </th>
-                                <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Head
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,11 +109,6 @@ const addTrack = () => {
                                 >
                                     {{ track.description }}
                                 </td>
-                                <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ track.head?.name }}
-                                </td>
                             </tr>
 
                             <!-- Create New Track Row -->
@@ -149,26 +138,8 @@ const addTrack = () => {
                                             v-model="trackForm.description"
                                             type="text"
                                             placeholder="Description"
-                                            class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                            class="w-[60%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
-                                    </td>
-
-                                    <td class="px-4 py-2">
-                                        <select
-                                            v-model="trackForm.user_id"
-                                            class="w-[60%] mr-10 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
-                                        >
-                                            <option value="">
-                                                Select Head
-                                            </option>
-                                            <option
-                                                v-for="user in users"
-                                                :value="user.id"
-                                            >
-                                                {{ user.name }}
-                                            </option>
-                                        </select>
-
                                         <PrimaryButton
                                             class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
                                             @click="addTrack"

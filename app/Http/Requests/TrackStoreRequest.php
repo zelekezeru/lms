@@ -24,9 +24,6 @@ class TrackStoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:tracks,name',
             'description' => 'nullable|string',
-            'duration' => 'nullable',
-
-            'user_id' => ['sometimes', 'exists:users,id'],
             'program_id' => ['required', 'exists:programs,id'],
         ];
     }

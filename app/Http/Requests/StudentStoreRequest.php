@@ -12,7 +12,7 @@ class StudentStoreRequest extends FormRequest
     }
 
     public function rules(): array
-    {        
+    {
         return [
             // Personal Information
             'first_name' => 'required|string|max:100',

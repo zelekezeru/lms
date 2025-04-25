@@ -128,7 +128,7 @@ class StudentController extends Controller
         $fields['user_id'] = $user->id;
 
         // Create the student record
-        $student = Student::create($fields);
+        $student = $this->createStudent($fields);
 
         // Create related records (status and church)
         $this->createStudentStatus($student);
@@ -157,6 +157,38 @@ class StudentController extends Controller
         ];
 
         return User::create($user_data);
+    }
+
+    /**
+     * Create a new Student.
+     */
+    private function createStudent(array $fields): Student
+    {
+        $student_data = [
+            'first_name' => $fields['first_name'],
+            'middle_name' => $fields['middle_name'],
+            'last_name' => $fields['last_name'],
+            'mobile_phone' => $fields['mobile_phone'],
+            'office_phone' => $fields['office_phone'],
+            'date_of_birth' => $fields['date_of_birth'],
+            'marital_status' => $fields['marital_status'],
+            'sex' => $fields['sex'],
+            'address' => $fields['address'],
+            'program_id' => $fields['program_id'],
+            'track_id' => $fields['track_id'],
+            'year_id' => $fields['year_id'],
+            'semester_id' => $fields['semester_id'],
+            'id_no' => $fields['id_no'],
+            'tenant_id' => $fields['tenant_id'],
+            'user_id' => $fields['user_id'],
+            'updated_at' => now(),
+            'created_at' => now(),
+        ];
+        // Ensure the user ID is linked
+        $fields['user_id'] = $fields['user_id'] ?? null;
+
+        // Create the student record
+        return Student::create($student_data);
     }
 
     /**
@@ -276,20 +308,6 @@ class StudentController extends Controller
 
     public function verify(Request $request, $studentId)
     {
-        // 1. Validate the request data
-        $validator = Validator::make($request->all(), [
-            'studentId' => 'required|integer|exists:students,id',
-            'is_active' => 'sometimes|boolean',
-            'is_approved' => 'sometimes|boolean',
-            'is_completed' => 'sometimes|boolean',
-            'is_verified' => 'sometimes|boolean',
-            'is_enrolled' => 'sometimes|boolean',
-            'is_graduated' => 'sometimes|boolean',
-            'is_scholarship' => 'sometimes|boolean',
-            'is_scholarship_approved' => 'sometimes|boolean',
-            'is_scholarship_verified' => 'sometimes|boolean',
-        ]);
-
         $student = Student::findOrFail($studentId);
 
         $status = $student->status;
@@ -301,58 +319,37 @@ class StudentController extends Controller
             $status->user_id = $student->user->id; // Assuming you want to set the current user as the one who created the status
         }
 
-        // 3. Update the student's attributes.  Only update fields that are present in the request.
-        if ($request->has('is_active')) {
-            $status->is_active = $request->input('is_active');
-            $status->updated_by_name = Auth::user()->name;
-            $status->updated_at = now();
-        }
-        if ($request->has('is_approved')) {
-            $status->is_approved = $request->input('is_approved');
-            $status->approved_by_name = Auth::user()->name;
-            $status->approved_at = now();
-        }
-        if ($request->has('is_completed')) {
-            $status->is_completed = $request->input('is_completed');
-            $status->completed_by_name = Auth::user()->name;
-            $status->completed_at = now();
-        }
-        if ($request->has('is_verified')) {
-            $status->is_verified = $request->input('is_verified');
-            $status->verified_by_name = Auth::user()->name;
-            $status->verified_at = now();
-        }
-        if ($request->has('is_enrolled')) {
-            $status->is_enrolled = $request->input('is_enrolled');
-            $status->enrolled_by_name = Auth::user()->name;
-            $status->enrolled_at = now();
-        }
-        if ($request->has('is_graduated')) {
-            $status->is_graduated = $request->input('is_graduated');
-            $status->graduated_by_name = Auth::user()->name;
-            $status->graduated_at = now();
-        }
-        if ($request->has('is_scholarship')) {
-            $status->is_scholarship = $request->input('is_scholarship');
-            $status->scholarship_by_name = Auth::user()->name;
-            $status->scholarship_at = now();
-        }
-        if ($request->has('is_scholarship_approved')) {
-            $status->is_scholarship_approved = $request->input('is_scholarship_approved');
-            $status->scholarship_approved_by_name = Auth::user()->name;
-            $status->scholarship_approved_at = now();
-        }
-        if ($request->has('is_scholarship_verified')) {
-            $status->is_scholarship_verified = $request->input('is_scholarship_verified');
-            $status->scholarship_verified_by_name = Auth::user()->name;
-            $status->scholarship_verified_at = now();
-        }
+        $statuses = [
+            'active',
+            'approved',
+            'completed',
+            'verified',
+            'enrolled',
+            'graduated',
+            'scholarship',
+            'scholarship_approved',
+            'scholarship_verified'
+        ];
 
+        // Check if any of the status fields are present in the request
+        foreach ($statuses as $statusField) {
+            if ($request->has('is_'.$statusField)) {
+                // Check if the status field is already set to 1
+                if ($status->{'is_' . $statusField} == 1) {
+                    // If it's already 1, set it to 0
+                    $status->{'is_' . $statusField} = 0;
+                } else {
+                    // If it's not set, set it to 1
+                    $status->{'is_' . $statusField} = 1;
+                }
+                $status->{$statusField . '_by_name'} = Auth::user()->name;
+                $status->{$statusField . '_at'} = now();
+            }
+        }
         $status->save();
-        // 4. Return a success response
+        // Return a success response
         return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }
-
 
     public function search(Request $request)
     {

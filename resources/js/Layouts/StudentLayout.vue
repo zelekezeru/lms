@@ -56,8 +56,8 @@ const toggleSidebar = () => {
             <div
                 class="flex-1 flex flex-col overflow-x-hidden"
                 :class="{
-                    'ml-64': !isMobile && isSidebarOpen, // Sidebar will push content when opened on desktop
-                    'ml-20': !isMobile && !isSidebarOpen, // Sidebar will not push content when collapsed on desktop
+                    'ml-0': !isMobile && isSidebarOpen, // Sidebar will push content when opened on desktop
+                    'ml-0': !isMobile && !isSidebarOpen, // Sidebar will not push content when collapsed on desktop
                 }"
             >
                 <!-- Navbar -->

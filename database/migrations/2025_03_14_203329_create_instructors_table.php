@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             
             $table->string('specialization', 255);
-            $table->enum('employment_type', ['Full-time', 'Part-time', 'Contract', 'Visitor']);
+            $table->enum('employment_type', ['FULL-TIME', 'PART-TIME', 'CONTRACT', 'Visitor']);
             $table->date('hire_date');
             $table->enum('status', ['Active', 'Inactive', 'Suspended']);
             $table->text('bio')->nullable();

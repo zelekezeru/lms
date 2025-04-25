@@ -57,15 +57,15 @@ const emit = defineEmits(['next']);
         </div>
 
         <div>
-            <InputLabel for="email" value="Email" />
+            <InputLabel for="address" value="Address" />
             <TextInput
-            id="email"
-            type="email"
-            v-model="form.email"
+            id="address"
+            type="text"
+            v-model="form.address"
             class="w-full"
-            placeholder="Email address"
+            placeholder="e.g., Hawassa, Sidama, Ethiopia"
             />
-            <InputError :message="form.errors?.email" class="mt-2" />
+            <InputError :message="form.errors?.address" class="mt-2" />
         </div>
         </div>
 
@@ -137,18 +137,6 @@ const emit = defineEmits(['next']);
             class="w-full"
             />
             <InputError :message="form.errors?.date_of_birth" class="mt-2" />
-        </div>
-
-        <div>
-            <InputLabel for="address" value="Address" />
-            <TextInput
-            id="address"
-            type="text"
-            v-model="form.address"
-            class="w-full"
-            placeholder="e.g., Hawassa, Sidama, Ethiopia"
-            />
-            <InputError :message="form.errors?.address" class="mt-2" />
         </div>
         </div>
         

@@ -102,8 +102,8 @@ const handleFileChange = (e) => {
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                 >
                     <option disabled value="">Select Type</option>
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
+                    <option value="FULL-TIME">FULL-TIME</option>
+                    <option value="PART-TIME">PART-TIME</option>
                     <option value="Contract">Contract</option>
                 </select>
 

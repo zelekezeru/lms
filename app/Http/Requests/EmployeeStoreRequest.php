@@ -30,7 +30,7 @@ class EmployeeStoreRequest extends FormRequest
             // Employee table validations
             'profile_img'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
             'job_position'   => 'required|string|max:255',
-            'employment_type'=> 'required|in:Full-time,Part-time,Contract',
+            'employment_type'=> 'required|in:FULL-TIME, PART-TIME, CONTRACT',
             'office_hours'   => 'nullable|string|max:255',
         ];
     }

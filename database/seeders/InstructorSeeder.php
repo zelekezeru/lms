@@ -45,7 +45,7 @@ class InstructorSeeder extends Seeder
             Instructor::create([
                 'user_id'         => $user->id,
                 'specialization'  => $specialization,
-                'employment_type' => fake()->randomElement(['Full-time', 'Part-time', 'Contract', 'Visitor']),
+                'employment_type' => fake()->randomElement(['FULL-TIME', 'PART-TIME', 'CONTRACT', 'Visitor']),
                 'hire_date'       => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
                 'status'          => fake()->randomElement(['Active', 'Inactive']),
                 'bio'             => fake()->sentence(),

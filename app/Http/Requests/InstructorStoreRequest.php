@@ -20,7 +20,7 @@ class InstructorStoreRequest extends FormRequest
             
             // Instructor table validations
             'specialization' => 'nullable|string|max:255',
-            'employment_type' => 'required|in:Full-time,Part-time,Contract,Visitor',
+            'employment_type' => 'required|in:FULL-TIME, PART-TIME, CONTRACT,Visitor',
             
             'hire_date' => 'required|date',
             'status' => 'required|in:Active,Inactive,Suspended',

@@ -49,9 +49,9 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    console.log(form);
-
-    form.post(route("students.store"));
+    form.post(route('students.store'), {
+        forceFormData: true,
+    });
 };
 </script>
 

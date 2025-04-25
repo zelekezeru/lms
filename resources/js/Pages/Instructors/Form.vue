@@ -100,8 +100,8 @@ const handleFileChange = (e) => {
                     <option disabled value="">
                         Select Employment Type
                     </option>
-                    <option value="Full-time">Full-Time</option>
-                    <option value="Part-time">Part-Time</option>
+                    <option value="FULL-TIME">FULL-TIME</option>
+                    <option value="PART-TIME">PART-TIME</option>
                     <option value="Contract">Contract</option>
                     <option value="Visitor">Visitor</option>
                 </select>

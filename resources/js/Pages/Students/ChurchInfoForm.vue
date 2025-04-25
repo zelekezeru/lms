@@ -14,7 +14,7 @@ const emit = defineEmits(['previous', 'next', 'submit']);
 
 <template>
     <div>
-        <h2 class="text-lg font-bold mb-4">Basic Information</h2>     
+        <h2 class="text-lg font-bold mb-4">Basic Information</h2> 
    
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -76,8 +76,16 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church'));
+        // CHeck if student ststus is null
+        if ($student->status === null) {
+            $status = new Status();
+            $status->student_id = $student->id;
+            $status->user_id = Auth::user()->id; // Assuming you want to set the current user as the one who created the status
+            $status->save();
+        }
 
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),

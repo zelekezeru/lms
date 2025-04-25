@@ -1,24 +1,9 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { defineProps, ref, reactive, watch } from "vue";
+import { router, useForm } from "@inertiajs/vue3";
+import { defineProps, ref } from "vue";
 import {} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Modal from "@/Components/Modal.vue";
-import { Listbox, MultiSelect } from "primevue";
-import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
-    CogIcon,
-    AcademicCapIcon,
-    UsersIcon,
-    PencilSquareIcon,
-    PlusCircleIcon,
-    BookOpenIcon,
-    HomeModernIcon,
-} from "@heroicons/vue/24/solid";
 
 const showVerifyModal = ref(false);
 
@@ -68,17 +53,21 @@ function submitStatusChange(field, value) {
                     "Track Validated successfully.",
                     "success"
                 );
-                createTrack.value = false;
+
+                showVerifyModal = ref(false);
                 trackForm.reset();
             },
         }
     );
 }
 
-function updateAndSubmit(field, value) {
-    student.value[field] = value; // Directly update the student ref
-    submitStatusChange(field, value);
-}
+const updateAndSubmit = (field) => {
+  student.value = {
+    ...student.value,
+    [field]: student.value[field] === 1 ? 0 : 1, // Toggle the value
+  };
+  submitStatusChange(field);
+};
 </script>
 
 <template>
@@ -178,12 +167,7 @@ function updateAndSubmit(field, value) {
                                         <input
                                             type="checkbox"
                                             v-model="student.status.is_active"
-                                            @change="
-                                                updateAndSubmit(
-                                                    'is_active',
-                                                    student.status.is_active
-                                                )
-                                            "
+                                            @change="updateAndSubmit('is_active')"
                                             class="sr-only peer"
                                         />
 

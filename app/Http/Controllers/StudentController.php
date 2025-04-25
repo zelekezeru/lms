@@ -85,7 +85,7 @@ class StudentController extends Controller
         }
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
-        
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),
@@ -349,8 +349,8 @@ class StudentController extends Controller
         }
 
         $status->save();
-
-        return back()->with('success', 'Student status updated successfully.');
+        // 4. Return a success response
+        return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }
 
 

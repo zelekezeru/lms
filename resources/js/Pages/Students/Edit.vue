@@ -58,13 +58,6 @@ const previousStep = () => {
 const submit = () => {
     form.value.processing = true; // Optional: Add a processing state if needed
     router.post(route("students.update", props.student.id), form.value, {
-        onSuccess: () => {
-            Swal.fire(
-                "Updated",
-                "The program has been updated successfully",
-                "success"
-            );
-        },
     });
 };
 </script>

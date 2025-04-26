@@ -29,10 +29,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    church: {
-        type: Object,
-        required: true,
-    },
     status: {
         type: Object,
         required: true,
@@ -164,7 +160,7 @@ const deleteStudent = (id) => {
                     <!-- Church Panel -->
                     <ShowChurches
                         v-else-if="selectedTab === 'church'"
-                        :church="church"
+                        :church="student.church"
                     />
 
                     </div>

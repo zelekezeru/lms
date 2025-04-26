@@ -14,42 +14,31 @@ class StudentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //Personal Information
-            'first_name' => 'required|string|max:100',
-            'middle_name' => 'required|string|max:100',
-            'last_name' => 'sometimes|string|max:100',
-            'mobile_phone' => 'sometimes|string|max:15',
-            'office_phone' => 'sometimes|string|max:15',
-            'date_of_birth' => 'sometimes|date',
-            'email' => 'sometimes|string|max:100',
-            'marital_status' => 'sometimes|string|max:10',
-            'sex' => 'required|in:M,F',
-            'address' => 'required|string|max:200',
+            // Personal Information
+            'first_name'           => 'required|string|max:100',
+            'middle_name'          => 'required|string|max:100',
+            'last_name'            => 'nullable|string|max:100',
+            'mobile_phone'         => 'nullable|string|max:15',
+            'office_phone'         => 'nullable|string|max:15',
+            'date_of_birth'        => 'nullable|date',
+            'marital_status'       => 'nullable|string|max:10',
+            'sex'                  => 'required|in:M,F',
+            'address'              => 'nullable|string|max:200',
 
-            //Academic Information
-            'year_id' => 'sometimes',
-            'exists:years,id',
-            'semester_id' => 'sometimes',
-            'exists:semesters,id',
-            'id_no' => 'sometimes|string|max:100',
-            'program_id' => 'sometimes',
-            'exists:programs,id',
-            'track_id' => 'sometimes',
-            'exists:tracks,id',
-            'section_id' => 'sometimes',
-            'exists:sections,id',
-            'student_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'student_signature' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'total_credit_hours' => 'sometimes|integer',
-            'total_amount_paid' => 'sometimes|numeric',
+            // Church Information
+            'pastor_name'          => 'nullable|string|max:100',
+            'pastor_phone'         => 'nullable|string|max:100',
+            'church_name'          => 'nullable|string|max:100',
+            'church_address'       => 'nullable|string|max:200',
+            'position_denomination'=> 'nullable|string|max:100',
 
-            //Church Information
-            'pastor_name' => 'sometimes|string|max:100',
-            'pastor_phone' => 'sometimes|string|max:100',
-            'position_denomination' => 'sometimes|string|max:100',
-            'church_name' => 'sometimes|string|max:100',
-            'church_address' => 'sometimes|string|max:200',
-            'office_use_notes' => 'sometimes|string',
+            // Foreign Keys
+            'tenant_id'            => 'nullable|exists:tenants,id',
+            'program_id'           => 'required|exists:programs,id',
+            'track_id'             => 'required|exists:tracks,id',
+            'year_id'              => 'required|exists:years,id',
+            'semester_id'          => 'required|exists:semesters,id',
+            'section_id'           => 'nullable|exists:sections,id',
         ];
     }
 }

@@ -5,6 +5,8 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/vue/24/solid";
+import Flatpickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
 
 
 const props = defineProps({ form: Object });
@@ -127,14 +129,16 @@ const emit = defineEmits(['next']);
         </div>
         </div>
 
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="date_of_birth" value="Date of Birth" />
-            <TextInput
+            <Flatpickr
             id="date_of_birth"
-            type="date"
             v-model="form.date_of_birth"
-            class="w-full"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            
+            placeholder="Select Date of Birth"
             />
             <InputError :message="form.errors?.date_of_birth" class="mt-2" />
         </div>

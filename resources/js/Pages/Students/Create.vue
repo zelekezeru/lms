@@ -51,7 +51,17 @@ const previousStep = () => {
 const submit = () => {
     form.value.processing = true;
     router.post(route('students.store'), form.value, {
-        
+        onFinish: () => {
+            form.value.processing = false;
+        },
+        onSuccess: () => {
+            form.value.processing = false;
+            form.value.reset();
+            currentStep.value = 1;
+        },
+        onError: () => {
+            form.value.processing = false;
+        },
     });
 };
 </script>

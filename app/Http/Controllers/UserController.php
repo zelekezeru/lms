@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -127,23 +128,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->profile_img) {
-            Storage::disk('public')->delete($user->profile_img);
-        }
-        
-        $user->delete();
+        // cHANGE THE DELETED AT TO THE CURRENT DATE
+        $user->deleted_at = Carbon::now();
+        $user->deleted_by_name = Auth::user()->id;
+        $user->is_deleted = true;
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
-    }
-
-    public function userUuid($role)
-    {
-        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
-
-        $userUuid = $tenant .  '/EM/' . str_pad(User::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
-
-        return $userUuid;
     }
 }

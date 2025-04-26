@@ -164,9 +164,6 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        // Delete all tracks linked to this program
-        $program->tracks()->delete();
-
         $program->delete();
 
         return redirect()->route('programs.index')->with('success', 'Program deleted successfully.');

@@ -49,7 +49,7 @@ const deleteProgram = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-5xl mx-auto p-6">
+        <div class="max-w-5xl mx-auto p-1">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
@@ -76,7 +76,7 @@ const deleteProgram = (id) => {
             </nav>
 
             <div
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl md:p-6 p-3 border dark:border-gray-700"
             >
                 <transition
                     mode="out-in"

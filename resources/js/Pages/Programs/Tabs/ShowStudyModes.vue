@@ -82,7 +82,7 @@ const addMode = () => {
                 </div>
                 <div class="overflow-x-auto">
                     <table
-                        class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                        class="w-full min-w-[500px] table-auto border border-gray-300 dark:border-gray-600"
                     >
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
@@ -92,12 +92,12 @@ const addMode = () => {
                                     Mode
                                 </th>
                                 <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    class="w-30 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
                                     Duration (Months)
                                 </th>
                                 <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
                                     Fees
                                 </th>
@@ -120,12 +120,12 @@ const addMode = () => {
                                     {{ mode.mode }}
                                 </td>
                                 <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    class="w-30 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
                                     {{ mode.duration }}
                                 </td>
                                 <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                    class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                                 >
                                     {{ mode.fees }}
                                 </td>

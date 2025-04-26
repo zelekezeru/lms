@@ -64,7 +64,7 @@ const addTrack = () => {
                 <!-- Program Tracks list -->
                 <div class="overflow-x-auto">
                     <table
-                        class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                        class="w-full min-w-[500px] table-auto border border-gray-300 dark:border-gray-600"
                     >
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
@@ -133,12 +133,12 @@ const addTrack = () => {
                                         />
                                     </td>
 
-                                    <td class="px-4 py-2">
+                                    <td class="px-4 py-2 flex justify-between">
                                         <TextInput
                                             v-model="trackForm.description"
                                             type="text"
                                             placeholder="Description"
-                                            class="w-[60%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                            class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
                                         <PrimaryButton
                                             class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"

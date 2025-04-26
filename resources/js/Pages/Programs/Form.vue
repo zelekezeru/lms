@@ -17,7 +17,6 @@ const assignCourses = ref(false);
 
 const closeCourseAssignment = () => {
     assignCourses.value = false;
-    form.courses = [];
 };
 
 const updateCoursesList = () => {

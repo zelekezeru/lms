@@ -78,13 +78,13 @@ class ProgramController extends Controller
     {
         $users = UserResource::collection(User::all());
         $courses = CourseResource::collection(Course::all());
-
+        
         return  inertia('Programs/Create', [
             'users' => $users,
             'courses' => $courses,
         ]);
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -93,41 +93,43 @@ class ProgramController extends Controller
         $fields = $request->validated();
         $commonCourses = $fields['courses'] ?? []; 
         unset($fields['courses']);
-
+        
         $year = substr(Carbon::now()->year, -2);
-
+        
         $program_id = 'PR' .  '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
-
+        
         $fields['code'] = $program_id;
 
         // Assign the selected director the PROGRAM-DIRECTOR role
         $user = User::where('id', $fields['user_id'])->first();
-
+        
         $user->assignRole('PROGRAM-DIRECTOR');
-
+        
         $program = Program::create($fields);
-
+        
         $syncData = [];
 
         foreach($commonCourses as $commonCourse) {
             $syncData[$commonCourse] = ['is_common' => true];
         }
-        
+
         $program->courses()->sync($syncData);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Program $program)
     {
-        $program->load('tracks', 'director');
-
+        $program->load('tracks', 'director', 'courses');
+        $courses = CourseResource::collection(Course::all());
+        
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
             'users' => UserResource::collection(User::all()),
+            'courses' => CourseResource::collection(Course::all()),
         ]);
     }
 
@@ -137,9 +139,13 @@ class ProgramController extends Controller
     public function update(ProgramUpdateRequest $request, Program $program)
     {
         $fields = $request->validated();
+        $commonCourseUpdated = $fields['courses'] ?? null;
+        unset($fields['courses']);
 
         // Update the program record
         $program->update($fields);
+
+        $program->courses()->sync($commonCourseUpdated);
 
         // Update the director's role if the user_id changes
         if (isset($fields['user_id'])) {
@@ -148,6 +154,7 @@ class ProgramController extends Controller
                 $user->assignRole('PROGRAM-DIRECTOR');
             }
         }
+
 
         return redirect()->route('programs.show', $program)->with('success', 'Program updated successfully.');
     }

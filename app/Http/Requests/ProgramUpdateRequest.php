@@ -26,6 +26,7 @@ class ProgramUpdateRequest extends FormRequest
             'language' => ['required', 'string'],
             'description' => ['required'],
             'duration' => ['required'],
+            'courses' => ['nullable','array'],
             'user_id' => ['sometimes', 'exists:users,id'],
         ];
     }

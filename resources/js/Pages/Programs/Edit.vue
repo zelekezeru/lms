@@ -12,12 +12,14 @@ import Form from "./Form.vue";
 
 const props = defineProps({
     program: { type: Object, required: true },
+    courses: { type: Object, required: true },
     users: { type: Object, required: true },
 });
 
 // Initialize form data
 const form = useForm({
     name: props.program.name || "",
+    courses: props.program.courses.map(course => course.id) || [],
     language: props.program.language || "",
     description: props.program.description || "",
     duration: props.program.duration || "",
@@ -57,7 +59,7 @@ const submit = (id) => {
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form :form="form" @submit="submit(program.id)" :users="users" />
+                <Form :form="form" :courses="courses" @submit="submit(program.id)" :users="users" />
             </div>
         </div>
     </AppLayout>

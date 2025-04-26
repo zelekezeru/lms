@@ -53,6 +53,6 @@ class Program extends Model
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class)->withPivot('is_pivot');
+        return $this->belongsToMany(Course::class)->withPivot('is_common');
     }
 }

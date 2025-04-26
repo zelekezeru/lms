@@ -228,6 +228,7 @@ class StudentController extends Controller
             }
         }
         $status->save();
+        
         // Return a success response
         return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }

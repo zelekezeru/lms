@@ -36,7 +36,7 @@ function submitStatusChange(field, value) {
             onSuccess: () => {
                 Swal.fire(
                     "Validated!",
-                    "Track Validated successfully.",
+                    "Student Validation updated successfully.",
                     "success"
                 );
             },

@@ -200,33 +200,47 @@ class StudentController extends Controller
             $status->user_id = $student->user->id; // Assuming you want to set the current user as the one who created the status
         }
 
-        $statuses = [
-            'active',
-            'approved',
-            'completed',
-            'verified',
-            'enrolled',
-            'graduated',
-            'scholarship',
-            'scholarship_approved',
-            'scholarship_verified'
-        ];
-
-        // Check if any of the status fields are present in the request
-        foreach ($statuses as $statusField) {
-            if ($request->has('is_'.$statusField)) {
-                // Check if the status field is already set to 1
-                if ($status->{'is_' . $statusField} == 1) {
-                    // If it's already 1, set it to 0
-                    $status->{'is_' . $statusField} = 0;
-                } else {
-                    // If it's not set, set it to 1
-                    $status->{'is_' . $statusField} = 1;
-                }
-                $status->{$statusField . '_by_name'} = Auth::user()->name;
-                $status->{$statusField . '_at'} = now();
+        // Define the status fields to be toggled
+        if ($request->has('is_active')) {
+            
+            if ($status->{'is_active'} == 1) {
+                // If it's already 1, set it to 0
+                $status->{'is_active'} = 0;
+            } else {
+                // If it's not set, set it to 1
+                $status->{'is_active'} = 1;
             }
         }
+        else{        
+
+            $statuses = [
+                'approved',
+                'completed',
+                'verified',
+                'enrolled',
+                'graduated',
+                'scholarship',
+                'scholarship_approved',
+                'scholarship_verified'
+            ];
+
+            // Check if any of the status fields are present in the request
+            foreach ($statuses as $statusField) {
+                if ($request->has('is_'.$statusField)) {
+                    // Check if the status field is already set to 1
+                    if ($status->{'is_' . $statusField} == 1) {
+                        // If it's already 1, set it to 0
+                        $status->{'is_' . $statusField} = 0;
+                    } else {
+                        // If it's not set, set it to 1
+                        $status->{'is_' . $statusField} = 1;
+                    }
+                    $status->{$statusField . '_by_name'} = Auth::user()->name;
+                    $status->{$statusField . '_at'} = now();
+                }
+            }    
+        }
+        // Save the status record
         $status->save();
         
         // Return a success response

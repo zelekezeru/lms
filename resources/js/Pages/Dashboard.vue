@@ -1,116 +1,168 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { 
-    AcademicCapIcon, 
-    UserGroupIcon, 
-    ClipboardDocumentCheckIcon, 
-    ClockIcon, 
-    BellIcon, 
-    CalendarIcon, 
-    ChartBarIcon, 
-    ArrowTrendingUpIcon 
+import {
+  AcademicCapIcon,
+  UserGroupIcon,
+  ClipboardDocumentCheckIcon,
+  CurrencyDollarIcon
 } from '@heroicons/vue/24/outline';
+import { Chart } from 'chart.js/auto';
+
+let lineChart = null;
+let pieChart = null;
+
+const createCharts = () => {
+  const lineCtx = document.getElementById('lineChart');
+  const pieCtx = document.getElementById('pieChart');
+
+  lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        label: 'New Students',
+        data: [30, 45, 60, 50, 80, 100],
+        fill: true,
+        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  pieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Instructors', 'Students', 'Courses'],
+      datasets: [{
+        label: 'Distribution',
+        data: [15, 120, 35],
+        backgroundColor: [
+          'rgba(34,197,94,0.7)',   // green
+          'rgba(59,130,246,0.7)',  // blue
+          'rgba(234,179,8,0.7)'    // yellow
+        ],
+        borderColor: [
+          'rgba(34,197,94,1)',
+          'rgba(59,130,246,1)',
+          'rgba(234,179,8,1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+};
+
+onMounted(createCharts);
 </script>
 
 <template>
-    <Head title="Admin Dashboard" />
+  <AppLayout>
+    <div class="p-6 space-y-8">
+      <!-- Header -->
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Admin Dashboard</h1>
+        <p class="text-gray-600 dark:text-gray-400">Manage the LMS, monitor progress, and overview key metrics.</p>
+      </div>
 
-    <AppLayout>
-        <div class="p-6">
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <!-- Total Students (Blue) -->
-                <div class="bg-blue-500 text-white shadow-lg rounded-lg p-6 flex items-center">
-                    <AcademicCapIcon class="w-12 h-12 text-white" />
-                    <div class="ml-4">
-                        <p class="text-white">Total Students</p>
-                        <h4 class="text-xl font-bold">1,200</h4>
-                    </div>
-                </div>
-
-                <!-- Active Teachers (Green) -->
-                <div class="bg-green-500 text-white shadow-lg rounded-lg p-6 flex items-center">
-                    <UserGroupIcon class="w-12 h-12 text-white" />
-                    <div class="ml-4">
-                        <p class="text-white">Active Teachers</p>
-                        <h4 class="text-xl font-bold">80</h4>
-                    </div>
-                </div>
-
-                <!-- Ongoing Courses (Yellow) -->
-                <div class="bg-yellow-500 text-white shadow-lg rounded-lg p-6 flex items-center">
-                    <ClipboardDocumentCheckIcon class="w-12 h-12 text-white" />
-                    <div class="ml-4">
-                        <p class="text-white">Ongoing Courses</p>
-                        <h4 class="text-xl font-bold">35</h4>
-                    </div>
-                </div>
-
-                <!-- Pending Admissions (Red) -->
-                <div class="bg-red-500 text-white shadow-lg rounded-lg p-6 flex items-center">
-                    <ClockIcon class="w-12 h-12 text-white" />
-                    <div class="ml-4">
-                        <p class="text-white">Pending Admissions</p>
-                        <h4 class="text-xl font-bold">50</h4>
-                    </div>
-                </div>
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+          <div class="flex items-center space-x-4">
+            <AcademicCapIcon class="w-8 h-8 text-blue-500" />
+            <div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">Courses</p>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">120</h2>
             </div>
-
-            <!-- Additional Widgets -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- System Notifications -->
-                <div class="bg-white shadow-lg rounded-lg p-6">
-                    <div class="flex items-center mb-4">
-                        <BellIcon class="w-8 h-8 text-red-500" />
-                        <h3 class="text-lg font-semibold ml-2">System Notifications</h3>
-                    </div>
-                    <ul class="text-gray-600 space-y-2">
-                        <li>New student enrollment request</li>
-                        <li>Upcoming teacher meeting</li>
-                        <li>System maintenance scheduled</li>
-                    </ul>
-                </div>
-
-                <!-- Upcoming Events -->
-                <div class="bg-white shadow-lg rounded-lg p-6">
-                    <div class="flex items-center mb-4">
-                        <CalendarIcon class="w-8 h-8 text-blue-500" />
-                        <h3 class="text-lg font-semibold ml-2">Upcoming Events</h3>
-                    </div>
-                    <ul class="text-gray-600 space-y-2">
-                        <li>March 20: Parent-Teacher Conference</li>
-                        <li>April 5: Semester Exams Begin</li>
-                        <li>April 15: School Science Fair</li>
-                    </ul>
-                </div>
-
-                <!-- Performance Overview -->
-                <div class="bg-white shadow-lg rounded-lg p-6">
-                    <div class="flex items-center mb-4">
-                        <ChartBarIcon class="w-8 h-8 text-green-500" />
-                        <h3 class="text-lg font-semibold ml-2">Performance Overview</h3>
-                    </div>
-                    <div class="text-gray-600">
-                        <p>Average Attendance: <span class="font-bold">92%</span></p>
-                        <p>Course Completion Rate: <span class="font-bold">85%</span></p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activities -->
-            <div class="bg-white shadow-lg rounded-lg p-6 mt-6">
-                <div class="flex items-center mb-4">
-                    <ArrowTrendingUpIcon class="w-8 h-8 text-purple-500" />
-                    <h3 class="text-lg font-semibold ml-2">Recent Activities</h3>
-                </div>
-                <ul class="text-gray-600 space-y-2">
-                    <li>Admin approved 5 new students</li>
-                    <li>Teacher uploaded grades for Math 101</li>
-                    <li>New course "Web Development" added</li>
-                </ul>
-            </div>
-
+          </div>
         </div>
-    </AppLayout>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+          <div class="flex items-center space-x-4">
+            <UserGroupIcon class="w-8 h-8 text-green-500" />
+            <div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">Students</p>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">2,400</h2>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+          <div class="flex items-center space-x-4">
+            <ClipboardDocumentCheckIcon class="w-8 h-8 text-yellow-500" />
+            <div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">Instructors</p>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">35</h2>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+          <div class="flex items-center space-x-4">
+            <CurrencyDollarIcon class="w-8 h-8 text-purple-500" />
+            <div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">Revenue</p>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">$45,000</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Student Enrollment Over Time</h2>
+          <canvas id="lineChart" class="w-full h-64"></canvas>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">User Distribution</h2>
+          <canvas id="pieChart" class="w-full h-64"></canvas>
+        </div>
+      </div>
+
+      <!-- Instructor Management Section -->
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Manage Instructors</h2>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm">Add Instructor</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th class="py-3 px-6">Name</th>
+                <th class="py-3 px-6">Email</th>
+                <th class="py-3 px-6">Specialization</th>
+                <th class="py-3 px-6">Status</th>
+                <th class="py-3 px-6">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900">
+                <td class="py-4 px-6">Dr. Jane Smith</td>
+                <td class="py-4 px-6">jane.smith@example.com</td>
+                <td class="py-4 px-6">Computer Science</td>
+                <td class="py-4 px-6">
+                  <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Active</span>
+                </td>
+                <td class="py-4 px-6 space-x-2">
+                  <button class="text-blue-600 hover:underline">Edit</button>
+                  <button class="text-red-600 hover:underline">Delete</button>
+                </td>
+              </tr>
+              <!-- Add more instructors here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </AppLayout>
 </template>

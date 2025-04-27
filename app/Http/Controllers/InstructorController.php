@@ -51,7 +51,9 @@ class InstructorController extends Controller
     {
         $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course'));
 
-        $courses = CourseResource::collection(Course::all());
+        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor){
+            return $query->where('instructors.id', $instructor->id);
+        }])->orderByDesc('related_to_instructor', 'name')->get());
 
         return Inertia::render('Instructors/Show', [
             'instructor' => $instructor,
@@ -132,7 +134,9 @@ class InstructorController extends Controller
     public function edit(Instructor $instructor)
     {
         $roles = Role::all();
-        $courses = CourseResource::collection(Course::all());
+        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor){
+            return $query->where('instructors.id', $instructor->id);
+        }])->orderByDesc('related_to_instructor', 'name')->get());
 
         return inertia('Instructors/Edit', [
             'instructor' => new InstructorResource($instructor->load('user', 'track', 'courses')),

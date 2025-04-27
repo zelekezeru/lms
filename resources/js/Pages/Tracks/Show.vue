@@ -1,22 +1,12 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
-import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Modal from "@/Components/Modal.vue";
-import { Listbox, MultiSelect } from "primevue";
 import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PencilSquareIcon,
-    PlusCircleIcon,
     BookOpenIcon,
-    HomeModernIcon,
 } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCurriculum from "./Tabs/ShowCurriculum.vue";
@@ -31,6 +21,10 @@ const props = defineProps({
     },
 
     courses: {
+        type: Object,
+        required: true,
+    },
+    years: {
         type: Object,
         required: true,
     },
@@ -53,7 +47,7 @@ const tabs = [
 
 <template>
     <AppLayout>
-        <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
             <h1
                 class="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100"
             >
@@ -110,12 +104,14 @@ const tabs = [
                         <ShowCourses
                             v-else-if="selectedTab == 'courses'"
                             :track="track"
+                            :courses="courses"
                         />
 
                         <!-- Section Panel -->
                         <ShowSections
                             v-else-if="selectedTab == 'sections'"
                             :track="track"
+                            :years="years"
                             :courses="courses"
                         />
                     </div>

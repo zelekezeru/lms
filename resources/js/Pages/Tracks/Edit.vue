@@ -8,7 +8,6 @@ defineProps({ track: Object, users: Array, programs: Array });
 
 const form = useForm({
     name: usePage().props.track.name,
-    user_id: usePage().props.track.user_id,
     description: usePage().props.track.description,
     program_id: usePage().props.track.program_id,
 });

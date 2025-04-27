@@ -16,8 +16,10 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\CurriculumResource; // Ensure this class exists in the specified namespace
+use App\Http\Resources\YearResource;
 use App\Models\Course;
 use App\Models\Curriculum;
+use App\Models\Year;
 
 class TrackController extends Controller
 {
@@ -104,15 +106,20 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = new TrackResource($track->load('program', 'courses', 'sections', 'curriculums'));
+        $track = new TrackResource($track->load('program', 'courses', 'sections', 'sections.semester', 'sections.year' , 'curriculums'));
 
-        $courses = CourseResource::collection(Course::all());
+        $courses = CourseResource::collection(Course::withExists(['tracks as related_to_track' => function ($query) use ($track){
+            return $query->where('tracks.id', $track->id);
+        }])->orderByDesc('related_to_track', 'name')->get());
+
+        $years = YearResource::collection(Year::with('semesters')->get());
 
         $curriculums = CurriculumResource::collection(Curriculum::all());
 
         return inertia('Tracks/Show', [
             'track' => $track,
             'courses' => $courses,
+            'years' => $years,
             'curriculums' => $curriculums,
 
         ]);

@@ -19,11 +19,11 @@ class YearResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'semesters' => SemesterResource::collection($this->whenLoaded('semesters')),
             'status' => $this->status,
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,
             'created_at' => $this->created_at,
-            
         ];
     }
 }

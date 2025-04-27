@@ -27,7 +27,7 @@ class TrackResource extends JsonResource
             'program' => new ProgramResource($this->whenLoaded('program')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'curriculums' => CurriculumResource::collection($this->whenLoaded('curriculums')),
-            'sections' => SectionResource::collection($this->whenLoaded('Sections')),
+            'sections' => SectionResource::collection($this->whenLoaded('sections')),
 
         ];
     }

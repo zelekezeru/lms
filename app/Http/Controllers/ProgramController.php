@@ -124,12 +124,14 @@ class ProgramController extends Controller
     public function edit(Program $program)
     {
         $program->load('tracks', 'director', 'courses');
-        $courses = CourseResource::collection(Course::all());
+        $courses = CourseResource::collection(Course::withExists(['  as related_to_program' => function ($query) use ($program){
+            return $query->where('programs.id', $program->id);
+        }])->orderByDesc('related_to_program', 'name')->get());
         
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
             'users' => UserResource::collection(User::all()),
-            'courses' => CourseResource::collection(Course::all()),
+            'courses' => $courses,
         ]);
     }
 

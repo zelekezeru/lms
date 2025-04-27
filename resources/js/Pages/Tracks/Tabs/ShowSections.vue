@@ -1,9 +1,13 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, watch } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { CogIcon } from "@heroicons/vue/24/solid";
+import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { Select } from "primevue";
+import TextInput from "@/Components/TextInput.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // Define the props for the track
 const props = defineProps({
@@ -11,7 +15,54 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    years: {
+        type: Object,
+        required: true,
+    },
 });
+
+
+
+const sectionForm = useForm({
+    name: "",
+    track_id: props.track.id,
+    user_id: 1,
+    program_id: props.track.program.id,
+    year_id: "",
+    semester_id: "",
+    fees: "",
+});
+
+const selectedYearSemesters = ref();
+
+// watch and updated the list of semsters
+watch(
+    () => sectionForm.year_id,
+    () => {
+        selectedYearSemesters.value = props.years.find(year => year.id == sectionForm.year_id).semesters
+    }
+);
+const createSection = ref(false);
+
+const addSection = () => {
+    sectionForm.post(
+        route("sections.store", {
+            redirectTo: route("tracks.show", { track: props.track.id }),
+            params: { track: props.track.id },
+        }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    "Added!",
+                    "Study Section added successfully.",
+                    "success"
+                );
+                createSection.value = false;
+                sectionForm.reset();
+            },
+        }
+    );
+};
 </script>
 
 <template>
@@ -20,6 +71,13 @@ const props = defineProps({
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Track Sections
             </h2>
+            <button
+                @click="createSection = !createSection"
+                class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
+            >
+                <PlusCircleIcon class="w-8 h-8" />
+                <span class="hidden sm:inline">Add Section</span>
+            </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -41,12 +99,12 @@ const props = defineProps({
                         <th
                             class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
-                            Code
+                            Year
                         </th>
                         <th
                             class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
-                            Course
+                            Semster
                         </th>
                         <th
                             class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -88,13 +146,13 @@ const props = defineProps({
                         <td
                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
-                            {{ section.code }}
+                            {{ section.year.id }}
                         </td>
 
                         <td
                             class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
-                            {{ section.course.name }}
+                            {{ section.semester.id }}
                         </td>
                         <!-- Section Assessments -->
                         <td
@@ -106,6 +164,70 @@ const props = defineProps({
                             </Link>
                         </td>
                     </tr>
+
+                    <transition
+                        enter-active-class="transition duration-300 ease-out"
+                        enter-from-class="opacity-0 -translate-y-2"
+                        enter-to-class="opacity-100 translate-y-0"
+                        leave-active-class="transition duration-200 ease-in"
+                        leave-from-class="opacity-100 translate-y-0"
+                        leave-to-class="opacity-0 -translate-y-2"
+                    >
+                        <tr
+                            v-if="createSection"
+                            class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600"
+                        >
+                            <td class="px-4 py-2">
+                                +
+                            </td>
+                            <td class="px-4 py-2">
+                                <TextInput
+                                    v-model="sectionForm.name"
+                                    type="text"
+                                    placeholder="name"
+                                    class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                />
+                            </td>
+
+                            <td class="px-4 py-2">
+                                <Select
+                                    id="yearsList"
+                                    v-model="sectionForm.year_id"
+                                    :options="years"
+                                    option-value="id"
+                                    option-label="name"
+                                    checkmark
+                                    filter
+                                    placeholder="Select Year"
+                                    :maxSelectevdLabels="3"
+                                    class="w-full"
+                                />
+                            </td>
+
+                            <td class="px-4 py-2 flex justify-between">
+                                <td class="px-4 py-2">
+                                <Select
+                                    id="semstersList"
+                                    v-model="sectionForm.semester_id"
+                                    :options="selectedYearSemesters"
+                                    option-value="id"
+                                    option-label="name"
+                                    checkmark
+                                    filter
+                                    placeholder="Select Semster"
+                                    :maxSelectevdLabels="3"
+                                    class="w-full"
+                                />
+                            </td>
+                                <PrimaryButton
+                                    class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                    @click="addSection"
+                                >
+                                    Save
+                                </PrimaryButton>
+                            </td>
+                        </tr>
+                    </transition>
                 </tbody>
             </table>
         </div>

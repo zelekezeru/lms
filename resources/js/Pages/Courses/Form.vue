@@ -31,7 +31,7 @@ watch(
                 return program.tracks;
             }
         );
-        props.form.tracks = [];
+        props.form.tracks = form.programs.find;
     }
 );
 const emits = defineEmits(["submit"]);

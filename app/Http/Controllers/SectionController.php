@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
+use App\Http\Requests\SectionStoreRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\InstructorResource;
@@ -57,7 +58,7 @@ class SectionController extends Controller
     }
 
 
-    public function store(SectionRequest $request)
+    public function store(SectionStoreRequest $request)
     {
         $fields = $request->validated();
         // Section code generation logic
@@ -70,14 +71,21 @@ class SectionController extends Controller
 
         $section = Section::create($fields);
 
-        return redirect(route('sections.show', $section))->with('success', 'Section created successfully.');
+        $trackCourses = $section->track->courses;
+        $section->courses()->sync($trackCourses);
+        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the sections.show method is the default
+        $redirectTo = $request->input('redirectTo', route('sections.show', $section));
+
+        return redirect($redirectTo)->with('success', 'Track created successfully.');
     }
 
     public function show(Section $section)
     {
         $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
 
-        $courses = CourseResource::collection(Course::all()->sortBy('code'));
+        $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
+            return $query->where('sections.id', $section->id);
+        }])->orderByDesc('related_to_section', 'name')->get());
 
         $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
 
@@ -92,7 +100,7 @@ class SectionController extends Controller
         ]);
     }
 
-    public function update(SectionRequest $request, Section $section)
+    public function update(SectionUpdateRequest $request, Section $section)
     {
         $fields = $request->validated();
 

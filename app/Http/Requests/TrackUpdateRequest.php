@@ -24,9 +24,6 @@ class TrackUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:255|unique:tracks,name,' . $this->track->id,
             'description' => 'nullable|string',
-            'duration' => 'sometimes',
-
-            'user_id' => ['sometimes', 'exists:users,id'],
             'program_id' => ['sometimes', 'exists:programs,id'],
         ];
     }

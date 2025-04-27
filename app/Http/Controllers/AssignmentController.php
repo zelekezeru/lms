@@ -30,22 +30,29 @@ class AssignmentController extends Controller
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
     }
-
+    
     public function assignCoursesToInstructor(Request $request, Instructor $instructor)
     {
         $instructor->courses()->sync($request['courses']);
-
+        
         return redirect()->route('instructors.show', $instructor->id)->with('success', 'Courses Assigned successfully.');
     }
-
+    
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
         $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id);
-
+        
         $courseSectionAssignment->update([
             'instructor_id' => $request->instructor_id
         ]);
-
+        
         return redirect()->route('sections.show', $section->id)->with('success', 'Instructor Assigned successfully.');
+    }
+
+    public function assignCoursesToTracks(Request $request, Track $track)
+    {
+        $track->courses()->sync($request['courses']);
+    
+        return redirect()->route('tracks.show', $track->id)->with('success', 'Courses Assigned successfully.');
     }
 }

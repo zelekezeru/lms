@@ -84,33 +84,6 @@ const emits = defineEmits(["submit"]);
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
-
-            <!-- Track Head Dropdown -->
-            <div>
-                <InputLabel
-                    for="user_id"
-                    value="Select Track Head"
-                    class="block mb-1 text-gray-200"
-                />
-                <select
-                    id="user_id"
-                    v-model="form.user_id"
-                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                >
-                    <option value="">Select Track Head</option>
-                    <option
-                        v-for="user in users"
-                        :key="user.id"
-                        :value="user.id"
-                    >
-                        {{ user.name }}
-                    </option>
-                </select>
-                <InputError
-                    :message="form.errors.user_id"
-                    class="mt-2 text-sm text-red-500"
-                />
-            </div>
         </div>
 
         <!-- Submit Button -->

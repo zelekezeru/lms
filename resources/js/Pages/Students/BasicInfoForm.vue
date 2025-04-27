@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/vue/24/solid";
 import Flatpickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
+import Calendar from 'primevue/calendar';
 
 
 const props = defineProps({ form: Object });
@@ -133,13 +134,7 @@ const emit = defineEmits(['next']);
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="date_of_birth" value="Date of Birth" />
-            <Flatpickr
-            id="date_of_birth"
-            v-model="form.date_of_birth"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-            
-            placeholder="Select Date of Birth"
-            />
+            <Calendar v-model="dateValue" dateFormat="yy-mm-dd" showIcon />            npm install vue-flatpickr-component flatpickr            npm install flatpickr
             <InputError :message="form.errors?.date_of_birth" class="mt-2" />
         </div>
         </div>

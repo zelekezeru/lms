@@ -6,6 +6,7 @@ import BasicInfoForm from "./BasicInfoForm.vue";
 import AcademicInfoForm from "./AcademicInfoForm.vue";
 import ChurchInfoForm from "./ChurchInfoForm.vue";
 
+// Props for form data
 const props = defineProps({
     programs: { type: Array, required: true },
     tracks: { type: Array, required: true },
@@ -13,6 +14,7 @@ const props = defineProps({
     semesters: { type: Array, required: true },
 });
 
+// Step-based form data
 const form = ref({
     first_name: "",
     middle_name: "",
@@ -38,10 +40,18 @@ const form = ref({
     office_use_notes: "",
 });
 
+// Progress steps array
+const steps = [
+    { id: 1, label: "Basic Info" },
+    { id: 2, label: "Academic Info" },
+    { id: 3, label: "Church Info" },
+];
+
+// Current step tracking
 const currentStep = ref(1);
 
 const nextStep = () => {
-    if (currentStep.value < 3) currentStep.value++;
+    if (currentStep.value < steps.length) currentStep.value++;
 };
 
 const previousStep = () => {
@@ -69,6 +79,43 @@ const submit = () => {
 <template>
     <Head title="Register Student" />
     <AppLayout>
+        <!-- Progress Indicator -->
+        <div class="flex items-center justify-between mb-6">
+            <div
+                v-for="step in steps"
+                :key="step.id"
+                class="flex items-center"
+            >
+                <div
+                    :class="{
+                        'bg-blue-500 text-white': currentStep === step.id,
+                        'bg-gray-300 text-gray-700': currentStep !== step.id
+                    }"
+                    class="rounded-full h-10 w-10 flex items-center justify-center font-bold"
+                >
+                    {{ step.id }}
+                </div>
+                <p
+                    class="ml-2 text-sm"
+                    :class="{
+                        'text-blue-500': currentStep === step.id,
+                        'text-gray-500': currentStep !== step.id
+                    }"
+                >
+                    {{ step.label }}
+                </p>
+                <div
+                    v-if="step.id < steps.length"
+                    class="flex-grow h-1 mx-2"
+                    :class="{
+                        'bg-blue-500': currentStep > step.id,
+                        'bg-gray-300': currentStep <= step.id
+                    }"
+                ></div>
+            </div>
+        </div>
+
+        <!-- Main Form Content -->
         <transition
             mode="out-in"
             enter-active-class="transition duration-300 ease-out"
@@ -107,3 +154,4 @@ const submit = () => {
         </transition>
     </AppLayout>
 </template>
+

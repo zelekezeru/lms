@@ -134,7 +134,12 @@ const emit = defineEmits(['next']);
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
             <InputLabel for="date_of_birth" value="Date of Birth" />
-            <Calendar v-model="dateValue" dateFormat="yy-mm-dd" showIcon />            npm install vue-flatpickr-component flatpickr            npm install flatpickr
+            <Calendar 
+                v-model="form.date_of_birth" 
+                dateFormat="yy-mm-dd" 
+                showIcon 
+                placeholder="Select Date of Birth"
+            />
             <InputError :message="form.errors?.date_of_birth" class="mt-2" />
         </div>
         </div>

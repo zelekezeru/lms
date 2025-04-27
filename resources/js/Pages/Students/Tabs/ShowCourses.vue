@@ -38,7 +38,7 @@ const props = defineProps({
             Course Enrolments
         </h2>
         
-            
+        <!-- Make sure the user has assign pormission -->
         <div class="flex justify-center mb-6">
             <button
                 @click="router.visit(route('students.profile', { student: student.id }))"

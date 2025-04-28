@@ -34,15 +34,15 @@ const sectionForm = useForm({
 });
 
 const selectedYearSemesters = ref();
+const createSection = ref(false);
 
 // watch and updated the list of semsters
 watch(
     () => sectionForm.year_id,
     () => {
-        selectedYearSemesters.value = props.years.find(year => year.id == sectionForm.year_id).semesters
+        selectedYearSemesters.value = props.years.find(year => year.id == sectionForm.year_id) ? props.years.find(year => year.id == sectionForm.year_id).semesters : [];
     }
 );
-const createSection = ref(false);
 
 const addSection = () => {
     sectionForm.post(
@@ -55,10 +55,10 @@ const addSection = () => {
                 Swal.fire(
                     "Added!",
                     "Study Section added successfully.",
-                    "success"
+                    "success",
                 );
-                createSection.value = false;
                 sectionForm.reset();
+                createSection.value = false;
             },
         }
     );
@@ -205,7 +205,6 @@ const addSection = () => {
                             </td>
 
                             <td class="px-4 py-2 flex justify-between">
-                                <td class="px-4 py-2">
                                 <Select
                                     id="semstersList"
                                     v-model="sectionForm.semester_id"
@@ -218,7 +217,6 @@ const addSection = () => {
                                     :maxSelectevdLabels="3"
                                     class="w-full"
                                 />
-                            </td>
                                 <PrimaryButton
                                     class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
                                     @click="addSection"

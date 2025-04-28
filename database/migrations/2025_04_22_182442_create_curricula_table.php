@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('track_id')->constrained()->onDelete('cascade');
             $table->string('curriculum_version');
             $table->text('description')->nullable();
-            $table->boolean('active')->default(false);
+            $table->boolean('active')->default(false); 
             $table->timestamps();
         });
     }

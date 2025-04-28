@@ -1,23 +1,10 @@
 <script setup>
-import { defineProps, ref, reactive } from "vue";
-import { Link, useForm, router } from "@inertiajs/vue3";
+import { defineProps, ref } from "vue";
+import { Link, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import Modal from "@/Components/Modal.vue";
 import InputError from "@/Components/InputError.vue";
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Listbox } from "primevue";
-import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
-    CogIcon,
-    AcademicCapIcon,
-    UsersIcon,
-    PencilSquareIcon,
-    PlusCircleIcon,
-    BookOpenIcon,
-    HomeModernIcon,
-} from "@heroicons/vue/24/solid";
+import { Listbox, Select } from "primevue";
 
 const props = defineProps({
     track: Object,
@@ -26,9 +13,19 @@ const props = defineProps({
 });
 
 const showModal = ref(false);
+const programDuration = props.track.program.duration;
+const years = [];
+
+for (let i = 1; i <= programDuration; i++) {
+    years.push(i);
+}
 
 const form = useForm({
-    courses: props.track.curriculums.map((course) => course.id),
+    study_mode_id: "",
+    track_id: track.id,
+    year: "",
+    semester: "",
+    description: "",
 });
 
 const openModal = () => {
@@ -42,7 +39,7 @@ const closeModal = () => {
 };
 
 const assignCurriculum = () => {
-    form.post(route("track-curriculum.attach", { track: props.track.id }), {
+    form.post(route("curriculums.store"), {
         onSuccess: () => {
             Swal.fire(
                 "Assigned!",
@@ -166,10 +163,13 @@ const assignCurriculum = () => {
                         <label class="block text-sm font-medium mb-1"
                             >Year</label
                         >
-                        <input
-                            type="number"
+                        <Select
+                            id="yearsList"
                             v-model="form.year"
-                            class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
+                            :options="years"
+                            append-to="self"
+                            placeholder="Select Year"
+                            class="w-full"
                         />
                         <InputError
                             :message="form.errors.year"
@@ -182,13 +182,39 @@ const assignCurriculum = () => {
                         <label class="block text-sm font-medium mb-1"
                             >Semester</label
                         >
-                        <input
-                            type="number"
+                        <Select
+                            id="semestersList"
                             v-model="form.semester"
-                            class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
+                            :options="[
+                                '1st Semester',
+                                '2nd Semester',
+                                'Rainy Semester',
+                            ]"
+                            append-to="self"
+                            placeholder="Select Semester"
+                            class="w-full"
                         />
                         <InputError
                             :message="form.errors.semester"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+
+                    <!-- StudyMode -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1"
+                            >StudyMode</label
+                        >
+                        <Select
+                            id="studyModesList"
+                            v-model="form.studyMode"
+                            :options="[track.program.studyModes]"
+                            append-to="self"
+                            placeholder="Select StudyMode"
+                            class="w-full"
+                        />
+                        <InputError
+                            :message="form.errors.studyMode"
                             class="mt-2 text-sm text-red-500"
                         />
                     </div>
@@ -218,7 +244,7 @@ const assignCurriculum = () => {
                             v-model="form.status"
                             class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
                         >
-                            <option value="">-- Select Status --</option>
+                            <option value="">Select Status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
@@ -245,6 +271,7 @@ const assignCurriculum = () => {
                             option-value="id"
                             appendTo="self"
                             filter
+                            checkmark
                             multiple
                             placeholder="Select Courses"
                             class="w-full"

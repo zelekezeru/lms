@@ -106,7 +106,7 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = new TrackResource($track->load('program', 'courses', 'sections', 'sections.semester', 'sections.year' , 'curriculums'));
+        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year' , 'curriculums'));
 
         $courses = CourseResource::collection(Course::withExists(['tracks as related_to_track' => function ($query) use ($track){
             return $query->where('tracks.id', $track->id);

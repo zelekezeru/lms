@@ -14,6 +14,19 @@ const props = defineProps({
     status: Object,
 });
 
+// Array list of Status elaments
+// const $statuses = [
+//            'Status'=> 'active',
+//            'Approval'=> 'verified',
+//            'Document_Submittion' => 'completed',
+//             '''verified',
+//             'enrolled',
+//             'graduated',
+//             'scholarship',
+//             'scholarship_approved',
+//             'scholarship_verified'
+//         ];
+
 // Clone and track the status
 const student = ref({ ...props.student });
 
@@ -21,7 +34,6 @@ const student = ref({ ...props.student });
 
 // Submit updated status
 function submitStatusChange(field, value) {
-    // form[field] = value;  // No longer update the form, we send data directly.
 
     // Prepare the data to send.  Include the student's ID and the specific field being updated.
     const postData = {

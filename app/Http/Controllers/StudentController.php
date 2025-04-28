@@ -17,6 +17,8 @@ use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\SectionResource;
+use App\Models\Course;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Year;
 use App\Models\User;
@@ -88,10 +90,23 @@ class StudentController extends Controller
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
 
+            // Check if the student has a section & Fetch courses accordingly
+        if ($student->section === null) {            
+            $sections = Section::where('program_id', $student->program->id)
+                ->where('track_id', $student->track->id)
+                ->get();
+            $courses = [];
+        } else {
+            $courses = $student->section->courses;
+            $sections = [];
+        }
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),
-            'status' => new StatusResource($student->status),
+            'status' => new StatusResource($student->status),            
+            'sections' => $sections,
+            'courses' => $courses,
         ]);
     }
 

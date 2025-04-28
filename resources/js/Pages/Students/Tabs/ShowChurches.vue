@@ -37,7 +37,13 @@ const props = defineProps({
         </h2>
     </div>
 
-    <div class="overflow-x-auto">
+    <!-- Make sure Church is not null -->
+    <div v-if="!church" class="text-center">
+        <p class="text-gray-500 dark:text-gray-400">
+            No church information available.
+        </p>
+    </div>
+    <div v-else-if="church" class="overflow-x-auto">
         <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
             <div class="grid grid-cols-2 gap-4">
                 <div v-if="church.church_name" class="flex flex-col">

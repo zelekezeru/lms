@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     CogIcon,
-    PencilSquareIcon} from "@heroicons/vue/24/solid";
+    PencilSquareIcon, XMarkIcon, PlusCircleIcon} from "@heroicons/vue/24/solid";
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
@@ -99,9 +99,13 @@ const submitInstructorAssignment = () => {
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
-                class="flex items-center text-indigo-600 hover:text-indigo-800"
+                class="flex text-indigo-600 hover:text-indigo-800"
             >
-                Assign Course
+                <component
+                    :is="assignCourses ? XMarkIcon : PlusCircleIcon"
+                    class="w-8 h-8"
+                />
+                Assign Section
             </button>
         </div>
 

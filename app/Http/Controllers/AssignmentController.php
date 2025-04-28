@@ -24,6 +24,7 @@ class AssignmentController extends Controller
 
      */
 
+    // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {
         $section->courses()->sync($request['courses']);
@@ -31,6 +32,7 @@ class AssignmentController extends Controller
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
     }
     
+    // this method is used to assign courses to a program
     public function assignCoursesToInstructor(Request $request, Instructor $instructor)
     {
         $instructor->courses()->sync($request['courses']);
@@ -38,6 +40,7 @@ class AssignmentController extends Controller
         return redirect()->route('instructors.show', $instructor->id)->with('success', 'Courses Assigned successfully.');
     }
     
+    // this method is used to assign courses to a program
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
         $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id);
@@ -49,10 +52,32 @@ class AssignmentController extends Controller
         return redirect()->route('sections.show', $section->id)->with('success', 'Instructor Assigned successfully.');
     }
 
+    // this method is used to assign courses to a program
     public function assignCoursesToTracks(Request $request, Track $track)
     {
         $track->courses()->sync($request['courses']);
     
         return redirect()->route('tracks.show', $track->id)->with('success', 'Courses Assigned successfully.');
+    }
+    
+    public function assignCoursesToStudents(Request $request, Student $student)
+    {
+        $student->courses()->sync($request['courses']);
+
+        return redirect()->route('students.show', $student->id)->with('success', 'Courses Assigned successfully.');
+    }
+
+    // this method is used to assign student to a section
+    public function assignStudentsToSection(Request $request)
+    {
+        $student = Student::where('id', $request['student_id'])->first();
+        
+        $student->update([
+            'section_id' => $request['section_id']
+        ]);        
+
+        session()->flash('message', 'Student has been successfully assigned to the section.');
+
+        return redirect()->route('students.show', $student->id)->with('success', 'Student assigned to section successfully.');
     }
 }

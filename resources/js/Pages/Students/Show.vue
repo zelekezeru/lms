@@ -33,12 +33,19 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    sections: {
+        type: Array,
+        required: true,
+    },
+    courses: {
+        type: Array,
+        required: true,
+    },
     showVerifyModal: Boolean,
 });
 
 // Multi nav header options
 const selectedTab = ref('details');
-
 
 const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
@@ -132,23 +139,19 @@ const deleteStudent = (id) => {
                         v-if="selectedTab === 'details'"
                         :student="student"
                     />
+                    <!-- Academics Panel -->
+                    <ShowAcademics
+                        v-else-if="selectedTab === 'academics'"
+                        :student="student"
+                        :sections="sections"
+                    />
 
                     <!-- Courses Panel -->
                     <ShowCourses
                         v-else-if="selectedTab === 'courses'"
                         :student="student"
+                        :courses="courses"
                         />
-                        
-                        <!-- Academics Panel -->
-                        <ShowAcademics
-                        v-else-if="selectedTab === 'academics'"
-                        :student="student"
-                        />
-                    <!-- Academics Panel -->
-                    <ShowAcademics
-                        v-else-if="selectedTab === 'academics'"
-                        :student="student"
-                    />
 
                     <!-- Registrations Panel -->
                     <ShowRegistrations

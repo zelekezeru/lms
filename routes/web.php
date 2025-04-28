@@ -47,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/roles/{role}/permissions', [RoleController::class, 'attach'])->middleware('can:attach-permissions-roles')->name('roles.attach');
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'detach'])->middleware('can:detach-permissions-roles')->name('roles.detach');
 
+    // Assignment routes
     Route::post('/courses-track/{track}', [AssignmentController::class, 'assignCoursesToTracks'])->name('courses-track.assign');
     
     Route::post('/courses-section/{section}', [AssignmentController::class, 'assignCoursesToSections'])->name('courses-section.assign');
@@ -54,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/courses-instructor/{instructor}', [AssignmentController::class, 'assignCoursesToInstructor'])->name('courses-instructor.assign');
 
     Route::post('/instructor-courseSection/{section}/{course}', [AssignmentController::class, 'assignInstructorToCourseSection'])->name('instructor-courseSection.assign');
+
+    Route::post('/students-section', [AssignmentController::class, 'assignStudentsToSection'])->name('students-section.assign');
+
+    Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
 
     //Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
@@ -72,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('Instructor');
     })->name('instructor.dashboard');
     
-
+        // INstructor related routes
     Route::get('/instructor/course', function () {
         return Inertia::render('Instructor/InstructorCourses');
     })->name('instructor.course');

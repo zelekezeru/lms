@@ -11,6 +11,7 @@ use App\Models\Track;
 use Illuminate\Http\Request;
 use App\Http\Requests\SectionRequest;
 use App\Http\Requests\SectionStoreRequest;
+use App\Http\Requests\SectionUpdateRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\InstructorResource;
@@ -85,7 +86,7 @@ class SectionController extends Controller
 
         $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
             return $query->where('sections.id', $section->id);
-        }])->orderByDesc('related_to_section', 'name')->get());
+        }])->orderByDesc('related_to_section')->orderBy('name')->get());
 
         $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
 

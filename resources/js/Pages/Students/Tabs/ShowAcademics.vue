@@ -180,7 +180,7 @@ const addSection = () => {
                             >
                                 <option value="">Select Section</option>
                                 <option v-for="section in sections" :key="section.id" :value="section.id">
-                                    {{ section.name }}
+                                    {{ section.name }} - {{ section.program.name }}
                                 </option>
                             </select>
                         </td>

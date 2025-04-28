@@ -42,12 +42,12 @@ class RegisteredUserController extends Controller
     public function store(Request $request, $role = null, $model= null, $parent = null): RedirectResponse
     {   
         // Check if the user with id 1 already exists
-        if(User::where('id', 1)->exists()){
+        if(!User::where('id', 1)->exists()){
             return redirect(route('register'));
         }
 
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
+dd($year);
         // SUPER-ADMIN Registration
 
         // Check if the user with id 1 already exists
@@ -60,7 +60,7 @@ class RegisteredUserController extends Controller
                 'email'=> ['required', 'email', 'unique:users,email'],
                 'profile_img' => ['nullable', 'image:jpg,jpeg,png,gif,svg,webp|max:5150'],
             ]);
-
+            dd($fields);
             $user = User::create([
                 'id' => 1,
                 'name' => $request->name,

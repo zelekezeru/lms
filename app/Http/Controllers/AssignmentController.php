@@ -10,6 +10,7 @@ use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Student;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentController extends Controller
 {
@@ -63,6 +64,13 @@ class AssignmentController extends Controller
     public function assignCoursesToStudents(Request $request, Student $student)
     {
         $student->courses()->sync($request['courses']);
+
+        // Student Enrollment status made active by Auth::user()->id
+        $student->status()->update([
+            'is_enrolled' => true,
+            'enrolled_by_name' => Auth::user()->name,
+            'enrolled_at' => now(),
+        ]);
 
         return redirect()->route('students.show', $student->id)->with('success', 'Courses Assigned successfully.');
     }

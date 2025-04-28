@@ -85,19 +85,20 @@ class EmployeeController extends Controller
             'default_password' => $user_password, // needed for 'confirmed' rule
             'profile_img' => $profile_path,
         ]);
-
+        
         $employee = Employee::create([
             // User id temporary
             'user_id' => 1,
+            'tenant_id' => 1,
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],
         ]);
-
+dd($employee);
+        // Create a new User
         $registeredUserController = new RegisteredUserController();
 
         $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee', $employee);
-
 
         return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }

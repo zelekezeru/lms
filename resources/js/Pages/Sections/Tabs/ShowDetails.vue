@@ -41,7 +41,7 @@ const props = defineProps({
         <!-- Section Director -->
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Director</span
+                >Representative</span
             >
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ section.user.name }}

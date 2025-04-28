@@ -91,16 +91,15 @@ class StudentController extends Controller
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
 
             // Check if the student has a section & Fetch courses accordingly
-        if ($student->section === null) {            
+        if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)
-                ->where('track_id', $student->track->id)
-                ->get();
+                ->get()->load('program', 'courses');
             $courses = [];
         } else {
             $courses = $student->section->courses;
             $sections = [];
         }
-
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),

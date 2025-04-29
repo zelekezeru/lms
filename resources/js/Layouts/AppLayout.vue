@@ -151,7 +151,11 @@ const logout = () => {
                             <!-- Avatar Image -->
                             <div class="avatar-sm">
                                 <img
-                                    :src="user.value.profileImg ? user.value.profileImg : '/img/profile.jpg'"
+                                    :src="
+                                        user.profileImg
+                                            ? user.profileImg
+                                            : '/img/profile.jpg'
+                                    "
                                     alt="Profile Image"
                                     class="avatar-img rounded-circle w-10 h-10"
                                 />
@@ -205,7 +209,7 @@ const logout = () => {
                                             class="btn btn-xs btn-secondary btn-sm mt-2 inline-block px-3 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                                         >
                                             View Profile
-                                    </Link>
+                                        </Link>
                                     </div>
                                 </li>
 
@@ -219,19 +223,19 @@ const logout = () => {
                                         :href="route('profile.edit')"
                                     >
                                         My Profile
-                                </Link>
+                                    </Link>
                                     <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         My Balance
-                                </Link>
+                                    </Link>
                                     <Link
                                         class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         Inbox
-                                </Link>
+                                    </Link>
                                     <div
                                         class="dropdown-divider border-t my-2"
                                     ></div>
@@ -240,7 +244,7 @@ const logout = () => {
                                         href="#"
                                     >
                                         Account Settings
-                                </Link>
+                                    </Link>
                                     <div
                                         class="dropdown-divider border-t my-2"
                                     ></div>

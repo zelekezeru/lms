@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CurriculumStoreRequest;
 use App\Models\Curriculum;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,7 +18,6 @@ class CurriculumController extends Controller
      */
     public function index()
     {
-        dd(request()->all());
         return Inertia::render('Curriculums/Index', [
             'curricula' => Curriculum::with(['course', 'track', 'semester', 'instructor'])->get(),
             'tracks' => Track::all(),
@@ -38,16 +38,45 @@ class CurriculumController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CurriculumStoreRequest $request)
     {
-        $request->validate([
-            'track_id' => 'required',
-            'course_id' => 'required',
-            'semester_id' => 'required',
-            // additional fields...
-        ]);
+        $fields = $request->validated();
+        $bulkInsert = [];
+        $courseIds = $fields['courses'];
+        $existingCourseIds = Curriculum::where('track_id', $fields['track_id'])
+                                        ->where('study_mode_id', $fields['study_mode_id'])
+                                        ->where('year_level', $fields['year_level'])
+                                        ->where('semester', $fields['semester'])
+                                        ->pluck('course_id')
+                                        ->toArray();
+        
+        foreach ($existingCourseIds as $index => $existingCourseId) {
+            if (!in_array($existingCourseId, $courseIds)) {
+                $curriculum = Curriculum::where('track_id', $fields['track_id'])
+                                        ->where('study_mode_id', $fields['study_mode_id'])
+                                        ->where('year_level', $fields['year_level'])
+                                        ->where('semester', $fields['semester'])
+                                        ->where('course_id', $existingCourseId)
+                                        ->delete();
+                
+                unset($existingCourseIds[$index]);
+            }
+        }                            
 
-        Curriculum::create($request->all());
+        foreach ($courseIds as $courseId) {
+            if (!in_array($courseId, $existingCourseIds)) {
+                $bulkInsert[] = [
+                    'study_mode_id' => $fields['study_mode_id'],
+                    'track_id' => $fields['track_id'],
+                    'course_id' => $courseId,
+                    'year_level' => $fields['year_level'],
+                    'semester' => $fields['semester'],
+                    'description' => "This Course In This Study MOde And Track Should Be Taken" . $fields['description'] ?? "Year " . $fields['year_level'] . "Semester " . $fields['semester'],
+                ];
+            }
+        }
+
+        Curriculum::insert($bulkInsert);
 
         return redirect()->back();
     }

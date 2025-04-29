@@ -69,10 +69,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
         
-    // Curriculum routes
-    Route::get('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'edit'])->name('curricula.assign');
-    Route::post('curricula/{curriculum}/assign-courses', [CurriculumCourseController::class, 'update'])->name('curricula.assign.update');
-
     Route::get('/instructor', function () {
         return Inertia::render('Instructor');
     })->name('instructor.dashboard');
@@ -147,7 +143,6 @@ Route::middleware(['auth'])->group(function () {
         'results' => 'result',
         'weights' => 'weight',
         'grades' => 'grade',
-        'curriculums' => 'curricula',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {
@@ -168,6 +163,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
     }
+    Route::resource('curricula', CurriculumController::class);
 });
 
 

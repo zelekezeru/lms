@@ -8,15 +8,18 @@ class Curriculum extends Model
 {
     protected $guarded = [];
 
-    public function courses()
+    public function course()
     {
-        return $this->belongsToMany(Course::class, 'curriculum_course')
-            ->withPivot(['year', 'semester', 'course_type'])
-            ->withTimestamps();
+        return $this->belongsTo(Course::class);
     }
 
     public function track()
     {
         return $this->belongsTo(Track::class);
+    }
+
+    public function studyMode()
+    {
+        return $this->belongsTo(StudyMode::class);
     }
 }

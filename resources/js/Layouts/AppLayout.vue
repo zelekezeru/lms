@@ -98,7 +98,7 @@ const logout = () => {
         <!-- Mobile Sidebar Overlay -->
         <div
             v-if="isMobile && sidebarVisible"
-            class="fixed inset-0 bg-black bg-opacity-50 z-40"
+            class="fixed inset-0 bg-gray-800 dark:bg-gray-800 bg-opacity-50 z-40"
             @click="sidebarVisible = false"
         ></div>
 

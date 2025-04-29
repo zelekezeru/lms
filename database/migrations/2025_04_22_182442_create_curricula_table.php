@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('curricula', function (Blueprint $table) {
             $table->id();
             $table->foreignId('track_id')->constrained()->onDelete('cascade');
-            $table->string('curriculum_version');
+            $table->foreignId('study_mode_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->integer('year_level');
+            $table->integer('semester');
             $table->text('description')->nullable();
             $table->boolean('active')->default(false); 
             $table->timestamps();

@@ -24,6 +24,7 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    
     years: {
         type: Object,
         required: true,

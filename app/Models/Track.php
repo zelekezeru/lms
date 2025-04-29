@@ -33,7 +33,7 @@ class Track extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function curriculums()
+    public function curricula()
     {
         return $this->hasMany(Curriculum::class);
     }

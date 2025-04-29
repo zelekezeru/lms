@@ -13,4 +13,9 @@ class StudyMode extends Model
     {
         return $this->belongsTo(Program::class);
     }
+    
+    public function curricula()
+    {
+        return $this->hasMany(Curriculum::class);
+    }
 }

@@ -67,9 +67,7 @@ class Course extends Model
 
     public function curricula()
     {
-        return $this->belongsToMany(Curriculum::class, 'curriculum_course')
-            ->withPivot(['year', 'semester', 'course_type'])
-            ->withTimestamps();
+        return $this->hasMany(Curriculum::class);
     }
 
     public function prerequisites()

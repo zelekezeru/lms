@@ -131,7 +131,6 @@ onMounted(createCharts);
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Manage Instructors</h2>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm">Add Instructor</button>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">

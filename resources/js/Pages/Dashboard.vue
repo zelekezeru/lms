@@ -68,7 +68,7 @@ onMounted(createCharts);
 
 <template>
   <AppLayout>
-    <div class="p-6 space-y-8">
+    <div class="space-y-8">
       <!-- Header -->
       <div>
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Admin Dashboard</h1>

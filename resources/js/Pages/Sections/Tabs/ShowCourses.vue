@@ -105,7 +105,7 @@ const submitInstructorAssignment = () => {
                     :is="assignCourses ? XMarkIcon : PlusCircleIcon"
                     class="w-8 h-8"
                 />
-                Assign Section
+                Assign Courses
             </button>
         </div>
 
@@ -143,7 +143,7 @@ const submitInstructorAssignment = () => {
                                     Course Code
                                 </th>
                                 <th
-                                    class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
                                     Credit Hours
                                 </th>
@@ -156,6 +156,11 @@ const submitInstructorAssignment = () => {
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
                                     Actions
+                                </th>
+                                <th
+                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                >
+                                    Status
                                 </th>
                             </tr>
                         </thead>
@@ -197,7 +202,7 @@ const submitInstructorAssignment = () => {
                                     {{ course.code }}
                                 </td>
                                 <td
-                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
                                     {{ course.creditHour }}
                                 </td>
@@ -251,6 +256,11 @@ const submitInstructorAssignment = () => {
                                             >Assessments</span
                                         >
                                     </Link>
+                                </td>
+                                <td
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    {{ course.status }}
                                 </td>
                             </tr>
                         </tbody>

@@ -22,7 +22,7 @@ const props = defineProps({
 
 <template>
     <div class="">
-        <div class="flex items-center justify-between mb-4">
+        <!-- <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Students
             </h2>
@@ -31,7 +31,7 @@ const props = defineProps({
             >
                 Add Student
             </button>
-        </div>
+        </div> -->
 
         <div class="overflow-x-auto">
             <div

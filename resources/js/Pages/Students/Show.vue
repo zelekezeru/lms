@@ -17,11 +17,13 @@ import {
     PlusCircleIcon,
     BookOpenIcon,
     HomeModernIcon,
+    CurrencyDollarIcon,
 } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowAcademics from "./Tabs/ShowAcademics.vue";
 import ShowRegistrations from "./Tabs/ShowRegistrations.vue";
+import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowChurches from "./Tabs/ShowChurches.vue";
 
 const props = defineProps({
@@ -52,6 +54,7 @@ const tabs = [
     { key: 'academics', label: 'Academics', icon: BookOpenIcon },
     { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
     { key: 'registrations', label: 'Registration', icon: UsersIcon },
+    { key: 'payments', label: 'Payment', icon: CurrencyDollarIcon },
     { key: 'church', label: 'Church', icon: HomeModernIcon },
 ];
 
@@ -160,6 +163,15 @@ const deleteStudent = (id) => {
                         :status="status"
                         :showVerifyModal="showVerifyModal"
                     />
+
+                    <!-- Payments Panel -->
+                    <ShowPayments
+                        v-else-if="selectedTab === 'payments'"
+                        :student="student"
+                        :status="status"
+                        :showVerifyModal="showVerifyModal"
+                    />
+
                     <!-- Church Panel -->
                     <ShowChurches
                         v-else-if="selectedTab === 'church'"

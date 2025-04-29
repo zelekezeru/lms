@@ -151,11 +151,7 @@ const logout = () => {
                             <!-- Avatar Image -->
                             <div class="avatar-sm">
                                 <img
-                                    :src="
-                                        user.profileImg
-                                            ? user.profileImg
-                                            : '/img/profile.jpg'
-                                    "
+                                    :src="user.value.profileImg ? user.value.profileImg : '/img/profile.jpg'"
                                     alt="Profile Image"
                                     class="avatar-img rounded-circle w-10 h-10"
                                 />

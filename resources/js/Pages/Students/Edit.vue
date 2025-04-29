@@ -56,8 +56,23 @@ const previousStep = () => {
 };
 
 const submit = () => {
+    if (form.value.date_of_birth instanceof Date) {
+        const year = form.value.date_of_birth.getFullYear();
+        const month = String(form.value.date_of_birth.getMonth() + 1).padStart(2, '0');
+        const day = String(form.value.date_of_birth.getDate()).padStart(2, '0');
+
+        // Format to 'YYYY-MM-DD'
+        form.value.date_of_birth = `${year}-${month}-${day}`;
+    }
+
     form.value.processing = true; // Optional: Add a processing state if needed
     router.post(route("students.update", props.student.id), form.value, {
+        onSuccess: () => {
+            form.value.processing = false; // Reset processing state if needed
+        },
+        onError: () => {
+            form.value.processing = false; // Reset processing state if needed
+        },
     });
 };
 </script>

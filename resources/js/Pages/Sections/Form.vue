@@ -93,13 +93,13 @@ const emit = defineEmits(["submit"]);
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-                <InputLabel for="year_id" value="Year" />
+                <InputLabel for="year_id" value="Entry Year" />
                 <select
                     v-model="form.year_id"
                     id="year_id"
                     class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
-                    <option value="">Select Year</option>
+                    <option value="">Select Entry Year</option>
                     <option
                         v-for="year in years"
                         :key="year.id"

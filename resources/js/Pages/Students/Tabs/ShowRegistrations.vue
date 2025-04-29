@@ -280,7 +280,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-80 px-4 py-2 text-lg text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    Completion
+                                    Document Submission
                                 </td>
 
                                 <td

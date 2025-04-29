@@ -130,7 +130,7 @@ const addSection = () => {
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.section.name }}
+                        {{ student.section.name }} - {{ student.program.name }}
                     </span>
                 </div>
 

@@ -122,8 +122,30 @@ const emit = defineEmits(["next", "previous"]);
             <InputError :message="form.errors?.track_id" class="mt-2" />
         </div>
 
-        <div></div>
-        <div class="flex justify-end mt-4">
+        <div>
+            <InputLabel for="track_id" value="Select Study Mode" />
+            <select
+                id="track_id"
+                v-model="form.track_id"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            >
+                <option value="" disabled>Select Study Mode</option>
+                <option
+                    v-for="track in tracks"
+                    :key="track.id"
+                    :value="track.id"
+                >
+                    {{ track.name }}
+                </option>
+            </select>
+            <InputError :message="form.errors?.track_id" class="mt-2" />
+        </div>
+        
+    </div>
+    
+    <div class="flex justify-center mt-4">
+        <div>
+            <!-- Add other basic fields here -->
             <button
                 @click="$emit('previous')"
                 class="inline-flex items-center rounded-md bg-blue-600 mx-2 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-blue-700"

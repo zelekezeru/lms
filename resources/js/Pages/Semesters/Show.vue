@@ -91,7 +91,7 @@ const deleteSemester = (id) => {
                 <div class="flex justify-end mt-6 space-x-4">
                     <!-- Edit Button, only show if user has permission -->
                     <div v-if="userCan('update-semesters')">
-                        <Link
+                        <!-- <Link
                             :href="
                                 route('semesters.edit', {
                                     semester: semester.id,
@@ -101,7 +101,7 @@ const deleteSemester = (id) => {
                         >
                             <PencilIcon class="w-5 h-5" />
                             <span>Edit</span>
-                        </Link>
+                        </Link> -->
                     </div>
                     <!-- Delete Button, only show if user has permission -->
                     <div v-if="userCan('delete-semesters')">

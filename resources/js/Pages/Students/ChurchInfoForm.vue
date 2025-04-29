@@ -84,7 +84,7 @@ const emit = defineEmits(['previous', 'next', 'submit']);
 
         
     </div>  
-        <div class="mt-6 flex justify-end">
+        <div class="mt-6 flex justify-center">
             <button
                 @click="$emit('previous')"
                 class="inline-flex items-center rounded-md bg-blue-600 text-white mx-2 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"

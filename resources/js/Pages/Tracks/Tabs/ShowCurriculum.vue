@@ -193,7 +193,19 @@ const saveCurricula = () => {
             );
         },
     });
-}
+};
+
+const allCoursesAreAssigned = ref(
+    props.courses.every((course) =>
+        props.track.curricula
+            .some(
+                (curriculum) =>
+                    curriculum.course.id === course.id &&
+                    (curriculum.yearLevel != curriculaForm.year_level ||
+                        curriculaForm.semester != curriculum.semester)
+            )
+    )
+);
 </script>
 
 <template>
@@ -206,7 +218,13 @@ const saveCurricula = () => {
                 <h2
                     class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 >
-                    Curricula
+                    {{ track.program.name }} in {{ track.name }} With
+                    {{
+                        studyModes.find(
+                            (studyMode) => studyMode.id == selectedStudyModeId
+                        )?.mode
+                    }}
+                    Mode - Curricula
                 </h2>
                 <button
                     @click="openModal"
@@ -306,7 +324,14 @@ const saveCurricula = () => {
                                     </span>
                                     Curricula
                                 </h1>
-
+                                <!-- Message if all courses has been assigned to a curricula for tommorow. -->
+                                <p
+                                    class="text-red-600"
+                                    v-if="allCoursesAreAssigned"
+                                >
+                                    It Appears All Courses Are Assigned To Their
+                                    Curricula.
+                                </p>
                                 <Listbox
                                     v-model="curriculaForm.courses"
                                     :options="props.track.courses"
@@ -320,7 +345,11 @@ const saveCurricula = () => {
                                             props.track.curricula.some(
                                                 (curriculum) =>
                                                     curriculum.course.id ===
-                                                    option.id && (curriculum.yearLevel != curriculaForm.year_level || curriculaForm.semester != curriculum.semester)
+                                                        option.id &&
+                                                    (curriculum.yearLevel !=
+                                                        curriculaForm.year_level ||
+                                                        curriculaForm.semester !=
+                                                            curriculum.semester)
                                             )
                                     "
                                     placeholder="Select Courses"
@@ -338,27 +367,44 @@ const saveCurricula = () => {
                                                         (curriculum) =>
                                                             curriculum.course
                                                                 .id ===
-                                                            slotProps.option.id  && (curriculum.yearLevel != curriculaForm.year_level || curriculaForm.semester != curriculum.semester)
+                                                                slotProps.option
+                                                                    .id &&
+                                                            (curriculum.yearLevel !=
+                                                                curriculaForm.year_level ||
+                                                                curriculaForm.semester !=
+                                                                    curriculum.semester)
                                                     )
                                                 "
                                                 class="text-xs text-gray-500 dark:text-gray-200"
                                             >
-                                                Already in:
-                                                Year 
+                                                Already in: Year
                                                 {{
                                                     props.track.curricula.find(
                                                         (curriculum) =>
                                                             curriculum.course
                                                                 .id ===
-                                                            slotProps.option.id && (curriculum.yearLevel != curriculaForm.year_level || curriculaForm.semester != curriculum.semester)
+                                                                slotProps.option
+                                                                    .id &&
+                                                            (curriculum.yearLevel !=
+                                                                curriculaForm.year_level ||
+                                                                curriculaForm.semester !=
+                                                                    curriculum.semester)
                                                     ).yearLevel
-                                                }} Semester 
-                                                {{ props.track.curricula.find(
+                                                }}
+                                                Semester
+                                                {{
+                                                    props.track.curricula.find(
                                                         (curriculum) =>
                                                             curriculum.course
                                                                 .id ===
-                                                            slotProps.option.id  && (curriculum.yearLevel != curriculaForm.year_level || curriculaForm.semester != curriculum.semester)
-                                                    ).semester }}
+                                                                slotProps.option
+                                                                    .id &&
+                                                            (curriculum.yearLevel !=
+                                                                curriculaForm.year_level ||
+                                                                curriculaForm.semester !=
+                                                                    curriculum.semester)
+                                                    ).semester
+                                                }}
                                             </small>
                                         </div>
                                     </template>

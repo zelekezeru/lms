@@ -13,27 +13,6 @@ const props = defineProps({
         required: true,
     },
 });
-
-const selectedProgramsTracks = ref(
-    props.form.programs.flatMap((programId) => {
-        const program = props.programs.find((p) => p.id == programId);
-        return program.tracks;
-    })
-);
-
-// watch and updated the list of tracks
-watch(
-    () => props.form.programs,
-    () => {
-        selectedProgramsTracks.value = props.form.programs.flatMap(
-            (programId) => {
-                const program = props.programs.find((p) => p.id == programId);
-                return program.tracks;
-            }
-        );
-        props.form.tracks = form.programs.find;
-    }
-);
 const emits = defineEmits(["submit"]);
 </script>
 
@@ -103,33 +82,6 @@ const emits = defineEmits(["submit"]);
 
                 <InputError
                     :message="form.errors.programs"
-                    class="mt-2 text-sm text-red-500"
-                />
-            </div>
-
-            <!-- Track field -->
-            <div>
-                <InputLabel
-                    for="tracks"
-                    value="Select Tracks In the Programs You Selected (at least one)"
-                    class="block mb-1 text-gray-200"
-                />
-
-                <MultiSelect
-                    v-model="form.tracks"
-                    :options="selectedProgramsTracks"
-                    optionLabel="name"
-                    option-value="id"
-                    empty-message="No tracks available (make sure you select program first)"
-                    empty-filter-message="No tracks available"
-                    filter
-                    placeholder="Select Tracks (Select Program First)"
-                    :maxSelectedLabels="3"
-                    class="w-full md:w-80"
-                />
-
-                <InputError
-                    :message="form.errors.tracks"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>

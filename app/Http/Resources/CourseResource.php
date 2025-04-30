@@ -20,15 +20,19 @@ class CourseResource extends JsonResource
             'code' => $this->code,
             'programs' => $this->whenLoaded('programs'),
             'tracks' => $this->whenLoaded('tracks'),
+            'isCommon' => $this->when(
+                $this->pivot?->is_common !== null,
+                fn() => $this->pivot->is_common
+            ),
             'creditHours' => $this->credit_hours,
             'duration' => $this->duration,
             'description' => $this->description,
-            'is_training' => $this->is_training,
+            'isTraining' => $this->is_training,
             'status' => $this->status,
-            'is_deleted' => $this->is_deleted,
-            'is_published' => $this->is_published,
-            'is_approved' => $this->is_approved,
-            'is_completed' => $this->is_completed,
+            'isDeleted' => $this->is_deleted,
+            'isPublished' => $this->is_published,
+            'isApproved' => $this->is_approved,
+            'isCompleted' => $this->is_completed,
         ];
     }
 }

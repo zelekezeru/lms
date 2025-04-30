@@ -200,9 +200,7 @@ const allCoursesAreAssigned = ref(
         props.track.curricula
             .some(
                 (curriculum) =>
-                    curriculum.course.id === course.id &&
-                    (curriculum.yearLevel != curriculaForm.year_level ||
-                        curriculaForm.semester != curriculum.semester)
+                    curriculum.course.id === course.id
             )
     )
 );
@@ -315,7 +313,7 @@ const allCoursesAreAssigned = ref(
                     >
                         <div :key="curriculaForm.semester">
                             <div
-                                v-if="editSemisterCurricula"
+                                v-if="editSemisterCurricula && curriculaForm.study_mode_id"
                                 class="flex flex-col h-full"
                             >
                                 <h1 class="text-xl font-extralight mb-4">
@@ -433,7 +431,7 @@ const allCoursesAreAssigned = ref(
                                 v-else
                             >
                                 <h1 class="text-center">
-                                    Click On A Semester To Edit Its Curricula
+                                    Choose The Study Mode And Click On A Semester To Edit Its Curricula
                                 </h1>
                             </div>
                         </div>

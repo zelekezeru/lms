@@ -50,10 +50,8 @@ class CourseController extends Controller
     {
         $fields = $request->validated();
 
-        $programs = $fields['programs'] ?? [];
-        $tracks = $fields['tracks'] ?? [];
+        $programsId = $fields['programs'] ?? [];
         unset($fields['programs']);
-        unset($fields['tracks']);
 
         $year = substr(Carbon::now()->year, -2);
 
@@ -63,8 +61,16 @@ class CourseController extends Controller
 
         $course = Course::create($fields);
 
-        $course->programs()->attach($programs);
-        $course->tracks()->attach($tracks);
+        $course->programs()->syncWithPivotValues($programsId, ['is_common' => true]);
+        
+        $programs = Program::with('tracks', 'courses')->whereIn('id', $programsId)->get();
+        
+        foreach ($programs as $program) {
+            $courses = $program->courses->pluck('id');
+            foreach ($program->tracks as $track) {
+                $track->courses()->syncWithPivotValues($courses, ['is_common' => true]);
+            }
+        }
 
         return redirect(route('courses.show', $course))->with('success', 'Course created successfully.');
     }

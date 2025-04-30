@@ -16,7 +16,6 @@ const form = useForm({
     duration: "",
     description: "",
     programs: [],
-    tracks: [],
     is_training: false,
     status: false,
     is_published: false,
@@ -25,7 +24,6 @@ const form = useForm({
 });
 
 const submit = () => {
-    console.log("hii");
     form.post(route("courses.store"));
 };
 </script>

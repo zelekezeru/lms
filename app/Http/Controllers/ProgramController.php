@@ -78,38 +78,38 @@ class ProgramController extends Controller
     {
         $users = UserResource::collection(User::all());
         $courses = CourseResource::collection(Course::all());
-        
+
         return  inertia('Programs/Create', [
             'users' => $users,
             'courses' => $courses,
         ]);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(ProgramStoreRequest $request)
     {
         $fields = $request->validated();
-        $commonCourses = $fields['courses'] ?? []; 
+        $commonCourses = $fields['courses'] ?? [];
         unset($fields['courses']);
-        
+
         $year = substr(Carbon::now()->year, -2);
-        
+
         $program_id = 'PR' .  '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
-        
+
         $fields['code'] = $program_id;
 
         // Assign the selected director the PROGRAM-DIRECTOR role
         $user = User::where('id', $fields['user_id'])->first();
-        
+
         $user->assignRole('PROGRAM-DIRECTOR');
-        
+
         $program = Program::create($fields);
-        
+
         $syncData = [];
 
-        foreach($commonCourses as $commonCourse) {
+        foreach ($commonCourses as $commonCourse) {
             $syncData[$commonCourse] = ['is_common' => true];
         }
 
@@ -117,17 +117,17 @@ class ProgramController extends Controller
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Program $program)
     {
         $program->load('tracks', 'director', 'courses');
-        $courses = CourseResource::collection(Course::withExists(['  as related_to_program' => function ($query) use ($program){
+        $courses = CourseResource::collection(Course::withExists(['programs as related_to_program' => function ($query) use ($program) {
             return $query->where('programs.id', $program->id);
         }])->orderByDesc('related_to_program', 'name')->get());
-        
+
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
             'users' => UserResource::collection(User::all()),
@@ -144,12 +144,36 @@ class ProgramController extends Controller
         $commonCourseUpdated = $fields['courses'] ?? null;
         unset($fields['courses']);
 
-        // Update the program record
         $program->update($fields);
 
-        $program->courses()->sync($commonCourseUpdated);
+        if ($commonCourseUpdated !== null) {
+            $syncData = [];
+            foreach ($commonCourseUpdated as $courseId) {
+                $syncData[$courseId] = ['is_common' => true];
+            }
+            $program->courses()->sync($syncData);
 
-        // Update the director's role if the user_id changes
+            if ($program->tracks()->exists()) {
+                foreach ($program->tracks as $track) {
+                    $existingTrackCourses = $track->courses()
+                        ->wherePivot('is_common', false)
+                        ->pluck('courses.id')
+                        ->toArray();
+
+                    $finalCourses = array_unique(array_merge($existingTrackCourses, $commonCourseUpdated));
+
+                    $syncDataForTrack = [];
+                    foreach ($finalCourses as $courseId) {
+                        $syncDataForTrack[$courseId] = [
+                            'is_common' => in_array($courseId, $commonCourseUpdated),
+                        ];
+                    }
+
+                    $track->courses()->sync($syncDataForTrack);
+                }
+            }
+        }
+
         if (isset($fields['user_id'])) {
             $user = User::where('id', $fields['user_id'])->first();
             if ($user && !$user->hasRole('PROGRAM-DIRECTOR')) {
@@ -157,9 +181,9 @@ class ProgramController extends Controller
             }
         }
 
-
         return redirect()->route('programs.show', $program)->with('success', 'Program updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.

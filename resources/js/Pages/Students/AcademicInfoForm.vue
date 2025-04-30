@@ -30,6 +30,28 @@ const props = defineProps({
     },
 });
 
+
+// const selectedProgramsTracks = ref(
+//     props.form.programs.flatMap((programId) => {
+//         const program = props.programs.find((p) => p.id == programId);
+//         return program.tracks;
+//     })
+// );
+
+// // watch and updated the list of tracks
+// watch(
+//     () => props.form.programs,
+//     () => {
+//         selectedProgramsTracks.value = props.form.programs.flatMap(
+//             (programId) => {
+//                 const program = props.programs.find((p) => p.id == programId);
+//                 return program.tracks;
+//             }
+//         );
+//         props.form.tracks = form.programs.find;
+//     }
+// );
+
 // Emits
 const emit = defineEmits(["next", "previous"]);
 </script>

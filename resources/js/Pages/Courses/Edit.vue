@@ -19,7 +19,6 @@ const form = useForm({
     name: props.course.name,
     code: props.course.code,
     programs: props.course.programs.map((program) => program.id),
-    tracks: props.course.tracks.map((track) => track.id),
     code: props.course.code,
     credit_hours: props.course.credit_hours,
     duration: props.course.duration,

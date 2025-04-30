@@ -73,15 +73,7 @@ const submitCourseAssignment = () => {
         </div>
 
         <div class="overflow-x-auto">
-            <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
-                
-                <div class="flex items-center justify-between mb-4">
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                        Courses
-                    </h2>
-                </div>
+            <div class="pb-4">
 
                 <!-- Make sure Courses is not null -->
                 <div v-if="!student.courses" class="text-center">

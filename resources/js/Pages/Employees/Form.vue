@@ -51,7 +51,6 @@ const handleFileChange = (e) => {
                 <InputLabel for="contact_phone" value="Contact Phone" />
                 <TextInput
                     id="contact_phone"
-                    type="text"
                     v-model="form.contact_phone"
                     class="w-full"
                 />

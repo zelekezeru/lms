@@ -15,11 +15,12 @@ const form = useForm({
     id: props.employee.id || "",
     name: props.employee.name || "",
     email: props.employee.email || "",
-    password: props.employee.password || "employees@default", // Set default if no password provided
+    password: props.employee.user.default_password || "", // Set default if no password provided
     password_confirmation:
-        props.employee.password_confirmation || "employees@default",
+        props.employee.password_confirmation || "",
     role_name: props.employee.userRole || "",
     job_position: props.employee.jobPosition || "",
+    contact_phone: props.employee.user.phone || "",
     employment_type: props.employee.employmentType || "",
     office_hours: props.employee.officeHours || "",
     profile_img: props.employee.profile_img || "",

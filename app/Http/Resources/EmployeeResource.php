@@ -19,10 +19,11 @@ class EmployeeResource extends JsonResource
             'id' => $this->id,
             'name'  => $this->user->name,
             'email' => $this->user->email,
-            'userRole' => $this->user->roles()->first()->name,
+            'userRole' => $this->user ? $this->user->roles()->first()->name : null,
             'jobPosition'  => $this->job_position,
             'employmentType' => $this->employment_type,
             'officeHours'  => $this->office_hours,
+            'contact_phone' => $this->user->phone,
 
             'user' => $this->whenLoaded('user'),
             'profileImg'  => Storage::url($this->user->profile_img),

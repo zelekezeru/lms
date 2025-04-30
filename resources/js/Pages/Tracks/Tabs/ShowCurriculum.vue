@@ -224,14 +224,16 @@ const allCoursesAreAssigned = ref(
                             (studyMode) => studyMode.id == selectedStudyModeId
                         )?.mode
                     }}
-                    Mode - Curricula
+                    Mode - Curriculum
                 </h2>
+            </div>
+            <div class="inline-flex items-center gap-2 px-4 py-2">
                 <button
                     @click="openModal"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                     <PlusIcon class="w-5 h-5" />
-                    Create Curricula
+                    Create Curriculum
                 </button>
             </div>
 

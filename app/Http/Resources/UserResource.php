@@ -22,6 +22,8 @@ class UserResource extends JsonResource
             'profileImg'  => Storage::url($this->profile_img),
             'user_uuid' => $this->user_uuid,
             'tenant_id' => $this->tenant_id,
+            'userRole' => $this->user ? $this->user->roles()->first()->name : null,
+            'default_password' => $this->user ? $this->user->default_password : null,
         ];
     }
 }

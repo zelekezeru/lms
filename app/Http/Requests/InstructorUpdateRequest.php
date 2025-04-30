@@ -15,10 +15,10 @@ class InstructorUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $this->instructor->user->id,            
-            'contact_phone' => 'nullable|string|max:15',
+            'email' => 'sometimes|required|email|unique:users,email,' . $this->instructor->user->id,            
+            'contact_phone' => 'sometimes|required||string|max:15',
 
-            'specialization' => 'sometimes|string|max:255',
+            'specialization' => 'sometimes|required|string|max:255',
             'courses' => 'sometimes|required|array|min:1',
             'employment_type' => 'required|in:FULL-TIME, PART-TIME, CONTRACT,Visitor',
             'hire_date' => 'required|date',

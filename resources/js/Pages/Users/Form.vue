@@ -43,6 +43,17 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
+            
+            <div>
+                <InputLabel for="phone" value="Phone Number" />
+                <TextInput
+                    id="phone"
+                    v-model="form.phone"
+                    required
+                    class="w-full"
+                />
+                <InputError :message="form.errors.phone" />
+            </div>
 
             <div>
                 <InputLabel for="email" value="Email" />

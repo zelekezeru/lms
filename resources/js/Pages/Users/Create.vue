@@ -10,6 +10,7 @@ defineProps({
 // Initialize the form data
 const form = useForm({
     name: "",
+    phone: "",
     email: "",
     password: "users@default", // Default password
     password_confirmation: "users@default", // Default confirmation

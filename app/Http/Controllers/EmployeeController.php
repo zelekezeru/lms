@@ -88,17 +88,16 @@ class EmployeeController extends Controller
         
         $employee = Employee::create([
             // User id temporary
-            'user_id' => 1,
-            'tenant_id' => 1,
+            'user_id' => 3,
             'job_position' => $fields['job_position'],
             'employment_type' => $fields['employment_type'],
             'office_hours' => $fields['office_hours'],
         ]);
-dd($employee);
+
         // Create a new User
         $registeredUserController = new RegisteredUserController();
 
-        $user = $registeredUserController->store($request, 'EMPLOYEE', 'Employee', $employee);
+        $user = $registeredUserController->store($request, $request->role_name, 'Employee', $employee);
 
         return redirect(route('employees.show', $employee))->with('success', 'Employee created successfully.');
     }

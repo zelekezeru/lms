@@ -175,6 +175,8 @@ class RolePermissionSeeder extends Seeder
             'course-students',
             'attach-course-students',
             'detach-course-students',
+            
+            'default-password',
         ];
 
         // Create all permissions

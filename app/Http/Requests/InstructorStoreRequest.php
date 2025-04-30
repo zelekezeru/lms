@@ -16,10 +16,10 @@ class InstructorStoreRequest extends FormRequest
         return [
             // User table validations
             'name'      => 'required|string|max:255',
-            'contact_phone' => 'nullable|string|max:15',
+            'contact_phone' => 'required|string|max:15',
             
             // Instructor table validations
-            'specialization' => 'nullable|string|max:255',
+            'specialization' => 'required|string|max:255',
             'employment_type' => 'required|in:FULL-TIME, PART-TIME, CONTRACT,Visitor',
             
             'hire_date' => 'required|date',

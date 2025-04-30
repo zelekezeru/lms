@@ -18,6 +18,7 @@ const form = useForm({
     email: props.user.email || "",
     password: "",
     password_confirmation: "",
+    phone: props.user.phone | "",
     role_name: props.user.roles?.[0]?.name || "", // Get the first role name if available
     profile_img: props.user.profile_img || "",
     _method: "PUT", // Indicates PUT method for the update

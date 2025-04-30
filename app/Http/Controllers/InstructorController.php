@@ -108,8 +108,7 @@ class InstructorController extends Controller
             'name' => $fields['name'],
 
             // User id temporary
-            'user_id' => 1,
-            'tenant_id' => 1,
+            'user_id' => 3,
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
             'bio' => $fields['bio'],

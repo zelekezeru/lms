@@ -76,8 +76,13 @@ const deleteTrack = (id) => {
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
+                ><Link
+                    :href="
+                        route('programs.show', { program: track.program.id })
+                    "
                 >
                     {{ track.program.name }}
+                </Link>
                 </span>
             </div>
 

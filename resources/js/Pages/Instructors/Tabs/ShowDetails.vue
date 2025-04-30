@@ -144,6 +144,14 @@ const deleteInstructor = (id) => {
                         <div v-else class="text-green-500">Active</div>
                     </span>
                 </div>
+
+                <!-- Default Password -->
+                <div class="flex flex-col">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">Default Password</span>
+                    <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {{ instructor.user.default_password }}
+                    </span>
+                </div>
             </div>
 
             <!-- Edit and Delete Buttons -->

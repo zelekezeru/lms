@@ -30,7 +30,11 @@ class InstructorResource extends JsonResource
             'updated_at'    => $this->updated_at,
             
             'profileImg'  => Storage::url($this->user->profile_img),
+
             'user' => $this->whenLoaded('user'),
+
+            'userRole' => $this->user && $this->user->roles()->first() ? $this->user->roles()->first()->name : null,
+            
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'sections' => $this->whenLoaded('courseSectionAssignments', function() {
                 return $this->courseSectionAssignments->map(function($courseSectionAssignment) {

@@ -41,13 +41,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request, $role = null, $model= null, $parent = null): RedirectResponse
     {   
-        // Check if the user with id 1 already exists
-        if(!User::where('id', 1)->exists()){
-            return redirect(route('register'));
-        }
-
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-dd($year);
+
         // SUPER-ADMIN Registration
 
         // Check if the user with id 1 already exists
@@ -60,7 +55,7 @@ dd($year);
                 'email'=> ['required', 'email', 'unique:users,email'],
                 'profile_img' => ['nullable', 'image:jpg,jpeg,png,gif,svg,webp|max:5150'],
             ]);
-            dd($fields);
+            
             $user = User::create([
                 'id' => 1,
                 'name' => $request->name,
@@ -168,15 +163,15 @@ dd($year);
                 return redirect(route('instructors.show', $parent->id))->with('success', 'Instructor created successfully.');
             }
             // Employee User
-            elseif($role == 'EMPLOYEE')
-            {
+            elseif($role != null)
+            {                
                 $user = User::create($fields);
 
                 $parent->update([
                     'user_id' => $user->id,
                 ]);
 
-                $user->assignRole();
+                $user->assignRole($role);
                 
                 return redirect(route('employees.show', $parent->id))->with('success', 'Employee created successfully.');
             }
@@ -213,14 +208,14 @@ dd($year);
                 $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
             }elseif($role == 'ADMIN') {
                 $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-            }elseif($role == 'USER') {
-                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-            }  elseif($role == 'EMPLOYEE') {
-                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
             } elseif($role == 'INSTRUCTOR') {
                 $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
             }elseif($role == 'STUDENT') {
                 $userUuid = $tenant->name . '-' . $year . '-'. substr($role, 0, 2) . '-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+            }elseif($role == 'USER') {
+                $userUuid = $tenant->name . '-'. substr($role, 0, 2) . '-' . str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+            }  elseif($role != null) {
+                $userUuid = $tenant->name . '-'. substr('EMPLOYEE', 0, 2) . '-' . str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
             }
         }
         return $userUuid;

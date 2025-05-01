@@ -4,7 +4,7 @@ import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon ,AcademicCapIcon, ViewColumnsIcon, CalendarIcon} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
 defineProps({
@@ -90,78 +90,70 @@ const deleteSection = (id) => {
 
         <!-- Sections Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                    v-for="section in sections"
+                    :key="section.id"
+                    class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-4 border dark:border-gray-700"
                 >
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Program</th>
-                        <th scope="col" class="px-6 py-3">Section</th>
-                        <th scope="col" class="px-6 py-3">Year</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="section in sections"
-                        :key="section.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
                     >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
+                        <Link
+                            :href="
+                                route('sections.show', { section: section.id })
+                            "
+                            class="ml-1 text-blue-600 hover:underline"
                         >
-                            <Link
-                                :href="
-                                    route('sections.show', {
-                                        section: section.id,
-                                    })
-                                "
-                            >
-                                {{ section.program.name }}
-                            </Link>
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ section.name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ section.year.name }}
-                        </td>
-                        <td class="px-6 py-4 flex justify-between">
-                            <Link
-                                :href="
-                                    route('sections.show', {
-                                        section: section.id,
-                                    })
-                                "
-                                class="text-blue-500 hover:text-blue-700"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                            </Link>
-                            <Link
-                                v-if="userCan('update-sections')"
-                                :href="
-                                    route('sections.edit', {
-                                        section: section.id,
-                                    })
-                                "
-                                class="text-green-500 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                v-if="userCan('delete-sections')"
-                                @click="deleteSection(section.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            {{ section.program.name }}
+                        </Link>
+                    </div>
+
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                    >
+                        <ViewColumnsIcon class="w-5 h-5 mr-2 text-teal-500" />
+                        <span class="font-semibold">Section:</span>
+                        <span class="ml-1">{{ section.name }}</span>
+                    </div>
+
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                    >
+                        <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
+                        <span class="font-semibold">Year:</span>
+                        <span class="ml-1">{{ section.year.name }}</span>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-4">
+                        <Link
+                            :href="
+                                route('sections.show', { section: section.id })
+                            "
+                            class="text-blue-500 hover:text-blue-700"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            v-if="userCan('update-sections')"
+                            :href="
+                                route('sections.edit', { section: section.id })
+                            "
+                            class="text-green-500 hover:text-green-700"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                        <button
+                            v-if="userCan('delete-sections')"
+                            @click="deleteSection(section.id)"
+                            class="text-red-500 hover:text-red-700"
+                        >
+                            <TrashIcon class="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </AppLayout>
 </template>

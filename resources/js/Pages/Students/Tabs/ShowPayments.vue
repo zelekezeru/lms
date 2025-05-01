@@ -23,9 +23,9 @@ const props = defineProps({
 });
 
 const assignPayments = ref(false);
-const paymentAssignmentForm = useForm({
-    payments: props.student.payments.map(payment => payment.id),
-});
+// const paymentAssignmentForm = useForm({
+//     payments: props.student.payments.map(payment => payment.id),
+// });
 
 const closePaymentAssignment = () => {
     assignPayments.value = false;
@@ -66,22 +66,14 @@ const submitPaymentAssignment = () => {
             >
                 <component
                     :is="assignPayments ? XMarkIcon : PlusCircleIcon"
-                    class="w-8 h-8"
+                    class="mx-2 w-8 h-8"
                 />
-                Assign Section
+                Add Payment
             </button>
         </div>
 
         <div class="overflow-x-auto">
             <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
-                
-                <div class="flex items-center justify-between mb-4">
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                        Payments
-                    </h2>
-                </div>
 
                 <!-- Make sure Payments is not null -->
                 <div v-if="!student.payments" class="text-center">

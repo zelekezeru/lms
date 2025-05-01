@@ -22,6 +22,7 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\CurriculumCourseController;
+use App\Http\Controllers\HomeController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,7 @@ Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
     // Profiles related routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

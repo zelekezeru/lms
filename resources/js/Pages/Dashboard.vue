@@ -64,6 +64,23 @@ const createCharts = () => {
 };
 
 onMounted(createCharts);
+
+
+defineProps({
+    courses: {
+        type: Object,
+        required: true,
+    },
+    students: {
+        type: Object,
+        required: true,
+    },
+    instructors: {
+        type: Object,
+        required: true,
+    }
+});
+
 </script>
 
 <template>
@@ -82,7 +99,7 @@ onMounted(createCharts);
             <AcademicCapIcon class="w-8 h-8 text-blue-500" />
             <div>
               <p class="text-gray-500 dark:text-gray-400 text-sm">Courses</p>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">120</h2>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ courses }}</h2>
             </div>
           </div>
         </div>
@@ -91,7 +108,7 @@ onMounted(createCharts);
             <UserGroupIcon class="w-8 h-8 text-green-500" />
             <div>
               <p class="text-gray-500 dark:text-gray-400 text-sm">Students</p>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">2,400</h2>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ students }}</h2>
             </div>
           </div>
         </div>
@@ -100,7 +117,7 @@ onMounted(createCharts);
             <ClipboardDocumentCheckIcon class="w-8 h-8 text-yellow-500" />
             <div>
               <p class="text-gray-500 dark:text-gray-400 text-sm">Instructors</p>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">35</h2>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ instructors }}</h2>
             </div>
           </div>
         </div>

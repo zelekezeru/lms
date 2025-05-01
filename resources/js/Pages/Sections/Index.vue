@@ -96,62 +96,58 @@ const deleteSection = (id) => {
                     :key="section.id"
                     class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-4 border dark:border-gray-700"
                 >
-                    <div
-                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                        <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
-                        <Link
-                            :href="
-                                route('sections.show', { section: section.id })
-                            "
-                            class="ml-1 text-blue-600 hover:underline"
+                    <Link
+                        :href="route('sections.show', { section: section.id })" class="ml-1 text-blue-600" >
+                        <div
+                            class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
                         >
-                            {{ section.program.name }}
-                        </Link>
-                    </div>
+                            <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
+                                {{ section.program.name }}
+                        </div>
 
-                    <div
-                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                        <ViewColumnsIcon class="w-5 h-5 mr-2 text-teal-500" />
-                        <span class="font-semibold">Section:</span>
-                        <span class="ml-1">{{ section.name }}</span>
-                    </div>
+                        <div
+                            class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                        >
+                            <ViewColumnsIcon class="w-5 h-5 mr-2 text-teal-500" />
+                            <span class="font-semibold">Section:</span>
+                            <span class="ml-1">{{ section.name }}</span>
+                        </div>
 
-                    <div
-                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                        <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
-                        <span class="font-semibold">Year:</span>
-                        <span class="ml-1">{{ section.year.name }}</span>
-                    </div>
+                        <div
+                            class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                        >
+                            <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
+                            <span class="font-semibold">Year:</span>
+                            <span class="ml-1">{{ section.year.name }}</span>
+                        </div>
 
-                    <div class="flex justify-end space-x-3 mt-4">
-                        <Link
-                            :href="
-                                route('sections.show', { section: section.id })
-                            "
-                            class="text-blue-500 hover:text-blue-700"
-                        >
-                            <EyeIcon class="w-5 h-5" />
-                        </Link>
-                        <Link
-                            v-if="userCan('update-sections')"
-                            :href="
-                                route('sections.edit', { section: section.id })
-                            "
-                            class="text-green-500 hover:text-green-700"
-                        >
-                            <PencilSquareIcon class="w-5 h-5" />
-                        </Link>
-                        <button
-                            v-if="userCan('delete-sections')"
-                            @click="deleteSection(section.id)"
-                            class="text-red-500 hover:text-red-700"
-                        >
-                            <TrashIcon class="w-5 h-5" />
-                        </button>
-                    </div>
+                        <div class="flex justify-end space-x-3 mt-4">
+                            <Link
+                                :href="
+                                    route('sections.show', { section: section.id })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
+                                <EyeIcon class="w-5 h-5" />
+                            </Link>
+                            <Link
+                                v-if="userCan('update-sections')"
+                                :href="
+                                    route('sections.edit', { section: section.id })
+                                "
+                                class="text-green-500 hover:text-green-700"
+                            >
+                                <PencilSquareIcon class="w-5 h-5" />
+                            </Link>
+                            <button
+                                v-if="userCan('delete-sections')"
+                                @click="deleteSection(section.id)"
+                                class="text-red-500 hover:text-red-700"
+                            >
+                                <TrashIcon class="w-5 h-5" />
+                            </button>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>

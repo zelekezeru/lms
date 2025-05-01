@@ -49,7 +49,6 @@ const updateScreenSize = () => {
     sidebarVisible.value = !isMobile.value;
 };
 
-// Add event listeners
 onMounted(() => {
     updateScreenSize();
     window.addEventListener("resize", updateScreenSize);
@@ -66,13 +65,9 @@ onUnmounted(() => {
 
 // Dropdown visibility state
 const dropdownVisible = ref(false);
-
-// Toggle dropdown visibility
 const toggleDropdown = () => {
     dropdownVisible.value = !dropdownVisible.value;
 };
-
-// Close dropdown on outside click
 const closeDropdown = () => {
     dropdownVisible.value = false;
 };
@@ -110,24 +105,25 @@ const logout = () => {
                 'ml-20': !isMobile && !sidebarVisible,
             }"
         >
-            <!-- Navbar -->
+            <!-- Fixed Navbar -->
             <nav
-                class="border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-gray-800 text-gray-200"
+                class="fixed top-0 right-0 z-50 border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-gray-800 text-gray-200 transition-all duration-300"
+                :class="{
+                    'left-64': !isMobile && sidebarVisible,
+                    'left-20': !isMobile && !sidebarVisible,
+                    'left-0': isMobile,
+                }"
             >
                 <div class="flex items-center gap-3">
-                    <!-- Sidebar Toggler -->
                     <button @click="sidebarVisible = !sidebarVisible">
                         <Bars3Icon class="w-6 h-6 text-gray-200" />
                     </button>
-                    <!-- Back Button -->
                     <button
                         @click="goBack"
                         class="p-2 hover:bg-gray-700 rounded-md"
                     >
                         <ArrowLeftIcon class="w-6 h-6 text-gray-200" />
                     </button>
-
-                    <!-- Forward Button -->
                     <button
                         @click="goForward"
                         class="p-2 hover:bg-gray-700 rounded-md"
@@ -136,19 +132,17 @@ const logout = () => {
                     </button>
                 </div>
 
-                <!-- Other Navbar Content -->
+                <!-- Right-side nav -->
                 <div class="flex items-center gap-4 ml-auto">
-                    <!-- User Info -->
+                    <!-- User Dropdown -->
                     <div
                         class="relative nav-item topbar-user dropdown hidden-caret"
                     >
-                        <!-- Dropdown Toggle -->
                         <button
                             class="dropdown-toggle profile-pic flex items-center gap-2 focus:outline-none"
                             @click="toggleDropdown"
                             aria-expanded="dropdownVisible"
                         >
-                            <!-- Avatar Image -->
                             <div class="avatar-sm">
                                 <img
                                     :src="
@@ -160,8 +154,6 @@ const logout = () => {
                                     class="avatar-img rounded-circle w-10 h-10"
                                 />
                             </div>
-
-                            <!-- User Name (hidden on mobile screens) -->
                             <span
                                 class="profile-username text-sm hidden md:block"
                             >
@@ -171,7 +163,6 @@ const logout = () => {
                             </span>
                         </button>
 
-                        <!-- Dropdown Menu -->
                         <ul
                             v-show="dropdownVisible"
                             @click.outside="closeDropdown"
@@ -180,7 +171,6 @@ const logout = () => {
                             <div
                                 class="dropdown-user-scroll scrollbar-outer p-4"
                             >
-                                <!-- User Box -->
                                 <li class="user-box flex items-center gap-4">
                                     <div class="avatar-lg">
                                         <img
@@ -213,7 +203,6 @@ const logout = () => {
                                     </div>
                                 </li>
 
-                                <!-- Dropdown Links -->
                                 <li>
                                     <div
                                         class="dropdown-divider border-t my-2"
@@ -262,7 +251,7 @@ const logout = () => {
                         </ul>
                     </div>
 
-                    <!-- Theme Toggle Button -->
+                    <!-- Theme toggle -->
                     <button @click="toggleTheme" class="p-2">
                         <MoonIcon
                             v-if="!isDarkMode"
@@ -273,8 +262,8 @@ const logout = () => {
                 </div>
             </nav>
 
-            <!-- Page Content -->
-            <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-800">
+            <!-- Main Page Content -->
+            <main class="flex-1 p-6 pt-24 bg-gray-100 dark:bg-gray-800">
                 <slot />
             </main>
         </div>

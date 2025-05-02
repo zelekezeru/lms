@@ -137,14 +137,13 @@ const deleteEmployee = (id) => {
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button
+                            <!-- <button
                                 v-if="userCan('delete-employees')"
                                 @click="deleteEmployee(employee.id)"
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />
-                                <span>Delete</span>
-                            </button>
+                            </button> -->
                         </td>
                     </tr>
                 </tbody>

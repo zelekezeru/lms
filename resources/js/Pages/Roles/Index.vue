@@ -3,7 +3,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import { EyeIcon, TrashIcon, ArrowPathIcon, ShieldCheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
@@ -129,76 +129,73 @@ const searchRoles = () => {
         </div>
 
         <!-- Roles Table OR No Results Message -->
-        <div
-            v-if="roles.data.length > 0"
-            class="overflow-x-auto shadow-md sm:rounded-lg"
-        >
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+         <!-- Sections Table -->
+        
+        <div v-if="roles.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg" >
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                    v-for="role in roles.data"
+                    :key="role.id"
+                    class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-4 border dark:border-gray-700"
                 >
-                    <tr>
-                        <th scope="col" class="px-6 py-3">Role Name</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="role in roles.data"
-                        :key="role.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
+                    <Link
+                        v-if="role && role.id"
+                        :href="route('roles.show', { role: role.id })"
+                        class="ml-1 text-blue-600"
                     >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        <div
+                            class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
                         >
-                            <Link
-                                :href="route('roles.show', { role: role.id })"
-                            >
-                                {{ role.name }}
-                            </Link>
-                        </th>
-                        <td class="px-6 py-4 flex justify-between">
+                            <ViewColumnsIcon class="w-5 h-5 mr-2 text-teal-500" />
+                            <span class="font-semibold">Role:</span>
+                            <span class="ml-1">{{ role.name }}</span>
+                        </div>
+
+                        <div
+                            class="mb-3 flex text-gray-700 dark:text-gray-300  space-x-10 mt-4"
+                        >
+
                             <Link
                                 :href="
                                     route('roles.permissions', {
                                         role: role.id,
                                     })
                                 "
-                                class="inline-flex items-center rounded-md bg-green-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700"
+                                class="inline-flex items-center rounded-md text-white px-4 py-2 text-xs font-semibold uppercase"
                             >
+                                <ShieldCheckIcon class="w-5 h-5 mr-2 text-teal-500" />
                                 Manage Permissions
                             </Link>
+                            
                             <Link
-                                :href="route('roles.show', { role: role.id })"
+                                :href="
+                                    route('roles.show', { role: role.id })
+                                "
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
-                                :href="route('roles.edit', { role: role.id })"
+                                v-if="userCan('update-roles')"
+                                :href="
+                                    route('roles.edit', { role: role.id })
+                                "
                                 class="text-green-500 hover:text-green-700"
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button
-                                @click="deleterole(role.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                    </Link>
+                    <div v-else class="text-red-500">Role data is missing or invalid.</div>
+                </div>
+            </div>
         </div>
 
         <!-- No Search Results Message -->
         <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
-            <p>No search results found.</p>
+            <p class="text-lg font-semibold">No roles found.</p>
+            <p class="text-sm">Try adjusting your search or adding a new role.</p>
         </div>
 
         <!-- Pagination Links -->

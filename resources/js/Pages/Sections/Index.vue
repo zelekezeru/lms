@@ -139,13 +139,6 @@ const deleteSection = (id) => {
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button
-                                v-if="userCan('delete-sections')"
-                                @click="deleteSection(section.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
                         </div>
                     </Link>
                 </div>

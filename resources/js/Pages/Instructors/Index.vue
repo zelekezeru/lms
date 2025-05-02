@@ -187,12 +187,12 @@ const searchInstructors = () => {
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button
+                            <!-- <button
                                 @click="deleteInstructor(instructor.id)"
                                 class="text-red-500 hover:text-red-700"
                             >
                                 <TrashIcon class="w-5 h-5" />
-                            </button>
+                            </button> -->
                         </td>
                     </tr>
                 </tbody>

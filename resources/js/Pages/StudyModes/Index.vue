@@ -179,13 +179,13 @@ const searchStudyModes = () => {
             >
               <PencilSquareIcon class="w-5 h-5" />
             </Link>
-            <button
+            <!-- <button
               v-if="userCan('delete-studyModes')"
               @click="deleteStudyMode(studyMode.id)"
               class="text-red-500 hover:text-red-700"
             >
               <TrashIcon class="w-5 h-5" />
-            </button>
+            </button> -->
           </td>
         </TableZebraRows>
       </tbody>

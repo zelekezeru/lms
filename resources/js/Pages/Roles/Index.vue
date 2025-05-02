@@ -129,7 +129,6 @@ const searchRoles = () => {
         </div>
 
         <!-- Roles Table OR No Results Message -->
-         <!-- Sections Table -->
         
         <div v-if="roles.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg" >
         

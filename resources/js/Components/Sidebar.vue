@@ -21,6 +21,11 @@ import {
     EyeIcon,
     CalendarIcon,
     ChartPieIcon,
+    CurrencyDollarIcon,
+    BanknotesIcon,
+    DocumentCurrencyDollarIcon,
+    CalendarDateRangeIcon,
+    CreditCardIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarDrowpdownLink from "./SidebarDrowpdownLink.vue";
@@ -432,6 +437,53 @@ const afterLeave = (el) => {
                     >
                         <FolderIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Inventory Categories</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>
+                
+
+                <!-- Payment -->
+
+                <SidebarDropdownMenu
+                    :label="'Payment'"
+                    :icon="CurrencyDollarIcon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="
+                        userCanAny([
+                            'view-payments',
+                            'view-payment-categories',
+                            'view-payment-schedules',
+                            'view-payment-items',
+                        ])
+                    "
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-payments')"
+                        :href="route('payments.index')"
+                    >
+                        <BanknotesIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">All Payments</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-payment-items')"
+                        :href="route('paymentItems.index')"
+                    >
+                        <CreditCardIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Payment Items</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-payment-categories')"
+                        :href="route('paymentCategories.index')"
+                    >
+                        <DocumentCurrencyDollarIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Payment Categories</span>
+                    </SidebarDrowpdownLink>
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-payment-schedules')"
+                        :href="route('paymentSchedules.index')"
+                    >
+                        <CalendarDateRangeIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Payment Schedules</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 

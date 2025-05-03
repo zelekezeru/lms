@@ -155,6 +155,30 @@ class RolePermissionSeeder extends Seeder
             'update-curriculums',
             'delete-curriculums',
 
+            // Payment (CRUD)
+            'view-payments',
+            'create-payments',
+            'update-payments',
+            'delete-payments',
+
+            // Payment Categories (CRUD)
+            'view-payment-categories',
+            'create-payment-categories',
+            'update-payment-categories',
+            'delete-payment-categories',
+
+            // Payment Items (CRUD)
+            'view-payment-items',
+            'create-payment-items',
+            'update-payment-items',
+            'delete-payment-items',            
+
+            // Payment Schedule (CRUD)
+            'view-payment-schedules',
+            'create-payment-schedules',
+            'update-payment-schedules',
+            'delete-payment-schedules',
+
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -331,6 +355,25 @@ class RolePermissionSeeder extends Seeder
                     'course-students',
                     'attach-course-students',
                     'detach-course-students',
+                    'view-payments',
+                    'create-payments',
+                    'update-payments',
+                    'delete-payments',
+
+                    'view-payment-categories',
+                    'create-payment-categories',
+                    'update-payment-categories',
+                    'delete-payment-categories',
+                    
+                    'view-payment-items',
+                    'create-payment-items',
+                    'update-payment-items',
+                    'delete-payment-items',
+                    
+                    'view-payment-schedules',
+                    'create-payment-schedules',
+                    'update-payment-schedules',
+                    'delete-payment-schedules',
 
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);

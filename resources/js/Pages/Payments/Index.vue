@@ -6,22 +6,20 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
-import Table from "@/Components/Table.vue";
-import TableHeader from "@/Components/TableHeader.vue";
-import TableZebraRows from "@/Components/TableZebraRows.vue";
-import Thead from "@/Components/Thead.vue";
 
 defineProps({
-    payments: Object,
-    sortInfo: Object, // You might need to implement sorting later
+    payments: {
+        type: Object,
+        required: true,
+    },
 });
 
 const refreshing = ref(false);
-const search = ref(usePage().props.search || "");
 
-// Refresh function
 const refreshData = () => {
     refreshing.value = true;
+    router.flush("/payments", { method: "get" });
+
     router.visit(route("payments.index"), {
         only: ["payments"],
         onFinish: () => {
@@ -30,16 +28,6 @@ const refreshData = () => {
     });
 };
 
-// Search function
-const searchPayments = () => {
-    router.get(
-        route("payments.index"),
-        { ...route().params, search: search.value },
-        { preserveState: true }
-    );
-};
-
-// Delete function with SweetAlert confirmation
 const deletePayment = (id) => {
     Swal.fire({
         title: "Are you sure?",
@@ -53,11 +41,7 @@ const deletePayment = (id) => {
         if (result.isConfirmed) {
             router.delete(route("payments.destroy", { payment: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The payment has been deleted.",
-                        "success"
-                    );
+                    Swal.fire("Deleted!", "The payment has been deleted.", "success");
                 },
             });
         }
@@ -67,94 +51,106 @@ const deletePayment = (id) => {
 
 <template>
     <AppLayout>
-        <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
-            Payments
-        </h1>
+        <div class="my-6 text-center">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                Payments
+            </h1>
+        </div>
 
         <div class="flex justify-between items-center mb-3">
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"/>
-                    </svg>
-                </span>
-                <input
-                    type="text"
-                    v-model="search"
-                    placeholder="Search Payments..."
-                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
-                    @input="searchPayments"
-                />
-            </div>
-
-            <div class="flex space-x-6">
-                <Link
-                    :href="route('students.payments.create', { student: usePage().props.student.id })"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                    + Add Payment
-                </Link>
-
-                <button
-                    @click="refreshData"
-                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    title="Refresh Data"
-                >
-                    <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }"/>
-                    Refresh Data
-                </button>
-            </div>
+            <Link
+                v-if="userCan('create-payments')"
+                :href="route('payments.create')"
+                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+                Add New Payment
+            </Link>
+            <button
+                @click="refreshData"
+                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                title="Refresh Data"
+            >
+                <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
+                Refresh Data
+            </button>
         </div>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
-            <Table>
-                <TableHeader>
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <Thead>ID</Thead>
-                        <Thead>Student</Thead>
-                        <Thead>Category</Thead>
-                        <Thead>Date</Thead>
-                        <Thead>Amount</Thead>
-                        <Thead>Status</Thead>
-                        <Thead>Actions</Thead>
+                        <th scope="col" class="px-6 py-3">ID</th>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3">Amount</th>
+                        <th scope="col" class="px-6 py-3">Payment Method</th>
+                        <th scope="col" class="px-6 py-3">Payment Status</th>
+                        <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
-                </TableHeader>
+                </thead>
                 <tbody>
-                    <TableZebraRows
-                        v-for="payment in payments.data"
-                        :key="payment.id"
-                    >
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <tr v-for="payment in payments.data" :key="payment.id" class="border-b dark:border-gray-700">
+                        <td class="px-6 py-4">{{ payment.id }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
                             <Link :href="route('payments.show', { payment: payment.id })">
-                                {{ payment.id }}
+                                {{ payment.name }}
                             </Link>
-                        </th>
-                        <td class="px-6 py-4">{{ payment.student.name }}</td>
-                        <td class="px-6 py-4">{{ payment.payment_category ? payment.payment_category.name : '-' }}</td>
-                        <td class="px-6 py-4">{{ payment.payment_date }}</td>
+                        </td>
                         <td class="px-6 py-4">{{ payment.total_amount }}</td>
-                        <td class="px-6 py-4">{{ payment.status }}</td>
-                        <td class="px-6 py-4 flex space-x-6">
-                            <Link :href="route('payments.show', { payment: payment.id })" class="text-blue-500 hover:text-blue-700">
-                                <EyeIcon class="w-5 h-5"/>
+                        <td class="px-6 py-4">
+                            {{
+                            payment.payment_method === 1
+                                ? "Cash"
+                                : payment.payment_method === 2
+                                ? "Bank Transfer"
+                                : payment.payment_method === 3
+                                ? "Cheque"
+                                : "Credit Card"
+                            }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{
+                            payment.payment_status === 1
+                                ? "Pending"
+                                : payment.payment_status === 2
+                                ? "Completed"
+                                : payment.payment_status === 3
+                                ? "Failed"
+                                : "Cancelled"
+                            }}
+                        </td>
+                        <td class="px-6 py-4 flex space-x-3">
+                            <Link
+                                v-if="userCan('view-payments')"
+                                :href="route('payments.show', { payment: payment.id })"
+                                class="text-blue-500 hover:text-blue-700"
+                            >
+                                <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link :href="route('payments.edit', { payment: payment.id })" class="text-green-500 hover:text-green-700">
-                                <PencilSquareIcon class="w-5 h-5"/>
+                            <Link
+                                v-if="userCan('update-payments')"
+                                :href="route('payments.edit', { payment: payment.id })"
+                                class="text-green-500 hover:text-green-700"
+                            >
+                                <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button @click="deletePayment(payment.id)" class="text-red-500 hover:text-red-700">
-                                <TrashIcon class="w-5 h-5"/>
+                            <button
+                                v-if="userCan('delete-payments')"
+                                @click="deletePayment(payment.id)"
+                                class="text-red-500 hover:text-red-700"
+                            >
+                                <TrashIcon class="w-5 h-5" />
+                                <span>Delete</span>
                             </button>
                         </td>
-                    </TableZebraRows>
+                    </tr>
                 </tbody>
-            </Table>
+            </table>
         </div>
-
-        <div class="mt-3 flex justify-center space-x-6">
+        <div class="mt-3 flex justify-center space-x-6" v-if="payments && payments.meta && payments.meta.links">
             <Link
                 v-for="link in payments.meta.links"
                 :key="link.label"
-                :href="link.url ? `${link.url}&search=${search}` : '#'"
+                :href="link.url || '#'"
                 class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
                 :class="{
                     'text-gray-700 dark:text-gray-400': true,
@@ -163,6 +159,9 @@ const deletePayment = (id) => {
                 }"
                 v-html="link.label"
             />
+        </div>
+        <div v-else class="mt-4 text-center text-gray-500 dark:text-gray-400">
+            No pagination information available.
         </div>
     </AppLayout>
 </template>

@@ -23,7 +23,6 @@ const form = ref({
     mobile_phone: props.student.mobile_phone || "",
     office_phone: props.student.office_phone || "",
     date_of_birth: props.student.date_of_birth || "",
-    email: props.student.email || "",
     marital_status: props.student.marital_status || "",
     sex: props.student.sex || "",
     address: props.student.address || "",

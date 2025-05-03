@@ -1,31 +1,30 @@
-<script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { useForm } from "@inertiajs/vue3";
+<script setup type="module">
+import { ref } from "vue";
+import { Link } from "@inertiajs/vue3";
 import PaymentsForm from "./Form.vue";
 
-defineProps({
-    payment: Object,
-    paymentTypes: Array,
-    paymentCategories: Array,
-    paymentSchedules: Array,
+const props = defineProps({
+    form: Object,
+    users: {
+        type: Object,
+        default: () => [],
+    },
+    paymentCategories: {
+        type: Object,
+        default: () => [],
+    },
+    paymentSchedules: {
+        type: Object,
+        default: () => [],
+    },
+    paymentTypes: {
+        type: Object,
+        default: () => [],
+    },
 });
 
-const form = useForm({
-    student_id: payment.student_id,
-    payment_type_id: payment.payment_type_id,
-    payment_category_id: payment.payment_category_id,
-    payment_schedule_item_id: payment.payment_schedule_item_id,
-    payment_date: payment.payment_date,
-    total_amount: payment.total_amount,
-    payment_method: payment.payment_method,
-    status: payment.status,
-    payment_reference: payment.payment_reference,
-    items: payment.paymentItems || [], // Pre-fill payment items
-});
+const isEditing = ref(false);
 
-const submit = () => {
-    form.put(route("payments.update", payment.id));
-};
 </script>
 
 <template>

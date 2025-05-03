@@ -25,13 +25,11 @@ class PaymentController extends Controller
 
     public function create(Student $student)
     {
-        $paymentTypes = PaymentType::all();
         $paymentCategories = PaymentCategory::all();
-        $paymentSchedules = $student->paymentSchedules()->with('items')->get();
+        $paymentSchedules = PaymentCategory::all();
 
         return Inertia::render('Payments/Create', [
             'student' => $student,
-            'paymentTypes' => $paymentTypes,
             'paymentCategories' => $paymentCategories,
             'paymentSchedules' => $paymentSchedules,
         ]);

@@ -58,4 +58,9 @@ class Student extends Model
     {
         return $this->belongsTo(Year::class);
     }
+
+    public function paymentSchedules()
+    {
+        return $this->hasMany(PaymentSchedule::class);
+    }
 }

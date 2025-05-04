@@ -7,8 +7,10 @@ use App\Models\PaymentCategory;
 use App\Models\PaymentScheduleItem;
 use App\Models\Student;
 use App\Models\PaymentType; // Assuming you have this
+use App\Models\PaymentMethod; // Add this line to import PaymentMethod
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Resources\StudentResource; // Add this line to import StudentResource
 
 class PaymentController extends Controller
 {
@@ -18,20 +20,40 @@ class PaymentController extends Controller
             ->latest()
             ->paginate(10);
 
+            
+        $paymentCategories = PaymentCategory::paginate(30);
+        $paymentTypes = PaymentType::paginate(30);
+        $paymentMethods = PaymentMethod::paginate(30);
+        $students = StudentResource::collection(Student::all()->sortBy('name'));
+
+        $filters = [
+            'category' => $request->input('category'),
+            'payment_type' => $request->input('payment_type'),
+            'student' => $request->input('student'),
+            'schedule' => $request->input('schedule'),
+        ];
+
+        $payments->appends($filters);
+        $payments->setPath(route('payments.index'));
+        $payments->withQueryString();
+
         return Inertia::render('Payments/Index', [
             'payments' => $payments,
+            'paymentCategories' => $paymentCategories,
+            'paymentTypes' => $paymentTypes,
+            'paymentMethods' => $paymentMethods,
+            'students' => $students,
+            'filters' => $filters,
         ]);
     }
 
     public function create(Student $student)
     {
-        $paymentTypes = PaymentType::all();
         $paymentCategories = PaymentCategory::all();
-        $paymentSchedules = $student->paymentSchedules()->with('items')->get();
+        $paymentSchedules = PaymentCategory::all();
 
         return Inertia::render('Payments/Create', [
             'student' => $student,
-            'paymentTypes' => $paymentTypes,
             'paymentCategories' => $paymentCategories,
             'paymentSchedules' => $paymentSchedules,
         ]);

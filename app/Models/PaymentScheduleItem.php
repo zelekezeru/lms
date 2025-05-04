@@ -11,7 +11,7 @@ class PaymentScheduleItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['payment_schedule_id', 'name', 'due_date', 'expected_amount', 'paid_amount', 'status'];
+    protected $guarded = [];
 
     public function paymentSchedule(): BelongsTo
     {

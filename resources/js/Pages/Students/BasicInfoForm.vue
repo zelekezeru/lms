@@ -1,20 +1,23 @@
 <script setup>
-import { defineProps, defineEmits, watch } from 'vue';
-
+import { defineProps, defineEmits } from 'vue';
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/vue/24/solid";
-import Flatpickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css';
+import { ArrowRightIcon } from "@heroicons/vue/24/solid";
 import Calendar from 'primevue/calendar';
 
-
 const props = defineProps({ form: Object });
-
-// const props = defineProps(['form']);
 const emit = defineEmits(['next']);
+
+// Function to format the date to 'YYYY-MM-DD'
+const formatDate = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 </script>
 
 <template>
@@ -126,14 +129,14 @@ const emit = defineEmits(['next']);
             
             <div>
                 <InputLabel for="date_of_birth" value="Date of Birth" />
-                <Calendar 
-                    v-model="form.date_of_birth"
+                <Calendar
+                    :value="form.date_of_birth"
+                    @update:modelValue="(value) => form.date_of_birth = formatDate(value)"
                     dateFormat="yy-mm-dd"
                     showIcon
                     placeholder="Select Date of Birth"
-                    />
+                />
                 <InputError :message="form.errors?.date_of_birth" class="mt-2" />
-
             </div>
         </div>
     </div>

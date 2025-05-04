@@ -451,9 +451,9 @@ const afterLeave = (el) => {
                     v-show="
                         userCanAny([
                             'view-payments',
-                            'view-payment-categories',
-                            'view-payment-schedules',
-                            'view-payment-items',
+                            'view-paymentCategories',
+                            'view-paymentSchedules',
+                            'view-paymentItems',
                         ])
                     "
                 >
@@ -465,21 +465,21 @@ const afterLeave = (el) => {
                         <span class="text-sm">All Payments</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
-                        v-show="userCan('view-payment-items')"
+                        v-show="userCan('view-paymentItems')"
                         :href="route('paymentItems.index')"
                     >
                         <CreditCardIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Payment Items</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
-                        v-show="userCan('view-payment-categories')"
+                        v-show="userCan('view-paymentCategories')"
                         :href="route('paymentCategories.index')"
                     >
                         <DocumentCurrencyDollarIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Payment Categories</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
-                        v-show="userCan('view-payment-schedules')"
+                        v-show="userCan('view-paymentSchedules')"
                         :href="route('paymentSchedules.index')"
                     >
                         <CalendarDateRangeIcon class="w-4 h-5 mr-2 text-gray-200" />

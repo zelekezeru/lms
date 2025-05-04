@@ -1,4 +1,4 @@
-import '../css/app.css';
+import '../css/app.css'; // Revert to the original path or adjust based on the actual location
 import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/vue3';

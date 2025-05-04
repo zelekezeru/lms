@@ -162,23 +162,29 @@ class RolePermissionSeeder extends Seeder
             'delete-payments',
 
             // Payment Categories (CRUD)
-            'view-payment-categories',
-            'create-payment-categories',
-            'update-payment-categories',
-            'delete-payment-categories',
+            'view-paymentCategories',
+            'create-paymentCategories',
+            'update-paymentCategories',
+            'delete-paymentCategories',
 
             // Payment Items (CRUD)
-            'view-payment-items',
-            'create-payment-items',
-            'update-payment-items',
-            'delete-payment-items',            
+            'view-paymentItems',
+            'create-paymentItems',
+            'update-paymentItems',
+            'delete-paymentItems',            
 
             // Payment Schedule (CRUD)
-            'view-payment-schedules',
-            'create-payment-schedules',
-            'update-payment-schedules',
-            'delete-payment-schedules',
+            'view-paymentSchedules',
+            'create-paymentSchedules',
+            'update-paymentSchedules',
+            'delete-paymentSchedules',  
 
+            // Payment Method (CRUD)
+            'view-paymentMethods',
+            'create-paymentMethods',
+            'update-paymentMethods',
+            'delete-paymentMethods',
+            
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -360,20 +366,25 @@ class RolePermissionSeeder extends Seeder
                     'update-payments',
                     'delete-payments',
 
-                    'view-payment-categories',
-                    'create-payment-categories',
-                    'update-payment-categories',
-                    'delete-payment-categories',
+                    'view-paymentCategories',
+                    'create-paymentCategories',
+                    'update-paymentCategories',
+                    'delete-paymentCategories',
                     
-                    'view-payment-items',
-                    'create-payment-items',
-                    'update-payment-items',
-                    'delete-payment-items',
+                    'view-paymentItems',
+                    'create-paymentItems',
+                    'update-paymentItems',
+                    'delete-paymentItems',
                     
-                    'view-payment-schedules',
-                    'create-payment-schedules',
-                    'update-payment-schedules',
-                    'delete-payment-schedules',
+                    'view-paymentSchedules',
+                    'create-paymentSchedules',
+                    'update-paymentSchedules',
+                    'delete-paymentSchedules',
+                    
+                    'view-paymentMethods',
+                    'create-paymentMethods',
+                    'update-paymentMethods',
+                    'delete-paymentMethods',
 
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);

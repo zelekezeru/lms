@@ -10,14 +10,7 @@ class PaymentItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'payment_id',
-        'name',
-        'description',
-        'quantity',
-        'unit_price',
-        'sub_total',
-    ];
+    protected $guarded = [];
 
     public function payment(): BelongsTo
     {

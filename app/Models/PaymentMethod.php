@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentType extends Model
+class PaymentMethod extends Model
 {
     protected $guarded = [];
 
@@ -12,6 +12,7 @@ class PaymentType extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    
     public function paymentCategories()
     {
         return $this->hasMany(PaymentCategory::class);

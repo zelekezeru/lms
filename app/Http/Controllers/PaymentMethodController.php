@@ -2,59 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentCategory;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
-class PaymentCategoryController extends Controller
+class PaymentMethodController extends Controller
 {
     public function index()
     {
-        $categories = PaymentCategory::latest()->paginate(10);
+        $methods = PaymentMethod::latest()->paginate(10);
         return Inertia::render('PaymentCategories/Index', [
-            'categories' => $categories,
+            'methods' => $methods,
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|unique:payment_categories|max:255',
-            'description' => 'nullable|string|max:255',
+            'payment_type' => 'required|string|unique:payment_methods,payment_type|max:255',
+            'bank_name' => 'nullable|string|max:255',
+            'account_number' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);
-        $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] =  Auth::user()->id;
-
-        $paymentCategory = PaymentCategory::create($data);
+        
+        $paymentMethod = PaymentMethod::create($data);
         return redirect()->back()->with('success', 'Payment category created successfully.');
     }
 
-    public function show(PaymentCategory $paymentCategory)
+    public function show(PaymentMethod $paymentMethod)
     {
         return Inertia::render('PaymentCategories/Show', [
-            'category' => $paymentCategory,
+            'category' => $paymentMethod,
         ]);
     }
 
-    public function update(Request $request, PaymentCategory $paymentCategory)
+    public function update(Request $request, PaymentMethod $paymentMethod)
     {
         $data = $request->validate([
-            'title' => 'required|string|unique:payment_categories,title,' . $paymentCategory->id . '|max:255',
-            'description' => 'nullable|string|max:255',
+            'payment_type' => 'required|string|unique:payment_methods,payment_type,' . $paymentMethod->id . '|max:255',
+            'bank_name' => 'nullable|string|max:255',
+            'account_number' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);
-        $data['tenant_id'] = Auth::user()->tenant_id;
         $data['updated_by'] =  Auth::user()->id;
 
-        $paymentCategory->update($data);
+        $paymentMethod->update($data);
         return redirect()->back()->with('success', 'Payment category updated successfully.');
     }
 
-    public function destroy(PaymentCategory $paymentCategory)
+    public function destroy(PaymentMethod $paymentMethod)
     {
-        $paymentCategory->delete();
+        $paymentMethod->delete();
         return redirect()->back()->with('success', 'Payment category deleted successfully.');
     }
 }

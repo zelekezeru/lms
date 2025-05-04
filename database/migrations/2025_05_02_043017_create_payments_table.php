@@ -16,21 +16,12 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->integer('amount')->comment('in percentage');
-            $table->integer('type')->comment('1: fixed, 2: percentage');
-            $table->integer('payment_method')->comment('1: cash, 2: bank transfer, 3: cheque, 4: credit card');
-            $table->integer('payment_status')->comment('1: pending, 2: completed, 3: failed, 4: cancelled');
-            $table->integer('installment_count')->comment('number of installments');
-            $table->integer('installment_interval')->comment('in days');
-            $table->integer('grace_period')->comment('in days');
-            $table->integer('late_fee')->nullable()->comment('in percentage');
-            $table->integer('late_fee_amount')->nullable()->comment('in percentage');
-            $table->integer('discount')->nullable()->comment('in percentage');
-            $table->integer('discount_amount')->nullable()->comment('in percentage');
-            $table->integer('penalty')->nullable()->comment('in percentage');
-            $table->integer('penalty_amount')->nullable()->comment('in percentage');
-            $table->integer('status')->comment('1: active, 2: inactive');
-            $table->foreignId('payment_schedule_id')->constrained('payment_schedules')->cascadeOnDelete();
-            $table->foreignId('payment_category_id')->constrained('payment_categories')->cascadeOnDelete();
+            $table->integer('total_amount');
+            $table->integer('payment_category_id')->constrained('payment_categorys')->cascadeOnDelete();
+            $table->integer('payment_type_id')->constrained('payment_types')->cascadeOnDelete();
+            $table->integer('payment_date')->comment('date of payment');
+            $table->integer('payment_method')->comment('1: cash, 2: cheque, 3: bank transfer');
+            $table->integer('payment_status')->comment('1: pending, 2: completed, 3: failed, 4: refunded');
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
@@ -38,7 +29,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_deleted')->default(false);
-            $table->integer('total_amount');
             $table->timestamps();
         });
     }

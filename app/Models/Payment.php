@@ -11,17 +11,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'student_id',
-        'payment_type_id',
-        'payment_category_id',
-        'payment_schedule_item_id',
-        'payment_date',
-        'payment_reference',
-        'total_amount',
-        'payment_method',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function student(): BelongsTo
     {

@@ -11,7 +11,7 @@ class PaymentSchedule extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'description', 'total_expected_amount'];
+    protected $guarded = [];
 
     public function student(): BelongsTo
     {

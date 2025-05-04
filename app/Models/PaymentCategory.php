@@ -10,10 +10,15 @@ class PaymentCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $guarded = [];
 
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+    
+    public function paymentTypes(): HasMany
+    {
+        return $this->hasMany(PaymentType::class);
     }
 }

@@ -4,14 +4,50 @@ import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { Cog6ToothIcon, BookOpenIcon, AcademicCapIcon, UsersIcon, CurrencyDollarIcon, BuildingLibraryIcon, InformationCircleIcon, BanknotesIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import ShowPayments from "./Tabs/ShowPayments.vue";
+import ShowCategories from "./Tabs/ShowCategories.vue";
+import ShowMethods from "./Tabs/ShowMethods.vue";
+import ShowTypes from "./Tabs/ShowTypes.vue";
+import ShowStatus from "./Tabs/ShowStatus.vue";
+import ShowTransactions from "./Tabs/ShowTransactions.vue";
+import Modal from "@/Components/Modal.vue";
 
 defineProps({
     payments: {
         type: Object,
         required: true,
     },
+    paymentCategories: {
+        type: Object,
+        required: true,
+    },
+    paymentMethods: {
+        type: Object,
+        required: true,
+    },
+    paymentTypes: {
+        type: Object,
+        required: true,
+    },
+    status: {
+        type: Object,
+        required: true,
+    },
+    transactions: {
+        type: Object,
+        required: true,
+    },
+    sortInfo: {
+        type: Object,
+        required: false,
+    },
+    userCan: {
+        type: Function,
+        required: true,
+    },
+    showVerifyModal: Boolean,
 });
 
 const refreshing = ref(false);
@@ -27,6 +63,28 @@ const refreshData = () => {
         },
     });
 };
+
+const search = ref(usePage().props.search || "");
+// Search function
+const searchpayments = () => {
+    router.get(
+        route("payments.index"),
+        { ...route().params, search: search.value },
+        { preserveState: true },
+    );
+};
+
+// Multi nav header options
+const selectedTab = ref('details');
+
+const tabs = [
+    { key: 'payments', label: 'Payments', icon: CurrencyDollarIcon },
+    { key: 'categories', label: 'Categories', icon: BookOpenIcon },
+    { key: 'methods', label: 'Methods', icon: Cog6ToothIcon },
+    { key: 'types', label: 'Types', icon: BanknotesIcon },
+    { key: 'status', label: 'Status', icon: InformationCircleIcon },
+    { key: 'transactions', label: 'Transactions', icon: BuildingLibraryIcon },
+];
 
 const deletePayment = (id) => {
     Swal.fire({
@@ -51,117 +109,72 @@ const deletePayment = (id) => {
 
 <template>
     <AppLayout>
-        <div class="my-6 text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Payments
-            </h1>
-        </div>
+        
 
-        <div class="flex justify-between items-center mb-3">
-            <Link
-                v-if="userCan('create-payments')"
-                :href="route('payments.create')"
-                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 text-white dark:bg-gray-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-gray-700 dark:hover:bg-gray-600 focus:bg-gray-700 dark:focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            <nav
+                class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
-                Add New Payment
-            </Link>
-            <button
-                @click="refreshData"
-                class="inline-flex items-center rounded-md border border-transparent bg-blue-800 text-white dark:bg-blue-700 dark:text-gray-200 px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-600 focus:bg-blue-700 dark:focus:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                title="Refresh Data"
-            >
-                <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
-                Refresh Data
-            </button>
-        </div>
+                <button
+                    v-for="tab in tabs"
+                    :key="tab.key"
+                    @click="selectedTab = tab.key"
+                    class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                    :class="
+                        selectedTab === tab.key
+                            ? 'border-b-2 border-indigo-500 text-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    "
+                >
+                    <component :is="tab.icon" class="w-5 h-5" />
+                    <span>{{ tab.label }}</span>
+                </button>
+            </nav>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">ID</th>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Amount</th>
-                        <th scope="col" class="px-6 py-3">Payment Method</th>
-                        <th scope="col" class="px-6 py-3">Payment Status</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="payment in payments.data" :key="payment.id" class="border-b dark:border-gray-700">
-                        <td class="px-6 py-4">{{ payment.id }}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                            <Link :href="route('payments.show', { payment: payment.id })">
-                                {{ payment.name }}
-                            </Link>
-                        </td>
-                        <td class="px-6 py-4">{{ payment.total_amount }}</td>
-                        <td class="px-6 py-4">
-                            {{
-                            payment.payment_method === 1
-                                ? "Cash"
-                                : payment.payment_method === 2
-                                ? "Bank Transfer"
-                                : payment.payment_method === 3
-                                ? "Cheque"
-                                : "Credit Card"
-                            }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{
-                            payment.payment_status === 1
-                                ? "Pending"
-                                : payment.payment_status === 2
-                                ? "Completed"
-                                : payment.payment_status === 3
-                                ? "Failed"
-                                : "Cancelled"
-                            }}
-                        </td>
-                        <td class="px-6 py-4 flex space-x-3">
-                            <Link
-                                v-if="userCan('view-payments')"
-                                :href="route('payments.show', { payment: payment.id })"
-                                class="text-blue-500 hover:text-blue-700"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                            </Link>
-                            <Link
-                                v-if="userCan('update-payments')"
-                                :href="route('payments.edit', { payment: payment.id })"
-                                class="text-green-500 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                v-if="userCan('delete-payments')"
-                                @click="deletePayment(payment.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                                <span>Delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-3 flex justify-center space-x-6" v-if="payments && payments.meta && payments.meta.links">
-            <Link
-                v-for="link in payments.meta.links"
-                :key="link.label"
-                :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
-                :class="{
-                    'text-gray-700 dark:text-gray-400': true,
-                    'cursor-not-allowed opacity-50': !link.url,
-                    '!bg-gray-100 !dark:bg-gray-800': link.active,
-                }"
-                v-html="link.label"
-            />
-        </div>
-        <div v-else class="mt-4 text-center text-gray-500 dark:text-gray-400">
-            No pagination information available.
-        </div>
+            
+
+
+            <!-- Details Panel -->
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <ShowPayments
+                    v-if="selectedTab === 'payments'"
+                    :payments="payments"
+                />
+                <ShowCategories
+                    v-else-if="selectedTab === 'categories'"
+                    :paymentCategories="paymentCategories"
+                />
+                <ShowMethods
+                    v-else-if="selectedTab === 'methods'"
+                    :paymentMethods="paymentMethods"
+                />
+                <ShowTypes
+                    v-else-if="selectedTab === 'types'"
+                    :payments="payments"
+                />
+                <ShowStatus
+                    v-else-if="selectedTab === 'status'"
+                    :payments="payments"
+                />
+                <ShowTransactions
+                    v-else-if="selectedTab === 'transactions'"
+                    :payments="payments"
+                />
+            </div>
+                
+            </transition>
+
+
     </AppLayout>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { router, Head } from "@inertiajs/vue3";
+import { router, Head, useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import BasicInfoForm from "./BasicInfoForm.vue";
 import AcademicInfoForm from "./AcademicInfoForm.vue";
@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 // Step-based form data
-const form = ref({
+const form = useForm({
     first_name: "",
     middle_name: "",
     last_name: "",
@@ -57,18 +57,10 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    form.value.processing = true;
-    router.post(route('students.store'), form.value, {
-        onFinish: () => {
-            form.value.processing = false;
-        },
+    form.post(route('students.store'), {
         onSuccess: () => {
-            form.value.processing = false;
-            form.value.reset();
+            form.reset();
             currentStep.value = 1;
-        },
-        onError: () => {
-            form.value.processing = false;
         },
     });
 };

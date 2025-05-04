@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Services;
 
 use App\Models\Student;
 use App\Models\Tenant;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
-class StudentRegistrationController extends Controller
+class StudentRegistrationService extends Controller
 {   
     public function store(StudentStoreRequest $request)
     {

@@ -16,24 +16,16 @@ use App\Http\Resources\YearResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\SemesterResource;
-use App\Http\Resources\SectionResource;
-use App\Models\Course;
-use App\Http\Resources\CourseResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Year;
-use App\Models\User;
 use App\Models\Semester;
 use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Auth\StudentRegistrationController;
+use App\Http\Services\StudentRegistrationService;
+use Illuminate\Http\RedirectResponse;
 
 class StudentController extends Controller
 {
@@ -124,22 +116,15 @@ class StudentController extends Controller
     }
 
     // Store the student innformation to the store method in Auth/StudentRegistrationController
-    public function store(StudentStoreRequest $request): Response
+    public function store(StudentStoreRequest $request): RedirectResponse
     {
         // Create the student record
-        $registerStudent = new StudentRegistrationController();
+        $registerStudent = new StudentRegistrationService();
 
         $student = $registerStudent->store($request);
 
         // Load related data for the student resource
-        $studentResource = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
-
-        return Inertia::render('Students/Show', [
-            'student' => $studentResource,
-            'user' => new UserResource($studentResource->user),
-            'status' => new StatusResource($studentResource->status),
-            'success' => 'Student created successfully.',
-        ]);
+        return to_route('students.show', $student);
     }
 
     public function edit(Student $student): Response
@@ -165,7 +150,7 @@ class StudentController extends Controller
     {
         // Update the Student info in the update method in Auth/StudentRegistrationController
 
-        $student = (new StudentRegistrationController())->update($request, $student);
+        $student = (new StudentRegistrationService())->update($request, $student);
 
         // Load related data for the student resource
         $studentResource = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));

@@ -90,7 +90,7 @@ class StudentController extends Controller
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
 
-            // Check if the student has a section & Fetch courses accordingly
+        // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)
                 ->get()->load('program', 'courses');
@@ -99,11 +99,11 @@ class StudentController extends Controller
             $courses = $student->section->courses;
             $sections = [];
         }
-        
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),
-            'status' => new StatusResource($student->status),            
+            'status' => new StatusResource($student->status),
             'sections' => $sections,
             'courses' => $courses,
         ]);
@@ -111,19 +111,15 @@ class StudentController extends Controller
 
     public function create(): Response
     {
-        $tracks = TrackResource::collection(Track::all());
 
-        $programs = ProgramResource::collection(Program::all());
+        $programs = ProgramResource::collection(Program::with('tracks')->get());
 
-        $years = YearResource::collection(Year::all()->sortBy('name'));
+        $years = YearResource::collection(Year::with('semesters')->orderBy('name')->get());
 
-        $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
 
         return inertia('Students/Create', [
-            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
-            'semesters' => $semesters,
         ]);
     }
 
@@ -145,7 +141,7 @@ class StudentController extends Controller
             'success' => 'Student created successfully.',
         ]);
     }
-    
+
     public function edit(Student $student): Response
     {
         $tracks = TrackResource::collection(Track::all());
@@ -168,7 +164,7 @@ class StudentController extends Controller
     public function update(StudentUpdateRequest $request, Student $student): Response
     {
         // Update the Student info in the update method in Auth/StudentRegistrationController
-        
+
         $student = (new StudentRegistrationController())->update($request, $student);
 
         // Load related data for the student resource
@@ -216,7 +212,7 @@ class StudentController extends Controller
 
         // Define the status fields to be toggled
         if ($request->has('is_active')) {
-            
+
             if ($status->{'is_active'} == 1) {
                 // If it's already 1, set it to 0
                 $status->{'is_active'} = 0;
@@ -224,8 +220,7 @@ class StudentController extends Controller
                 // If it's not set, set it to 1
                 $status->{'is_active'} = 1;
             }
-        }
-        else{        
+        } else {
 
             $statuses = [
                 'approved',
@@ -240,7 +235,7 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_'.$statusField)) {
+                if ($request->has('is_' . $statusField)) {
                     // Check if the status field is already set to 1
                     if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
@@ -252,11 +247,11 @@ class StudentController extends Controller
                     $status->{$statusField . '_by_name'} = Auth::user()->name;
                     $status->{$statusField . '_at'} = now();
                 }
-            }    
+            }
         }
         // Save the status record
         $status->save();
-        
+
         // Return a success response
         return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }
@@ -270,5 +265,4 @@ class StudentController extends Controller
             ->paginate(15);
         return Inertia::render('Students/Index', compact('students'));
     }
-
 }

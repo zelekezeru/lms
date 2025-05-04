@@ -71,7 +71,7 @@ class CurriculumController extends Controller
                     'course_id' => $courseId,
                     'year_level' => $fields['year_level'],
                     'semester' => $fields['semester'],
-                    'description' => "This Course In This Study MOde And Track Should Be Taken" . $fields['description'] ?? "Year " . $fields['year_level'] . "Semester " . $fields['semester'],
+                    'description' => "This Course In This Study Mode And Track Should Be Taken" . $fields['description'] ?? "Year " . $fields['year_level'] . "Semester " . $fields['semester'],
                 ];
             }
         }

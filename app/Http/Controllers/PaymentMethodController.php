@@ -20,11 +20,12 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'payment_type' => 'required|string|unique:payment_methods,payment_type|max:255',
+            'payment_type' => 'required|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'account_number' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);
+        $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] =  Auth::user()->id;
         
         $paymentMethod = PaymentMethod::create($data);
@@ -41,12 +42,12 @@ class PaymentMethodController extends Controller
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
         $data = $request->validate([
-            'payment_type' => 'required|string|unique:payment_methods,payment_type,' . $paymentMethod->id . '|max:255',
+            'payment_type' => 'required|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'account_number' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);
-        $data['updated_by'] =  Auth::user()->id;
+        $data['updated_by'] = Auth::user()->id;
 
         $paymentMethod->update($data);
         return redirect()->back()->with('success', 'Payment category updated successfully.');

@@ -16,16 +16,27 @@ use App\Http\Resources\YearResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\SemesterResource;
+use App\Http\Resources\SectionResource;
+use App\Models\Course;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Year;
+use App\Models\User;
 use App\Models\Semester;
 use App\Models\Section;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Services\StudentRegistrationService;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Auth\StudentRegistrationController;
+use App\Models\PaymentCategory;
+use App\Models\PaymentMethod;
+use App\Models\Payment;
 
 class StudentController extends Controller
 {
@@ -82,7 +93,7 @@ class StudentController extends Controller
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
 
-        // Check if the student has a section & Fetch courses accordingly
+            // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)
                 ->get()->load('program', 'courses');
@@ -92,41 +103,65 @@ class StudentController extends Controller
             $sections = [];
         }
 
+        // Fetch Payment Categories and Methods
+        $paymentCategories = PaymentCategory::where('is_active', true)->get();
+
+        $paymentMethods = PaymentMethod::where('is_active', true)->get();
+
+        // Fetch the payments for the student
+        $payments = Payment::where('student_id', $student->id)
+            ->with(['paymentMethod', 'paymentCategory'])
+            ->get();
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => new UserResource($student->user),
-            'status' => new StatusResource($student->status),
+            'status' => new StatusResource($student->status),            
             'sections' => $sections,
             'courses' => $courses,
+            'paymentCategories' => $paymentCategories,
+            'paymentMethods' => $paymentMethods,
+            'payments' => $payments,
         ]);
     }
 
     public function create(): Response
     {
+        $tracks = TrackResource::collection(Track::all());
 
-        $programs = ProgramResource::collection(Program::with('tracks')->get());
+        $programs = ProgramResource::collection(Program::all());
 
-        $years = YearResource::collection(Year::with('semesters')->orderBy('name')->get());
+        $years = YearResource::collection(Year::all()->sortBy('name'));
 
+        $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
 
         return inertia('Students/Create', [
+            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
+            'semesters' => $semesters,
         ]);
     }
 
     // Store the student innformation to the store method in Auth/StudentRegistrationController
-    public function store(StudentStoreRequest $request): RedirectResponse
+    public function store(StudentStoreRequest $request): Response
     {
         // Create the student record
-        $registerStudent = new StudentRegistrationService();
+        $registerStudent = new StudentRegistrationController();
 
         $student = $registerStudent->store($request);
 
         // Load related data for the student resource
-        return to_route('students.show', $student);
-    }
+        $studentResource = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
 
+        return Inertia::render('Students/Show', [
+            'student' => $studentResource,
+            'user' => new UserResource($studentResource->user),
+            'status' => new StatusResource($studentResource->status),
+            'success' => 'Student created successfully.',
+        ]);
+    }
+    
     public function edit(Student $student): Response
     {
         $tracks = TrackResource::collection(Track::all());
@@ -149,8 +184,8 @@ class StudentController extends Controller
     public function update(StudentUpdateRequest $request, Student $student): Response
     {
         // Update the Student info in the update method in Auth/StudentRegistrationController
-
-        $student = (new StudentRegistrationService())->update($request, $student);
+        
+        $student = (new StudentRegistrationController())->update($request, $student);
 
         // Load related data for the student resource
         $studentResource = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
@@ -197,7 +232,7 @@ class StudentController extends Controller
 
         // Define the status fields to be toggled
         if ($request->has('is_active')) {
-
+            
             if ($status->{'is_active'} == 1) {
                 // If it's already 1, set it to 0
                 $status->{'is_active'} = 0;
@@ -205,7 +240,8 @@ class StudentController extends Controller
                 // If it's not set, set it to 1
                 $status->{'is_active'} = 1;
             }
-        } else {
+        }
+        else{        
 
             $statuses = [
                 'approved',
@@ -220,7 +256,7 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_' . $statusField)) {
+                if ($request->has('is_'.$statusField)) {
                     // Check if the status field is already set to 1
                     if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
@@ -232,11 +268,11 @@ class StudentController extends Controller
                     $status->{$statusField . '_by_name'} = Auth::user()->name;
                     $status->{$statusField . '_at'} = now();
                 }
-            }
+            }    
         }
         // Save the status record
         $status->save();
-
+        
         // Return a success response
         return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }
@@ -250,4 +286,5 @@ class StudentController extends Controller
             ->paginate(15);
         return Inertia::render('Students/Index', compact('students'));
     }
+
 }

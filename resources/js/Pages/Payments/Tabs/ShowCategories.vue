@@ -23,7 +23,7 @@ import FormFields from "@/Pages/Finance/Partials/FormFields.vue"; // Adjusted pa
 
 const props = defineProps({
     paymentCategories: {
-        type: Object,
+        type: Object, // Changed from Array to Object to match pagination structure
         required: true,
     },
 });
@@ -34,13 +34,13 @@ const editCategoryModal = ref(false);
 const currentEditId = ref(null);
 
 const categoryCreationForm = useForm({
-    title: "",
+    name: "",
     description: "",
     is_active: "1",
 });
 
 const categoryEditForm = useForm({
-    title: props.paymentCategories.title || "",
+    name: props.paymentCategories.name || "",
     description: props.paymentCategories.description || "",
     is_active: props.paymentCategories.is_active || "1",
 });
@@ -91,7 +91,7 @@ const submitNewCategory = () => {
 
 const editCategory = (category) => {
     currentEditId.value = category.id;
-    categoryEditForm.title = category.title;
+    categoryEditForm.name = category.name; // Fixed property assignment
     categoryEditForm.description = category.description;
     categoryEditForm.is_active = category.is_active.toString();
     editCategoryModal.value = true;
@@ -126,13 +126,13 @@ const closeEditModal = () => {
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Categories</h2>
             <button @click="createCategoryModal = true" class="flex text-green-600 hover:text-green-800">
                 <PlusCircleIcon class="mx-2 w-8 h-8" />
-                Create Category
+                
             </button>
         </div>
 
         <!-- Table -->
         <div class="overflow-x-auto mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
-            <div v-if="!paymentCategories.data?.length" class="text-center text-gray-500 dark:text-gray-400">
+            <div v-if="!paymentCategories || !paymentCategories.length" class="text-center text-gray-500 dark:text-gray-400">
                 No category information available.
             </div>
             <div v-else>
@@ -147,11 +147,11 @@ const closeEditModal = () => {
                         </tr>
                     </TableHeader>
                     <tbody>
-                        <TableZebraRows v-for="(category, index) in paymentCategories.data" :key="category.id">
+                        <TableZebraRows v-for="(category, index) in paymentCategories" :key="category.id">
                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ index + 1 }}
                             </th>
-                            <td class="px-6 py-4">{{ category.title }}</td>
+                            <td class="px-6 py-4">{{ category.name }}</td>
                             <td class="px-6 py-4">{{ category.description }}</td>
                             <td class="px-6 py-4">
                                 {{ category.is_active == "1" ? "Active" : "Inactive" }}
@@ -201,14 +201,14 @@ const closeEditModal = () => {
                 <form @submit.prevent="submitNewCategory">
                     <div>
                         <div class="mb-4">
-                            <label for="title" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Category Title</label>
+                            <label for="name" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Category Title</label>
                             <input
-                                v-model="categoryCreationForm.title"
-                                id="title"
+                                v-model="categoryCreationForm.name"
+                                id="name"
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="categoryCreationForm.errors.title" class="mt-2" />
+                            <InputError :message="categoryCreationForm.errors.name" class="mt-2" />
                         </div>
 
                         <div class="mb-4">
@@ -260,10 +260,11 @@ const closeEditModal = () => {
                     </div>
 
                     <div>
+
                         <div class="mb-4">
-                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Category Title</label>
-                            <input v-model="categoryEditForm.title" type="text" class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none" />
-                            <InputError :message="categoryEditForm.errors.title" class="mt-2" />
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Category Description</label>
+                            <input v-model="categoryEditForm.name" type="text" class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none" />
+                            <InputError :message="categoryEditForm.errors.name" class="mt-2" />
                         </div>
 
                         <div class="mb-4">

@@ -184,6 +184,12 @@ class RolePermissionSeeder extends Seeder
             'create-paymentMethods',
             'update-paymentMethods',
             'delete-paymentMethods',
+
+            // Payment Type (CRUD)
+            'view-paymentTypes',
+            'create-paymentTypes',
+            'update-paymentTypes',
+            'delete-paymentTypes',
             
             // Assigning Relationships
             'section-courses',
@@ -385,6 +391,11 @@ class RolePermissionSeeder extends Seeder
                     'create-paymentMethods',
                     'update-paymentMethods',
                     'delete-paymentMethods',
+                    
+                    'view-paymentTypes',
+                    'create-paymentTypes',
+                    'update-paymentTypes',
+                    'delete-paymentTypes',
 
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);

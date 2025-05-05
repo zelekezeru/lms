@@ -168,7 +168,7 @@ class ProgramController extends Controller
                             'is_common' => in_array($courseId, $commonCourseUpdated),
                         ];
                     }
-                    // Also Edit The Curriculum later
+
                     $track->courses()->sync($syncDataForTrack);
                 }
             }

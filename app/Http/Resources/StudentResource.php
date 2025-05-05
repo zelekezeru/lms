@@ -37,6 +37,8 @@ class StudentResource extends JsonResource
             'section' => $this->whenLoaded('section'),
             'year' => $this->whenLoaded('year'),
             'semester' => $this->whenLoaded('semester'),
+            'payments' => $this->whenLoaded('payments'),
+            'created_by' => $this->whenLoaded('createdBy'),
 
         ];
     }

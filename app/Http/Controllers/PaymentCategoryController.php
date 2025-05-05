@@ -20,13 +20,13 @@ class PaymentCategoryController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required|string|unique:payment_categories|max:255',
+            'name' => 'required|string|unique:payment_categories|max:255',
             'description' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] =  Auth::user()->id;
-
+        
         $paymentCategory = PaymentCategory::create($data);
         return redirect()->back()->with('success', 'Payment category created successfully.');
     }
@@ -41,7 +41,7 @@ class PaymentCategoryController extends Controller
     public function update(Request $request, PaymentCategory $paymentCategory)
     {
         $data = $request->validate([
-            'title' => 'required|string|unique:payment_categories,title,' . $paymentCategory->id . '|max:255',
+            'name' => 'required|string|unique:payment_categories,name,' . $paymentCategory->id . '|max:255',
             'description' => 'nullable|string|max:255',
             'is_active' => 'required|boolean',
         ]);

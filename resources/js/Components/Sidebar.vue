@@ -181,7 +181,7 @@ const afterLeave = (el) => {
             </Link>
             
             <div
-                class="h-[500px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+                class="h-[700px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
                 <h2 class="font-bold px-4 text-sm">Menu</h2>
 
@@ -464,7 +464,7 @@ const afterLeave = (el) => {
                         <BanknotesIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">All Payments</span>
                     </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
+                    <!-- <SidebarDrowpdownLink
                         v-show="userCan('view-paymentItems')"
                         :href="route('paymentItems.index')"
                     >
@@ -484,43 +484,8 @@ const afterLeave = (el) => {
                     >
                         <CalendarDateRangeIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Payment Schedules</span>
-                    </SidebarDrowpdownLink>
+                    </SidebarDrowpdownLink> -->
                 </SidebarDropdownMenu>
-
-                <!-- Profile Navigation Item -->
-                <Link
-                    :href="route('profile.edit')"
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700"
-                >
-                    <UsersIcon class="w-8 text-gray-200 p-1 rounded-full" />
-                    <transition name="fade">
-                        <span
-                            v-if="sidebarVisible || sidebarHovered"
-                            class="transition-all duration-300 truncate text-sm"
-                        >
-                            My Profile
-                        </span>
-                    </transition>
-                </Link>
-
-                <!-- Logout Navigation Item -->
-                <a
-                    href="#"
-                    @click.prevent="logout"
-                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-700 cursor-pointer"
-                >
-                    <ArrowLeftCircleIcon
-                        class="w-8 text-red-400 p-1 rounded-full"
-                    />
-                    <transition name="fade">
-                        <span
-                            v-if="sidebarVisible || sidebarHovered"
-                            class="transition-all duration-300 truncate text-sm text-red-400"
-                        >
-                            Logout
-                        </span>
-                    </transition>
-                </a>
             </div>
         </nav>
     </aside>

@@ -136,7 +136,7 @@ const closeEditModal = () => {
 
         <!-- Table -->
         <div class="overflow-x-auto mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
-            <div v-if="!paymentMethods?.data?.length" class="text-center text-gray-500 dark:text-gray-400">
+            <div v-if="!paymentMethods??length" class="text-center text-gray-500 dark:text-gray-400">
                 No payment method information available.
             </div>
             <div v-else>
@@ -152,7 +152,7 @@ const closeEditModal = () => {
                         </tr>
                     </TableHeader>
                     <tbody>
-                        <TableZebraRows v-for="(method, index) in paymentMethods.data" :key="method.id">
+                        <TableZebraRows v-for="(method, index) in paymentMethods" :key="method.id">
                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ index + 1 }}
                             </th>

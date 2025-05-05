@@ -94,7 +94,7 @@ const emit = defineEmits(['previous', 'next', 'submit']);
 
             <button
                 @click="$emit('submit')" 
-                :disabled="form.inPr"
+                :disabled="form.processing"
                 class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
             <ArrowDownTrayIcon class="w-5 h-5 mr-2" /> 

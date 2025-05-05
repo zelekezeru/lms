@@ -67,24 +67,13 @@ defineProps({
                     <td class="px-6 py-4">{{ payment.total_amount }}</td>
                     <td class="px-6 py-4">
                         {{
-                            payment.payment_method === 1
-                                ? "Cash"
-                                : payment.payment_method === 2
-                                ? "Bank Transfer"
-                                : payment.payment_method === 3
-                                ? "Cheque"
-                                : "Credit Card"
+                            payment.payment_method
+                               
                         }}
                     </td>
                     <td class="px-6 py-4">
                         {{
-                            payment.payment_status === 1
-                                ? "Pending"
-                                : payment.payment_status === 2
-                                ? "Completed"
-                                : payment.payment_status === 3
-                                ? "Failed"
-                                : "Cancelled"
+                            payment.payment_status
                         }}
                     </td>
                     <td class="px-6 py-4 flex space-x-6">

@@ -6,6 +6,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { Cog6ToothIcon, BookOpenIcon, AcademicCapIcon, UsersIcon, CurrencyDollarIcon, BuildingLibraryIcon, InformationCircleIcon, BanknotesIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import ShowDetails from "./Tabs/showDetails.vue";
 import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowCategories from "./Tabs/ShowCategories.vue";
 import ShowMethods from "./Tabs/ShowMethods.vue";
@@ -20,7 +21,7 @@ defineProps({
         required: true,
     },
     paymentCategories: {
-        type: Object,
+        type: Array,
         required: true,
     },
     paymentMethods: {
@@ -28,7 +29,11 @@ defineProps({
         required: true,
     },
     paymentTypes: {
-        type: Object,
+        type: Array,
+        required: true,
+    },
+    studyModes: {
+        type: Array,
         required: true,
     },
     status: {
@@ -78,6 +83,7 @@ const searchpayments = () => {
 const selectedTab = ref('details');
 
 const tabs = [
+    { key: 'details', label: 'Details', icon: Cog6ToothIcon },
     { key: 'payments', label: 'Payments', icon: CurrencyDollarIcon },
     { key: 'categories', label: 'Categories', icon: BookOpenIcon },
     { key: 'methods', label: 'Methods', icon: Cog6ToothIcon },
@@ -109,71 +115,74 @@ const deletePayment = (id) => {
 
 <template>
     <AppLayout>
-        
 
-            <nav
-                class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
+        <nav
+            class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
+        >
+            <button
+                v-for="tab in tabs"
+                :key="tab.key"
+                @click="selectedTab = tab.key"
+                class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                :class="
+                    selectedTab === tab.key
+                        ? 'border-b-2 border-indigo-500 text-indigo-600'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                "
             >
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.key"
-                    @click="selectedTab = tab.key"
-                    class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
-                    :class="
-                        selectedTab === tab.key
-                            ? 'border-b-2 border-indigo-500 text-indigo-600'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                    "
-                >
-                    <component :is="tab.icon" class="w-5 h-5" />
-                    <span>{{ tab.label }}</span>
-                </button>
-            </nav>
-
+                <component :is="tab.icon" class="w-5 h-5" />
+                <span>{{ tab.label }}</span>
+            </button>
+        </nav>
+        <!-- Details Panel -->
+        <transition
+            mode="out-in"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-75"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-75"
+        >
+        <div
+            :key="selectedTab"
+            class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+        >
+            <ShowDetails 
+                v-if="selectedTab === 'details'"
+                :payments="payments"
+                :paymentCategories="paymentCategories"
+                :paymentMethods="paymentMethods"
+                />
+            <ShowPayments
+                v-if="selectedTab === 'payments'"
+                :payments="payments"
+            />
+            <ShowCategories
+                v-else-if="selectedTab === 'categories'"
+                :paymentCategories="paymentCategories"
+            />
+            <ShowMethods
+                v-else-if="selectedTab === 'methods'"
+                :paymentMethods="paymentMethods"
+            />
+            <ShowTypes
+                v-else-if="selectedTab === 'types'"
+                :paymentTypes="paymentTypes"
+                :studyModes="studyModes"
+                :paymentCategories="paymentCategories"
+            />
+            <ShowStatus
+                v-else-if="selectedTab === 'status'"
+                :payments="payments"
+            />
+            <ShowTransactions
+                v-else-if="selectedTab === 'transactions'"
+                :payments="payments"
+            />
+        </div>
             
-
-
-            <!-- Details Panel -->
-            <transition
-                mode="out-in"
-                enter-active-class="transition duration-300 ease-out"
-                enter-from-class="opacity-0 scale-75"
-                enter-to-class="opacity-100 scale-100"
-                leave-active-class="transition duration-200 ease-in"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-75"
-            >
-            <div
-                :key="selectedTab"
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
-                <ShowPayments
-                    v-if="selectedTab === 'payments'"
-                    :payments="payments"
-                />
-                <ShowCategories
-                    v-else-if="selectedTab === 'categories'"
-                    :paymentCategories="paymentCategories"
-                />
-                <ShowMethods
-                    v-else-if="selectedTab === 'methods'"
-                    :paymentMethods="paymentMethods"
-                />
-                <ShowTypes
-                    v-else-if="selectedTab === 'types'"
-                    :payments="payments"
-                />
-                <ShowStatus
-                    v-else-if="selectedTab === 'status'"
-                    :payments="payments"
-                />
-                <ShowTransactions
-                    v-else-if="selectedTab === 'transactions'"
-                    :payments="payments"
-                />
-            </div>
-                
-            </transition>
+        </transition>
 
 
     </AppLayout>

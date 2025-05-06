@@ -23,41 +23,48 @@ const props = defineProps({
     },
 });
 
-const selectedYearSemesters = ref([]);
+const selectedYearSemesters = ref(
+    props.years.find((year) => year.id == props.form.year_id)?.semesters ?? []
+);
 
 // watch and updated the list of semesters
 watch(
     () => props.form.year_id,
     () => {
+        props.form.semester_id = "";
         selectedYearSemesters.value = props.years.find(
             (year) => year.id == props.form.year_id
         )?.semesters;
     }
 );
 
-const selectedProgramTracks = ref([]);
+const selectedProgramTracks = ref(
+    props.programs.find((program) => program.id == props.form.program_id)
+        ?.tracks ?? []
+);
 
-// watch and updated the list of semesters
+const selectedProgramStudyModes = ref(
+    props.programs.find((program) => program.id == props.form.program_id)
+        ?.studyModes ?? []
+);
+
+// watch for changes in value of props.form.program_id and updated the list of tracks and study modes
 watch(
     () => props.form.program_id,
     () => {
+        props.form.track_id = "";
+        props.form.study_mode_id = "";
+
         selectedProgramTracks.value = props.programs.find(
             (program) => program.id == props.form.program_id
         )?.tracks;
-    }
-);
 
-const selectedProgramStudyModes = ref([]);
-
-// watch and updated the list of semesters
-watch(
-    () => props.form.program_id,
-    () => {
         selectedProgramStudyModes.value = props.programs.find(
             (program) => program.id == props.form.program_id
         )?.studyModes;
     }
 );
+
 
 // Emits
 const emit = defineEmits(["next", "previous"]);
@@ -173,7 +180,7 @@ const emit = defineEmits(["next", "previous"]);
                     class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 />
                 <InputError
-                    :message="form.errors?.studyMode_id"
+                    :message="form.errors?.study_mode_id"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>

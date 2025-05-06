@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { router, Head } from "@inertiajs/vue3";
+import { router, Head, useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import BasicInfoForm from "./BasicInfoForm.vue";
 import AcademicInfoForm from "./AcademicInfoForm.vue";
@@ -9,13 +9,11 @@ import ChurchInfoForm from "./ChurchInfoForm.vue";
 // Props for form data
 const props = defineProps({
     programs: { type: Array, required: true },
-    tracks: { type: Array, required: true },
     years: { type: Array, required: true },
-    semesters: { type: Array, required: true },
 });
 
 // Step-based form data
-const form = ref({
+const form = useForm({
     first_name: "",
     middle_name: "",
     last_name: "",
@@ -59,18 +57,10 @@ const previousStep = () => {
 };
 
 const submit = () => {
-    form.value.processing = true;
-    router.post(route('students.store'), form.value, {
-        onFinish: () => {
-            form.value.processing = false;
-        },
+    form.post(route('students.store'), {
         onSuccess: () => {
-            form.value.processing = false;
-            form.value.reset();
+            form.reset();
             currentStep.value = 1;
-        },
-        onError: () => {
-            form.value.processing = false;
         },
     });
 };
@@ -136,9 +126,7 @@ const submit = () => {
                     <AcademicInfoForm
                         :form="form"
                         :programs="programs"
-                        :tracks="tracks"
                         :years="years"
-                        :semesters="semesters"
                         @next="nextStep"
                         @previous="previousStep"
                     />

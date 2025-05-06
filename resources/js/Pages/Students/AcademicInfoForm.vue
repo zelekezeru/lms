@@ -162,7 +162,7 @@ const emit = defineEmits(["next", "previous"]);
 
                 <Select
                     id="cousesList"
-                    v-model="form.studyMode_id"
+                    v-model="form.study_mode_id"
                     :options="selectedProgramStudyModes"
                     option-value="id"
                     option-label="mode"

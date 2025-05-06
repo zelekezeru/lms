@@ -39,7 +39,6 @@ class StudentStoreRequest extends FormRequest
             'study_mode_id' => 'required|exists:tracks,id',
             'year_id' => 'required|exists:years,id',
             'semester_id' => 'required|exists:semesters,id',
-            'section_id' => 'required|exists:sections,id',
         ];
     }
 }

@@ -74,7 +74,7 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        // CHeck if student ststus is null
+        // CHeck if student status is null
         if ($student->status === null) {
             $status = new Status;
             $status->student_id = $student->id;

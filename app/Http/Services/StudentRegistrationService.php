@@ -214,16 +214,20 @@ class StudentRegistrationService extends Controller
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
 
-        $userUuid = 'SITS-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT).'-'.$year;
+        do {
+            $initialCount = $count ?? Student::max('id');
+            $count = $initialCount + 1; // safer than count()
+            $studentUuid = 'SITS-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
+        } while (User::where('user_uuid', $studentUuid)->exists());
 
-        return $userUuid;
+        return $studentUuid;
     }
 
     public function student_email($fields)
     {
         $username = $fields['first_name'].' '.$fields['middle_name'];
 
-        $email = strtolower(str_replace(' ', '.', $username)).'@sits.edu.et';
+        $email = strtolower(str_replace(' ', '.', $username)).rand(10, 99).'@sits.edu.et';
 
         return $email;
     }

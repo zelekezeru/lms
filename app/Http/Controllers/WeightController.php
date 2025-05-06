@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WeightStoreRequest;
 use App\Http\Requests\WeightUpdateRequest;
-use App\Models\Weight;
-use App\Models\Instructor;
-use App\Models\Year;
-use App\Models\Semester;
 use App\Models\Course;
+use App\Models\Instructor;
 use App\Models\Section;
+use App\Models\Semester;
+use App\Models\Weight;
+use App\Models\Year;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

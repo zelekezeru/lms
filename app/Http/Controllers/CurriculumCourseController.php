@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Curriculum;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CurriculumCourseController extends Controller
@@ -12,6 +12,7 @@ class CurriculumCourseController extends Controller
     public function edit(Curriculum $curriculum)
     {
         $courses = Course::all();
+
         return Inertia::render('Curriculum/AssignCourses', [
             'curriculum' => $curriculum->load('courses'),
             'courses' => $courses,

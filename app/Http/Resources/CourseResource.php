@@ -22,7 +22,7 @@ class CourseResource extends JsonResource
             'tracks' => $this->whenLoaded('tracks'),
             'isCommon' => $this->when(
                 $this->pivot?->is_common !== null,
-                fn() => $this->pivot->is_common
+                fn () => $this->pivot->is_common
             ),
             'creditHours' => $this->credit_hours,
             'duration' => $this->duration,

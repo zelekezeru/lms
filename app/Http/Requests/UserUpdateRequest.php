@@ -17,7 +17,7 @@ class UserUpdateRequest extends FormRequest
         return [
             // Personal Information
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $this->user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->user->id],
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'profile_img' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];

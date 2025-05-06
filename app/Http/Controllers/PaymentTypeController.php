@@ -26,7 +26,7 @@ class PaymentTypeController extends Controller
     }
 
     public function store(Request $request)
-    {        
+    {
         $data = $request->validate([
             'type' => 'required|string|max:255',
             'language' => 'nullable|string|max:255',
@@ -37,8 +37,9 @@ class PaymentTypeController extends Controller
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] = Auth::user()->id;
-        
+
         $paymentType = PaymentType::create($data);
+
         return redirect()->back()->with('success', 'Payment type created successfully.');
     }
 
@@ -62,6 +63,7 @@ class PaymentTypeController extends Controller
         $data['updated_by'] = Auth::user()->id;
 
         $paymentType->update($data);
+
         return redirect()->back()->with('success', 'Payment type updated successfully.');
     }
 

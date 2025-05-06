@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('section_id')->constrained();
             $table->foreignId('semester_id')->constrained();
             $table->foreignId('course_id')->constrained();
-            
+
             $table->timestamps();
         });
     }

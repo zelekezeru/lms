@@ -2,11 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Database\Seeders\TenantSeeder;
-use Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,7 +14,7 @@ class DatabaseSeeder extends Seeder
         // Starting Seeder
         $this->call(RolePermissionSeeder::class);
 
-        //After creating the roles, permissions, SuperAdmin
+        // After creating the roles, permissions, SuperAdmin
         $this->call(UserSeeder::class);
         $this->call(TenantSeeder::class);
         $this->call(ProgramSeeder::class);

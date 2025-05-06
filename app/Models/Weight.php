@@ -12,14 +12,17 @@ class Weight extends Model
     {
         return $this->belongsTo(Instructor::class);
     }
+
     public function year()
     {
         return $this->belongsTo(Year::class);
     }
+
     public function semester()
     {
         return $this->belongsTo(Semester::class);
     }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

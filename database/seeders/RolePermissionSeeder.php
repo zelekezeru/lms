@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -171,13 +170,13 @@ class RolePermissionSeeder extends Seeder
             'view-paymentItems',
             'create-paymentItems',
             'update-paymentItems',
-            'delete-paymentItems',            
+            'delete-paymentItems',
 
             // Payment Schedule (CRUD)
             'view-paymentSchedules',
             'create-paymentSchedules',
             'update-paymentSchedules',
-            'delete-paymentSchedules',  
+            'delete-paymentSchedules',
 
             // Payment Method (CRUD)
             'view-paymentMethods',
@@ -190,7 +189,7 @@ class RolePermissionSeeder extends Seeder
             'create-paymentTypes',
             'update-paymentTypes',
             'delete-paymentTypes',
-            
+
             // Assigning Relationships
             'section-courses',
             'attach-section-courses',
@@ -211,7 +210,7 @@ class RolePermissionSeeder extends Seeder
             'course-students',
             'attach-course-students',
             'detach-course-students',
-            
+
             'default-password',
         ];
 
@@ -376,22 +375,22 @@ class RolePermissionSeeder extends Seeder
                     'create-paymentCategories',
                     'update-paymentCategories',
                     'delete-paymentCategories',
-                    
+
                     'view-paymentItems',
                     'create-paymentItems',
                     'update-paymentItems',
                     'delete-paymentItems',
-                    
+
                     'view-paymentSchedules',
                     'create-paymentSchedules',
                     'update-paymentSchedules',
                     'delete-paymentSchedules',
-                    
+
                     'view-paymentMethods',
                     'create-paymentMethods',
                     'update-paymentMethods',
                     'delete-paymentMethods',
-                    
+
                     'view-paymentTypes',
                     'create-paymentTypes',
                     'update-paymentTypes',

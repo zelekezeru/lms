@@ -26,7 +26,7 @@ class StatusResource extends JsonResource
             'is_scholarship' => $this->is_scholarship,
             'is_scholarship_approved' => $this->is_scholarship_approved,
             'is_scholarship_verified' => $this->is_scholarship_verified,
-            
+
             'created_by_name' => $this->created_by_name,
             'updated_by_name' => $this->updated_by_name,
             'deleted_by_name' => $this->deleted_by_name,
@@ -47,11 +47,11 @@ class StatusResource extends JsonResource
             'scholarship_at' => $this->scholarship_at,
             'scholarship_approved_at' => $this->scholarship_approved_at,
             'scholarship_verified_at' => $this->scholarship_verified_at,
-            
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-            
+
             'user' => $this->whenLoaded('user'),
             'student' => $this->whenLoaded('student'),
         ];

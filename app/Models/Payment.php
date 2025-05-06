@@ -37,7 +37,7 @@ class Payment extends Model
     {
         return $this->hasMany(PaymentItem::class);
     }
-    
+
     public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);

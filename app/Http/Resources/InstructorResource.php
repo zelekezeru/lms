@@ -21,24 +21,24 @@ class InstructorResource extends JsonResource
             'tenant_id' => $this->tenant_id,
             'name' => $this->user->name,
             'email' => $this->user->email,
-            'ContactPhone'  => $this->contact_phone,
-            'bio'  => $this->bio,
-            'status'  => $this->status,
-            'specialization'  => $this->specialization,
+            'ContactPhone' => $this->contact_phone,
+            'bio' => $this->bio,
+            'status' => $this->status,
+            'specialization' => $this->specialization,
             'employmentType' => $this->employment_type,
-            'created_at'    => $this->created_at,
-            'updated_at'    => $this->updated_at,
-            
-            'profileImg'  => Storage::url($this->user->profile_img),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+
+            'profileImg' => Storage::url($this->user->profile_img),
 
             'user' => $this->whenLoaded('user'),
 
             'userRole' => $this->user && $this->user->roles()->first() ? $this->user->roles()->first()->name : null,
-            
+
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
-            'sections' => $this->whenLoaded('courseSectionAssignments', function() {
-                return $this->courseSectionAssignments->map(function($courseSectionAssignment) {
-                    return 
+            'sections' => $this->whenLoaded('courseSectionAssignments', function () {
+                return $this->courseSectionAssignments->map(function ($courseSectionAssignment) {
+                    return
                     [
                         'id' => $courseSectionAssignment->section->id,
                         'name' => $courseSectionAssignment->section->name,
@@ -48,7 +48,7 @@ class InstructorResource extends JsonResource
                             'name' => $courseSectionAssignment->course->name,
                             'code' => $courseSectionAssignment->course->code,
                             'creaditHours' => $courseSectionAssignment->course->creadit_hours,
-                        ]
+                        ],
                     ];
                 });
             }),

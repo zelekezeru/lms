@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->foreignId('changed_by')->nullable();
             $table->date('changed_at')->nullable();
-            
+
             $table->timestamps();
         });
     }

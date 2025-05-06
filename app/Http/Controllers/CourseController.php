@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
-use Illuminate\Http\Request;
-use App\Http\Resources\CourseResource;
-use Carbon\Carbon;
-use App\Http\Resources\TrackResource;
-use App\Http\Resources\UserResource;
 use App\Http\Requests\CourseStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
-use App\Http\Resources\InstructorResource;
-use App\Http\Resources\InstructorsResource;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\ProgramResource;
+use App\Models\Course;
 use App\Models\Program;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\User;
 
 class CourseController extends Controller
 {
@@ -27,7 +22,7 @@ class CourseController extends Controller
         $courses = CourseResource::collection(Course::with('track')->paginate(15));
 
         return inertia('Courses/Index', [
-            'courses' => $courses
+            'courses' => $courses,
         ]);
     }
 
@@ -38,8 +33,9 @@ class CourseController extends Controller
     {
         $programs = ProgramResource::collection(Program::with('tracks')->get());
         $programs = ProgramResource::collection(Program::with('tracks')->get());
+
         return inertia('Courses/Create', [
-            'programs' => $programs
+            'programs' => $programs,
         ]);
     }
 
@@ -55,16 +51,16 @@ class CourseController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'CR' .  '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $course_id = 'CR'.'/'.str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
 
         $fields['code'] = $course_id;
 
         $course = Course::create($fields);
 
         $course->programs()->syncWithPivotValues($programsId, ['is_common' => true]);
-        
+
         $programs = Program::with('tracks', 'courses')->whereIn('id', $programsId)->get();
-        
+
         foreach ($programs as $program) {
             $courses = $program->courses->pluck('id');
             foreach ($program->tracks as $track) {
@@ -111,9 +107,9 @@ class CourseController extends Controller
         unset($fields['tracks']);
 
         // Optionally regenerate the course code if needed
-        if (!$course->code) {
+        if (! $course->code) {
             $year = substr(Carbon::now()->year, -2);
-            $course_id = 'CR' . '/' . str_pad(Course::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $course_id = 'CR'.'/'.str_pad(Course::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
             $fields['code'] = $course_id;
         }
 
@@ -141,6 +137,7 @@ class CourseController extends Controller
             ->orWhere('course_id', 'like', "%$search%")
             ->latest()
             ->paginate(15);
+
         return Inertia::render('Courses/Index', compact('courses'));
     }
 }

@@ -22,6 +22,7 @@ class AddDropRequest extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
     public function semester()
     {
         return $this->belongsTo(Semester::class);

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class PaymentMethodController extends Controller
 {
     public function index()
     {
         $methods = PaymentMethod::latest()->paginate(10);
+
         return Inertia::render('PaymentCategories/Index', [
             'methods' => $methods,
         ]);
@@ -26,9 +27,10 @@ class PaymentMethodController extends Controller
             'is_active' => 'required|boolean',
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
-        $data['created_by'] =  Auth::user()->id;
-        
+        $data['created_by'] = Auth::user()->id;
+
         $paymentMethod = PaymentMethod::create($data);
+
         return redirect()->back()->with('success', 'Payment category created successfully.');
     }
 
@@ -50,12 +52,14 @@ class PaymentMethodController extends Controller
         $data['updated_by'] = Auth::user()->id;
 
         $paymentMethod->update($data);
+
         return redirect()->back()->with('success', 'Payment category updated successfully.');
     }
 
     public function destroy(PaymentMethod $paymentMethod)
     {
         $paymentMethod->delete();
+
         return redirect()->back()->with('success', 'Payment category deleted successfully.');
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InventorySupplier;
 use App\Http\Requests\InventorySupplierStoreRequest;
 use App\Http\Requests\InventorySupplierUpdateRequest;
 use App\Http\Resources\InventorySupplierResource;
-use Illuminate\Http\Request;
+use App\Models\InventorySupplier;
 
 class InventorySupplierController extends Controller
 {
@@ -28,7 +27,7 @@ class InventorySupplierController extends Controller
     public function create()
     {
 
-        return  inertia('InventorySuppliers/Create');
+        return inertia('InventorySuppliers/Create');
     }
 
     /**
@@ -39,7 +38,7 @@ class InventorySupplierController extends Controller
         $fields = $request->validated();
 
         $inventorySupplier = InventorySupplier::create($fields);
-        
+
         return redirect()->route('inventorySuppliers.show', $inventorySupplier)->with('success', 'Inventory Supplier created successfully.');
     }
 

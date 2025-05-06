@@ -1,33 +1,15 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TenantController;
-use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\StudyModeController;
-use App\Http\Controllers\TrackController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\InventorySupplierController;
-use App\Http\Controllers\InventoryCategoryController;
-use App\Http\Controllers\InstructorController;
-use App\Http\Controllers\UserDocumentController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\YearController;
-use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CurriculumController;
-use App\Http\Controllers\CurriculumCourseController;
 use App\Http\Controllers\HomeController;
-use Inertia\Inertia;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
-
-
-
+use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {});
 
@@ -50,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Assignment routes
     Route::post('/courses-track/{track}', [AssignmentController::class, 'assignCoursesToTracks'])->name('courses-track.assign');
-    
+
     Route::post('/courses-section/{section}', [AssignmentController::class, 'assignCoursesToSections'])->name('courses-section.assign');
 
     Route::post('/courses-instructor/{instructor}', [AssignmentController::class, 'assignCoursesToInstructor'])->name('courses-instructor.assign');
@@ -61,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
 
-    //Student Managment
+    // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
     Route::post('/students/{student}/verify', [StudentController::class, 'verify'])->name('students.verify');
@@ -69,61 +51,52 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
-        
+
     Route::get('/instructor', function () {
         return Inertia::render('Instructor');
     })->name('instructor.dashboard');
-    
-        // INstructor related routes
+
+    // INstructor related routes
     Route::get('/instructor/course', function () {
         return Inertia::render('Instructor/InstructorCourses');
     })->name('instructor.course');
-    
 
     Route::get('/instructor/attendance', function () {
         return Inertia::render('Instructor/InstructorAttendance');
     })->name('instructor.attendance');
-    
 
     Route::get('/instructor/grades', function () {
         return Inertia::render('Instructor/InstructorGrades');
     })->name('instructor.grades');
-    
 
     Route::get('/instructor/schedule', function () {
         return Inertia::render('Instructor/Schedule');
     })->name('instructor.schedule');
-    
 
     Route::get('/student', function () {
         return Inertia::render('Student');
     })->name('student.dashboard');
-    
 
     Route::get('/payment', function () {
         return Inertia::render('Student/Payment');
     })->name('student.payment');
-    
 
     Route::get('/student/registration', function () {
         return Inertia::render('Student/Registration');
     })->name('student.registration');
-    
 
     Route::get('/student/add', function () {
         return Inertia::render('Student/AddDropCourses');
     })->name('student.add');
-    
-    
+
     Route::get('/student/course', function () {
         return Inertia::render('Student/Course');
     })->name('student.course');
-    
-    
+
     Route::get('/student/result', function () {
         return Inertia::render('Student/StudentResults');
     })->name('student.result');
-    
+
     $resourceRoutes = [
         'tracks' => 'track',
         'students' => 'student',
@@ -163,9 +136,9 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware("can:view-$route")->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
 
         Route::middleware("can:update-$route")
-        ->match(['put', 'patch'], "$route/{{$singular}}", [$controller, 'update'])
-        ->name("$route.update");
-    
+            ->match(['put', 'patch'], "$route/{{$singular}}", [$controller, 'update'])
+            ->name("$route.update");
+
         Route::middleware("can:update-$route")->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
 
         Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
@@ -173,5 +146,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -23,11 +23,11 @@ class EmployeeUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $this->employee->user->id, // Exclude current employee's email from uniqueness check
+            'email' => 'sometimes|required|email|unique:users,email,'.$this->employee->user->id, // Exclude current employee's email from uniqueness check
             'contact_phone' => 'required|nullable|string|max:15',
-            
+
             'role_name' => 'sometimes|required|exists:roles,name', // Update with actual role names from your roles table
-            
+
             'job_position' => 'sometimes|nullable|max:255',
             'employment_type' => 'sometimes|required|in:FULL-TIME,PART-TIME,CONTRACT',
             'office_hours' => 'sometimes|nullable|string|max:255',

@@ -5,16 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
 use App\Http\Resources\CourseResource;
-use App\Http\Resources\TrackResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
-use App\Models\Track;
-use App\Models\User;
 use App\Models\Program;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Carbon\Carbon;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
@@ -52,9 +49,9 @@ class ProgramController extends Controller
         return inertia('Programs/Index', [
             'programs' => $programs, // Corrected to return the programs collection
             'sortInfo' => [
-                "currentSortColumn" => $sortColumn,
-                "currentSortDirection" => $sortDirection,
-            ]
+                'currentSortColumn' => $sortColumn,
+                'currentSortDirection' => $sortDirection,
+            ],
         ]);
     }
 
@@ -79,7 +76,7 @@ class ProgramController extends Controller
         $users = UserResource::collection(User::all());
         $courses = CourseResource::collection(Course::all());
 
-        return  inertia('Programs/Create', [
+        return inertia('Programs/Create', [
             'users' => $users,
             'courses' => $courses,
         ]);
@@ -96,7 +93,7 @@ class ProgramController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $program_id = 'PR' .  '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
+        $program_id = 'PR'.'-'.str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT).'-'.$year;
 
         $fields['code'] = $program_id;
 
@@ -176,14 +173,13 @@ class ProgramController extends Controller
 
         if (isset($fields['user_id'])) {
             $user = User::where('id', $fields['user_id'])->first();
-            if ($user && !$user->hasRole('PROGRAM-DIRECTOR')) {
+            if ($user && ! $user->hasRole('PROGRAM-DIRECTOR')) {
                 $user->assignRole('PROGRAM-DIRECTOR');
             }
         }
 
         return redirect()->route('programs.show', $program)->with('success', 'Program updated successfully.');
     }
-
 
     /**
      * Remove the specified resource from storage.

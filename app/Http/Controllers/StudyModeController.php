@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StudyModeStoreRequest;
 use App\Http\Requests\StudyModeUpdateRequest;
-use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\ProgramResource;
-use App\Models\StudyMode;
+use App\Http\Resources\StudyModeResource;
 use App\Models\Program;
+use App\Models\StudyMode;
 use Illuminate\Http\Request;
 
 class StudyModeController extends Controller
@@ -17,38 +17,38 @@ class StudyModeController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $query = StudyMode::query()->with('program');
-        
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            
+
             $query = StudyMode::when($search, function ($query) use ($search) {
-                    $query->where('mode', 'like', "%{$search}%")
-                        ->orWhere('duration', 'like', "%{$search}%")
-                        ->orWhere('fees', 'like', "%{$search}%")
-                        ->orWhereHas('program', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-                });
+                $query->where('mode', 'like', "%{$search}%")
+                    ->orWhere('duration', 'like', "%{$search}%")
+                    ->orWhere('fees', 'like', "%{$search}%")
+                    ->orWhereHas('program', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $allowedSorts = ['mode', 'duration', 'fees'];
         $sortColumn = $request->sortColumn;
         $sortDirection = $request->sortDirection;
-        
+
         if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
             $query->orderBy($sortColumn, $sortDirection);
         }
-        
+
         $studyModes = StudyModeResource::collection($query->paginate(15));
 
         return inertia('StudyModes/Index', [
             'studyModes' => $studyModes, // Corrected to return the studyModes collection
             'sortInfo' => [
-                "currentSortColumn" => $sortColumn,
-                "currentSortDirection" => $sortDirection,
-            ]
+                'currentSortColumn' => $sortColumn,
+                'currentSortDirection' => $sortDirection,
+            ],
         ]);
     }
 
@@ -58,12 +58,12 @@ class StudyModeController extends Controller
     public function create()
     {
         $programs = ProgramResource::collection(Program::all());
-        
+
         return inertia('StudyModes/Create', [
-            'programs'=> $programs,
+            'programs' => $programs,
         ]);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -74,13 +74,13 @@ class StudyModeController extends Controller
         $studyMode = StudyMode::create($fields);
 
         $program = Program::find($fields['program_id']);
-        
+
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the studyModes.show method is the default
         $redirectTo = $request->input('redirectTo', route('studyModes.show', $studyMode));
 
         return redirect($redirectTo)->with('success', 'Study Mode created successfully.');
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -91,7 +91,7 @@ class StudyModeController extends Controller
         return inertia('StudyModes/Show', compact('studyMode'));
 
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -101,7 +101,7 @@ class StudyModeController extends Controller
         $studyMode = new StudyModeResource($studyMode->load('program')); // Load the related program
 
         return inertia('StudyModes/Edit', [
-            'programs'=> $programs,
+            'programs' => $programs,
             'studyMode' => $studyMode,
         ]);
     }
@@ -125,7 +125,7 @@ class StudyModeController extends Controller
     public function destroy(StudyMode $studyMode)
     {
         $studyMode->delete();
-        
+
         return redirect()->route('studyModes.index')->with('success', 'Study Mode deleted successfully.');
     }
 }

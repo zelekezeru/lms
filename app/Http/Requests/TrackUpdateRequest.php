@@ -22,7 +22,7 @@ class TrackUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|string|max:255|unique:tracks,name,' . $this->track->id,
+            'name' => 'sometimes|string|max:255|unique:tracks,name,'.$this->track->id,
             'description' => 'nullable|string',
             'program_id' => ['sometimes', 'exists:programs,id'],
         ];

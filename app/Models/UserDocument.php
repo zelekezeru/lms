@@ -9,13 +9,12 @@ class UserDocument extends Model
 {
     use HasFactory;
 
-    
     protected $fillable = [
-        'user_id', 
-        'title', 
-        'description', 
-        'image', 
-        'file'
+        'user_id',
+        'title',
+        'description',
+        'image',
+        'file',
     ];
 
     public function user()

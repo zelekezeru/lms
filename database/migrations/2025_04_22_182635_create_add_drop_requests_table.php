@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->timestamps();
         });
-        
+
     }
 
     /**

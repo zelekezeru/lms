@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\StudyModeResource;
 use App\Models\Payment;
-use App\Models\PaymentCategory;
-use App\Models\PaymentScheduleItem;
-use App\Models\Student;
-use App\Models\PaymentType; // Assuming you have this
+use App\Models\PaymentCategory; // Assuming you have this
 use App\Models\PaymentMethod; // Add this line to import PaymentMethod
-use App\Models\StudyMode; // Import StudyMode model
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Http\Resources\StudentResource; // Add this line to import StudentResource
-use App\Http\Resources\StudyModeResource; // Add this line to import StudyModeResource
-use Illuminate\Support\Facades\Auth; // Import Auth facade
+use App\Models\PaymentType; // Import StudyMode model
+use App\Models\Student;
+use App\Models\StudyMode;
+use Illuminate\Http\Request; // Add this line to import StudentResource
+use Illuminate\Support\Facades\Auth; // Add this line to import StudyModeResource
+use Inertia\Inertia; // Import Auth facade
 
 class PaymentController extends Controller
 {
     public function index(Request $request)
     {
         $payments = Payment::get();
-        
+
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
@@ -33,7 +32,7 @@ class PaymentController extends Controller
             'student' => $request->input('student'),
             'schedule' => $request->input('schedule'),
         ];
-        
+
         return Inertia::render('Payments/Index', [
             'payments' => $payments,
             'paymentCategories' => $paymentCategories,
@@ -67,10 +66,10 @@ class PaymentController extends Controller
             'total_amount' => 'required|numeric|min:0.01',
             'narration' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:pending,completed,failed,refunded',
-            'payment_reference' => 'nullable|string|max:255',            
+            'payment_reference' => 'nullable|string|max:255',
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
-        $data['created_by'] =  Auth::user()->id;
+        $data['created_by'] = Auth::user()->id;
 
         $payment = Payment::create($data);
 
@@ -80,6 +79,7 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentItems']);
+
         return Inertia::render('Payments/Show', [
             'payment' => $payment,
         ]);
@@ -95,11 +95,11 @@ class PaymentController extends Controller
             'total_amount' => 'required|numeric|min:0.01',
             'narration' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:pending,completed,failed,refunded',
-            'payment_reference' => 'nullable|string|max:255',            
+            'payment_reference' => 'nullable|string|max:255',
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
-        $data['created_by'] =  Auth::user()->id;
-        
+        $data['created_by'] = Auth::user()->id;
+
         $payment->update($data);
 
         return redirect()->route('payments.show', $payment->id)->with('success', 'Payment updated successfully.');
@@ -108,7 +108,7 @@ class PaymentController extends Controller
     public function destroy(Payment $payment)
     {
         $payment->delete();
+
         return redirect()->route('payments.index')->with('success', 'Payment deleted successfully.');
     }
-
 }

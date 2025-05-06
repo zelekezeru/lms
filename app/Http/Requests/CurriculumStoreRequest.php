@@ -23,12 +23,12 @@ class CurriculumStoreRequest extends FormRequest
     {
         return [
             'study_mode_id' => 'required|integer|exists:study_modes,id',
-            'track_id'      => 'required|integer|exists:tracks,id',
-            'courses'       => 'required|array|min:1',
-            'courses.*'     => 'integer|exists:courses,id',
-            'year_level'          => 'required|integer',
-            'semester'      => 'required|integer',
-            'description'   => 'nullable|string|max:255',
+            'track_id' => 'required|integer|exists:tracks,id',
+            'courses' => 'required|array|min:1',
+            'courses.*' => 'integer|exists:courses,id',
+            'year_level' => 'required|integer',
+            'semester' => 'required|integer',
+            'description' => 'nullable|string|max:255',
         ];
     }
 }

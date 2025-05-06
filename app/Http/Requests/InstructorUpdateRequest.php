@@ -15,7 +15,7 @@ class InstructorUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $this->instructor->user->id,            
+            'email' => 'sometimes|required|email|unique:users,email,'.$this->instructor->user->id,
             'contact_phone' => 'sometimes|required||string|max:15',
 
             'specialization' => 'sometimes|required|string|max:255',

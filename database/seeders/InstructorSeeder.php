@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Instructor;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class InstructorSeeder extends Seeder
@@ -18,7 +17,7 @@ class InstructorSeeder extends Seeder
         $specializations = [
             'Hermeneutics', 'Theology', 'Biblical Studies', 'Church History',
             'Pastoral Ministry', 'Ethics', 'Spiritual Formation', 'Missiology',
-            'Leadership', 'Apologetics'
+            'Leadership', 'Apologetics',
         ];
 
         for ($i = 1; $i <= 8; $i++) {
@@ -28,29 +27,29 @@ class InstructorSeeder extends Seeder
             $specialization = $specializations[array_rand($specializations)];
 
             $user = User::create([
-                'user_uuid'         => 'SITS-IN-' . str_pad($i, 3, '0', STR_PAD_LEFT),
-                'name'              => $name,
-                'email'             => $email,
-                'phone'             => $phone,
-                'profile_img'       => null,
+                'user_uuid' => 'SITS-IN-'.str_pad($i, 3, '0', STR_PAD_LEFT),
+                'name' => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'profile_img' => null,
                 'email_verified_at' => null,
-                'password'          => Hash::make('password'), // default password
-                'default_password'  => null,
-                'password_changed'  => false,
-                'tenant_id'         => 1,
-                'created_at'        => now(),
-                'updated_at'        => now(),
+                'password' => Hash::make('password'), // default password
+                'default_password' => null,
+                'password_changed' => false,
+                'tenant_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             Instructor::create([
-                'user_id'         => $user->id,
-                'specialization'  => $specialization,
+                'user_id' => $user->id,
+                'specialization' => $specialization,
                 'employment_type' => fake()->randomElement(['FULL-TIME', 'PART-TIME', 'CONTRACT', 'Visitor']),
-                'hire_date'       => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
-                'status'          => fake()->randomElement(['Active', 'Inactive']),
-                'bio'             => fake()->sentence(),
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'hire_date' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
+                'status' => fake()->randomElement(['Active', 'Inactive']),
+                'bio' => fake()->sentence(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

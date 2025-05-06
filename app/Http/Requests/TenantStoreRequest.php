@@ -26,13 +26,13 @@ class TenantStoreRequest extends FormRequest
             'email' => ['required', 'email', 'unique:tenants,email'],
             'phone' => ['required'],
             'address' => ['required', 'string'],
-            'user_id' => ['sometimes', 'exists:users,id'],             
+            'user_id' => ['sometimes', 'exists:users,id'],
             'contact_person' => ['required', 'string'],
             'contact_phone' => ['required', 'string'],
             'contact_email' => ['required', 'string', 'unique:users,email'],
             'status' => ['required', 'in:0,1'],
-            'paid' => ['required', 'in:0,1'],    
-            'logo'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
+            'paid' => ['required', 'in:0,1'],
+            'logo' => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }
 }

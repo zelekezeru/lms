@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Registration;
 
 class Course extends Model
 {
@@ -86,8 +85,11 @@ class Course extends Model
                     $q->where('course_id', $pre->id);
                 })->exists();
 
-            if (!$passed) return false;
+            if (! $passed) {
+                return false;
+            }
         }
+
         return true;
     }
 }

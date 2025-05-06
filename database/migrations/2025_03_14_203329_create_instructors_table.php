@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('instructors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            
+
             $table->string('specialization', 255);
             $table->enum('employment_type', ['FULL-TIME', 'PART-TIME', 'CONTRACT', 'Visitor']);
             $table->date('hire_date');
@@ -23,7 +23,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

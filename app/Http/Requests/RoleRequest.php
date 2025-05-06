@@ -21,7 +21,7 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [            
+        return [
             'name' => 'required|string|max:100|uppercase',
             'guard_name' => 'nullable|string|max:100',
         ];

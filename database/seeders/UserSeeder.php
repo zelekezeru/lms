@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -32,8 +31,8 @@ class UserSeeder extends Seeder
             ],
         ]);
 
-         // Assign the SUPER-ADMIN role to the user
-         DB::table('model_has_roles')->insert([
+        // Assign the SUPER-ADMIN role to the user
+        DB::table('model_has_roles')->insert([
             [
                 'role_id' => 1, // SUPER-ADMIN role ID
                 'model_type' => 'App\Models\User', // The model type for the user

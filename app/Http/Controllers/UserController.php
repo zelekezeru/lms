@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
-use App\Http\Resources\UserResource;
-use App\Models\Tenant;
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserUpdateRequest;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
-use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -25,7 +22,7 @@ class UserController extends Controller
         $users = UserResource::collection(User::paginate(15));
 
         return inertia('Users/Index', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -35,7 +32,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        
+
         return inertia('Users/Create', [
             'roles' => $roles,
         ]);
@@ -48,24 +45,24 @@ class UserController extends Controller
     {
         $fields = $request->validated();
 
-        $registeredUserController = new RegisteredUserController();
+        $registeredUserController = new RegisteredUserController;
 
         $user = $registeredUserController->store($request, 'USER', 'User');
 
         $image = $request->file('profile_img');
-        
+
         if ($image) {
             $profile_path = $image->store('profile-images', 'public');
         } else {
             $profile_path = null;
         }
-        
+
         $user_image = User::update([
             'profile_img' => $profile_path,
         ]);
-        
+
         $user->assignRole($fields['role_name']);
-        
+
         return redirect()->route('users.show', $user)->with('success', 'User created successfully.');
     }
 
@@ -78,7 +75,7 @@ class UserController extends Controller
             'user' => new UserResource($user),
         ]);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -91,7 +88,7 @@ class UserController extends Controller
             'roles' => $roles,
         ]);
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
@@ -116,13 +113,13 @@ class UserController extends Controller
         ]);
 
         // Update roles if provided
-        if (!empty($fields['role_name'])) {
+        if (! empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
 
         return redirect()->route('users.show', $user)->with('success', 'User updated successfully.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */

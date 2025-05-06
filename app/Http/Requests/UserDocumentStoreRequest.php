@@ -21,5 +21,4 @@ class UserDocumentStoreRequest extends FormRequest
             'file' => 'nullable|file|mimes:pdf,docx|max:5120',
         ];
     }
-    
 }

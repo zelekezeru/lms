@@ -2,24 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Instructor;
-use App\Models\Track;
-use App\Http\Resources\InstructorResource;
-use App\Http\Resources\TrackResource;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\InstructorStoreRequest;
 use App\Http\Requests\InstructorUpdateRequest;
-use App\Models\Tenant;
+use App\Http\Resources\CourseResource;
+use App\Http\Resources\InstructorResource;
+use App\Models\Course;
+use App\Models\Instructor;
+use App\Models\Track;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Resources\CourseResource;
-use App\Models\Course;
 
 class InstructorController extends Controller
 {
@@ -43,7 +39,6 @@ class InstructorController extends Controller
         ]);
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -51,7 +46,7 @@ class InstructorController extends Controller
     {
         $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course'));
 
-        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor){
+        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor) {
             return $query->where('instructors.id', $instructor->id);
         }])->orderByDesc('related_to_instructor', 'name')->get());
 
@@ -61,13 +56,11 @@ class InstructorController extends Controller
         ]);
     }
 
-
     public function create(): Response
     {
         $instructors = InstructorResource::collection(Instructor::all());
         $roles = Role::all();
         $courses = CourseResource::collection(Course::all());
-
 
         return Inertia::render('Instructors/Create', [
             'tracks' => Track::all(['id', 'name']),
@@ -75,7 +68,6 @@ class InstructorController extends Controller
             'courses' => $courses,
         ]);
     }
-
 
     public function store(InstructorStoreRequest $request)
     {
@@ -95,7 +87,7 @@ class InstructorController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = 'instructor@' . $user_phone;
+        $user_password = 'instructor@'.$user_phone;
 
         // Merge the default password into the request
         $request->merge([
@@ -116,13 +108,12 @@ class InstructorController extends Controller
             'hire_date' => $fields['hire_date'],
         ]);
 
-        //Assign the created instructor to the courses
+        // Assign the created instructor to the courses
         $instructor->courses()->sync($courses);
 
-        $registeredUserController = new RegisteredUserController();
+        $registeredUserController = new RegisteredUserController;
 
         $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
-
 
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
@@ -133,7 +124,7 @@ class InstructorController extends Controller
     public function edit(Instructor $instructor)
     {
         $roles = Role::all();
-        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor){
+        $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor) {
             return $query->where('instructors.id', $instructor->id);
         }])->orderByDesc('related_to_instructor', 'name')->get());
 
@@ -179,7 +170,7 @@ class InstructorController extends Controller
 
         $instructor->courses()->sync($courses);
         // Update roles if provided
-        if (!empty($fields['role_name'])) {
+        if (! empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
 

@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class User extends Authenticatable
         'password',
         'user_uuid',
         'default_password',
-        'phone',        
+        'phone',
     ];
 
     /**
@@ -61,13 +61,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Status::class);
     }
-    
+
     public function church()
     {
         return $this->hasOne(Church::class);
     }
 
-    //Program Director
+    // Program Director
     public function director()
     {
         return $this->hasOne(Program::class);
@@ -82,12 +82,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Instructor::class);
     }
-    
+
     public function userDocuments()
     {
         return $this->hasMany(UserDocument::class);
     }
-    
+
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
@@ -97,5 +97,4 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Section::class);
     }
-
 }

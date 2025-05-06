@@ -26,7 +26,7 @@ class StudentResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'marital_status' => $this->marital_status,
 
-            'profileImg'  => Storage::url($this->user->profile_img),
+            'profileImg' => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),

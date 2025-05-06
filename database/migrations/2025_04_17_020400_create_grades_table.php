@@ -10,14 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {        
+    {
         Schema::create('grades', function (Blueprint $table) {
             $table->id();
             $table->string('grade_point');
             $table->string('grade_letter');
             $table->string('grade_description')->nullable();
             $table->string('grade_scale');
-            
+
             $table->foreignId('student_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('year_id')->constrained();

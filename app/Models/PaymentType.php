@@ -12,6 +12,7 @@ class PaymentType extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
     public function paymentCategories()
     {
         return $this->hasMany(PaymentCategory::class);

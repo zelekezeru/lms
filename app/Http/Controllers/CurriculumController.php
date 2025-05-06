@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CurriculumStoreRequest;
+use App\Models\Course;
 use App\Models\Curriculum;
+use App\Models\Semester;
+use App\Models\Track;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Track;
-use App\Models\Course;
-use App\Models\Semester;
-use App\Models\User;
 
 class CurriculumController extends Controller
 {
@@ -23,7 +23,7 @@ class CurriculumController extends Controller
             'tracks' => Track::all(),
             'courses' => Course::all(),
             'semesters' => Semester::all(),
-            'instructors' => User::where('role', 'instructor')->get()
+            'instructors' => User::where('role', 'instructor')->get(),
         ]);
     }
 
@@ -44,34 +44,34 @@ class CurriculumController extends Controller
         $bulkInsert = [];
         $courseIds = $fields['courses'];
         $existingCourseIds = Curriculum::where('track_id', $fields['track_id'])
-                                        ->where('study_mode_id', $fields['study_mode_id'])
-                                        ->where('year_level', $fields['year_level'])
-                                        ->where('semester', $fields['semester'])
-                                        ->pluck('course_id')
-                                        ->toArray();
-        
+            ->where('study_mode_id', $fields['study_mode_id'])
+            ->where('year_level', $fields['year_level'])
+            ->where('semester', $fields['semester'])
+            ->pluck('course_id')
+            ->toArray();
+
         foreach ($existingCourseIds as $index => $existingCourseId) {
-            if (!in_array($existingCourseId, $courseIds)) {
+            if (! in_array($existingCourseId, $courseIds)) {
                 $curriculum = Curriculum::where('track_id', $fields['track_id'])
-                                        ->where('study_mode_id', $fields['study_mode_id'])
-                                        ->where('year_level', $fields['year_level'])
-                                        ->where('semester', $fields['semester'])
-                                        ->where('course_id', $existingCourseId)
-                                        ->delete();
-                
+                    ->where('study_mode_id', $fields['study_mode_id'])
+                    ->where('year_level', $fields['year_level'])
+                    ->where('semester', $fields['semester'])
+                    ->where('course_id', $existingCourseId)
+                    ->delete();
+
                 unset($existingCourseIds[$index]);
             }
-        }                            
+        }
 
         foreach ($courseIds as $courseId) {
-            if (!in_array($courseId, $existingCourseIds)) {
+            if (! in_array($courseId, $existingCourseIds)) {
                 $bulkInsert[] = [
                     'study_mode_id' => $fields['study_mode_id'],
                     'track_id' => $fields['track_id'],
                     'course_id' => $courseId,
                     'year_level' => $fields['year_level'],
                     'semester' => $fields['semester'],
-                    'description' => "This Course In This Study MOde And Track Should Be Taken" . $fields['description'] ?? "Year " . $fields['year_level'] . "Semester " . $fields['semester'],
+                    'description' => 'This Course In This Study MOde And Track Should Be Taken'.$fields['description'] ?? 'Year '.$fields['year_level'].'Semester '.$fields['semester'],
                 ];
             }
         }
@@ -111,6 +111,7 @@ class CurriculumController extends Controller
     public function destroy(Curriculum $curriculum)
     {
         $curriculum->delete();
+
         return redirect()->back();
     }
 }

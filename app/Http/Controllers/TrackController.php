@@ -4,22 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TrackStoreRequest;
 use App\Http\Requests\TrackUpdateRequest;
-use App\Http\Resources\TrackResource;
-use Carbon\Carbon;
-use Inertia\Inertia;
-use App\Models\Track;
-use Illuminate\Http\Request;
-use App\Models\Program;
-use App\Http\Resources\ProgramResource;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Http\Resources\UserResource;
 use App\Http\Resources\CourseResource;
-use App\Http\Resources\CurriculumResource; // Ensure this class exists in the specified namespace
+use App\Http\Resources\CurriculumResource;
+use App\Http\Resources\ProgramResource;
+use App\Http\Resources\TrackResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
 use App\Models\Curriculum;
+use App\Models\Program;
+use App\Models\Track;
+use App\Models\User; // Ensure this class exists in the specified namespace
 use App\Models\Year;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TrackController extends Controller
 {
@@ -45,7 +44,6 @@ class TrackController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-
         $tracks = $query->paginate(15)->withQueryString();
 
         return inertia('Tracks/Index', [
@@ -54,12 +52,11 @@ class TrackController extends Controller
             'users' => UserResource::collection(User::all()),
             'search' => $request->search,
             'sortInfo' => [
-                "currentSortColumn" => $sortColumn,
-                "currentSortDirection" => $sortDirection,
-            ]
+                'currentSortColumn' => $sortColumn,
+                'currentSortDirection' => $sortDirection,
+            ],
         ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -85,7 +82,7 @@ class TrackController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $track_id = 'DP' .  '/' . str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $track_id = 'DP'.'/'.str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
 
         $fields['code'] = $track_id;
 
@@ -147,9 +144,9 @@ class TrackController extends Controller
         $fields = $request->validated();
 
         // Optionally regenerate the track code if needed
-        if (!$track->code) {
+        if (! $track->code) {
             $year = substr(Carbon::now()->year, -2);
-            $track_id = 'DP' . '/' . str_pad(Track::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $track_id = 'DP'.'/'.str_pad(Track::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
             $fields['code'] = $track_id;
         }
 
@@ -175,6 +172,7 @@ class TrackController extends Controller
             ->orWhere('track_id', 'like', "%$search%")
             ->latest()
             ->paginate(15);
+
         return Inertia::render('Tracks/Index', compact('tracks'));
     }
 

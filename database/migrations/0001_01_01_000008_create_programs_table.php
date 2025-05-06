@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('duration')->default(4);
             $table->longText('description');
             $table->string('status')->default('Active');
-            
+
             $table->foreignId('user_id')->constrained()->nullable();
             $table->timestamps();
         });

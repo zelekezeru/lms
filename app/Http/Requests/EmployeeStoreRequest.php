@@ -23,15 +23,15 @@ class EmployeeStoreRequest extends FormRequest
     {
         return [
             // User table validations
-            'name'      => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'contact_phone' => 'required|string|max:15',
-            'role_name'   => 'required|exists:roles,name',
-            
+            'role_name' => 'required|exists:roles,name',
+
             // Employee table validations
-            'profile_img'   => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
-            'job_position'   => 'required|string|max:255',
-            'employment_type'=> 'required|in:FULL-TIME, PART-TIME, CONTRACT',
-            'office_hours'   => 'nullable|string|max:255',
+            'profile_img' => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
+            'job_position' => 'required|string|max:255',
+            'employment_type' => 'required|in:FULL-TIME, PART-TIME, CONTRACT',
+            'office_hours' => 'nullable|string|max:255',
         ];
     }
 }

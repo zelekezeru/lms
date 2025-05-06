@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Status extends Model
 {
@@ -13,6 +12,7 @@ class Status extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);

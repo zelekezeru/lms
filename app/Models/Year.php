@@ -27,10 +27,12 @@ class Year extends Model
     {
         return $this->hasMany(User::class, 'user_id');
     }
+
     public function semesters()
     {
         return $this->hasMany(Semester::class);
     }
+
     public function programs()
     {
         return $this->hasMany(Program::class);

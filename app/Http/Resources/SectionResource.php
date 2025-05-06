@@ -11,7 +11,6 @@ class SectionResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  Request  $request
-     * @return array
      */
     public function toArray($request): array
     {
@@ -21,7 +20,7 @@ class SectionResource extends JsonResource
             'code' => $this->code,
             'user' => new UserResource($this->whenLoaded('user')),
             'students' => $this->whenLoaded('students'),
-            'semester' =>new SemesterResource($this->whenLoaded('semester')),
+            'semester' => new SemesterResource($this->whenLoaded('semester')),
             'year' => new YearResource($this->whenLoaded('year')),
             'program' => $this->whenLoaded('program'),
             'track' => $this->whenLoaded('track'),

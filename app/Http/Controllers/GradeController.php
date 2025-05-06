@@ -51,7 +51,7 @@ class GradeController extends Controller
     public function update(GradeUpdateRequest $request, Grade $grade)
     {
         $fields = $request->validated();
-        
+
         $grade->update($fields);
 
         return redirect()->route('grades.index')->with('success', 'Grade updated successfully.');
@@ -63,6 +63,7 @@ class GradeController extends Controller
 
         return redirect()->route('grades.index')->with('success', 'Grade deleted successfully.');
     }
+
     public function search(Request $request)
     {
         $query = $request->input('query');

@@ -2,28 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
-use App\Http\Resources\TrackResource;
 use App\Http\Resources\EmployeeResource;
-use App\Models\Track;
 use App\Models\Employee;
 use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Auth\RegisteredUserController;
-
 
 class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -77,7 +72,7 @@ class EmployeeController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = 'employee@' . $user_phone;
+        $user_password = 'employee@'.$user_phone;
 
         // Merge the default password into the request
         $request->merge([
@@ -85,7 +80,7 @@ class EmployeeController extends Controller
             'default_password' => $user_password, // needed for 'confirmed' rule
             'profile_img' => $profile_path,
         ]);
-        
+
         $employee = Employee::create([
             // User id temporary
             'user_id' => 3,
@@ -95,7 +90,7 @@ class EmployeeController extends Controller
         ]);
 
         // Create a new User
-        $registeredUserController = new RegisteredUserController();
+        $registeredUserController = new RegisteredUserController;
 
         $user = $registeredUserController->store($request, $request->role_name, 'Employee', $employee);
 
@@ -157,7 +152,7 @@ class EmployeeController extends Controller
         ]);
 
         // Update roles if provided
-        if (!empty($fields['role_name'])) {
+        if (! empty($fields['role_name'])) {
             $user->syncRoles([$fields['role_name']]);
         }
 
@@ -187,7 +182,7 @@ class EmployeeController extends Controller
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
 
-        $userUuid = $tenant .  '/EM/' . str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $userUuid = $tenant.'/EM/'.str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
 
         return $userUuid;
     }

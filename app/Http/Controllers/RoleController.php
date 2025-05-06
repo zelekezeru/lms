@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -22,8 +19,8 @@ class RoleController extends Controller
         $search = $request->input('search');
 
         $roles = Role::when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%$search%");
-            })
+            return $query->where('name', 'like', "%$search%");
+        })
             ->latest()
             ->paginate(15)
             ->withQueryString();
@@ -49,7 +46,7 @@ class RoleController extends Controller
 
         return Inertia::render('Roles/Show', [
             'role' => $role,
-            'rolePermissions' => $rolePermissions
+            'rolePermissions' => $rolePermissions,
         ]);
     }
 
@@ -93,6 +90,7 @@ class RoleController extends Controller
         $roles = Role::where('role_name', 'like', "%$search%")
             ->latest()
             ->paginate(15);
+
         return Inertia::render('Roles/Index', compact('roles'));
     }
 
@@ -111,7 +109,7 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
-        
+
         $role->permissions()->sync($request['permissions']);
 
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');

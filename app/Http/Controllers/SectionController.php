@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Section;
-use App\Models\Program;
-use App\Models\Semester;
-use App\Models\Year;
-use App\Models\User;
-use App\Models\Track;
-use Illuminate\Http\Request;
-use App\Http\Requests\SectionRequest;
 use App\Http\Requests\SectionStoreRequest;
 use App\Http\Requests\SectionUpdateRequest;
 use App\Http\Resources\CourseResource;
-use App\Http\Resources\TrackResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
+use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
 use App\Models\Instructor;
-use Inertia\Inertia;
+use App\Models\Program;
+use App\Models\Section;
+use App\Models\Semester;
+use App\Models\Track;
+use App\Models\User;
+use App\Models\Year;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SectionController extends Controller
 {
@@ -32,10 +31,9 @@ class SectionController extends Controller
         $sections = Section::with(['user', 'program', 'track', 'year', 'semester'])->get();
 
         return Inertia::render('Sections/Index', [
-            'sections' => $sections
+            'sections' => $sections,
         ]);
     }
-
 
     public function create()
     {
@@ -58,7 +56,6 @@ class SectionController extends Controller
         ]);
     }
 
-
     public function store(SectionStoreRequest $request)
     {
         $fields = $request->validated();
@@ -66,7 +63,7 @@ class SectionController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $section_id = 'SC' . '-' . $year .  '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
 
@@ -122,7 +119,6 @@ class SectionController extends Controller
             'semesters' => Semester::all(),
         ]);
     }
-
 
     public function destroy(Section $section)
     {

@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class SemesterResource extends JsonResource
 {
@@ -23,7 +22,7 @@ class SemesterResource extends JsonResource
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,
             'created_at' => $this->created_at,
-            
+
         ];
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('year_level');
             $table->integer('semester');
             $table->text('description')->nullable();
-            $table->boolean('active')->default(false); 
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }

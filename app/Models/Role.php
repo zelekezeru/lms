@@ -10,7 +10,7 @@ class Role extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 
+        'name',
         'guard_name',
     ];
 
@@ -18,5 +18,4 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class);
     }
-    
 }

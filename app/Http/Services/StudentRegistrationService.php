@@ -2,21 +2,20 @@
 
 namespace App\Http\Services;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StudentStoreRequest;
+use App\Http\Requests\StudentUpdateRequest;
+use App\Models\Status;
 use App\Models\Student;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Requests\StudentStoreRequest;
-use App\Http\Requests\StudentUpdateRequest;
-use App\Http\Resources\StudentResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 
 class StudentRegistrationService extends Controller
-{   
+{
     public function store(StudentStoreRequest $request)
     {
         // Validate the request
@@ -49,10 +48,10 @@ class StudentRegistrationService extends Controller
     private function createStudentUser(array $fields, string $student_email): User
     {
         $user_phone = substr($fields['mobile_phone'], -4);
-        $default_password = $fields['first_name'] . '@' . $user_phone;
+        $default_password = $fields['first_name'].'@'.$user_phone;
 
         $user_data = [
-            'name' => $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'],
+            'name' => $fields['first_name'].' '.$fields['middle_name'].' '.$fields['last_name'],
             'email' => $student_email,
             'phone_number' => $fields['mobile_phone'],
             'password' => bcrypt($default_password),
@@ -101,7 +100,7 @@ class StudentRegistrationService extends Controller
      */
     private function createStudentStatus(Student $student): void
     {
-        $status = new Status();
+        $status = new Status;
         $status->student_id = $student->id;
         $status->user_id = $student->user->id; // Link to the user who created the status
         $status->is_active = true; // Default status is active
@@ -170,7 +169,7 @@ class StudentRegistrationService extends Controller
             $this->createStudentStatus($student);
         }
         // Update or create the Church record
-        
+
         if (isset($fields['church_name']) && $fields['church_name']) {
             if ($student->church) {
                 $student->church->update([
@@ -198,7 +197,7 @@ class StudentRegistrationService extends Controller
         $user = $student->user; // Assuming a relationship exists between Student and User
 
         if ($user) {
-            $name = $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'];
+            $name = $fields['first_name'].' '.$fields['middle_name'].' '.$fields['last_name'];
             $student_email = $this->student_email($fields);
 
             $user->update([
@@ -215,16 +214,16 @@ class StudentRegistrationService extends Controller
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
 
-        $userUuid = 'SITS-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT) . '-' . $year;
+        $userUuid = 'SITS-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT).'-'.$year;
 
         return $userUuid;
     }
 
     public function student_email($fields)
     {
-        $username = $fields['first_name'] . ' ' . $fields['middle_name'];
+        $username = $fields['first_name'].' '.$fields['middle_name'];
 
-        $email = strtolower(str_replace(' ', '.', $username)) . '@sits.edu.et';
+        $email = strtolower(str_replace(' ', '.', $username)).'@sits.edu.et';
 
         return $email;
     }
@@ -242,13 +241,13 @@ class StudentRegistrationService extends Controller
             'marital_status' => $fields['marital_status'],
             'sex' => $fields['sex'],
             'address' => $fields['address'],
-            //Academic details
+            // Academic details
             'year_id' => $fields['year_id'],
             'semester_id' => $fields['semester_id'],
             'program_id' => $fields['program_id'],
             'track_id' => $fields['track_id'],
 
-            //Church details
+            // Church details
             'pastor_name' => $fields['pastor_name'],
             'pastor_phone' => $fields['pastor_phone'],
             'position_denomination' => $fields['position_denomination'],
@@ -262,6 +261,7 @@ class StudentRegistrationService extends Controller
             'tenant_id' => $fields['tenant_id'],
 
         ];
+
         return $student_data;
     }
 

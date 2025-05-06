@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('statuses', function (Blueprint $table) {
             $table->id();
 
-            $table->boolean('is_active')->nullable()->default(1);            
+            $table->boolean('is_active')->nullable()->default(1);
             $table->boolean('is_deleted')->nullable()->default(0);
             $table->boolean('is_approved')->nullable()->default(0);
             $table->boolean('is_completed')->nullable()->default(0);
@@ -36,8 +36,7 @@ return new class extends Migration
             $table->string('scholarship_by_name')->nullable();
             $table->string('scholarship_approved_by_name')->nullable();
             $table->string('scholarship_verified_by_name')->nullable();
-            
-            
+
             $table->date('deleted_at')->nullable();
             $table->date('approved_at')->nullable();
             $table->date('completed_at')->nullable();
@@ -47,7 +46,7 @@ return new class extends Migration
             $table->date('scholarship_at')->nullable();
             $table->date('scholarship_approved_at')->nullable();
             $table->date('scholarship_verified_at')->nullable();
-            
+
             $table->foreignId('student_id')->nullable()->constrained('students');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->timestamps();

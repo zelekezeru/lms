@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,7 +36,6 @@ class Student extends Model
     {
         return $this->belongsTo(Track::class);
     }
-
 
     public function courses(): BelongsToMany
     {

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserDocument;
 use App\Http\Requests\UserDocumentStoreRequest;
 use App\Http\Requests\UserDocumentUpdateRequest;
 use App\Http\Resources\UserDocumentResource;
-use Illuminate\Support\Facades\Storage;
+use App\Models\UserDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserDocumentController extends Controller
 {
@@ -21,7 +21,7 @@ class UserDocumentController extends Controller
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where('title', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%");
+                ->orWhere('description', 'LIKE', "%{$search}%");
         }
 
         $allowedSorts = ['title', 'description'];
@@ -38,9 +38,9 @@ class UserDocumentController extends Controller
             'userDocuments' => $userDocuments,
             'search' => $request->search,
             'sortInfo' => [
-                "currentSortColumn" => $sortColumn,
-                "currentSortDirection" => $sortDirection,
-            ]
+                'currentSortColumn' => $sortColumn,
+                'currentSortDirection' => $sortDirection,
+            ],
         ]);
     }
 
@@ -62,13 +62,13 @@ class UserDocumentController extends Controller
         // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('user-documents/images', 'public');
-            $fields['image'] = '/storage/' . $imagePath;
+            $fields['image'] = '/storage/'.$imagePath;
         }
 
         // Handle file upload
         if ($request->hasFile('file')) {
             $filePath = $request->file('file')->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/' . $filePath;
+            $fields['file'] = '/storage/'.$filePath;
         }
 
         $userDocument = UserDocument::create($fields);
@@ -109,7 +109,7 @@ class UserDocumentController extends Controller
                 Storage::disk('public')->delete($userDocument->image); // Delete old image
             }
             $imagePath = $request->file('image')->store('user-documents/images', 'public');
-            $fields['image'] = '/storage/' . $imagePath;
+            $fields['image'] = '/storage/'.$imagePath;
         }
 
         // Handle file upload
@@ -118,7 +118,7 @@ class UserDocumentController extends Controller
                 Storage::disk('public')->delete($userDocument->file); // Delete old file
             }
             $filePath = $request->file('file')->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/' . $filePath;
+            $fields['file'] = '/storage/'.$filePath;
         }
 
         // Update the user document record

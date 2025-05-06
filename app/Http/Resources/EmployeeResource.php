@@ -17,18 +17,18 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name'  => $this->user->name,
+            'name' => $this->user->name,
             'email' => $this->user->email,
             'userRole' => $this->user ? $this->user->roles()->first()->name : null,
-            'jobPosition'  => $this->job_position,
+            'jobPosition' => $this->job_position,
             'employmentType' => $this->employment_type,
-            'officeHours'  => $this->office_hours,
+            'officeHours' => $this->office_hours,
             'contact_phone' => $this->user->phone,
 
             'user' => $this->whenLoaded('user'),
-            'profileImg'  => Storage::url($this->user->profile_img),
-            'created_at'    => $this->created_at,
-            'updated_at'    => $this->updated_at,
+            'profileImg' => Storage::url($this->user->profile_img),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

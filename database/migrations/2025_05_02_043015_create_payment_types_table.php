@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('duration')->nullable();
             $table->foreignId('study_mode_id')->nullable()->constrained('study_modes')->cascadeOnDelete();
             $table->foreignId('payment_category_id')->nullable()->constrained('payment_categories')->cascadeOnDelete();
-            
+
             $table->boolean('is_active')->default(true);
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();

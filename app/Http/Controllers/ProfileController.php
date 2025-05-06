@@ -3,6 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\ProgramResource;
+use App\Http\Resources\SectionResource;
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\TrackResource;
+use App\Http\Resources\UserResource;
+use App\Models\Section;
+use App\Models\Student;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,21 +17,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Models\Section;
-use App\Http\Resources\SectionResource;
-use App\Models\Student;
-use App\Http\Resources\StudentResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\TrackResource;
-use App\Http\Resources\ProgramResource;
 
 class ProfileController extends Controller
 {
     // Student Verification
 
-
-
-    //Student goto Profile
+    // Student goto Profile
     public function profile(Student $student)
     {
         $sections = SectionResource::collection(Section::where('track_id', $student->track_id)->get());
@@ -37,7 +35,8 @@ class ProfileController extends Controller
             'program' => new ProgramResource($student->program),
         ]);
     }
-    //Student Profile Image and Status
+
+    // Student Profile Image and Status
     public function updateProfile(Request $request, Student $student)
     {
         // Validate the request
@@ -64,7 +63,7 @@ class ProfileController extends Controller
 
                 // Attach section courses to student, avoid duplicates
                 foreach ($section->courses as $course) {
-                    if (!$student->courses->contains($course->id)) {
+                    if (! $student->courses->contains($course->id)) {
                         $student->courses()->sync($course->id);
                     }
                 }
@@ -73,26 +72,26 @@ class ProfileController extends Controller
 
         // Payment Status Handling
         if ($request->input('payment_status') == '1') {
-            $student['is_verified']   = 1;
-            $student['is_approved']   = 1;
-            $student['is_active']     = 1;
-            $student['is_enrolled']   = 1; // initial value, may get overwritten below
-            $student['approved_by']   = Auth::id();
-            $student['approved_at']   = now(); // use Carbon object, not string
+            $student['is_verified'] = 1;
+            $student['is_approved'] = 1;
+            $student['is_active'] = 1;
+            $student['is_enrolled'] = 1; // initial value, may get overwritten below
+            $student['approved_by'] = Auth::id();
+            $student['approved_at'] = now(); // use Carbon object, not string
         } else {
-            $student['is_verified']   = 0;
-            $student['is_approved']   = 0;
-            $student['is_active']     = 0;
-            $student['is_enrolled']   = 0;
+            $student['is_verified'] = 0;
+            $student['is_approved'] = 0;
+            $student['is_active'] = 0;
+            $student['is_enrolled'] = 0;
         }
 
         // Document Submission Handling
         if ($request->input('document_submitted') == '1') {
-            $student['is_completed']  = 1;
-            $student['completed_by']  = Auth::id();
-            $student['completed_at']  = now();
+            $student['is_completed'] = 1;
+            $student['completed_by'] = Auth::id();
+            $student['completed_at'] = now();
         } else {
-            $student['is_completed']  = 0;
+            $student['is_completed'] = 0;
         }
 
         // Enroll Override (takes precedence if present)
@@ -117,6 +116,7 @@ class ProfileController extends Controller
 
         return redirect()->route('students.show', $student)->with('success', 'Profile image updated successfully.');
     }
+
     /**
      * Display the user's profile form.
      */

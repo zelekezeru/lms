@@ -28,10 +28,10 @@ return new class extends Migration
             $table->boolean('allowed')->default(false);
             $table->boolean('paid')->default(false);
             $table->dateTime('deleted_at')->nullable();
-            
+
             $table->foreignId('created_by')->nullable();
             $table->foreignId('deleted_by')->nullable();
-            
+
             $table->string('password');
             $table->boolean('password_changed')->default(false);
             $table->string('default_password')->nullable();

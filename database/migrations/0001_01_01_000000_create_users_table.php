@@ -25,7 +25,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            //Tenant ID Related to User
+            // Tenant ID Related to User
             $table->foreignId('tenant_id')->nullable();
         });
 

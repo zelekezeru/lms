@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('church_name', 100)->nullable();
             $table->string('church_address', 200)->nullable();
             $table->string('position_denomination', 100)->nullable();
-            
+
             $table->foreignId('student_id')->nullable()->constrained('students');
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->timestamps();

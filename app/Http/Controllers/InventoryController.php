@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventory;
 use App\Http\Requests\InventoryStoreRequest;
 use App\Http\Requests\InventoryUpdateRequest;
 use App\Http\Resources\InventoryCategoryResource;
 use App\Http\Resources\InventoryResource;
 use App\Http\Resources\InventorySupplierResource;
+use App\Models\Inventory;
 use App\Models\InventoryCategory;
 use App\Models\InventorySupplier;
-use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
@@ -20,7 +19,7 @@ class InventoryController extends Controller
     public function index()
     {
         $inventories = InventoryResource::collection(Inventory::paginate(15));
-        
+
         return inertia('Inventories/Index', [
             'inventories' => $inventories,
         ]);
@@ -33,7 +32,8 @@ class InventoryController extends Controller
     {
         $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::all());
         $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::all());
-        return  inertia('Inventories/Create', compact('inventoryCategories', 'inventorySuppliers'));
+
+        return inertia('Inventories/Create', compact('inventoryCategories', 'inventorySuppliers'));
     }
 
     /**
@@ -42,9 +42,9 @@ class InventoryController extends Controller
     public function store(InventoryStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $inventory = Inventory::create($fields);
-        
+
         return redirect()->route('inventories.show', $inventory)->with('success', 'Inventory created successfully.');
     }
 

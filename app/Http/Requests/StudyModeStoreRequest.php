@@ -25,7 +25,7 @@ class StudyModeStoreRequest extends FormRequest
             'program_id' => 'required | exists:programs,id',
             'mode' => 'required | in:REGULAR,EXTENSION,DISTANCE,ONLINE',
             'duration' => 'required | numeric',
-            'fees' => 'required | numeric'
+            'fees' => 'required | numeric',
         ];
     }
 }

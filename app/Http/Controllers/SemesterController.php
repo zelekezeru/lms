@@ -12,17 +12,17 @@ class SemesterController extends Controller
     {
         // Query the Semester model
         $query = Semester::query();
-    
+
         // Search functionality
         if ($request->filled('search')) { // Check if 'search' is not empty
             $search = $request->search;
             $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('status', 'LIKE', "%{$search}%");
+                ->orWhere('status', 'LIKE', "%{$search}%");
         }
-    
+
         // Paginate the results
         $semesters = $query->paginate(15)->appends($request->query());
-        
+
         // Return inertia view with data
         return inertia('Semesters/Index', [
             'semesters' => $semesters,
@@ -33,10 +33,9 @@ class SemesterController extends Controller
     public function show(Semester $semester)
     {
         // Format the dates
-        $semester->created_at_formatted = \Carbon\Carbon::parse($semester->created_at)->format('F j, Y'); 
-        $semester->updated_at_formatted = \Carbon\Carbon::parse($semester->updated_at)->format('F j, Y'); 
+        $semester->created_at_formatted = \Carbon\Carbon::parse($semester->created_at)->format('F j, Y');
+        $semester->updated_at_formatted = \Carbon\Carbon::parse($semester->updated_at)->format('F j, Y');
 
-        
         return inertia('Semesters/Show', [
             'semester' => $semester,
             'year' => $semester->year,
@@ -48,7 +47,7 @@ class SemesterController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required|string|unique:semesters,name',
             'year_id' => 'required|exists:years,id',
@@ -56,21 +55,22 @@ class SemesterController extends Controller
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
-    
+
         // Create the semester with the year_id
-    $semester = Semester::create([
-        'name' => $request->name,
-        'status' => $request->status,
-        'is_approved' => $request->is_approved,
-        'is_completed' => $request->is_completed,
-        'year_id' => $request->year_id,
+        $semester = Semester::create([
+            'name' => $request->name,
+            'status' => $request->status,
+            'is_approved' => $request->is_approved,
+            'is_completed' => $request->is_completed,
+            'year_id' => $request->year_id,
         ]);
 
         $year = Year::find($request->year_id);
+
         // Redirect to the semester's show page
         return redirect()->back()->with('success', 'Semester created successfully.');
     }
-    
+
     public function edit(Semester $semester)
     {
         $years = Year::all(); // Fetch all years for the dropdown
@@ -87,7 +87,7 @@ class SemesterController extends Controller
     public function update(Request $request, Semester $semester)
     {
         $request->validate([
-            'name' => 'required|string|unique:semesters,name,' . $semester->id,
+            'name' => 'required|string|unique:semesters,name,'.$semester->id,
             'year_id' => 'required|exists:years,id',
             'status' => 'required|string|in:Active,Inactive',
             'is_approved' => 'required|boolean',
@@ -96,7 +96,7 @@ class SemesterController extends Controller
 
         // Update the semester record
         $semester->update($request->only(['name', 'year_id', 'status', 'is_approved', 'is_completed']));
-        
+
         return redirect()->route('semesters.show', $semester)->with('success', 'Semester updated successfully.');
     }
 
@@ -107,6 +107,6 @@ class SemesterController extends Controller
         $semester->delete();
 
         return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
-    
+
     }
 }

@@ -2,13 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use App\Models\Program;
-use App\Models\Course;
-use App\Models\Instructor;
-use App\Models\Semester;
-use App\Models\Year;
-use App\Models\Track;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

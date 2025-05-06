@@ -54,7 +54,6 @@ class StudyModeSeeder extends Seeder
                 'updated_at' => '2025-04-17 03:38:34',
             ],
 
-
             [
                 'id' => 5,
                 'program_id' => 2,

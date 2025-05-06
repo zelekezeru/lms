@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PaymentSchedule;
-use App\Models\PaymentScheduleItem;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,6 +12,7 @@ class PaymentScheduleController extends Controller
     public function index(Student $student)
     {
         $schedules = $student->paymentSchedules()->with('items')->latest()->paginate(10);
+
         return Inertia::render('PaymentSchedules/Index', [
             'student' => $student,
             'schedules' => $schedules,
@@ -49,6 +49,7 @@ class PaymentScheduleController extends Controller
     public function show(PaymentSchedule $paymentSchedule)
     {
         $paymentSchedule->load(['student', 'items.payments']);
+
         return Inertia::render('PaymentSchedules/Show', [
             'schedule' => $paymentSchedule,
         ]);
@@ -57,6 +58,7 @@ class PaymentScheduleController extends Controller
     public function edit(PaymentSchedule $paymentSchedule)
     {
         $paymentSchedule->load('items');
+
         return Inertia::render('PaymentSchedules/Edit', [
             'schedule' => $paymentSchedule,
         ]);
@@ -94,11 +96,12 @@ class PaymentScheduleController extends Controller
 
         return redirect()->route('payment-schedules.show', $paymentSchedule->id)->with('success', 'Payment schedule updated successfully.');
     }
-    
+
     public function destroy(PaymentSchedule $paymentSchedule)
     {
         $studentId = $paymentSchedule->student_id;
         $paymentSchedule->delete();
+
         return redirect()->route('students.show', $studentId)->with('success', 'Payment schedule deleted successfully.');
     }
 }

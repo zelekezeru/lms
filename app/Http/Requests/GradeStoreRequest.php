@@ -21,7 +21,7 @@ class GradeStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [            
+        return [
             'name' => 'required|string|max:255',
             'grade_point' => 'required|numeric|min:0|max:100',
             'description' => 'nullable|string|max:255',

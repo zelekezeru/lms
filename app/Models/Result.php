@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Result extends Model
-{    
+{
     protected $guarded = [];
 
     public function student()
@@ -17,7 +17,7 @@ class Result extends Model
     {
         return $this->belongsTo(Instructor::class);
     }
-    
+
     public function year()
     {
         return $this->belongsTo(Year::class);
@@ -27,10 +27,12 @@ class Result extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
     public function section()
     {
         return $this->belongsTo(Section::class);
     }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

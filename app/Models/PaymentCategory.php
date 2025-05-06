@@ -16,7 +16,7 @@ class PaymentCategory extends Model
     {
         return $this->hasMany(Payment::class);
     }
-    
+
     public function paymentTypes(): HasMany
     {
         return $this->hasMany(PaymentType::class);

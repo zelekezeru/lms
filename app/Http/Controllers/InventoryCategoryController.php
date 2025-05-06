@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InventoryCategory;
 use App\Http\Requests\InventoryCategoryStoreRequest;
 use App\Http\Requests\InventoryCategoryUpdateRequest;
 use App\Http\Resources\InventoryCategoryResource;
-use Illuminate\Http\Request;
+use App\Models\InventoryCategory;
 
 class InventoryCategoryController extends Controller
 {
@@ -28,7 +27,7 @@ class InventoryCategoryController extends Controller
     public function create()
     {
 
-        return  inertia('InventoryCategories/Create');
+        return inertia('InventoryCategories/Create');
     }
 
     /**
@@ -39,7 +38,7 @@ class InventoryCategoryController extends Controller
         $fields = $request->validated();
 
         $inventoryCategory = InventoryCategory::create($fields);
-        
+
         return redirect(route('inventoryCategories.show', $inventoryCategory))->with('success', 'InventoryCategory created successfully.');
     }
 

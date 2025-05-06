@@ -2,8 +2,7 @@
 import { ref, onMounted } from "vue";
 import { ArrowPathIcon, 
         CreditCardIcon,
-        BanknotesIcon, ClockIcon, ChartBarIcon, ExclamationCircleIcon } from "@heroicons/vue/24/solid";
-import { Bar } from "vue-chartjs";
+        BanknotesIcon, ClockIcon, ExclamationCircleIcon } from "@heroicons/vue/24/solid";
 import {
     Chart as ChartJS,
     Title,
@@ -33,45 +32,10 @@ const chartData = ref({
         data: [],
     }],
 });
-const chartOptions = ref({
-    responsive: true,
-    plugins: {
-        legend: { position: "top" },
-        title: {
-            display: true,
-            text: "Payment Trends",
-        },
-    },
-});
-
-// Methods
-const updateChartData = (payments) => {
-    const groupedData = payments.reduce((acc, payment) => {
-        const date = payment.payment_date.split("T")[0];
-        acc[date] = (acc[date] || 0) + Number(payment.total_amount);
-        return acc;
-    }, {});
-    chartData.value.labels = Object.keys(groupedData);
-    chartData.value.datasets[0].data = Object.values(groupedData);
-};
-
-const refreshData = () => {
-    refreshing.value = true;
-    // Simulate refresh (replace with actual fetch logic if needed)
-    setTimeout(() => {
-        updateChartData(props.payments);
-        refreshing.value = false;
-    }, 1000);
-};
 
 const formatNumber = (number) => {
     return new Intl.NumberFormat().format(number);
 };
-
-// Lifecycle
-onMounted(() => {
-    updateChartData(props.payments);
-});
 </script>
 
 
@@ -189,12 +153,5 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Chart Section -->
-        <div>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Payment Trends</h3>
-            <div class="h-64">
-                <Bar :data="chartData" :options="chartOptions" />
-            </div>
-        </div>
     </div>
 </template>

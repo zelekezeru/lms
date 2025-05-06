@@ -8,6 +8,7 @@ use App\Http\Resources\UserDocumentResource;
 use App\Models\UserDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class UserDocumentController extends Controller
 {
@@ -59,11 +60,21 @@ class UserDocumentController extends Controller
     {
         $fields = $request->validated();
 
-        // Handle image upload
+        // Handle image upload with Intervention
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('user-documents/images', 'public');
-            $fields['image'] = '/storage/'.$imagePath;
+            $imagePath = $request->file('image');
+            $image = Image::make($imagePath); // Intervention Image instance
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio(); // Preserve aspect ratio
+                $constraint->upsize(); // Prevent upsizing
+            });
+
+            $imagePath = 'user-documents/images/' . time() . '-' . $imagePath->getClientOriginalName();
+            $image->save(storage_path('app/public/' . $imagePath));
+
+            $fields['image'] = '/storage/' . $imagePath;
         }
+
 
         // Handle file upload
         if ($request->hasFile('file')) {
@@ -103,13 +114,24 @@ class UserDocumentController extends Controller
     {
         $fields = $request->validated();
 
-        // Handle image upload
+        // Handle image upload with Intervention
         if ($request->hasFile('image')) {
+            // Delete old image if exists
             if ($userDocument->image) {
-                Storage::disk('public')->delete($userDocument->image); // Delete old image
+                Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->image));
             }
-            $imagePath = $request->file('image')->store('user-documents/images', 'public');
-            $fields['image'] = '/storage/'.$imagePath;
+
+            $imagePath = $request->file('image');
+            $image = Image::make($imagePath); // Intervention Image instance
+            $image->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio(); // Preserve aspect ratio
+                $constraint->upsize(); // Prevent upsizing
+            });
+
+            $imagePath = 'user-documents/images/' . time() . '-' . $imagePath->getClientOriginalName();
+            $image->save(storage_path('app/public/' . $imagePath));
+
+            $fields['image'] = '/storage/' . $imagePath;
         }
 
         // Handle file upload
@@ -133,7 +155,7 @@ class UserDocumentController extends Controller
     public function destroy(UserDocument $userDocument)
     {
         if ($userDocument->image) {
-            Storage::disk('public')->delete($userDocument->image);
+            Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->image));
         }
 
         if ($userDocument->file) {

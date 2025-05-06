@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -52,14 +54,15 @@ class UserController extends Controller
         $image = $request->file('profile_img');
 
         if ($image) {
-            $profile_path = $image->store('profile-images', 'public');
-        } else {
-            $profile_path = null;
+            $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/' . $imageName);
+    
+            Image::make($image)->resize(300, 300)->save($path);
+    
+            $user->update([
+                'profile_img' => 'profile-images/' . $imageName,
+            ]);
         }
-
-        $user_image = User::update([
-            'profile_img' => $profile_path,
-        ]);
 
         $user->assignRole($fields['role_name']);
 
@@ -98,12 +101,20 @@ class UserController extends Controller
 
         // Handle profile image upload
         $profileImg = $request->file('profile_img');
+
         if ($profileImg) {
+            // Delete old image if exists
             if ($user->profile_img) {
-                Storage::disk('public')->delete($user->profile_img); // Delete old image
+                Storage::disk('public')->delete($user->profile_img);
             }
-            $profile_path = $profileImg->store('profile-images', 'public');
-        }
+    
+            $imageName = Str::uuid() . '.' . $profileImg->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/' . $imageName);
+    
+            Image::make($profileImg)->resize(300, 300)->save($path);
+    
+            $user->profile_img = 'profile-images/' . $imageName;
+        }    
 
         // Update user details
         $user->update([

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+
 
 class ProfileController extends Controller
 {
@@ -48,9 +51,14 @@ class ProfileController extends Controller
             'section_id' => 'nullable|exists:sections,id',
         ]);
 
+        // Handle image upload with resize
         if ($request->hasFile('profile_img')) {
-            $imagePath = $request->file('profile_img')->store('profile_images', 'public');
-            $student->user->update(['profile_img' => $imagePath]);
+            $image = $request->file('profile_img');
+            $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = storage_path('app/public/profile_images/' . $imageName);
+
+            Image::make($image)->resize(300, 300)->save($imagePath);
+            $student->user->update(['profile_img' => 'profile_images/' . $imageName]);
         }
 
         // Enroll Student to Section Courses

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Head, router } from "@inertiajs/vue3";
+import { Head, router, useForm } from "@inertiajs/vue3";
 import BasicInfoForm from "./BasicInfoForm.vue";
 import AcademicInfoForm from "./AcademicInfoForm.vue";
 import ChurchInfoForm from "./ChurchInfoForm.vue";
@@ -14,8 +14,7 @@ const props = defineProps({
     semesters: Array,
 });
 
-const form = ref({
-    ...props.student,
+const form = useForm({
     student_id: props.student.student_id || "",
     first_name: props.student.first_name || "",
     middle_name: props.student.middle_name || "",
@@ -31,6 +30,7 @@ const form = ref({
     semester_id: props.student.semester_id || "",
     program_id: props.student.program_id || "",
     track_id: props.student.track_id || "",
+    study_mode_id: props.student.studyMode_id || "",
     section_id: props.student.section_id || "",
     total_credit_hours: props.student.total_credit_hours || "",
     total_amount_paid: props.student.total_amount_paid || "",
@@ -64,15 +64,7 @@ const submit = () => {
         form.value.date_of_birth = `${year}-${month}-${day}`;
     }
 
-    form.value.processing = true; // Optional: Add a processing state if needed
-    router.post(route("students.update", props.student.id), form.value, {
-        onSuccess: () => {
-            form.value.processing = false; // Reset processing state if needed
-        },
-        onError: () => {
-            form.value.processing = false; // Reset processing state if needed
-        },
-    });
+    form.post(route("students.update", props.student.id));
 };
 </script>
 

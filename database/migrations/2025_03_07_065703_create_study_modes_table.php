@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('program_id')->constrained()->onDelete('CASCADE');
             $table->enum('mode', ['REGULAR', 'EXTENSION', 'DISTANCE', 'ONLINE']);
             $table->integer('duration'); // Duration In Years
-            $table->float('fees');
+            $table->float('fees')->nullable();
             $table->string('schedule')->nullable();
             $table->timestamps();
         });

@@ -13,12 +13,16 @@ use App\Http\Resources\YearResource;
 use App\Models\Course;
 use App\Models\Curriculum;
 use App\Models\Program;
+use App\Models\Section;
+use App\Models\Semester;
 use App\Models\Track;
 use App\Models\User; // Ensure this class exists in the specified namespace
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use function PHPSTORM_META\map;
 
 class TrackController extends Controller
 {
@@ -87,10 +91,29 @@ class TrackController extends Controller
         $fields['code'] = $track_id;
 
         $track = Track::create($fields);
+        $studyModes = $track->program->studyModes->pluck('id');
+        
+        // Create Section-1 by default for each study modes the program that the created track belongs has.
+        $sections = $studyModes->map(function ($studyModeId) use ($fields, $track) {
+            return Section::create([
+                'name' => 'Section-1',
+                'code' => 'section-1-'.$studyModeId,
+                'program_id' => $fields['program_id'],
+                'track_id' => $track->id,
+                'study_mode_id' => $studyModeId,
+                'year_id' => Year::where('status', 'active')->first()->id,
+                'semester_id' => Semester::where('status', 'active')->first()->id,
+            ]);
+        });
 
+        
         $commonCourses = $track->program->courses()->wherePivot('is_common', true)->pluck('courses.id');
 
         $track->courses()->syncWithoutDetaching($commonCourses);
+
+        foreach ($sections as $section) {
+            $section->courses()->syncWithoutDetaching($commonCourses);
+        }
 
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
         $redirectTo = $request->input('redirectTo', route('tracks.show', $track));

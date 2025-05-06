@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->foreignId('user_id')->constrained()->nullable();
-            $table->foreignId('program_id')->constrained()->nullable();
-            $table->foreignId('track_id')->constrained()->nullable();
-            $table->foreignId('year_id')->constrained()->nullable();
-            $table->foreignId('semester_id')->constrained()->nullable();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('program_id')->constrained();
+            $table->foreignId('track_id')->constrained();
+            $table->foreignId('study_mode_id')->nullable()->constrained();
+            $table->foreignId('year_id')->nullable()->constrained();
+            $table->foreignId('semester_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

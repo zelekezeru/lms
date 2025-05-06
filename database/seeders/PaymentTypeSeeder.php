@@ -36,10 +36,10 @@ class PaymentTypeSeeder extends Seeder
                 'created_by' => 1,
             ],
             [
-                'type' => 'Trial',
+                'type' => 'Semester',
                 'language' => null,
                 'amount' => 400.00,
-                'duration' => '1 Month',
+                'duration' => 'Per-Semester',
                 'study_mode_id' => 3,
                 'payment_category_id' => 3,
                 'is_active' => true,

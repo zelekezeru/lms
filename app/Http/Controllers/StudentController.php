@@ -145,14 +145,10 @@ class StudentController extends Controller
     {
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks')->get());
 
-
-        $years = YearResource::collection(Year::all());
-
-        $semesters = SemesterResource::collection(Semester::all());
+        $years = YearResource::collection(Year::with('semesters')->get());
 
         return Inertia::render('Students/Edit', [
             'student' => $student,
-            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
         ]);

@@ -6,6 +6,9 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import Thead from "@/Components/Thead.vue";
 
 defineProps({
     users: {
@@ -87,63 +90,50 @@ const deleteuser = (id) => {
 
         <!-- users Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
+            <Table>
+                <TableHeader>
                     <tr>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Email</th>
-                        <th scope="col" class="px-6 py-3">Role</th>
-                        <th scope="col" class="px-6 py-3">Job Position</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
+                        <Thead>Name</Thead>
+                        <Thead>Email</Thead>
+                        <Thead>Role</Thead>
+                        <Thead>Job Position</Thead>
+                        <Thead>Action</Thead>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
                     <tr
                         v-for="user in users.data"
                         :key="user.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
+                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                     >
-                        <th
-                            scope="row"
+                        <td
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
                             <Link
-                                :href="
-                                    route('users.show', {
-                                        user: user.id,
-                                    })
-                                "
+                                :href="route('users.show', { user: user.id })"
                             >
                                 {{ user.name }}
                             </Link>
-                        </th>
-                        <td class="px-6 py-4">{{ user.email }}</td>
-                        <td class="px-6 py-4">{{ user.userRole }}</td>
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ user.email }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ user.userRole }}
+                        </td>
                         <td class="px-6 py-4">
                             {{ user.jobPosition }}
                         </td>
-                        <td class="px-6 py-4 flex justify-between">
+                        <td class="flex px-6 py-4 gap-3">
                             <Link
-                                :href="
-                                    route('users.show', {
-                                        user: user.id,
-                                    })
-                                "
+                                :href="route('users.show', { user: user.id })"
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
                                 v-if="userCan('update-users')"
-                                :href="
-                                    route('users.edit', {
-                                        user: user.id,
-                                    })
-                                "
+                                :href="route('users.edit', { user: user.id })"
                                 class="text-green-500 hover:text-green-700"
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
@@ -151,15 +141,14 @@ const deleteuser = (id) => {
                             <button
                                 v-if="userCan('delete-users')"
                                 @click="deleteuser(user.id)"
-                                class="text-red-500 hover:text-red-700"
+                                class="text-red-500 hover:text-red-700 flex items-center gap-1"
                             >
                                 <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
                             </button>
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </Table>
         </div>
 
         <!-- Pagination Links -->

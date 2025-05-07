@@ -6,6 +6,9 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import Thead from "@/Components/Thead.vue";
 
 defineProps({
     weights: Object,
@@ -84,36 +87,33 @@ const deleteWeight = (id) => {
 
         <!-- Weights Table -->
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
-            <table
-                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-            >
-                <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-                >
+            <Table>
+                <TableHeader>
                     <tr>
-                        <th scope="col" class="px-6 py-3">No</th>
-                        <th scope="col" class="px-6 py-3">Weight</th>
-                        <th scope="col" class="px-6 py-3">Weight Point</th>
-                        <th scope="col" class="px-6 py-3">Course</th>
-                        <th scope="col" class="px-6 py-3">Action</th>
+                        <Thead>No</Thead>
+                        <Thead>Weight</Thead>
+                        <Thead>Weight Point</Thead>
+                        <Thead>Course</Thead>
+                        <Thead>Action</Thead>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
                     <tr
                         v-for="weight in weights.data"
                         :key="weight.id"
-                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
+                        class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                     >
-                        <th
-                            scope="row"
+                        <td
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
                             <Link
-                                :href="route('weights.show', { weight: weight.id })"
+                                :href="
+                                    route('weights.show', { weight: weight.id })
+                                "
                             >
                                 {{ weight.id }}
                             </Link>
-                        </th>
+                        </td>
                         <td class="px-6 py-4">
                             {{ weight.name }}
                         </td>
@@ -123,15 +123,19 @@ const deleteWeight = (id) => {
                         <td class="px-6 py-4">
                             {{ weight.course.name }}
                         </td>
-                        <td class="px-6 py-4 flex justify-between">
+                        <td class="flex px-6 py-4 gap-3">
                             <Link
-                                :href="route('weights.show', { weight: weight.id })"
+                                :href="
+                                    route('weights.show', { weight: weight.id })
+                                "
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
-                                :href="route('weights.edit', { weight: weight.id })"
+                                :href="
+                                    route('weights.edit', { weight: weight.id })
+                                "
                                 class="text-green-500 hover:text-green-700"
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
@@ -145,7 +149,7 @@ const deleteWeight = (id) => {
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </Table>
         </div>
 
         <!-- Pagination Links -->

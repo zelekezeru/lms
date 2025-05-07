@@ -4,14 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 class StudyMode extends Model
+
 {
     protected $guarded = [];
 
     public function program()
     {
         return $this->belongsTo(Program::class);
+    }
+    
+    public function sections(): HasMany
+    {
+        return $this->hasMany(Section::class);
     }
 
     public function curricula()
@@ -23,4 +28,5 @@ class StudyMode extends Model
     {
         return $this->hasMany(PaymentType::class);
     }
+
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Program;
+use App\Models\StudyMode;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -111,6 +112,14 @@ class ProgramController extends Controller
         }
 
         $program->courses()->sync($syncData);
+
+        // Create A defualt studyMode of mode 'REGULAR'
+        $studyMode = StudyMode::create([
+            'program_id' => $program->id,
+            'mode' => 'REGULAR',
+            'duration' => $program->duration,
+            'fees' => null,
+        ]);
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }

@@ -24,6 +24,11 @@ class Section extends Model
         return $this->belongsTo(Track::class);
     }
 
+    public function studyMode()
+    {
+        return $this->belongsTo(StudyMode::class);
+    }
+
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)->withPivot('instructor_id');

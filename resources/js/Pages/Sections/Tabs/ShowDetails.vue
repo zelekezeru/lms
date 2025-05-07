@@ -44,7 +44,7 @@ const props = defineProps({
                 >Representative</span
             >
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.user.name }}
+                {{ section.user?.name }}
             </span>
         </div>
 

@@ -28,6 +28,7 @@ const form = useForm({
     semester_id: "",
     program_id: "",
     track_id: "",
+    study_mode_id: "",
     section_id: "",
     pastor_name: "",
     pastor_phone: "",

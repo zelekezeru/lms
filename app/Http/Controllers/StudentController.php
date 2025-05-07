@@ -119,7 +119,7 @@ class StudentController extends Controller
     public function create(): Response
     {
 
-        $programs = ProgramResource::collection(Program::with('tracks')->get());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name')->get());
 
@@ -143,20 +143,14 @@ class StudentController extends Controller
 
     public function edit(Student $student): Response
     {
-        $tracks = TrackResource::collection(Track::all());
+        $programs = ProgramResource::collection(Program::with('studyModes', 'tracks')->get());
 
-        $programs = ProgramResource::collection(Program::all());
-
-        $years = YearResource::collection(Year::all());
-
-        $semesters = SemesterResource::collection(Semester::all());
+        $years = YearResource::collection(Year::with('semesters')->get());
 
         return Inertia::render('Students/Edit', [
             'student' => $student,
-            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
-            'semesters' => $semesters,
         ]);
     }
 

@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -20,8 +21,10 @@ class HomeController extends Controller
         $students = count(Student::get());
 
         $instructors = count(Instructor::get());
+        
+        $dashboardView = Auth::user()->roles()->first()->name == 'STUDENT' ? 'Student/Dashboard' : 'Dashboard';
 
-        return inertia('Dashboard', [
+        return inertia($dashboardView, [
             'courses' => $courses,
             'students' => $students,
             'instructors' => $instructors,

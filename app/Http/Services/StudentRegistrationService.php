@@ -28,6 +28,7 @@ class StudentRegistrationService extends Controller
 
         // Create a new user for the student
         $user = $this->createStudentUser($fields, $student_email);
+        $user->assignRole('STUDENT');
 
         // Link the user ID to the student fields
         $fields['user_id'] = $user->id;

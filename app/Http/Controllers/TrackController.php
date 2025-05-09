@@ -97,7 +97,7 @@ class TrackController extends Controller
         $sections = $studyModes->map(function ($studyModeId) use ($fields, $track) {
             return Section::create([
                 'name' => 'Section-1',
-                'code' => 'section-1-'.$studyModeId,
+                'code' => 'section-1-'.$track->id.$studyModeId,
                 'program_id' => $fields['program_id'],
                 'track_id' => $track->id,
                 'study_mode_id' => $studyModeId,

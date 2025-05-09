@@ -13,7 +13,7 @@ import {
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PencilSquareIcon, 
+    PencilSquareIcon,
     PlusCircleIcon,
     BookOpenIcon,
     HomeModernIcon,
@@ -60,7 +60,6 @@ const deleteStudent = (id) => {
 </script>
 
 <template>
-    
     <!-- student Image -->
     <div class="flex justify-center mb-8">
         <div
@@ -76,122 +75,103 @@ const deleteStudent = (id) => {
             @load="handleImageLoad"
         />
     </div>
-    
-    <div class="grid grid-cols-2 gap-4">
-    
-    <div class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Student ID</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.id_no }}
-        </span>
-    </div>
-    <div class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Full Name</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.first_name }}
-            {{ student.middle_name }}
-            {{ student.last_name }}
-        </span>
-    </div>
-    <div v-if="student.user.email" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Email</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.user.email }}
-        </span>
-    </div>
-    <div v-if="student.mobile_phone" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Mobile Phone</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.mobile_phone }}
-        </span>
-    </div> <!-- Closing the div for Mobile Phone -->
-    <div v-if="student.office_phone" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Office Phone</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.office_phone }}
-        </span>
-    </div> <!-- Closing the div for Office Phone -->
-    <div v-if="student.date_of_birth" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Date of Birth</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.date_of_birth }}
-        </span>
-    </div> <!-- Closing the div for Date of Birth -->
-    
-    <!-- Marital Status -->
-    <div v-if="student.marital_status" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Marital Status</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.marital_status }}
-        </span>
-    </div>
-    <!-- Sex -->
-    <div v-if="student.sex" class="flex flex-col">
-        <span class="text-sm text-gray-500 dark:text-gray-400"
-            >Sex</span
-        >
-        <span
-            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-        >
-            {{ student.sex }}
-        </span>
-    </div>
-    
-    <!-- Action Buttons -->
-    <div class="flex justify-end mt-6 space-x-6">
-        <!-- Edit Button -->
-        <div v-if="userCan('update-students')">
-            <Link
-                :href="
-                    route('students.edit', {
-                        student: student.id,
-                    })
-                "
-                class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
-            >
-                <PencilIcon class="w-5 h-5" />
-                <span>Edit</span>
-            </Link>
-        </div>
-        <!-- Delete Button -->
-        <div v-if="userCan('delete-students')">
-            <button
-                @click="deleteStudent(student.id)"
-                class="flex items-center space-x-1 text-red-500 hover:text-red-700"
-            >
-                <TrashIcon class="w-5 h-5" />
-                <span>Delete</span>
-            </button>
-        </div>
-    </div>
-</div>
 
+    <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Student ID</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.idNo }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Full Name</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.firstName }}
+                {{ student.middleName }}
+                {{ student.lastName }}
+            </span>
+        </div>
+        <div v-if="student.user.email" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.user.email }}
+            </span>
+        </div>
+        <div v-if="student.mobilePhone" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Mobile Phone</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.mobilePhone }}
+            </span>
+        </div>
+        <!-- Closing the div for Mobile Phone -->
+        <div v-if="student.officePhone" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Office Phone</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.officePhone }}
+            </span>
+        </div>
+        <!-- Closing the div for Office Phone -->
+        <div v-if="student.dateOfBirth" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Date of Birth</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.dateOfBirth }}
+            </span>
+        </div>
+        <!-- Closing the div for Date of Birth -->
+
+        <!-- Marital Status -->
+        <div v-if="student.maritalStatus" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Marital Status</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.maritalStatus }}
+            </span>
+        </div>
+        <!-- Sex -->
+        <div v-if="student.sex" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Sex</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ student.sex }}
+            </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end mt-6 space-x-6">
+            <!-- Edit Button -->
+            <div v-if="userCan('update-students')">
+                <Link
+                    :href="
+                        route('students.edit', {
+                            student: student.id,
+                        })
+                    "
+                    class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
+                >
+                    <PencilIcon class="w-5 h-5" />
+                    <span>Edit</span>
+                </Link>
+            </div>
+            <!-- Delete Button -->
+            <div v-if="userCan('delete-students')">
+                <button
+                    @click="deleteStudent(student.id)"
+                    class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                >
+                    <TrashIcon class="w-5 h-5" />
+                    <span>Delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </template>

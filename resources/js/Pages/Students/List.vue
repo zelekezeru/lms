@@ -35,9 +35,9 @@ defineProps({
             <TableHeader>
                 <tr>
                     <Thead>No.</Thead>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'first_name'">Student Name</Thead>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'id_no'">ID Number</Thead>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'mobile_phone'">Phone</Thead>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'firstName'">Student Name</Thead>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'idNo'">ID Number</Thead>
+                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'mobilePhone'">Phone</Thead>
                     <Thead>Actions</Thead>
                 </tr>
             </TableHeader>
@@ -46,14 +46,14 @@ defineProps({
                     v-for="(student, index) in students.data"
                     :key="student.id"
                 >
-                    <td class="px-6 py-4">{{ index + 1 + (students.meta.current_page - 1) * students.meta.per_page }}</td>
+                    <td class="px-6 py-4">{{ index + 1 + (students.meta.currentPage - 1) * students.meta.perPage }}</td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         <Link :href="route('students.show', { student: student.id })">
-                            {{ student.first_name }} {{ student.middle_name }} {{ student.last_name }}
+                            {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
                         </Link>
                     </th>
-                    <td class="px-6 py-4">{{ student.id_no }}</td>
-                    <td class="px-6 py-4">{{ student.mobile_phone }}</td>
+                    <td class="px-6 py-4">{{ student.idNo }}</td>
+                    <td class="px-6 py-4">{{ student.mobilePhone }}</td>
                     <td class="px-6 py-4 flex space-x-6">
                         <div v-if="userCan('view-students')">
                             <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">

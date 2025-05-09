@@ -3,49 +3,41 @@ import { defineProps, ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PlusCircleIcon } from "@heroicons/vue/24/outline";
+import { ArrowDownIcon, ArrowPathIcon, ChevronDownIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { Select } from "primevue";
 
 const props = defineProps({
     track: { type: Object, required: true },
 });
 
-const studentForm = useForm({
-    track_id: props.track.id,
-    student: "",
-    duration: "",
-    fees: "",
-});
-
-const trackForm = useForm({
-    name: "",
-    description: "",
-    track_id: props.track.id,
-    user_id: "",
+const studentSectionForm = useForm({
+    section_id: "",
+    student_id: "",
 });
 
 const createStudent = ref(false);
 
-// const addStudent = () => {
-//     studentForm.post(
-//         route("studyStudents.store", {
-//             redirectTo: route("tracks.show", { track: props.track.id }),
-//             params: { track: props.track.id },
-//         }),
-//         {
-//             onSuccess: () => {
-//                 Swal.fire(
-//                     "Added!",
-//                     "Study Student added successfully.",
-//                     "success"
-//                 );
-//                 createStudent.value = false;
-//                 studentForm.reset();
-//             },
-//         }
-//     );
-// };
+const assignStudentToSection = (studentId) => {
+    studentSectionForm.student_id = studentId;
+    studentSectionForm.post(
+        route("student-section.assign", {
+            // redirectTo: route("tracks.show", { track: props.track.id }),
+            // params: { track: props.track.id },
+        }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    "Changed!",
+                    "Student Assigned To Section Successfully",
+                    "success"
+                );
+                studentSectionForm.reset();
+            },
+        }
+    );
+};
 </script>
 
 <template>
@@ -99,7 +91,12 @@ const createStudent = ref(false);
                                 <th
                                     class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    Section
+                                    Current Section
+                                </th>
+                                <th
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                >
+                                    Assign To
                                 </th>
                             </tr>
                         </thead>
@@ -117,7 +114,8 @@ const createStudent = ref(false);
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ student.firstName }} {{ student.lastName }}
+                                    {{ student.firstName }}
+                                    {{ student.lastName }}
                                 </td>
                                 <td
                                     class="w-30 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -127,10 +125,48 @@ const createStudent = ref(false);
                                 <td
                                     class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                                 >
-                                    {{ student.section ? student.section.name : 'N/A' }}
+                                    {{
+                                        student.section
+                                            ? student.section.name
+                                            : "N/A"
+                                    }}
+                                </td>
+                                <td
+                                    class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                                >
+                                    <Select
+                                        id="studentSectionAssignment"
+                                        v-model="studentSectionForm.section_id"
+                                        :options="track.sections"
+                                        option-value="id"
+                                        option-label="name"
+                                        checkmark
+                                        filter
+                                        @change="
+                                            assignStudentToSection(student.id)
+                                        "
+                                        :disabled="
+                                            studentSectionForm.processing
+                                        "
+                                        placeholder="Change Section To..."
+                                        :maxSelectevdLabels="3"
+                                        class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                                    >
+                                        <template #dropdownicon>
+                                            <ChevronDownIcon
+                                                v-if="
+                                                    !studentSectionForm.processing
+                                                "
+                                                class="w-5 h-5 text-gray-500"
+                                            />
+                                            <ArrowPathIcon
+                                                v-else
+                                                class="w-5 h-5 text-gray-500 animate-spin"
+                                            />
+                                        </template>
+                                    </Select>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>

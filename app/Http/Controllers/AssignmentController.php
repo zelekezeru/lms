@@ -86,4 +86,16 @@ class AssignmentController extends Controller
 
         return redirect()->route('students.show', $student->id)->with('success', 'Student assigned to section successfully.');
     }
+
+    // this method is used to assign student to a section
+    public function assignStudentToSection(Request $request)
+    {
+        $student = Student::where('id', $request['student_id'])->first();
+
+        $student->update([
+            'section_id' => $request['section_id'],
+        ]);
+
+        return redirect()->back();
+    }
 }

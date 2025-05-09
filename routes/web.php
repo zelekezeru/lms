@@ -41,8 +41,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/students-section', [AssignmentController::class, 'assignStudentsToSection'])->name('students-section.assign');
 
-    Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
+    // For One Student To One Section Assignement
+    Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
 
+    Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
+ 
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');

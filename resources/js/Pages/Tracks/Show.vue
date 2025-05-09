@@ -12,6 +12,7 @@ import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCurriculum from "./Tabs/ShowCurriculum.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
+import ShowStudents from "./Tabs/ShowStudents.vue";
 
 // Define the props for the track
 const props = defineProps({
@@ -43,6 +44,7 @@ const tabs = [
     { key: "curriculums", label: "Curriculums", icon: BookOpenIcon },
     { key: "courses", label: "Courses", icon: AcademicCapIcon },
     { key: "sections", label: "Sections", icon: UsersIcon },
+    { key: "students", label: "Students", icon: UsersIcon },
 ];
 </script>
 
@@ -114,6 +116,11 @@ const tabs = [
                             :track="track"
                             :years="years"
                             :courses="courses"
+                        />
+
+                        <ShowStudents
+                            v-else-if="selectedTab == 'students'"
+                            :track="track"
                         />
                     </div>
                 </transition>

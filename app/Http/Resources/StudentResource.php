@@ -17,14 +17,14 @@ class StudentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_no' => $this->id_no,
-            'first_name' => $this->first_name,
-            'middle_name' => $this->middle_name,
-            'last_name' => $this->last_name,
-            'mobile_phone' => $this->mobile_phone,
-            'office_phone' => $this->office_phone,
-            'date_of_birth' => $this->date_of_birth,
-            'marital_status' => $this->marital_status,
+            'idNo' => $this->id_no,
+            'firstName' => $this->first_name,
+            'middleName' => $this->middle_name,
+            'lastName' => $this->last_name,
+            'mobilePhone' => $this->mobile_phone,
+            'officePhone' => $this->office_phone,
+            'dateOfBirth' => $this->date_of_birth,
+            'maritalStatus' => $this->marital_status,
 
             'profileImg' => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
@@ -34,11 +34,11 @@ class StudentResource extends JsonResource
             'courses' => $this->whenLoaded('courses'),
             'program' => $this->whenLoaded('program'),
             'track' => $this->whenLoaded('track'),
-            'section' => $this->whenLoaded('section'),
+            'section' => new SectionResource($this->whenLoaded('section')),
             'year' => $this->whenLoaded('year'),
             'semester' => $this->whenLoaded('semester'),
             'payments' => $this->whenLoaded('payments'),
-            'created_by' => $this->whenLoaded('createdBy'),
+            'createdBy' => $this->whenLoaded('createdBy'),
 
         ];
     }

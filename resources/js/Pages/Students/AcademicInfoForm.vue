@@ -166,7 +166,7 @@ const emit = defineEmits(["next", "previous"]);
                     value="Select Study Mode"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
-
+                {{ selectedProgramStudyModes }}
                 <Select
                     id="cousesList"
                     v-model="form.study_mode_id"

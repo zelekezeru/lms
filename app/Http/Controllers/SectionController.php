@@ -28,7 +28,7 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = Section::with(['user', 'program', 'track', 'year', 'semester'])->get();
+        $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
 
         return Inertia::render('Sections/Index', [
             'sections' => $sections,
@@ -79,6 +79,7 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
+        dd($section->getActiveCurricula());
         $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
 
         $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {

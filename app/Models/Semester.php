@@ -37,4 +37,11 @@ class Semester extends Model
     {
         return $this->hasMany(Course::class);
     }
+
+    public static function getActiveSemester()
+    {
+        $activeSemester = Semester::where('status', 'active')->first();
+
+        return $activeSemester;
+    }
 }

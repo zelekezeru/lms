@@ -37,4 +37,9 @@ class Year extends Model
     {
         return $this->hasMany(Program::class);
     }
+
+    public static function getCurrentYear()
+    {
+        return Year::where('status', 'active')->first();
+    }
 }

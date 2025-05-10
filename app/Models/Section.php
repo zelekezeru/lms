@@ -73,4 +73,17 @@ class Section extends Model
     {
         return $this->hasMany(CourseSectionAssignment::class);
     }
+
+    public function yearLevel(): int
+    {
+        $yearLevel = intval(Year::getCurrentYear()->name) - intval($this->year->name) + 1; // plus one because if currentyear is 2025 and the batch year of the section is also 2025 we want to get 1 instead of 0
+        return $yearLevel;
+    }
+
+    public function getActiveCurricula()
+    {
+        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester', Semester::getActiveSemester()->level)->get();
+
+        return $curricula;
+    }
 }

@@ -74,6 +74,7 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
+        dd($student->section->getActiveCurricula());
         // CHeck if student status is null
         if ($student->status === null) {
             $status = new Status;

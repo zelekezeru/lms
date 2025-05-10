@@ -26,10 +26,11 @@ class SectionResource extends JsonResource
             'track' => $this->whenLoaded('track'),
             'studyMode' => $this->whenLoaded('studyMode'),
             'instructors' => $this->whenLoaded('instructors'),
+            'yearLevel' => $this->yearLevel(),
 
             'status' => $this->status,
-            'is_approved' => $this->is_approved,
-            'is_completed' => $this->is_completed,
+            'isApproved' => $this->is_approved,
+            'isCompleted' => $this->is_completed,
             'courses' => $this->whenLoaded('courseSectionAssignments', function () {
                 return $this->courseSectionAssignments->map(function ($assignment) {
                     return [

@@ -18,6 +18,7 @@ class SemesterResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'level' => $this->level,
             'status' => $this->status,
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,

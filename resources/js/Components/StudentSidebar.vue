@@ -56,7 +56,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="AcademicCapIcon"
                     label="Dashboard"
-                    href="/student"
+                    :href="route('student.dashboard')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
+                    :icon="BookOpenIcon"
+                    label="Courses"
+                    :href="route('student.courses')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
@@ -69,12 +75,6 @@ const wrapperClasses = computed(() => {
                     :icon="ClipboardDocumentListIcon"
                     label="Registration"
                     href="/student/registration"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="BookOpenIcon"
-                    label="Courses"
-                    href="/student/course"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

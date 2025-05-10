@@ -12,7 +12,16 @@ class StudentPortalController extends Controller
     {
         $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
 
-        return inertia('StudentPortal/Dashboard', [
+        return inertia('StudentPortal/Dashboard',[
+            'student' => $student,
+        ]);
+    }
+
+    public function courses()
+    {
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return inertia('StudentPortal/Courses',[
             'student' => $student,
         ]);
     }

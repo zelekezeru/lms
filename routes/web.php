@@ -25,8 +25,13 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
-    Route::get('/student-dashboard', [StudentPortalController::class, 'index'])->middleware('role:STUDENT')->name('student.dashboard');
-
+    
+    Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
+        Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
+        Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
+        Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
+    });
+    
     // Profiles related routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -99,7 +104,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('student.add');
 
     Route::get('/student/course', function () {
-        return Inertia::render('Student/Course');
+        return Inertia::render('StudentPortal/Course');
     })->name('student.course');
 
     Route::get('/student/result', function () {

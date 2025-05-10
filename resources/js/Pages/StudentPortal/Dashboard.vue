@@ -9,8 +9,6 @@ import {
 } from '@heroicons/vue/24/outline';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Chart } from 'chart.js/auto';
-import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
   student:{
@@ -18,8 +16,6 @@ const props = defineProps({
     required:true,
   }
 });
-
-const user = computed(() => usePage().props.auth.user);
 
 let chart = null;
 const createChart = () => {
@@ -64,29 +60,19 @@ onMounted(createChart);
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <!-- Sidebar omitted (handled by StudentLayout) -->
 
-      <div class="col-span-3 space-y-8">
+      <div class="col-span-4 space-y-8 px-4">
         <!-- Enrolled Courses -->
         <section>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">My Active Courses</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div v-for="curriculum in student.activeCurricula" class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
               <AcademicCapIcon class="h-6 w-6 text-blue-500 mb-2" />
-              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Intro to Computer Science</h3>
+              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ curriculum.course.name }} ({{ curriculum.course.code }})</h3>
               <p class="text-sm text-gray-600 dark:text-gray-400">Instructor: Dr. Jane Doe</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Credits: 3</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Credits: {{ curriculum.course.creditHours }}</p>
             </div>
-            <div class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
-              <AcademicCapIcon class="h-6 w-6 text-blue-500 mb-2" />
-              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Mathematics for Engineers</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Instructor: Prof. John Smith</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Credits: 4</p>
-            </div>
-            <div class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
-              <AcademicCapIcon class="h-6 w-6 text-blue-500 mb-2" />
-              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Physics Fundamentals</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Instructor: Dr. Albert Newton</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Credits: 3</p>
-            </div>
+            
           </div>
         </section>
 

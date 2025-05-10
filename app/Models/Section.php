@@ -82,7 +82,7 @@ class Section extends Model
 
     public function getActiveCurricula()
     {
-        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester', Semester::getActiveSemester()->level)->get();
+        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester', Semester::getActiveSemester()->level)->where('track_id', $this->track_id)->get();
 
         return $curricula;
     }

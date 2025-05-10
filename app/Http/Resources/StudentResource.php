@@ -39,7 +39,7 @@ class StudentResource extends JsonResource
             'semester' => $this->whenLoaded('semester'),
             'payments' => $this->whenLoaded('payments'),
             'createdBy' => $this->whenLoaded('createdBy'),
-            'activeCurricula' => $this->section ? $this->section->getActiveCurricula() : null,
+            'activeCurricula' => $this->section ? CurriculumResource::collection($this->section->getActiveCurricula()) : null,
         ];
     }
 }

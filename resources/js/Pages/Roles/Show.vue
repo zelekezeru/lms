@@ -52,34 +52,11 @@ const deleteRole = (id) => {
             <div
                 class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
             >
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- role ID -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >ID</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ role.id }}</span
-                        >
-                    </div>
 
-                    <!-- role Name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Name</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ role.name }}</span
-                        >
-                    </div>
-                </div>
-
-                <h1 class="text-center text-xl font-bold my-4 text-white">
+                <h1 class="text-center text-xl font-bold my-4 text-gray-900 dark:text-gray-100">
                     All Permissions For This Role
                 </h1>
-                <div class="grid grid-cols-2 gap-4 ml-16">
+                <div class="grid grid-cols-3 gap-4 ml-16">
                     <span
                         v-for="permission in role.permissions"
                         class="text-gray-800 dark:text-gray-100"

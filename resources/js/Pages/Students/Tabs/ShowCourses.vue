@@ -68,7 +68,7 @@ const submitCourseAssignment = () => {
                     :is="assignCourses ? XMarkIcon : PlusCircleIcon"
                     class="w-8 h-8"
                 />
-                Assign Section
+                Enroll Courses
             </button>
         </div>
 

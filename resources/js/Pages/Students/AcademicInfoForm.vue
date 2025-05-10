@@ -100,6 +100,7 @@ const emit = defineEmits(["next", "previous"]);
                     class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                     :options="selectedYearSemesters"
                     placeholder="Select Semester"
+                    empty-message="First Select Year!"
                     option-value="id"
                     option-label="name"
                 >
@@ -149,6 +150,7 @@ const emit = defineEmits(["next", "previous"]);
                     option-label="name"
                     checkmark
                     filter
+                    empty-message="First Select Program!"
                     placeholder="Select Track"
                     :maxSelectevdLabels="3"
                     class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
@@ -166,7 +168,7 @@ const emit = defineEmits(["next", "previous"]);
                     value="Select Study Mode"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
-                {{ selectedProgramStudyModes }}
+                
                 <Select
                     id="cousesList"
                     v-model="form.study_mode_id"
@@ -175,6 +177,7 @@ const emit = defineEmits(["next", "previous"]);
                     option-label="mode"
                     checkmark
                     filter
+                    empty-message="First Select Program!"
                     placeholder="Select Study Mode"
                     :maxSelectevdLabels="3"
                     class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"

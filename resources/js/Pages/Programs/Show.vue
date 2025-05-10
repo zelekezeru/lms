@@ -21,30 +21,6 @@ const tabs = [
     { key: "modes", label: "Study Modes", icon: EyeIcon },
 ];
 const selectedTab = ref("details");
-
-const deleteProgram = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("programs.destroy", { program: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "Program has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
-};
 </script>
 
 <template>

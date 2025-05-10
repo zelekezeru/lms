@@ -3,11 +3,35 @@ import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     program: { type: Object, required: true },
 });
 
+const deleteProgram = (id) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(route("programs.destroy", { program: id }), {
+                onSuccess: () => {
+                    Swal.fire(
+                        "Deleted!",
+                        "Program has been deleted.",
+                        "success"
+                    );
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>

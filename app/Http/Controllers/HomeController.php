@@ -22,9 +22,7 @@ class HomeController extends Controller
 
         $instructors = count(Instructor::get());
         
-        $dashboardView = Auth::user()->roles()->first()->name == 'STUDENT' ? 'Student/Dashboard' : 'Dashboard';
-
-        return inertia($dashboardView, [
+        return inertia('Dashboard', [
             'courses' => $courses,
             'students' => $students,
             'instructors' => $instructors,

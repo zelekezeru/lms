@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentPortalController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,7 +16,16 @@ Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    Route::get('/', function() {
+        if (request()->user()->hasRole('STUDENT')) {
+            return redirect(route('student.dashboard'));
+        } else {
+            return redirect(route('admin.dashboard'));
+        }
+    })->name('dashboard');
+
+    Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
+    Route::get('/student-dashboard', [StudentPortalController::class, 'index'])->middleware('role:STUDENT')->name('student.dashboard');
 
     // Profiles related routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -75,10 +85,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/schedule', function () {
         return Inertia::render('Instructor/Schedule');
     })->name('instructor.schedule');
-
-    Route::get('/student', function () {
-        return Inertia::render('Student');
-    })->name('student.dashboard');
 
     Route::get('/payment', function () {
         return Inertia::render('Student/Payment');

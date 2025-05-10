@@ -9,6 +9,17 @@ import {
 } from '@heroicons/vue/24/outline';
 import StudentLayout from '@/Layouts/StudentLayout.vue';
 import { Chart } from 'chart.js/auto';
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+
+const props = defineProps({
+  student:{
+    type:Object, 
+    required:true,
+  }
+});
+
+const user = computed(() => usePage().props.auth.user);
 
 let chart = null;
 const createChart = () => {
@@ -42,7 +53,7 @@ onMounted(createChart);
     <div class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8" style="background-image: url('https://pngimg.com/uploads/student/student_PNG62531.png');">
       <div class="absolute inset-0 bg-black bg-opacity-25"></div>
       <div class="relative p-6 md:p-8 lg:p-10">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3">Welcome, Joshua</h1>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3">Welcome, {{ student.firstName }}</h1>
         <p class="text-base md:text-lg text-gray-200 max-w-2xl">
           Dive into your courses, track your progress, manage payments, and stay on top of your schedule—all in one place.
         </p>
@@ -56,7 +67,7 @@ onMounted(createChart);
       <div class="col-span-3 space-y-8">
         <!-- Enrolled Courses -->
         <section>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Your Enrolled Courses</h2>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">My Active Courses</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
               <AcademicCapIcon class="h-6 w-6 text-blue-500 mb-2" />

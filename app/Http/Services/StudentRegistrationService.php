@@ -26,6 +26,10 @@ class StudentRegistrationService extends Controller
         $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
         $student_email = $this->student_email($fields);
 
+        //Date of Birth
+        $dateOfBirth = $request->input('date_of_birth');
+        $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
+
         // Create a new user for the student
         $user = $this->createStudentUser($fields, $student_email);
         $user->assignRole('STUDENT');

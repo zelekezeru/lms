@@ -56,6 +56,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/students-section', [AssignmentController::class, 'assignStudentsToSection'])->name('students-section.assign');
 
+    Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
+
     // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
 
@@ -90,26 +92,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/schedule', function () {
         return Inertia::render('Instructor/Schedule');
     })->name('instructor.schedule');
-
-    Route::get('/payment', function () {
-        return Inertia::render('Student/Payment');
-    })->name('student.payment');
-
-    Route::get('/student/registration', function () {
-        return Inertia::render('Student/Registration');
-    })->name('student.registration');
-
-    Route::get('/student/add', function () {
-        return Inertia::render('Student/AddDropCourses');
-    })->name('student.add');
-
-    Route::get('/student/course', function () {
-        return Inertia::render('StudentPortal/Course');
-    })->name('student.course');
-
-    Route::get('/student/result', function () {
-        return Inertia::render('Student/StudentResults');
-    })->name('student.result');
 
     $resourceRoutes = [
         'tracks' => 'track',

@@ -18,7 +18,7 @@ class StudyModeController extends Controller
     public function index(Request $request)
     {
 
-        $query = StudyMode::query()->with('program');
+        $query = StudyMode::query();
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -33,7 +33,7 @@ class StudyModeController extends Controller
             });
         }
 
-        $allowedSorts = ['mode', 'duration', 'fees'];
+        $allowedSorts = ['name'];
         $sortColumn = $request->sortColumn;
         $sortDirection = $request->sortDirection;
 
@@ -73,12 +73,7 @@ class StudyModeController extends Controller
 
         $studyMode = StudyMode::create($fields);
 
-        $program = Program::find($fields['program_id']);
-
-        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the studyModes.show method is the default
-        $redirectTo = $request->input('redirectTo', route('studyModes.show', $studyMode));
-
-        return redirect($redirectTo)->with('success', 'Study Mode created successfully.');
+        return to_route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
     }
 
     /**

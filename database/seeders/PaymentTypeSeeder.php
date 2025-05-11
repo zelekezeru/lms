@@ -40,7 +40,7 @@ class PaymentTypeSeeder extends Seeder
                 'language' => null,
                 'amount' => 400.00,
                 'duration' => 'Per-Semester',
-                'study_mode_id' => 3,
+                'study_mode_id' => 2,
                 'payment_category_id' => 3,
                 'is_active' => true,
                 'tenant_id' => 1,

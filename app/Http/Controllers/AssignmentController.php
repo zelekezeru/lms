@@ -98,4 +98,23 @@ class AssignmentController extends Controller
 
         return redirect()->back();
     }
+
+    public function assignStudyModeToProgram(Request $request)
+    {
+        $fields = $request->validate([
+            'program_id' => 'required|exists:programs,id',
+            'study_mode_id' => 'required|exists:study_modes,id',
+            'duration' => 'required|integer|min:1',
+        ]);
+
+        $program = Program::findOrFail($fields['program_id']);
+
+        $program->studyModes()->syncWithoutDetaching([
+            $fields['study_mode_id'] => ['duration' => $fields['duration']],
+        ]);
+
+        return redirect()
+            ->route('programs.show', $program->id)
+            ->with('success', 'Study Mode assigned successfully.');
+    }
 }

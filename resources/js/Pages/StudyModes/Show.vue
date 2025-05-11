@@ -1,15 +1,16 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
-import { PlusCircleIcon } from "@heroicons/vue/24/outline";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {
+    CogIcon,
+    AcademicCapIcon,
+} from "@heroicons/vue/24/solid";
+import ShowDetails from "./Tabs/ShowDetails.vue";
+import ShowPrograms from "./Tabs/ShowPrograms.vue";
 
-// Define the props for the studyMode
 const props = defineProps({
     studyMode: {
         type: Object,
@@ -17,149 +18,70 @@ const props = defineProps({
     },
 });
 
-const addMode = () => {
-    modeForm.post(
-        route("studyModes.store", {
-            redirectTo: "studyModes.show",
-            params: { studyMode: props.studyMode.id },
-        }),
-        {
-            onSuccess: () => {
-                Swal.fire(
-                    "Added!",
-                    "The Study Mode you entered has been inserted succesfully.",
-                    "success"
-                );
+const selectedTab = ref("details");
 
-                createMode.value = false;
-                modeForm.mode = "";
-                modeForm.duration = "";
-                modeForm.fees = "";
-            },
-        }
-    );
-};
+const tabs = [
+    { key: "details", label: "Details", icon: CogIcon },
+    { key: "programs", label: "Programs", icon: AcademicCapIcon },
+];
 
-// Delete function with SweetAlert confirmation
-const deleteStudyMode = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("studyModes.destroy", { studyMode: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The studyMode has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
-};
 </script>
 
 <template>
     <AppLayout>
-        <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto p-6">
             <h1
-                class="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100"
+                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ studyMode.program.name }} ({{ studyMode.mode }}) Study Mode
+                {{ studyMode.name }} StudyMode
             </h1>
 
-            <div
-                class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700"
+            <nav
+                class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <!-- studyMode Mode -->
-                    <div>
-                        <span
-                            class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Mode</span
-                        >
-                        <span
-                            class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ studyMode.mode }}
-                        </span>
-                    </div>
+                <button
+                    v-for="tab in tabs"
+                    :key="tab.key"
+                    @click="selectedTab = tab.key"
+                    class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                    :class="
+                        selectedTab === tab.key
+                            ? 'border-b-2 border-indigo-500 text-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    "
+                >
+                    <component :is="tab.icon" class="w-5 h-5" />
+                    <span>{{ tab.label }}</span>
+                </button>
+            </nav>
 
-                    <!-- studyMode Program -->
-                    <div>
-                        <span
-                            class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Program</span
-                        >
-                        <span
-                            class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ studyMode.program.name }}
-                        </span>
-                    </div>
+            <!-- Details Panel -->
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                >
+                    <ShowDetails
+                        v-if="selectedTab === 'details'"
+                        :studyMode="studyMode"
+                    />
 
-                    <!-- Duration -->
-                    <div>
-                        <span
-                            class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Duration</span
-                        >
-                        <span
-                            class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ studyMode.duration }}
-                        </span>
-                    </div>
+                    <!-- Courses Panel -->
+                    <ShowCourses
+                        v-else-if="selectedTab === 'programs'"
+                        :studyMode="studyMode"
+                    />
 
-                    <!-- studyMode Fees -->
-                    <div>
-                        <span
-                            class="block text-sm text-gray-500 dark:text-gray-400"
-                            >Fees</span
-                        >
-                        <span
-                            class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ studyMode.fees }}
-                        </span>
-                    </div>
                 </div>
-
-                <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-4">
-                    <!-- Edit Button, only show if user has permission -->
-                    <div v-if="userCan('update-studyModes')">
-                        <Link
-                            :href="
-                                route('studyModes.edit', {
-                                    studyMode: studyMode.id,
-                                })
-                            "
-                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
-                        >
-                            <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                        </Link>
-                    </div>
-                    <!-- Delete Button, only show if user has permission -->
-                    <div v-if="userCan('delete-studyModes')">
-                        <button
-                            @click="deleteStudyMode(studyMode.id)"
-                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
-                        >
-                            <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </transition>
         </div>
     </AppLayout>
 </template>

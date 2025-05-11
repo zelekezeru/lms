@@ -9,9 +9,9 @@ class StudyMode extends Model
 {
     protected $guarded = [];
 
-    public function program()
+    public function programs()
     {
-        return $this->belongsTo(Program::class);
+        return $this->belongsToMany(Program::class)->withPivot('duration');
     }
     
     public function sections(): HasMany

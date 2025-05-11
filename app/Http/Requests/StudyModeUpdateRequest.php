@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StudyModeUpdateRequest extends FormRequest
 {
@@ -22,10 +23,12 @@ class StudyModeUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'program_id' => 'sometimes | required | exists:programs,id',
-            'mode' => 'sometimes | required | in:REGULAR,EXTENSION,DISTANCE,ONLINE',
-            'duration' => 'sometimes | required | numeric',
-            'fees' => 'sometimes | required | numeric',
+            'name' => [
+                'sometimes',
+                'required',
+                'string',
+                Rule::unique('study_modes')->ignore($this['studyMode']->id),
+            ],
         ];
     }
 }

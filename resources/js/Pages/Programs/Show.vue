@@ -12,6 +12,7 @@ import ShowStudyModes from "./Tabs/ShowStudyModes.vue";
 
 const props = defineProps({
     program: { type: Object, required: true },
+    studyModes: { type: Object, required: false },
     users: { type: Array, required: false },
 });
 
@@ -79,6 +80,7 @@ const selectedTab = ref("details");
                         <ShowStudyModes
                             v-show="selectedTab == 'modes'"
                             :program="program"
+                            :study-modes="studyModes"
                         />
                     </div>
                 </transition>

@@ -3,18 +3,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
 import { useForm } from "@inertiajs/vue3";
 
-defineProps({
-    programs: {
-        type: Object,
-        required: true,
-    },
-});
-
 const form = useForm({
-    program_id: "",
-    mode: "",
-    duration: "",
-    fees: "",
+    name: "",
 });
 
 const submit = () => form.post(route("studyModes.store"));
@@ -40,7 +30,6 @@ const submit = () => form.post(route("studyModes.store"));
                 <Form
                     :form="form"
                     @submit="submit"
-                    :programs="programs"
                 />
             </div>
         </div>

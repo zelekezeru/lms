@@ -6,6 +6,7 @@ use App\Http\Requests\ProgramStoreRequest;
 use App\Http\Requests\ProgramUpdateRequest;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Program;
@@ -63,8 +64,11 @@ class ProgramController extends Controller
     {
         $program = new ProgramResource($program->load('tracks', 'director', 'studyModes'));
 
+        $studyModes = StudyModeResource::collection(StudyMode::all());
+
         return inertia('Programs/Show', [
             'program' => $program,
+            'studyModes' => $studyModes,
             'users' => UserResource::collection(User::all()),
         ]);
     }
@@ -94,7 +98,7 @@ class ProgramController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $program_id = 'PR'.'-'.str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT).'-'.$year;
+        $program_id = 'PR' . '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
 
         $fields['code'] = $program_id;
 
@@ -114,12 +118,10 @@ class ProgramController extends Controller
         $program->courses()->sync($syncData);
 
         // Create A defualt studyMode of mode 'REGULAR'
-        $studyMode = StudyMode::create([
-            'program_id' => $program->id,
-            'mode' => 'REGULAR',
-            'duration' => $program->duration,
-            'fees' => null,
+        $program->studyModes()->attach([
+            1 => ['duration' => $program->duration],
         ]);
+
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }

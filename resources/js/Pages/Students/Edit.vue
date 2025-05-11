@@ -14,7 +14,6 @@ const props = defineProps({
     semesters: Array,
 });
 
-console.log(props.student);
 const form = useForm({
     first_name: props.student.firstName || "",
     middle_name: props.student.middleName || "",

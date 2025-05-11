@@ -77,7 +77,7 @@ const searchStudyModes = () => {
 
     <!-- Header Toolbar -->
     <div class="flex justify-between items-center mb-3">
-      <!-- Search Bar with Icon -->
+      <!-- Search Bar wi  th Icon -->
       <div class="relative">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
@@ -133,16 +133,8 @@ const searchStudyModes = () => {
     <Table>
       <TableHeader>
         <tr>
-          <!-- Sorting enabled on Program(Mode) as an example (adjust the sortColumn if needed) -->
-          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'mode'">
-            Program(Mode)
-          </Thead>
-          <!-- Added sortable headers for Duration and Fees -->
-          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'duration'">
-            Duration
-          </Thead>
-          <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'fees'">
-            Fees
+          <Thead :sortable="true" :sort-info="sortInfo" sortColumn="name">
+            Name
           </Thead>
           <Thead scope="col" class="px-6 py-3">
             Actions
@@ -159,11 +151,9 @@ const searchStudyModes = () => {
             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
           >
             <Link :href="route('studyModes.show', { studyMode: studyMode.id })">
-              {{ studyMode.program.name }} ({{ studyMode.mode }})
+              {{ studyMode.name }}
             </Link>
           </th>
-          <td class="px-6 py-4">{{ studyMode.duration }}</td>
-          <td class="px-6 py-4">{{ studyMode.fees }}</td>
           <td class="px-6 py-4 flex justify-between">
             <Link
               v-if="userCan('view-studyModes')"

@@ -10,18 +10,10 @@ defineProps({
         type: Object,
         required: true,
     },
-
-    programs: {
-        type: Object,
-        required: true,
-    },
 });
 
 const form = useForm({
-    program_id: usePage().props.studyMode.program.id,
-    mode: usePage().props.studyMode.mode,
-    duration: usePage().props.studyMode.duration,
-    fees: usePage().props.studyMode.fees,
+    name: usePage().props.studyMode.name,
 });
 
 const submit = (id) => {
@@ -29,7 +21,7 @@ const submit = (id) => {
         onSuccess: () =>
             Swal.fire(
                 "Updated",
-                "The studyMode has been updated successfully",
+                "The Study Mode has been updated successfully",
                 "success"
             ),
     });
@@ -42,7 +34,7 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit "{{ studyMode.program.name }} ({{ studyMode.mode }})"
+                    Edit "{{ studyMode.name }}"
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Please fill out the form below to Update the studyMode.

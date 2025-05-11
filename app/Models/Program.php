@@ -47,7 +47,7 @@ class Program extends Model
 
     public function studyModes()
     {
-        return $this->hasMany(StudyMode::class);
+        return $this->belongsToMany(StudyMode::class)->withPivot('duration');
     }
 
     public function courses()

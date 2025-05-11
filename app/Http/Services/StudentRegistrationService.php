@@ -233,7 +233,7 @@ class StudentRegistrationService extends Controller
     {
         $username = $fields['first_name'].' '.$fields['middle_name'];
 
-        $email = strtolower(str_replace(' ', '.', $username)).rand(10, 99).'@sits.edu.et';
+        $email = strtolower(str_replace(' ', '.', $username)).'@sits.edu.et';
 
         return $email;
     }

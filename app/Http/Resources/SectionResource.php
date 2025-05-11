@@ -19,7 +19,9 @@ class SectionResource extends JsonResource
             'name' => $this->name,
             'code' => $this->code,
             'user' => new UserResource($this->whenLoaded('user')),
-            'students' => $this->whenLoaded('students'),
+            'students' => $this->whenLoaded('students', function () {
+                return $this->students->sortBy('name')->values();
+            }),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'year' => new YearResource($this->whenLoaded('year')),
             'program' => $this->whenLoaded('program'),

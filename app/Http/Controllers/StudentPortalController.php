@@ -15,8 +15,6 @@ class StudentPortalController extends Controller
         // Instructor Assigned to Section
         $instructors = CourseSectionAssignment::where('section_id', $student->section->id)->whereNotNull('instructor_id')->with('instructor')->get();
 
-        dd($instructors);
-
         return inertia('StudentPortal/Dashboard', [
             'student' => $student,
         ]);

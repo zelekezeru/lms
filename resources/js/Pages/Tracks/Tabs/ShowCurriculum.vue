@@ -126,7 +126,7 @@ const selectedStudyModeId = ref(props.track.program.studyModes[0]?.id);
 const editSemisterCurricula = ref(false);
 const groupedCurricula = ref(buildGroupedCurricula(selectedStudyModeId.value));
 
-console.log(groupedCurricula);
+
 watch(
     () => props.track.curricula,
     () => {

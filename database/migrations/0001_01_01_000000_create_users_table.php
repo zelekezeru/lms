@@ -22,6 +22,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('default_password')->nullable();
             $table->boolean('password_changed')->default(false);
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('deleted_at')->nullable();
+            $table->string('deleted_by_name')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
 

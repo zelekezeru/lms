@@ -12,6 +12,7 @@ use App\Http\Resources\StudentResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\StudyModeResource;
 use App\Http\Services\StudentRegistrationService;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
@@ -21,6 +22,7 @@ use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
+use App\Models\StudyMode;
 use App\Models\Track;
 use App\Models\User;
 use App\Models\Year;
@@ -39,17 +41,19 @@ class StudentController extends Controller
         // Apply search filter
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
-
-            $query->where(function ($q) use ($search) {
+            
+            $query->whereHas('status', function ($q) {
+                $q->where('is_deleted', false);
+            })->where(function ($q) use ($search) {
                 $q->where('first_name', 'LIKE', "%{$search}%")
                     ->orWhere('middle_name', 'LIKE', "%{$search}%")
                     ->orWhere('last_name', 'LIKE', "%{$search}%")
                     ->orWhere('id_no', 'LIKE', "%{$search}%");
             });
         }
-
+        
         // Set up sorting
-        $allowedSorts = ['first_name', 'middle_name', 'last_name', 'id_no', 'created_at'];
+        $allowedSorts = ['first_name', 'middle_name', 'last_name', 'id_no', 'contact_phone'];
         $sortColumn = $request->input('sortColumn', 'first_name');
         $sortDirection = $request->input('sortDirection', 'asc');
 
@@ -57,8 +61,9 @@ class StudentController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        // Paginate and transform
+        // Paginate and transform 
         $paginatedStudents = $query->paginate(30)->withQueryString();
+
         $students = StudentResource::collection($paginatedStudents);
 
         // Return with Inertia
@@ -123,9 +128,13 @@ class StudentController extends Controller
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name')->get());
 
+        $studyModes = StudyModeResource::collection(StudyMode::all());
+
+
         return inertia('Students/Create', [
             'programs' => $programs,
             'years' => $years,
+            'studyModes' => $studyModes,
         ]);
     }
 
@@ -166,16 +175,17 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         // Soft delete the student
-        $student->is_deleted = true;
-        $student->deleted_at = now();
-        $student->deleted_by_name = Auth::user()->id;
-        $student->save();
+        $student->status->is_deleted = true;
+        $student->status->deleted_at = now();
+        $student->status->deleted_by_name = Auth::user()->name;
+        $student->status->save();
+        
         // Optionally, you can also delete the associated user record
         $user = $student->user;
         if ($user) {
             $user->is_deleted = true;
             $user->deleted_at = now();
-            $user->deleted_by_name = Auth::user()->id;
+            $user->deleted_by_name = Auth::user()->name;
             $user->save();
         }
 

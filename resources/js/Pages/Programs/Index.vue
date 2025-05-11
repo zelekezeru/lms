@@ -220,32 +220,41 @@ const searchPrograms = () => {
                 :key="program.id"
                 class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600"
             >
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">
-                    {{ program.name }}
-                </h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
-                    Language: {{ program.language }}
-                </p>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
-                    Duration: {{ program.duration }}
-                </p>
+            
+            <Link
+                v-if="userCan('view-programs')"
+                :href="route('programs.show', { program: program.id })"
+                class="text-blue-500 hover:text-blue-700"
+            >
 
-                <div class="mt-3 flex space-x-3">
-                    <Link
-                        v-if="userCan('view-programs')"
-                        :href="route('programs.show', { program: program.id })"
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <EyeIcon class="w-5 h-5" />
-                    </Link>
-                    <Link
-                        v-if="userCan('update-programs')"
-                        :href="route('programs.edit', { program: program.id })"
-                        class="text-green-500 hover:text-green-700"
-                    >
-                        <PencilSquareIcon class="w-5 h-5" />
-                    </Link>
-                </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">
+                        {{ program.name }}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Language: {{ program.language }}
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Duration: {{ program.duration }}
+                    </p>
+
+                    <div class="mt-3 flex space-x-3">
+                        <Link
+                            v-if="userCan('view-programs')"
+                            :href="route('programs.show', { program: program.id })"
+                            class="text-blue-500 hover:text-blue-700"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            v-if="userCan('update-programs')"
+                            :href="route('programs.edit', { program: program.id })"
+                            class="text-green-500 hover:text-green-700"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                    </div>
+                    
+                </Link>
             </div>
         </div>
 

@@ -46,7 +46,9 @@ defineProps({
                     v-for="(student, index) in students.data"
                     :key="student.id"
                 >
-                    <td class="px-6 py-4">{{ index + 1 + (students.meta.currentPage - 1) * students.meta.perPage }}</td>
+                    <td class="px-6 py-4">
+                        {{ index + 1 + ((students.meta.current_page - 1) * students.meta.per_page) }}
+                    </td>
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         <Link :href="route('students.show', { student: student.id })">
                             {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}

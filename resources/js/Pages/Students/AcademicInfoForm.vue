@@ -21,6 +21,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    studyModes: {
+        type: Array,
+        required: true,
+    },
 });
 
 const selectedYearSemesters = ref(
@@ -170,11 +174,11 @@ const emit = defineEmits(["next", "previous"]);
                 />
                 
                 <Select
-                    id="cousesList"
+                    id="modesList"
                     v-model="form.study_mode_id"
                     :options="selectedProgramStudyModes"
                     option-value="id"
-                    option-label="mode"
+                    option-label="name"
                     checkmark
                     filter
                     empty-message="First Select Program!"

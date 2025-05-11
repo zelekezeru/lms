@@ -84,6 +84,27 @@ const emits = defineEmits(["submit"]);
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
+
+            <!-- Duration -->
+            <div>
+                <InputLabel
+                    for="duration"
+                    value="Duration (Years)"
+                    class="block mb-1 text-gray-200"
+                />
+                <TextInput
+                    id="duration"
+                    type="number"
+                    v-model="form.duration"
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                />
+                <InputError
+                    :message="form.errors.duration"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
+
         </div>
 
         <!-- Submit Button -->

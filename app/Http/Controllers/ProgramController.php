@@ -65,7 +65,7 @@ class ProgramController extends Controller
         $program = new ProgramResource($program->load('tracks', 'director', 'studyModes'));
 
         $studyModes = StudyModeResource::collection(StudyMode::all());
-
+        
         return inertia('Programs/Show', [
             'program' => $program,
             'studyModes' => $studyModes,

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->text('description')->nullable();
+            $table->integer('duration')->default(3); // Duration in hours
             $table->foreignId('program_id')->constrained()->nullable();
             $table->timestamps();
         });

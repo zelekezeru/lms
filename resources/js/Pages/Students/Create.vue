@@ -10,6 +10,7 @@ import ChurchInfoForm from "./ChurchInfoForm.vue";
 const props = defineProps({
     programs: { type: Array, required: true },
     years: { type: Array, required: true },
+    studyModes: { type: Array, required: true },
 });
 
 // Step-based form data
@@ -128,6 +129,7 @@ const submit = () => {
                         :form="form"
                         :programs="programs"
                         :years="years"
+                        :study-modes="studyModes"
                         @next="nextStep"
                         @previous="previousStep"
                     />

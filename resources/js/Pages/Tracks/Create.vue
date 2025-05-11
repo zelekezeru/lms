@@ -10,6 +10,7 @@ const form = useForm({
     description: "",
     user_id: "",
     program_id: "",
+    duration: "",
 });
 
 const submit = () => form.post(route("tracks.store"));

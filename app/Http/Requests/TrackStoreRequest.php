@@ -25,6 +25,7 @@ class TrackStoreRequest extends FormRequest
             'name' => 'required|string|max:255|unique:tracks,name',
             'description' => 'nullable|string',
             'program_id' => ['required', 'exists:programs,id'],
+            'duration' => 'required|integer|min:1',
         ];
     }
 }

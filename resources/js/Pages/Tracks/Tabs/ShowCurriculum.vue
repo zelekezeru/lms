@@ -22,7 +22,6 @@ const showModal = ref(false);
 const programDuration = props.track.program.duration;
 const yearLevels = [];
 const studyModes = props.track.program.studyModes;
-console.log(studyModes)
 for (let i = 1; i <= programDuration; i++) {
     yearLevels.push(i);
 }
@@ -173,6 +172,7 @@ const expandedKeys = ref({
 function expandAll(nodes) {
     let _expandedKeys = {};
     const expandNode = (node) => {
+        console.log(node.children)
         if (node.children && node.children.length) {
             _expandedKeys[node.key] = true;
             node.children.forEach((child) => expandNode(child));
@@ -245,7 +245,7 @@ const allCoursesAreAssigned = ref(
                     <Select
                         v-model="selectedStudyModeId"
                         :options="studyModes"
-                        option-label="mode"
+                        option-label="name"
                         option-value="id"
                         placeholder="Select Study Mode"
                         class="w-full"
@@ -535,7 +535,7 @@ const allCoursesAreAssigned = ref(
                             v-model="form.study_mode_id"
                             :options="track.program.studyModes"
                             option-value="id"
-                            option-label="mode"
+                            option-label="name"
                             appendTo="self"
                             placeholder="Select Mode"
                             class="w-full"

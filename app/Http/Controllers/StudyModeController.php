@@ -71,6 +71,8 @@ class StudyModeController extends Controller
     {
         $fields = $request->validated();
 
+        $fields['created_at'] = now();
+
         $studyMode = StudyMode::create($fields);
 
         return to_route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
@@ -81,7 +83,7 @@ class StudyModeController extends Controller
      */
     public function show(StudyMode $studyMode)
     {
-        $studyMode = new StudyModeResource($studyMode->load('program'));
+        $studyMode = new StudyModeResource($studyMode);
 
         return inertia('StudyModes/Show', compact('studyMode'));
 
@@ -93,6 +95,7 @@ class StudyModeController extends Controller
     public function edit(StudyMode $studyMode)
     {
         $programs = ProgramResource::collection(Program::all());
+
         $studyMode = new StudyModeResource($studyMode->load('program')); // Load the related program
 
         return inertia('StudyModes/Edit', [
@@ -107,6 +110,8 @@ class StudyModeController extends Controller
     public function update(StudyModeUpdateRequest $request, StudyMode $studyMode)
     {
         $fields = $request->validated();
+
+        $fields['updated_at'] = now();
 
         // Update the study mode record
         $studyMode->update($fields);

@@ -7,6 +7,7 @@ use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\StudyMode;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -104,10 +105,26 @@ class AssignmentController extends Controller
         $fields = $request->validate([
             'program_id' => 'required|exists:programs,id',
             'study_mode_id' => 'required|exists:study_modes,id',
-            'duration' => 'required|integer|min:1',
+            'duration' => 'required|integer|min:1|max:10',
         ]);
 
         $program = Program::findOrFail($fields['program_id']);
+
+        $studyMode = StudyMode::findOrFail($fields['study_mode_id']);
+
+        // Assign the study mode to the program
+        // dd($program->studyModes()->where('study_mode_id', $fields['study_mode_id'])->exists());
+        if ($program->studyModes()->where('study_mode_id', $fields['study_mode_id'])->exists()) {
+            return redirect()
+                ->route('programs.show', $program->id)
+                ->with('error', 'Study Mode already assigned to this program.');
+        }
+        else {
+            $program->studyModes()->attach($studyMode, [
+                'duration' => $fields['duration'],
+            ]);
+        }
+    
 
         $program->studyModes()->syncWithoutDetaching([
             $fields['study_mode_id'] => ['duration' => $fields['duration']],

@@ -97,6 +97,18 @@ const deleteTrack = (id) => {
                     {{ track.description }}
                 </span>
             </div>
+
+            <!-- Duration -->
+            <div>
+                <span class="block text-sm text-gray-500 dark:text-gray-400"
+                    >Duration</span
+                >
+                <span
+                    class="block text-lg font-medium text-gray-900 dark:text-gray-100"
+                >
+                    {{ track.duration }} Years
+                </span>
+            </div>
         </div>
 
         <!-- Edit and Delete Buttons -->

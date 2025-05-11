@@ -242,33 +242,43 @@ const deleteTrack = (id) => {
                 :key="track.id"
                 class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-lg shadow-md p-6 flex flex-col transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
             >
-                <h3
-                    class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+            
+                <Link
+                    v-if="userCan('view-tracks')"
+                    :href="route('tracks.show', { track: track.id })"
+                    class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                    {{ track.name }}
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    <strong>Code:</strong> {{ track.code }}
-                </p>
-                <p class="text-sm text-gray-500 dark:text-gray-400 flex-grow">
-                    {{ track.description }}
-                </p>
-                <div class="mt-4 flex space-x-4">
-                    <Link
-                        v-if="userCan('view-tracks')"
-                        :href="route('tracks.show', { track: track.id })"
-                        class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+
+                    <h3
+                        class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
                     >
-                        <EyeIcon class="w-5 h-5" />
-                    </Link>
-                    <Link
-                        v-if="userCan('update-tracks')"
-                        :href="route('tracks.edit', { track: track.id })"
-                        class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                        <PencilSquareIcon class="w-5 h-5" />
-                    </Link>
-                </div>
+                        {{ track.name }}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                        <strong>Code:</strong> {{ track.code }}
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 flex-grow">
+                        {{ track.description }}
+                    </p>
+                    <div class="mt-4 flex space-x-4">
+                        <Link
+                            v-if="userCan('view-tracks')"
+                            :href="route('tracks.show', { track: track.id })"
+                            class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        >
+                            <EyeIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            v-if="userCan('update-tracks')"
+                            :href="route('tracks.edit', { track: track.id })"
+                            class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        >
+                            <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                    </div>
+
+                </Link>
+
             </div>
         </div>
 

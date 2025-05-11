@@ -22,7 +22,7 @@ const showModal = ref(false);
 const programDuration = props.track.program.duration;
 const yearLevels = [];
 const studyModes = props.track.program.studyModes;
-console.log(studyModes)
+
 for (let i = 1; i <= programDuration; i++) {
     yearLevels.push(i);
 }
@@ -127,7 +127,7 @@ const selectedStudyModeId = ref(props.track.program.studyModes[0]?.id);
 const editSemisterCurricula = ref(false);
 const groupedCurricula = ref(buildGroupedCurricula(selectedStudyModeId.value));
 
-console.log(groupedCurricula);
+
 watch(
     () => props.track.curricula,
     () => {

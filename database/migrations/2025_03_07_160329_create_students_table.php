@@ -23,12 +23,6 @@ return new class extends Migration
             $table->string('marital_status', 10)->nullable();
             $table->char('sex', 6);
             $table->string('address', 200)->nullable();
-
-            $table->string('church_name', 100)->nullable();
-            $table->string('church_address', 100)->nullable();
-            $table->string('pastor_name', 100)->nullable();
-            $table->string('pastor_phone', 100)->nullable();
-            $table->string('position_denomination', 100)->nullable();
             
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();

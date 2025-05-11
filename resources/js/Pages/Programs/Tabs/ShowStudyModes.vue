@@ -118,20 +118,22 @@ const assignMode = () => {
                                         <Select
                                             id="modesList"
                                             v-model="modeForm.study_mode_id"
-                                            :options="studyModes"
+                                            :options="studyModes.filter(
+                                                (mode) => !program.studyModes.some((assignedMode) => assignedMode.id === mode.id)
+                                            )"
                                             option-label="name"
                                             option-value="id"
                                             checkmark
                                             filter
                                             placeholder="Select Study Mode"
                                             class="w-full"
-
                                         />
                                     </td>
                                     <td class="px-4 py-2">
                                         <div
                                             class="flex items-center space-x-6"
                                         >
+                                        
                                         <TextInput
                                             v-model="modeForm.duration"
                                             type="number"

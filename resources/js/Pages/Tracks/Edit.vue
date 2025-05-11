@@ -10,6 +10,7 @@ const form = useForm({
     name: usePage().props.track.name,
     description: usePage().props.track.description,
     program_id: usePage().props.track.program_id,
+    duration: usePage().props.track.duration,
 });
 
 const submit = (id) => {

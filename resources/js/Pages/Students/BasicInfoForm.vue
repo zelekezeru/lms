@@ -130,8 +130,7 @@ const formatDate = (date) => {
             <div>
                 <InputLabel for="date_of_birth" value="Date of Birth" />
                 <Calendar
-                    :value="form.date_of_birth"
-                    @update:modelValue="(value) => form.date_of_birth = formatDate(value)"
+                    v-model="form.date_of_birth"
                     dateFormat="yy-mm-dd"
                     showIcon
                     placeholder="Select Date of Birth"

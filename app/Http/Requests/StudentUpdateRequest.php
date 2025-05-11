@@ -36,7 +36,7 @@ class StudentUpdateRequest extends FormRequest
             'tenant_id' => 'nullable|exists:tenants,id',
             'program_id' => 'required|exists:programs,id',
             'track_id' => 'required|exists:tracks,id',
-            'study_mode_id' => 'required|exists:tracks,id',
+            'study_mode_id' => 'required|exists:study_modes,id',
             'year_id' => 'required|exists:years,id',
             'semester_id' => 'required|exists:semesters,id',
             'section_id' => 'nullable|exists:sections,id',

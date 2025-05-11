@@ -146,7 +146,7 @@ class StudentController extends Controller
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks')->get());
 
         $years = YearResource::collection(Year::with('semesters')->get());
-
+        $student = new StudentResource($student->load('user', 'program', 'track', 'year', 'semester', 'section', 'studyMode', 'status'));
         return Inertia::render('Students/Edit', [
             'student' => $student,
             'programs' => $programs,
@@ -154,21 +154,13 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(StudentUpdateRequest $request, Student $student): Response
+    public function update(StudentUpdateRequest $request, Student $student): RedirectResponse
     {
         // Update the Student info in the update method in Auth/StudentRegistrationController
 
         $student = (new StudentRegistrationService)->update($request, $student);
 
-        // Load related data for the student resource
-        $studentResource = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
-
-        return Inertia::render('Students/Show', [
-            'student' => $studentResource,
-            'user' => new UserResource($studentResource->user),
-            'status' => new StatusResource($studentResource->status),
-            'success' => 'Student created successfully.',
-        ]);
+        return to_route('students.show', $student);
     }
 
     public function destroy(Student $student)

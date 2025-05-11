@@ -3,7 +3,13 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import {
+    EyeIcon,
+    TrashIcon,
+    ArrowPathIcon,
+    Squares2X2Icon,
+    TableCellsIcon,
+} from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
@@ -12,40 +18,23 @@ import TableZebraRows from "../../Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
 
 defineProps({
-    programs: {
-        type: Object,
-        required: true,
-    },
-
-    user: {
-        type: Object,
-        required: true,
-    },
-    
-    sortInfo: {
-        type: Object,
-    },
+    programs: Object,
+    user: Object,
+    sortInfo: Object,
 });
 
 const refreshing = ref(false);
-
-// Search term for filtering
+const viewMode = ref("card");
 const search = ref(usePage().props.search || "");
 
-// Refresh data function
 const refreshData = () => {
     refreshing.value = true;
-    router.flush("/programs", { method: "get" });
-
     router.visit(route("programs.index"), {
         only: ["programs"],
-        onFinish: () => {
-            refreshing.value = false;
-        },
+        onFinish: () => (refreshing.value = false),
     });
 };
 
-// Delete function with SweetAlert confirmation
 const deleteProgram = (id) => {
     Swal.fire({
         title: "Are you sure?",
@@ -70,7 +59,6 @@ const deleteProgram = (id) => {
     });
 };
 
-// Search function for programs
 const searchPrograms = () => {
     router.get(
         route("programs.index"),
@@ -82,7 +70,6 @@ const searchPrograms = () => {
 
 <template>
     <AppLayout>
-        <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                 Programs
@@ -91,12 +78,10 @@ const searchPrograms = () => {
 
         <!-- Header Toolbar -->
         <div class="flex justify-between items-center mb-3">
-            <!-- Search Bar with Icon -->
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
                         class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                        xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -118,93 +103,154 @@ const searchPrograms = () => {
                 />
             </div>
 
-            <div class="flex space-x-6">
-                <!-- Add New Program Button -->
+            <div class="flex space-x-4">
                 <Link
                     v-if="userCan('create-programs')"
                     :href="route('programs.create')"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"
                 >
                     + Add Program
                 </Link>
 
-                <!-- Refresh Button -->
                 <button
                     @click="refreshData"
-                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-blue-700"
                     title="Refresh Data"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    Refresh Data
+                    Refresh
+                </button>
+                <button
+                    @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
+                    class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
+                    title="Toggle View"
+                >
+                    <component
+                        :is="
+                            viewMode === 'table'
+                                ? Squares2X2Icon
+                                : TableCellsIcon
+                        "
+                        class="w-5 h-5 "
+                    />
                 </button>
             </div>
         </div>
 
-        <!-- Programs Table -->
-        <Table>
-            <TableHeader>
-                <tr>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Program Name</Thead>
-                    <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'language'">Language</Thead>
-                    <Thead>Duration</Thead>
-                    <Thead scope="col" class="px-6 py-3">Action</Thead>
-                </tr>
-            </TableHeader>
-            <tbody>
-                <TableZebraRows
-                    v-for="program in programs.data"
-                    :key="program.id"
-                >
-                    <th
-                        scope="row"
-                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        <!-- Table View -->
+        <div v-if="viewMode === 'table'">
+            <Table>
+                <TableHeader>
+                    <tr>
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            sortColumn="name"
+                            >Program Name</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            sortColumn="language"
+                            >Language</Thead
+                        >
+                        <Thead>Duration</Thead>
+                        <Thead>Action</Thead>
+                    </tr>
+                </TableHeader>
+                <tbody>
+                    <TableZebraRows
+                        v-for="program in programs.data"
+                        :key="program.id"
                     >
-                        <Link
-                            :href="
-                                route('programs.show', { program: program.id })
-                            "
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 dark:text-white"
                         >
-                            {{ program.name }}
-                        </Link>
-                    </th>
-                    <td class="px-6 py-4">{{ program.language }}</td>
-                    <td class="px-6 py-4">{{ program.duration }}</td>
-                    <td class="px-6 py-4 flex justify-between">
-                        <Link
-                            v-if="userCan('view-programs')"
-                            :href="
-                                route('programs.show', { program: program.id })
-                            "
-                            class="text-blue-500 hover:text-blue-700"
-                        >
-                            <EyeIcon class="w-5 h-5" />
-                        </Link>
-                        <Link
-                            v-if="userCan('update-programs')"
-                            :href="
-                                route('programs.edit', { program: program.id })
-                            "
-                            class="text-green-500 hover:text-green-700"
-                        >
-                            <PencilSquareIcon class="w-5 h-5" />
-                        </Link>
-                        <!-- <button
-                            v-if="userCan('delete-programs')"
-                            @click="deleteProgram(program.id)"
-                            class="text-red-500 hover:text-red-700"
-                        >
-                            <TrashIcon class="w-5 h-5" />
-                        </button> -->
-                    </td>
-                </TableZebraRows>
-            </tbody>
-        </Table>
+                            <Link
+                                :href="
+                                    route('programs.show', {
+                                        program: program.id,
+                                    })
+                                "
+                                >{{ program.name }}</Link
+                            >
+                        </th>
+                        <td class="px-6 py-4">{{ program.language }}</td>
+                        <td class="px-6 py-4">{{ program.duration }}</td>
+                        <td class="px-6 py-4 flex space-x-2">
+                            <Link
+                                v-if="userCan('view-programs')"
+                                :href="
+                                    route('programs.show', {
+                                        program: program.id,
+                                    })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
+                                <EyeIcon class="w-5 h-5" />
+                            </Link>
+                            <Link
+                                v-if="userCan('update-programs')"
+                                :href="
+                                    route('programs.edit', {
+                                        program: program.id,
+                                    })
+                                "
+                                class="text-green-500 hover:text-green-700"
+                            >
+                                <PencilSquareIcon class="w-5 h-5" />
+                            </Link>
+                        </td>
+                    </TableZebraRows>
+                </tbody>
+            </Table>
+        </div>
 
-        <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-6">
+        <!-- Card View -->
+        <div
+            v-else
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6"
+        >
+            <div
+                v-for="program in programs.data"
+                :key="program.id"
+                class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600"
+            >
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">
+                    {{ program.name }}
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    Language: {{ program.language }}
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    Duration: {{ program.duration }}
+                </p>
+
+                <div class="mt-3 flex space-x-3">
+                    <Link
+                        v-if="userCan('view-programs')"
+                        :href="route('programs.show', { program: program.id })"
+                        class="text-blue-500 hover:text-blue-700"
+                    >
+                        <EyeIcon class="w-5 h-5" />
+                    </Link>
+                    <Link
+                        v-if="userCan('update-programs')"
+                        :href="route('programs.edit', { program: program.id })"
+                        class="text-green-500 hover:text-green-700"
+                    >
+                        <PencilSquareIcon class="w-5 h-5" />
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex justify-center space-x-2">
             <Link
                 v-for="link in programs.meta.links"
                 :key="link.label"

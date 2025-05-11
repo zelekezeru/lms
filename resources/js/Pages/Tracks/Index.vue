@@ -3,7 +3,13 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
+import {
+    EyeIcon,
+    TrashIcon,
+    ArrowPathIcon,
+    Squares2X2Icon,
+    TableCellsIcon,
+} from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
@@ -23,6 +29,7 @@ defineProps({
 
 const refreshing = ref(false);
 const search = ref(usePage().props.search || "");
+const viewMode = ref("table"); // Default to table view
 
 // Refresh function
 const refreshData = () => {
@@ -80,7 +87,7 @@ const deleteTrack = (id) => {
             Track Details
         </h1>
 
-        <!-- Search Bar and Button Section -->
+        <!-- View Mode Toggle -->
         <div class="flex justify-between items-center mb-3">
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -128,10 +135,29 @@ const deleteTrack = (id) => {
                     />
                     Refresh Data
                 </button>
+                <!-- Toggle View Button -->
+                <button
+                    @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
+                    class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
+                    title="Toggle View"
+                >
+                    <component
+                        :is="
+                            viewMode === 'table'
+                                ? Squares2X2Icon
+                                : TableCellsIcon
+                        "
+                        class="w-5 h-5"
+                    />
+                </button>
             </div>
         </div>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
+        <!-- Table View -->
+        <div
+            v-if="viewMode === 'table'"
+            class="overflow-x-auto shadow-md sm:rounded-lg mt-3"
+        >
             <Table>
                 <TableHeader>
                     <tr>
@@ -200,18 +226,50 @@ const deleteTrack = (id) => {
                                     <PencilSquareIcon class="w-5 h-5" />
                                 </Link>
                             </div>
-                            <!-- <div v-if="userCan('delete-tracks')">
-                                <button
-                                    @click="deleteTrack(track.id)"
-                                    class="text-red-500 hover:text-red-700"
-                                >
-                                    <TrashIcon class="w-5 h-5" />
-                                </button>
-                            </div> -->
                         </td>
                     </TableZebraRows>
                 </tbody>
             </Table>
+        </div>
+
+        <!-- Card View -->
+        <div
+            v-else
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-3"
+        >
+            <div
+                v-for="track in tracks.data"
+                :key="track.id"
+                class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-lg shadow-md p-6 flex flex-col transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+            >
+                <h3
+                    class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                    {{ track.name }}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                    <strong>Code:</strong> {{ track.code }}
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 flex-grow">
+                    {{ track.description }}
+                </p>
+                <div class="mt-4 flex space-x-4">
+                    <Link
+                        v-if="userCan('view-tracks')"
+                        :href="route('tracks.show', { track: track.id })"
+                        class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        <EyeIcon class="w-5 h-5" />
+                    </Link>
+                    <Link
+                        v-if="userCan('update-tracks')"
+                        :href="route('tracks.edit', { track: track.id })"
+                        class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                        <PencilSquareIcon class="w-5 h-5" />
+                    </Link>
+                </div>
+            </div>
         </div>
 
         <!-- Pagination Links -->

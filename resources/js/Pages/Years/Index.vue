@@ -3,8 +3,15 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { ArrowPathIcon, TrashIcon, EyeIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+import {
+  ArrowPathIcon,
+  TrashIcon,
+  EyeIcon,
+  PencilSquareIcon,
+  MagnifyingGlassIcon,
+  Squares2X2Icon,
+  TableCellsIcon,
+} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
@@ -15,6 +22,7 @@ const { years, search: serverSearch } = usePage().props;
 
 const search = ref(serverSearch || "");
 const refreshing = ref(false);
+const viewMode = ref("card"); // 'table' or 'card'
 
 // Refresh data
 const refreshData = () => {
@@ -61,7 +69,7 @@ const searchYears = () => {
     </div>
 
     <!-- Toolbar -->
-    <div class="flex justify-between items-center mb-3">
+    <div class="flex justify-between items-center mb-3 flex-wrap gap-3">
       <div class="relative">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
           <MagnifyingGlassIcon class="w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -75,7 +83,7 @@ const searchYears = () => {
         />
       </div>
 
-      <div class="flex space-x-6">
+      <div class="flex space-x-4">
         <Link
           :href="route('years.create')"
           class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"
@@ -91,11 +99,20 @@ const searchYears = () => {
           <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
           Refresh
         </button>
+
+        <button
+          @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
+          class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
+          title="Toggle View"
+        >
+          <component :is="viewMode === 'table' ? Squares2X2Icon : TableCellsIcon" class="w-5 h-5" />
+          
+        </button>
       </div>
     </div>
 
-    <!-- Table -->
-    <div v-if="years.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
+    <!-- Table View -->
+    <div v-if="years.data.length > 0 && viewMode === 'table'" class="overflow-x-auto shadow-md sm:rounded-lg">
       <Table>
         <TableHeader>
           <tr>
@@ -116,20 +133,47 @@ const searchYears = () => {
               </Link>
             </td>
             <td class="px-6 py-4">{{ year.status }}</td>
-            <td class="flex">
+            <td class="flex items-center gap-3 px-6 py-4">
               <Link :href="route('years.show', { year: year.id })" class="text-blue-500 hover:text-blue-700">
-                <EyeIcon class="w-5 h-5 " />
+                <EyeIcon class="w-5 h-5" />
               </Link>
               <Link :href="route('years.edit', { year: year.id })" class="text-green-500 hover:text-green-700">
-                <PencilSquareIcon class="w-5 h-5 mx-3" />
+                <PencilSquareIcon class="w-5 h-5" />
               </Link>
-              <button @click="deleteYear(year.id)" class="text-red-500 hover:text-red-700 flex items-center gap-1">
+              <button @click="deleteYear(year.id)" class="text-red-500 hover:text-red-700">
                 <TrashIcon class="w-5 h-5" />
               </button>
             </td>
           </tr>
         </tbody>
       </Table>
+    </div>
+
+    <!-- Card View -->
+    <div v-else-if="years.data.length > 0 && viewMode === 'card'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div
+        v-for="year in years.data"
+        :key="year.id"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 border dark:border-gray-700"
+      >
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ year.name }}</h2>
+          <span class="text-sm px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            {{ year.status }}
+          </span>
+        </div>
+        <div class="flex justify-start items-center space-x-4 mt-3">
+          <Link :href="route('years.show', { year: year.id })" class="text-blue-500 hover:text-blue-700">
+            <EyeIcon class="w-5 h-5" />
+          </Link>
+          <Link :href="route('years.edit', { year: year.id })" class="text-green-500 hover:text-green-700">
+            <PencilSquareIcon class="w-5 h-5" />
+          </Link>
+          <button @click="deleteYear(year.id)" class="text-red-500 hover:text-red-700">
+            <TrashIcon class="w-5 h-5" />
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- No data -->

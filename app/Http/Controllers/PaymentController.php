@@ -23,7 +23,7 @@ class PaymentController extends Controller
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
-        $studyModes = StudyModeResource::collection(StudyMode::with('program')->orderBy('mode')->get());
+        $studyModes = StudyModeResource::collection(StudyMode::with('programs')->get());
         $paymentTypes = PaymentType::all();
 
         $filters = [

@@ -83,7 +83,6 @@ class TrackController extends Controller
     public function store(TrackStoreRequest $request)
     {
         $fields = $request->validated();
-
         $year = substr(Carbon::now()->year, -2);
 
         $track_id = 'DP'.'/'.str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;

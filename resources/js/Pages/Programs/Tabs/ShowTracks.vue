@@ -19,6 +19,7 @@ const createTrack = ref(false);
 const trackForm = useForm({
     name: "",
     description: "",
+    duration: "",
     program_id: props.program.id,
 });
 
@@ -78,6 +79,11 @@ const addTrack = () => {
                                 >
                                     Description
                                 </th>
+                                <th
+                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    Duration
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,6 +115,11 @@ const addTrack = () => {
                                 >
                                     {{ track.description }}
                                 </td>
+                                <td
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    {{ track.duration }}
+                                </td>
                             </tr>
 
                             <!-- Create New Track Row -->
@@ -133,11 +144,19 @@ const addTrack = () => {
                                         />
                                     </td>
 
-                                    <td class="px-4 py-2 flex justify-between">
+                                    <td class="px-4 py-2">
                                         <TextInput
                                             v-model="trackForm.description"
                                             type="text"
                                             placeholder="Description"
+                                            class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                        />
+                                    </td>
+                                    <td class="px-4 py-2 flex justify-between">
+                                        <TextInput
+                                            v-model="trackForm.duration"
+                                            type="number"                                            
+                                            placeholder="Duration"
                                             class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
                                         <PrimaryButton

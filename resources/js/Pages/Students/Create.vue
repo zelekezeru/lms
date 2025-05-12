@@ -10,7 +10,6 @@ import ChurchInfoForm from "./ChurchInfoForm.vue";
 const props = defineProps({
     programs: { type: Array, required: true },
     years: { type: Array, required: true },
-    studyModes: { type: Array, required: true },
 });
 
 // Step-based form data

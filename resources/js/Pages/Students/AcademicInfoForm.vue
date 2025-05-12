@@ -21,10 +21,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    studyModes: {
-        type: Array,
-        required: true,
-    },
 });
 
 const selectedYearSemesters = ref(

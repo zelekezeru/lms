@@ -27,6 +27,14 @@ defineProps({
         type: Object,
         required: true,
     },
+    user: {
+        type: Object,
+        required: true,
+    },
+    documents: {
+        type: Array,
+        required: true,
+    },
 });
 // Multi nav header options
 const selectedTab = ref('details');
@@ -120,7 +128,11 @@ const deleteEmployee = (id) => {
                     />
 
                     <!-- Document Panel -->
-                    <ShowDocument v-else-if="selectedTab == 'documents'" />
+                    <ShowDocument v-else-if="selectedTab == 'documents'" 
+                        :documents="documents"
+                        :employee="employee"
+                        :user="user"
+                    />
                 </div>
             </transition>
         </div>

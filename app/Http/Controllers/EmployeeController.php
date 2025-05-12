@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\UserResource;
 use App\Models\Employee;
 use App\Models\Tenant;
 use App\Models\User;
@@ -102,8 +103,14 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
+        $user = new UserResource($employee->user->load('userDocuments'));
+
+        $documents = $user->userDocuments;
+        
         return inertia('Employees/Show', [
             'employee' => new EmployeeResource($employee->load('user')),
+            'user' => $user,
+            'documents' => $documents,
         ]);
     }
 

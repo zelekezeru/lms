@@ -8,11 +8,7 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    employee: {
-        type: Object,
-        required: true,
-    },
-    user: {
+    student: {
         type: Object,
         required: true,
     },
@@ -22,11 +18,11 @@ const props = defineProps({
 <template>
     <div class="p-6 bg-white dark:bg-gray-800 shadow rounded-lg border dark:border-gray-700">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            Employee Documents
+            Student Documents
         </h2>
         <Link
-            v-if="user.id"
-            :href="route('userDocuments.newDocument', { user_id: employee.user_id })"
+            v-if="student && student.user_id"
+            :href="route('userDocuments.newDocument', { user_id: student.user_id })"
             class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 my-4 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         >
             + Add Document
@@ -34,7 +30,7 @@ const props = defineProps({
         <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
             <p>Unable to add documents. User ID is missing.</p>
         </div>
-        <div v-if="documents.length" class="overflow-x-auto">
+        <div v-if="documents" class="overflow-x-auto">
             <table class="min-w-full table-auto border border-gray-300 dark:border-gray-600">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>

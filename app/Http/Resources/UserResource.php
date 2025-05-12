@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'tenant_id' => $this->tenant_id,
             'userRole' => $this->user ? $this->user->roles()->first()->name : null,
             'default_password' => $this->user ? $this->user->default_password : null,
+            'userDocument' => new UserDocumentResource($this->whenLoaded('userDocument')),
         ];
     }
 }

@@ -13,7 +13,7 @@ import {
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PencilSquareIcon, 
+    PaperClipIcon, 
     PlusCircleIcon,
     BookOpenIcon,
     HomeModernIcon,
@@ -25,10 +25,19 @@ import ShowAcademics from "./Tabs/ShowAcademics.vue";
 import ShowRegistrations from "./Tabs/ShowRegistrations.vue";
 import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowChurches from "./Tabs/ShowChurches.vue";
+import ShowDocuments from "./Tabs/ShowDocuments.vue";
 
 const props = defineProps({
     student: {
         type: Object,
+        required: true,
+    },
+    user: {
+        type: Object,
+        required: true,
+    },
+    documents: {
+        type: Array,
         required: true,
     },
     status: {
@@ -72,6 +81,7 @@ const tabs = [
     { key: 'registrations', label: 'Registration', icon: UsersIcon },
     { key: 'payments', label: 'Payment', icon: CurrencyDollarIcon },
     { key: 'church', label: 'Church', icon: HomeModernIcon },
+    { key: 'documents', label: 'Documents', icon: PaperClipIcon },
 ];
 
 const imageLoaded = ref(false);
@@ -115,11 +125,9 @@ const deleteStudent = (id) => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ student.first_name }}
-                {{ student.middle_name }}
-                {{ student.last_name }}
+                {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
             </h1>
-
+            
             <nav
                 class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
@@ -198,8 +206,16 @@ const deleteStudent = (id) => {
                         :church="student.church"
                     />
 
+                    <!-- Documents Pannel -->
+                    <ShowDocuments
+                        v-else-if="selectedTab === 'documents'"
+                        :student="student"
+                        :documents="documents"
+                    />
+
                     </div>
                 </transition>
+                
         </div>
     </AppLayout>
 </template>

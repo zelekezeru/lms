@@ -13,6 +13,7 @@ use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Http\Resources\StudyModeResource;
+use App\Http\Resources\UserDocumentResource;
 use App\Http\Services\StudentRegistrationService;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
@@ -109,9 +110,12 @@ class StudentController extends Controller
             ->with(['paymentMethod', 'paymentCategory'])
             ->get();
 
+        $user = new UserResource($student->user->load('userDocuments'));
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
-            'user' => new UserResource($student->user),
+            'user' => $user,
+            'documents' => UserDocumentResource::collection($user->userDocuments),
             'status' => new StatusResource($student->status),
             'sections' => $sections,
             'courses' => $courses,

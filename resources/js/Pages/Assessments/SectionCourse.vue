@@ -364,7 +364,7 @@ const addWeight = () => {
                             <div class="overflow-x-auto">
                                 <div v-if="selectedTab === 'results'" class="overflow-x-auto mt-6">
                                     <table class="min-w-full divide-y divide-gray-200 border rounded shadow-sm bg-white dark:bg-gray-900">
-                                        <thead class="bg-gray-100 dark:bg-gray-800 text-sm font-semibold text-gray-700 dark:text-gray-200">
+                                        <thead class="bg-gray-100 dark:bg-gray-800 text-md font-semibold text-gray-700 dark:text-gray-200">
                                             <tr>
                                                 <th class="px-4 py-2 text-left">#</th>
                                                 <th class="px-4 py-2 text-left">Student</th>
@@ -385,15 +385,24 @@ const addWeight = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                                <!-- Section Students itteration -->
+                                            <!-- Section Students Iteration -->
                                             <tr
                                                 v-for="(student, index) in section.students"
                                                 :key="student.id"
-                                                class="border-t border-gray-200 dark:border-gray-700"
+                                                :class="
+                                                    index % 2 === 0
+                                                        ? 'bg-white dark:bg-gray-800'
+                                                        : 'bg-gray-50 dark:bg-gray-700'
+                                                "
+                                                class="border-b border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300"
                                             >
-                                                <td class="px-4 py-2 border-gray-300 dark:border-gray-600">{{ index + 1 }}</td>
-                                                <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
-                                                
+                                                <td class="px-4 py-2 border-gray-300 dark:border-gray-600">
+                                                    {{ index + 1 }}
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    {{ student.first_name }} {{ student.middle_name }}
+                                                </td>
+
                                                 <!-- Section Course Weights -->
                                                 <td
                                                     v-for="weight in props.weights"
@@ -415,7 +424,10 @@ const addWeight = () => {
 
                                                     <!-- Result or N/A when not active -->
                                                     <span v-else>
-                                                        <span v-if="weight.results.some(result => result.student_id === student.id)" class="text-gray-900 dark:text-gray-100">
+                                                        <span
+                                                            v-if="weight.results.some(result => result.student_id === student.id)"
+                                                            class="text-gray-900 dark:text-gray-100"
+                                                        >
                                                             {{ weight.results.find(result => result.student_id === student.id)?.point }}
                                                         </span>
                                                         <span v-else class="text-gray-400">N/A</span>
@@ -425,9 +437,9 @@ const addWeight = () => {
                                                 <!-- Total Points Column -->
                                                 <td class="px-4 py-2 border-gray-300 dark:border-gray-600">
                                                     {{ getStudentTotalPoints(student.id) }}
-
                                                 </td>
 
+                                                <!-- Grade Column -->
                                                 <td class="px-4 py-2 border-gray-300 dark:border-gray-600">
                                                     {{ getStudentGradeLetter(student.id) }}
                                                 </td>

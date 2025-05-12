@@ -27,6 +27,7 @@ class StudentResource extends JsonResource
             'officePhone' => $this->office_phone,
             'dateOfBirth' => $this->date_of_birth,
             'maritalStatus' => $this->marital_status,
+            'user_id' => $this->user_id,
 
             'profileImg' => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
@@ -43,6 +44,7 @@ class StudentResource extends JsonResource
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'createdBy' => $this->whenLoaded('createdBy'),
             'activeCurricula' => $this->section ? CurriculumResource::collection($this->section->getActiveCurricula()) : null,
+            'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
         ];
     }
 }

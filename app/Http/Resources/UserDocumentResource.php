@@ -11,13 +11,13 @@ class UserDocumentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'user_id' => $this->user_id,
             'title' => $this->title,
             'description' => $this->description,
             'image' => $this->image ? asset($this->image) : null,
             'file' => $this->file ? asset($this->file) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

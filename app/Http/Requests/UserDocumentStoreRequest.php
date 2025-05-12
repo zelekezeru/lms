@@ -14,11 +14,11 @@ class UserDocumentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'user_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5150',
-            'file' => 'nullable|file|mimes:pdf,docx|max:5120',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:10260',
+            'file' => 'nullable|file|mimes:pdf,docx,doc,xlsx,xls,ppt,pptx,txt|max:20420',
         ];
     }
 }

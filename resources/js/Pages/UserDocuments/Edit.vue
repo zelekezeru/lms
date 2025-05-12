@@ -2,22 +2,35 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Form from "./Form.vue";
 import { useForm } from "@inertiajs/vue3";
+import { defineProps, ref } from "vue";
 
 const props = defineProps({
     userDocument: {
         type: Object,
         required: true,
     },
+    user: {
+        type: Object,
+        required: true,
+    },
 });
 
 const form = useForm({
-    // user_id: props.userDocument?.user_id || '',
+    user_id: props.userDocument?.user_id || '',
     title: props.userDocument?.title || '',
     description: props.userDocument?.description || '',
-    image: null, // New image upload
-    file: null, // New file upload
+    image: props.userDocument?.image || '', // Existing image
+    file: props.userDocument?.file || '', // Existing document
     _method: 'PATCH', // For PATCH request
 });
+
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
 
 const submit = (id) => {
     form.post(route('userDocuments.update', { userDocument: id }), {

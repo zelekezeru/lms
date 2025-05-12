@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
+use App\Http\Controllers\UserDocumentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,6 +37,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // User Ducuments
+    Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');
+
 
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);

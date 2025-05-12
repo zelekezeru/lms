@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserDocumentStoreRequest;
 use App\Http\Requests\UserDocumentUpdateRequest;
 use App\Http\Resources\UserDocumentResource;
+use App\Models\User;
 use App\Models\UserDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\UserResource;
 use Intervention\Image\Facades\Image;
 
 class UserDocumentController extends Controller
@@ -48,9 +50,43 @@ class UserDocumentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($user_id = null)
     {
+        // If a user ID is provided, fetch the user document for that user
+        if ($user_id) {
+            $userDocument = UserDocument::where('user_id', $user_id)->first();
+            if ($userDocument) {
+                return inertia('UserDocuments/Edit', [
+                    'userDocument' => new UserDocumentResource($userDocument),
+                ]);
+            }
+        }
+        else {
+            return redirect()->back()->with('error', 'User ID is required to create a user document.');
+        }
+        
+        // fetch a userDocument resource instance
+        $userDocument = new UserDocumentResource(new UserDocument());
+
         return inertia('UserDocuments/Create');
+    }
+    /**
+     * Add new document.
+     */
+    public function newDocument($user_id = null)
+    {
+        $user = User::find($user_id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+        else {
+            $user = new UserResource($user);
+        }
+
+        // Go to userDocuments/create
+        return inertia('UserDocuments/Create', [
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -60,31 +96,31 @@ class UserDocumentController extends Controller
     {
         $fields = $request->validated();
 
-        // Handle image upload with Intervention
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image');
-            $image = Image::make($imagePath); // Intervention Image instance
-            $image->resize(300, 300, function ($constraint) {
-                $constraint->aspectRatio(); // Preserve aspect ratio
-                $constraint->upsize(); // Prevent upsizing
-            });
+        // Handle image upload with Intervention Image
+        if ($image = $request->file('image')) {
+            $filename = 'image_' . time() . '.' . $image->getClientOriginalExtension();
+            $path = public_path('images/' . $filename);
 
-            $imagePath = 'user-documents/images/' . time() . '-' . $imagePath->getClientOriginalName();
-            $image->save(storage_path('app/public/' . $imagePath));
+            // Ensure the directory exists and save resized image
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0755, true);
+            }
 
-            $fields['image'] = '/storage/' . $imagePath;
+            Image::make($image)->resize(800, 400)->save($path);
+            $fields['image'] = '/images/' . $filename;
         }
-
 
         // Handle file upload
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/'.$filePath;
+        if ($file = $request->file('file')) {
+            $storedPath = $file->store('user-documents/files', 'public');
+            $fields['file'] = '/storage/' . $storedPath;
         }
 
+        // Save to database
         $userDocument = UserDocument::create($fields);
 
-        return redirect(route('userDocuments.show', $userDocument))->with('success', 'User Document created successfully.');
+        return redirect()->route('userDocuments.show', $userDocument)
+            ->with('success', 'User Document created successfully.');
     }
 
     /**
@@ -92,8 +128,11 @@ class UserDocumentController extends Controller
      */
     public function show(UserDocument $userDocument)
     {
+        $user =  User::find($userDocument->user_id);
+
         return inertia('UserDocuments/Show', [
             'userDocument' => new UserDocumentResource($userDocument),
+            'user' => $user,
         ]);
     }
 
@@ -114,39 +153,44 @@ class UserDocumentController extends Controller
     {
         $fields = $request->validated();
 
-        // Handle image upload with Intervention
-        if ($request->hasFile('image')) {
+        // Handle image upload with Intervention Image
+        if ($image = $request->file('image')) {
             // Delete old image if exists
             if ($userDocument->image) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->image));
+                $oldImagePath = public_path($userDocument->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
             }
 
-            $imagePath = $request->file('image');
-            $image = Image::make($imagePath); // Intervention Image instance
-            $image->resize(300, 300, function ($constraint) {
-                $constraint->aspectRatio(); // Preserve aspect ratio
-                $constraint->upsize(); // Prevent upsizing
-            });
+            $filename = 'image_' . time() . '.' . $image->getClientOriginalExtension();
+            $path = public_path('images/' . $filename);
 
-            $imagePath = 'user-documents/images/' . time() . '-' . $imagePath->getClientOriginalName();
-            $image->save(storage_path('app/public/' . $imagePath));
+            // Ensure the directory exists and save resized image
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0755, true);
+            }
 
-            $fields['image'] = '/storage/' . $imagePath;
+            Image::make($image)->resize(800, 400)->save($path);
+            $fields['image'] = '/images/' . $filename;
         }
 
         // Handle file upload
-        if ($request->hasFile('file')) {
+        if ($file = $request->file('file')) {
+            // Delete old file if exists
             if ($userDocument->file) {
-                Storage::disk('public')->delete($userDocument->file); // Delete old file
+                Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->file));
             }
-            $filePath = $request->file('file')->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/'.$filePath;
+
+            $storedPath = $file->store('user-documents/files', 'public');
+            $fields['file'] = '/storage/' . $storedPath;
         }
 
         // Update the user document record
         $userDocument->update($fields);
 
-        return redirect(route('userDocuments.show', $userDocument))->with('success', 'User Document updated successfully.');
+        return redirect()->route('userDocuments.show', $userDocument)
+            ->with('success', 'User Document updated successfully.');
     }
 
     /**

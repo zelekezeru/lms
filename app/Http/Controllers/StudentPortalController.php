@@ -41,4 +41,13 @@ class StudentPortalController extends Controller
         ]);
     }
 
+    public function profile(){
+
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return inertia('StudentPortal/Profile', [
+            'student' => $student,
+        ]);
+    }
+
 }

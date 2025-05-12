@@ -8,6 +8,7 @@ import {
     ArrowPathIcon,
     ChartBarIcon,
     CalendarIcon,
+    UserCircleIcon,
     ArrowLeftOnRectangleIcon,
     CogIcon,
     QuestionMarkCircleIcon,
@@ -66,6 +67,18 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
+                    :icon="UserCircleIcon"
+                    label="Profile"
+                    :href="route('student.profile')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
+                    :icon="ChartBarIcon"
+                    label="Result"
+                    href="/student/result"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
                     :icon="CurrencyDollarIcon"
                     label="Payment Info"
                     href="/payment"
@@ -81,12 +94,6 @@ const wrapperClasses = computed(() => {
                     :icon="ArrowPathIcon"
                     label="Drop Semester"
                     href="/student/add"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="ChartBarIcon"
-                    label="Result"
-                    href="/student/result"
                     :isCollapsed="!isOpen"
                 />
             </nav>

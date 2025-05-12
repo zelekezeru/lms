@@ -5,6 +5,7 @@ import { ref, onMounted } from "vue";
 const props = defineProps({
     form: { type: Object, required: true },
     user: { type: Object, required: true },
+    userDocument: { type: Object, required: true },
 });
 
 const imagePreview = ref(null);
@@ -12,14 +13,48 @@ const imagePreview = ref(null);
 // Handle file changes for image and document uploads
 const handleFileChange = (e, type) => {
     const file = e.target.files[0];
-    props.form[type] = file;
 
-    if (type === "image" && file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
+    if (type === "image") {
+        if (file) {
+            // Validate that the file is an image
+            if (!file.type.startsWith("image/")) {
+                alert("The selected file must be an image.");
+                return;
+            }
+
+            props.form.image = file;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else if (props.userDocument.image) {
+            // Retain existing image if no new file is selected
+            props.form.image = props.userDocument.image;
+        }
+    } else if (type === "file") {
+        if (file) {
+            // Validate that the file is a valid document
+            const allowedTypes = [
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "text/plain",
+                "text/csv",
+            ];
+            if (!allowedTypes.includes(file.type)) {
+                alert("The selected file must be a valid document (PDF, DOC, XLS, etc.).");
+                return;
+            }
+
+            props.form.file = file;
+        } else if (props.userDocument.file) {
+            // Retain existing file if no new file is selected
+            props.form.file = props.userDocument.file;
+        }
     }
 };
 
@@ -27,8 +62,8 @@ const handleFileChange = (e, type) => {
 const resetForm = () => {
     props.form.title = "";
     props.form.description = "";
-    props.form.image = null;
-    props.form.file = null;
+    props.form.image = "";
+    props.form.file = "";
     imagePreview.value = null;
 };
 

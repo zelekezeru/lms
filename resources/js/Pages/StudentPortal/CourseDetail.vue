@@ -83,6 +83,7 @@ const getProgressColor = (mark) => {
                     </p>
                 </div>
 
+
                 <!-- Assessments Section -->
                 <div class="mt-4">
                     <h2
@@ -90,16 +91,16 @@ const getProgressColor = (mark) => {
                     >
                         Assessments
                     </h2>
+
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                     >
                         <div
                             v-for="assessment in assessments"
                             :key="assessment.id"
-                            :class="`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col space-y-4 ${getProgressColor(
-                                assessment.mark
-                            )}`"
+                            class="transition duration-300 transform hover:-translate-y-1 hover:shadow-xl bg-gray-200 dark:bg-gray-800 rounded-xl p-6 space-y-4"
                         >
+                            <!-- Title -->
                             <h3
                                 class="text-xl font-semibold text-gray-900 dark:text-white"
                             >
@@ -107,18 +108,29 @@ const getProgressColor = (mark) => {
                             </h3>
 
                             <!-- Mark and Progress Bar -->
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-white">
-                                    {{ assessment.mark }} / 100
-                                </span>
+                            <div>
                                 <div
-                                    class="w-full bg-gray-300 rounded-full h-2 mt-2"
+                                    class="flex items-center justify-between mb-2"
+                                >
+                                    <span
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    >
+                                        Score:
+                                    </span>
+                                    <span
+                                        class="font-semibold text-gray-800 dark:text-white"
+                                    >
+                                        {{ assessment.mark }} / 100
+                                    </span>
+                                </div>
+                                <div
+                                    class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2"
                                 >
                                     <div
                                         :style="{
                                             width: assessment.mark + '%',
                                         }"
-                                        class="h-2 rounded-full"
+                                        class="h-2 rounded-full transition-all duration-300"
                                         :class="
                                             getProgressColor(assessment.mark)
                                         "
@@ -126,8 +138,9 @@ const getProgressColor = (mark) => {
                                 </div>
                             </div>
 
+                            <!-- Button -->
                             <button
-                                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
                             >
                                 View Details
                             </button>
@@ -161,7 +174,6 @@ const getProgressColor = (mark) => {
                     </ul>
                 </div>
             </div>
-
         </div>
     </StudentLayout>
 </template>

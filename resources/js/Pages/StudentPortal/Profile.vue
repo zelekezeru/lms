@@ -73,9 +73,12 @@
         <!-- Academic Info -->
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Academic Information
-          </h2>
-          <div class="space-y-2">
+              Academic Information
+            </h2>
+            <div class="space-y-2">
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+                <span class="font-semibold">Student ID:</span> {{ student.user.user_uuid}}
+            </p>
             <p class="text-sm text-gray-700 dark:text-gray-300">
               <span class="font-semibold">Program:</span> {{ student.program.name }}
             </p>
@@ -87,10 +90,6 @@
             </p>
             <p class="text-sm text-gray-700 dark:text-gray-300">
               <span class="font-semibold">Year:</span> {{ student.section.year.name }}
-            </p>
-            <p class="text-sm text-gray-700 dark:text-gray-300">
-              <span class="font-semibold">Student ID:</span> {{ student.user.user_uuid
- }}
             </p>
           </div>
         </div>

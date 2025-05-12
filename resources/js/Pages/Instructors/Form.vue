@@ -19,7 +19,7 @@ const emits = defineEmits(["submit"]);
 
 const handleFileChange = (e) => {
     const file = e.target.files[0];
-    props.form.profile_img = file; // Assign file to form
+    props.form.profile_img = file; 
 
     if (file) {
         const reader = new FileReader();

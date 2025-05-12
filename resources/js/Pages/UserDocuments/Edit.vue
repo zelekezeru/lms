@@ -48,7 +48,10 @@ const submit = (id) => {
                     Update the details of the document.
                 </p>
             </div>
-            <Form :form="form" @submit="submit(userDocument.id)" />
+            <Form :form="form" 
+            :userDocument = "userDocument"
+            :user="user"
+            @submit="submit(userDocument.id)" />
         </div>
     </AppLayout>
 </template>

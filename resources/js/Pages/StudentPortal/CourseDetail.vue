@@ -75,14 +75,13 @@ const getProgressColor = (mark) => {
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-4"
                 >
-                    <p><strong>Credits:</strong> {{ course.credit_hours }}</p>
-                    <p><strong>Instructor:</strong> Dr. Jane Doe</p>
                     <p>
                         <strong>Description:</strong>
                         {{ course.description || "No description available." }}
                     </p>
+                    <p><strong>Instructor:</strong> Dr. Jane Doe</p>
+                    <p><strong>Credits:</strong> {{ course.credit_hours }}</p>
                 </div>
-
 
                 <!-- Assessments Section -->
                 <div class="mt-4">

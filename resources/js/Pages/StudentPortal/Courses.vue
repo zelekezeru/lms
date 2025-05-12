@@ -8,12 +8,18 @@ import {
     BookOpenIcon,
     CalendarIcon,
 } from "@heroicons/vue/24/solid";
+import Instructor from "../Instructor.vue";
 
 const props = defineProps({
     student: {
         type: Object,
         required: true,
     },
+    instructor: {
+        type: Object,
+        required: true,
+    },
+    
 });
 </script>
 
@@ -70,7 +76,7 @@ const props = defineProps({
                                 }})
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: Dr. Jane Doe
+                                Instructor: {{instructor.user}}
                             </p>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
                                 Credits: {{ curriculum.course.creditHours }}

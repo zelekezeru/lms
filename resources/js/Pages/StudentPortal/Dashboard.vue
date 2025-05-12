@@ -57,18 +57,15 @@ onMounted(createChart);
         <!-- Dashboard Header -->
         <div
             class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8"
-            style="
-                background-image: url('https://pngimg.com/uploads/student/student_PNG62531.png');
-            "
         >
             <div class="absolute inset-0 bg-black bg-opacity-25"></div>
             <div class="relative p-6 md:p-8 lg:p-10">
                 <h1
-                    class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3"
+                    class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-dark dark: mb-3"
                 >
                     Welcome, {{ student.firstName }}
                 </h1>
-                <p class="text-base md:text-lg text-gray-200 max-w-2xl">
+                <p class="text-base md:text-lg text-dark dark: max-w-2xl">
                     Dive into your courses, track your progress, manage
                     payments, and stay on top of your schedule—all in one place.
                 </p>

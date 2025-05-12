@@ -16,21 +16,18 @@
             <p class="text-gray-600 dark:text-gray-300">{{ student.program.name }}</p>
           </div>
         </div>
-        <button
-          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          Edit Profile
-        </button>
+        <a class="bg-indigo-300 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md p-2" :href="route('profile.edit')">Edit Profile</a>
       </div>
 
       <!-- Profile Info Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Basic Info -->
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Basic Information
           </h2>
-          <div class="space-y-2">
+          <hr>
+          <div class="space-y-2 mt-2">
             <p class="text-sm text-gray-700 dark:text-gray-300">
               <span class="font-semibold">Full Name:</span> {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
             </p>
@@ -51,10 +48,11 @@
 
         <!-- Contact Info -->
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
             Contact Information
           </h2>
-          <div class="space-y-2">
+          <hr>
+          <div class="space-y-2 mt-2">
             <p class="text-sm text-gray-700 dark:text-gray-300">
               <span class="font-semibold">Email:</span> {{ student.user.email }}
             </p>
@@ -72,10 +70,11 @@
 
         <!-- Academic Info -->
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Academic Information
             </h2>
-            <div class="space-y-2">
+            <hr>
+            <div class="space-y-2 mt-2">
             <p class="text-sm text-gray-700 dark:text-gray-300">
                 <span class="font-semibold">Student ID:</span> {{ student.user.user_uuid}}
             </p>

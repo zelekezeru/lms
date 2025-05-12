@@ -12,76 +12,82 @@ import { Chart } from 'chart.js/auto';
 let lineChart = null;
 let pieChart = null;
 
+// Props from the controller
+const props = defineProps({
+  courses: {
+    type: Number,
+    required: true,
+  },
+  students: {
+    type: Number,
+    required: true,
+  },
+  instructors: {
+    type: Number,
+    required: true,
+  }
+});
+
 const createCharts = () => {
   const lineCtx = document.getElementById('lineChart');
   const pieCtx = document.getElementById('pieChart');
 
-  lineChart = new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [{
-        label: 'New Students',
-        data: [30, 45, 60, 50, 80, 100],
-        fill: true,
-        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-        borderColor: 'rgba(59, 130, 246, 1)',
-        tension: 0.4,
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
-  });
+  // Sample dynamic data generation (you can replace this with a real API call)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  const enrollments = [10, 25, 40, 30, 60, props.students]; // simulate growth ending in current total students
 
-  pieChart = new Chart(pieCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Instructors', 'Students', 'Courses'],
-      datasets: [{
-        label: 'Distribution',
-        data: [15, 120, 35],
-        backgroundColor: [
-          'rgba(34,197,94,0.7)',   // green
-          'rgba(59,130,246,0.7)',  // blue
-          'rgba(234,179,8,0.7)'    // yellow
-        ],
-        borderColor: [
-          'rgba(34,197,94,1)',
-          'rgba(59,130,246,1)',
-          'rgba(234,179,8,1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
+  if (lineCtx && pieCtx) {
+    lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'New Students',
+          data: enrollments,
+          fill: true,
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          borderColor: 'rgba(59, 130, 246, 1)',
+          tension: 0.4,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    pieChart = new Chart(pieCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Instructors', 'Students', 'Courses'],
+        datasets: [{
+          label: 'User Distribution',
+          data: [props.instructors, props.students, props.courses],
+          backgroundColor: [
+            'rgba(34,197,94,0.7)',   // green
+            'rgba(59,130,246,0.7)',  // blue
+            'rgba(234,179,8,0.7)'    // yellow
+          ],
+          borderColor: [
+            'rgba(34,197,94,1)',
+            'rgba(59,130,246,1)',
+            'rgba(234,179,8,1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true
+      }
+    });
+  }
 };
 
 onMounted(createCharts);
-
-
-defineProps({
-    courses: {
-        type: Object,
-        required: true,
-    },
-    students: {
-        type: Object,
-        required: true,
-    },
-    instructors: {
-        type: Object,
-        required: true,
-    }
-});
-
 </script>
+
 
 <template>
   <AppLayout>

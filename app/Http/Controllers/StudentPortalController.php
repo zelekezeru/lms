@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\StudentResource;
 use App\Models\CourseSectionAssignment;
+use App\Models\Course;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class StudentPortalController extends Controller
 {
@@ -28,4 +30,15 @@ class StudentPortalController extends Controller
             'student' => $student,
         ]);
     }
+
+    public function show(Course $course)
+    {
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return Inertia::render('StudentPortal/CourseDetail', [
+            'course' => $course,
+            'student'=> $student
+        ]);
+    }
+
 }

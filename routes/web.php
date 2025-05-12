@@ -27,12 +27,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
     
-    Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
-        Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
-        Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
-        Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
-    });
-    
+        Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
+            Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
+            Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
+            Route::get('/courses/{course}', [StudentPortalController::class, 'show'])->name('student.courses.show');
+            Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
+        });
+        
     // Profiles related routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

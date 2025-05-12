@@ -104,7 +104,7 @@ onMounted(createChart);
                                 }})
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: {{ instructor.name }}
+                                Instructor: John Doe
                             </p>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
                                 Credits: {{ curriculum.course.creditHours }}

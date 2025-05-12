@@ -50,4 +50,22 @@ class StudentPortalController extends Controller
         ]);
     }
 
+    public function result(){
+
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return inertia('StudentPortal/StudentResults', [
+            'student' => $student,
+        ]);
+    }
+
+    public function payment(){
+
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return inertia('StudentPortal/Payment', [
+            'student' => $student,
+        ]);
+    }
+
 }

@@ -32,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
             Route::get('/courses/{course}', [StudentPortalController::class, 'show'])->name('student.courses.show');
             Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
+            Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
+            Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
         });
         
     // Profiles related routes

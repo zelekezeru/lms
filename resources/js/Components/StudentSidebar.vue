@@ -75,13 +75,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="ChartBarIcon"
                     label="Result"
-                    href="/student/result"
+                    :href="route('student.result')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="CurrencyDollarIcon"
                     label="Payment Info"
-                    href="/payment"
+                    :href="route('student.payment')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

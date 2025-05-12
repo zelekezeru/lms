@@ -9,6 +9,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import StudentLayout from "@/Layouts/StudentLayout.vue";
 import { Chart } from "chart.js/auto";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     student: {
@@ -93,6 +94,14 @@ onMounted(createChart);
                             v-for="curriculum in student.activeCurricula"
                             class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all"
                         >
+                         <Link
+                            :href="
+                                route(
+                                    'student.courses.show',
+                                    curriculum.course.id
+                                )
+                            "
+                        >
                             <AcademicCapIcon
                                 class="h-6 w-6 text-blue-500 mb-2"
                             />
@@ -109,6 +118,7 @@ onMounted(createChart);
                             <p class="text-sm text-gray-600 dark:text-gray-400">
                                 Credits: {{ curriculum.course.creditHours }}
                             </p>
+                        </Link>
                         </div>
                     </div>
                 </section>

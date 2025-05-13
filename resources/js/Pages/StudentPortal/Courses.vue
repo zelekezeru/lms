@@ -76,7 +76,7 @@ const props = defineProps({
                                 }})
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: {{instructor.user}}
+                                Instructor: {{ curriculum.course.instructor ? curriculum.course.instructor.name : 'N/A' }}
                             </p>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
                                 Credits: {{ curriculum.course.creditHours }}

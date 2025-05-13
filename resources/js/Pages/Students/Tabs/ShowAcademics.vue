@@ -146,6 +146,18 @@ const addSection = () => {
                         <!-- Assign student to section if the Auth::user() has section-assign permission -->
                      </td>
                 </div>
+                <!-- Default Password -->
+                <div v-if="student.user.default_password" class="flex flex-col">
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        >Default Password</span
+                    >
+                    <span
+                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                    >
+                        {{ student.user.default_password }}
+                    </span>
+                </div>
+                <!-- Closing the div for Default Password -->
 
                         <!-- Create New Section Row -->
                 <transition

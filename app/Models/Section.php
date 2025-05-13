@@ -82,7 +82,12 @@ class Section extends Model
 
     public function getActiveCurricula()
     {
-        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester', Semester::getActiveSemester()->level)->where('track_id', $this->track_id)->with('course')->get();
+        $curricula = Curriculum::where('year_level', $this->yearLevel())
+            ->where('semester', Semester::getActiveSemester()->level)
+            ->where('track_id', $this->track_id)
+            ->with(['course' => function ($q) {
+                $q->with(['courseSectionAssignments' => fn($q) => $q->where('section_id', $this->id)->with('instructor')]);
+            }])->get();
 
         return $curricula;
     }

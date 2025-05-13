@@ -20,9 +20,15 @@ class CourseResource extends JsonResource
             'code' => $this->code,
             'programs' => $this->whenLoaded('programs'),
             'tracks' => $this->whenLoaded('tracks'),
+            'instructor' => $this->whenLoaded('courseSectionAssignments', function () {
+                $assignment = $this->courseSectionAssignments->first();
+                return $assignment && $assignment->instructor
+                    ? new InstructorResource($assignment->instructor)
+                    : null;
+            }),
             'isCommon' => $this->when(
                 $this->pivot?->is_common !== null,
-                fn () => $this->pivot->is_common
+                fn() => $this->pivot->is_common
             ),
             'creditHours' => $this->credit_hours,
             'duration' => $this->duration,

@@ -29,6 +29,11 @@ class Course extends Model
         return $this->belongsToMany(Instructor::class);
     }
 
+    public function courseSectionAssignments()
+    {
+        return $this->hasMany(CourseSectionAssignment::class);
+    }
+
     public function trackS(): BelongsToMany
     {
         return $this->belongsToMany(Track::class);

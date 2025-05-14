@@ -1,0 +1,87 @@
+<script setup>
+import { defineProps } from "vue";
+
+const props = defineProps({
+    course: {
+        type: Object,
+        required: true,
+    },
+    instructor: {
+        type: Object,
+        required: true,
+    },
+    students: {
+        type: Array,
+        required: true,
+    },
+    section: {
+        type: Object,
+        required: true,
+    },
+});
+</script>
+
+<template>
+    <div class="grid grid-cols-2 gap-2">
+        <!-- Section Name -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Section</span
+            >
+            <span
+                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+            >
+                {{ section.name }}
+            </span>
+        </div>
+
+        <!-- Program name -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Program name</span
+            >
+            <span
+                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+            >
+                {{ section.program.name }}
+            </span>
+        </div>
+
+        <!-- Course Name -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Course</span
+            >
+            <span
+                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+            >
+                {{ course.name }}
+            </span>
+        </div>
+
+        <!-- Instructor Name -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Instructor</span
+            >
+            <span
+                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+            >
+                {{ instructor.user.name }}
+            </span>
+        </div>
+
+        <!-- Credit Hours  -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Credit Hours</span
+            >
+            <span
+                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+            >
+                {{ course.credit_hours }}
+            </span>
+        </div>          
+        
+    </div>
+</template>

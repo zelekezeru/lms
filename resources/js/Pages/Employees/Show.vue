@@ -39,7 +39,6 @@ defineProps({
 // Multi nav header options
 const selectedTab = ref('details');
 
-
 const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
     { key: 'documents', label: 'Documents', icon: BookOpenIcon },

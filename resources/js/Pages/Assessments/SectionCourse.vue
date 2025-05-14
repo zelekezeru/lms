@@ -9,8 +9,13 @@ import {
     PlusCircleIcon, DocumentTextIcon, PresentationChartBarIcon,
     CheckBadgeIcon, TrashIcon
 } from "@heroicons/vue/24/solid";
+import Modal from "@/Components/Modal.vue";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ShowDetails from "./Tabs/ShowDetails.vue";
+import ShowResults from "./Tabs/ShowResults.vue";
+import ShowWeights from "./Tabs/ShowWeights.vue";
+import ShowGrades from "./Tabs/ShowGrades.vue";
 
 // Props
 const props = defineProps({
@@ -278,72 +283,6 @@ const addWeight = () => {
 
             <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700" >
 
-                <!-- Details Panel -->
-
-                <div v-show="selectedTab === 'details'" class="grid grid-cols-2 gap-2">
-
-                    <!-- Section Name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Section</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ section.name }}
-                        </span>
-                    </div>
-
-                    <!-- Program name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Program name</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ section.program.name }}
-                        </span>
-                    </div>
-
-                    <!-- Course Name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Course</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ course.name }}
-                        </span>
-                    </div>
-
-                    <!-- Instructor Name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Instructor</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ instructor.user.name }}
-                        </span>
-                    </div>
-
-                    <!-- Credit Hours  -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Credit Hours</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ course.credit_hours }}
-                        </span>
-                    </div>                        
-                </div>
-                
-
                 <!-- Results Panel -->
 
                 <div v-show="selectedTab === 'results'">
@@ -487,6 +426,7 @@ const addWeight = () => {
                             >
                         </button>
                     </div>
+
                     <!--  weights List -->
                     <div class="overflow-x-auto">
                         <div
@@ -631,32 +571,81 @@ const addWeight = () => {
                 </div>
 
                 <!-- Grades Panel -->
-                <div v-show="selectedTab === 'grades'" class="grid grid-cols-2 gap-2">
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Grades</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ section.grades }}
-                        </span>
-                    </div>
 
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Actions</span
-                        >
-                        <Link
-                            :href="route('grades.create', { section: section.id })"
-                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            <PlusCircleIcon class="w-5 h-5 mr-2" />
-                            Add Grade
-                        </Link>
-                    </div>
+                <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                >
+                    <!-- Details Panel -->
+                    <ShowDetails
+                        v-if="selectedTab == 'details'"
+                        :section="section"
+                        :course="course"
+                        :semester="semester"
+                        :instructor="instructor"
+                        :students="students"
+                    />
+
+                    <!-- Results Panel -->
+                    <ShowResults v-else-if="selectedTab == 'Results'" 
+                        :weights="weights"
+                        :results="results"
+                        :section="section"
+                        :course="course"
+                        :semester="semester"
+                        :instructor="instructor"
+                        :students="students"
+                        :activeWeightId="activeWeightId"
+                        :getStudentTotalPoints="getStudentTotalPoints"
+                        :getStudentGradeLetter="getStudentGradeLetter"
+                        :getResultValue="getResultValue"
+                        :setResultValue="setResultValue"
+                        :submitWeightResults="submitWeightResults"
+                    />
+
+                    <!-- Weights Panel -->
+                    <!-- <ShowWeights v-else-if="selectedTab == 'weights'" 
+                        :weights="weights"
+                        :section="section"
+                        :course="course"
+                        :semester="semester"
+                        :instructor="instructor"
+                        :students="students"
+                        :activeWeightId="activeWeightId"
+                        :getStudentTotalPoints="getStudentTotalPoints"
+                        :getStudentGradeLetter="getStudentGradeLetter"
+                        :getResultValue="getResultValue"
+                        :setResultValue="setResultValue"
+                        :submitWeightResults="submitWeightResults"
+                    /> -->
+
+                    <!-- Grades Panel -->
+                    <ShowGrades v-else-if="selectedTab == 'grades'" 
+                        :weights="weights"
+                        :results="results"
+                        :section="section"
+                        :course="course"
+                        :semester="semester"
+                        :instructor="instructor"
+                        :students="students"
+                        :activeWeightId="activeWeightId"
+                        :getStudentTotalPoints="getStudentTotalPoints"
+                        :getStudentGradeLetter="getStudentGradeLetter"
+                        :getResultValue="getResultValue"
+                        :setResultValue="setResultValue"
+                        :submitWeightResults="submitWeightResults"
+                    />
                 </div>
-
+            </transition>
                 
             </div>  
         </div>

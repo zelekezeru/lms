@@ -12,103 +12,61 @@ class SectionSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('sections')->insert([
-            [
-                'id' => 1,
-                'name' => 'Section 1',
-                'code' => 'SC-25-01',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 1,
-                'track_id' => 1,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Section 1',
-                'code' => 'SC-25-02',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 2,
-                'track_id' => 6,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Section 1',
-                'code' => 'SC-25-03',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 3,
-                'track_id' => 8,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Section 1',
-                'code' => 'SC-25-04',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 4,
-                'track_id' => 9,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 5,
-                'name' => 'Section 1',
-                'code' => 'SC-25-05',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 5,
-                'track_id' => 10,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 6,
-                'name' => 'Section 1',
-                'code' => 'SC-25-06',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 6,
-                'track_id' => 11,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 7,
-                'name' => 'Section 1',
-                'code' => 'SC-25-07',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 7,
-                'track_id' => 12,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-            [
-                'id' => 8,
-                'name' => 'Section 1',
-                'code' => 'SC-25-08',
-                'year_id' => 1,
-                'user_id' => 2,
-                'program_id' => 8,
-                'track_id' => 13,
-                'semester_id' => 1,
-                'created_at' => '2025-04-15 14:56:25',
-                'updated_at' => '2025-04-15 14:56:25',
-            ],
-        ]);
+
+        $data = [];
+        $yearId = 1;
+        $userId = 2;
+        $semesterId = 1;
+        $createdAt = '2025-04-15 14:56:25';
+        $updatedAt = '2025-04-15 14:56:25';
+
+        for ($i = 1; $i <= 13; $i++) {
+            $programId = $i;
+            $trackId = match ($i) {
+                1 => 1,
+                2 => 6,
+                3 => 8,
+                4 => 9,
+                5 => 10,
+                6 => 11,
+                7 => 12,
+                8 => 13,
+                default => null, // Handle cases beyond 8 if needed
+            };
+
+            if ($trackId !== null) {
+                $data[] = [
+                    'id' => $i,
+                    'name' => 'Section 1',
+                    'code' => 'SC-25-' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'year_id' => $yearId,
+                    'user_id' => $userId,
+                    'program_id' => $programId,
+                    'track_id' => $trackId,
+                    'semester_id' => $semesterId,
+                    'created_at' => $createdAt,
+                    'updated_at' => $updatedAt,
+                ];
+            }
+        }
+
+        DB::table('sections')->insert($data);   
+
+        $data = [];
+        $isCommon = 0;
+
+        // Ensure course_section references valid section IDs
+        $validSectionIds = DB::table('sections')->pluck('id')->toArray();
+
+        foreach ($validSectionIds as $sectionId) {
+            for ($courseId = 1; $courseId <= 30; $courseId++) {
+                $data[] = [
+                    'course_id' => $courseId,
+                    'section_id' => $sectionId,
+                ];
+            }
+        }
+
+        DB::table('course_section')->insert($data);
     }
 }

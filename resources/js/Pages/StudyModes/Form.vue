@@ -17,7 +17,7 @@ defineProps({
 <template>
     <form @submit.prevent="submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+            <!-- Program Name -->
             <div>
                 <InputLabel
                     for="name"

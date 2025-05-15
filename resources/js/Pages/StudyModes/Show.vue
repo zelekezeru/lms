@@ -16,6 +16,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    programs: {
+        type: Array,
+        required: true,
+    },
 });
 
 const selectedTab = ref("details");
@@ -35,7 +39,7 @@ const tabs = [
             >
                 {{ studyMode.name }} StudyMode
             </h1>
-
+            
             <nav
                 class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
@@ -75,9 +79,10 @@ const tabs = [
                     />
 
                     <!-- Courses Panel -->
-                    <ShowCourses
+                    <ShowPrograms
                         v-else-if="selectedTab === 'programs'"
                         :studyMode="studyMode"
+                        :programs="programs"
                     />
 
                 </div>

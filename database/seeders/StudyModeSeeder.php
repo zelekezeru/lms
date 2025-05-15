@@ -14,16 +14,28 @@ class StudyModeSeeder extends Seeder
     {
         DB::table('study_modes')->insert([
             [
+                'id' => 1,
                 'name' => 'REGULAR',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
+                'id' => 2,
                 'name' => 'EXTENSION',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
+                'id' => 3,
                 'name' => 'DISTANCE',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
+                'id' => 4,
                 'name' => 'ONLINE',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
 
         ]);

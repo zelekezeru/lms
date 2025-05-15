@@ -83,10 +83,12 @@ class StudyModeController extends Controller
      */
     public function show(StudyMode $studyMode)
     {
-        $studyMode = new StudyModeResource($studyMode);
-
-        return inertia('StudyModes/Show', compact('studyMode'));
-
+        $studyMode = new StudyModeResource($studyMode->load('programs')); // Load the related program
+        
+        return inertia('StudyModes/Show', [
+            'studyMode' => $studyMode,
+            'programs' => $studyMode->programs,
+        ]);
     }
 
     /**
@@ -96,7 +98,7 @@ class StudyModeController extends Controller
     {
         $programs = ProgramResource::collection(Program::all());
 
-        $studyMode = new StudyModeResource($studyMode->load('program')); // Load the related program
+        $studyMode = new StudyModeResource($studyMode->load('programs')); // Load the related program
 
         return inertia('StudyModes/Edit', [
             'programs' => $programs,

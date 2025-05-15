@@ -102,5 +102,29 @@ class ProgramSeeder extends Seeder
                 'updated_at' => '2025-04-11 07:21:25',
             ],
         ]);
+        
+
+        // Insert data into program_study_mode table
+
+        $data = [];
+
+        // Loop for program_id values 1 to 8
+        for ($programId = 1; $programId <= 8; $programId++) {
+            // Define study mode IDs.
+            $studyModeIds = [1, 2, 3, 4];
+            $duration = ($programId >= 1 && $programId <= 4) || ($programId >= 7 && $programId <= 8) ? 4 : 3;
+
+            // Loop through study mode ids
+            foreach($studyModeIds as $studyModeId){
+                 $data[] = [
+                    'program_id' => $programId,
+                    'study_mode_id' => $studyModeId,
+                    'duration' => $duration,
+                    'created_at' => now(),
+                ];
+            }
+        }
+        DB::table('program_study_mode')->insert($data);
+
     }
 }

@@ -129,7 +129,13 @@ const searchSemesters = () => {
                 {{ semester.name }}
               </Link>
             </td>
-            <td class="px-6 py-4">{{ semester.status }}</td>
+            <td>
+              <span class="px-2 py-2 text-sm px-2 py-1 rounded"
+              :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+            >
+              {{ semester.status }}
+            </span>
+            </td>
             <td class="flex px-6 py-4">
               <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
                 <EyeIcon class="w-5 h-5" />
@@ -157,11 +163,18 @@ const searchSemesters = () => {
         class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border border-gray-200 dark:border-gray-700 flex flex-col justify-between transition hover:shadow-md"
       >
         <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white my-4">
             {{ semester.name }}
           </h2>
+          
           <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Status: {{ semester.status }}
+            Status: 
+          <span
+            class="text-sm px-2 py-1 rounded"
+            :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+          >
+            {{ semester.status }}
+          </span>
           </p>
         </div>
         <div class="mt-4 flex justify-end gap-3">

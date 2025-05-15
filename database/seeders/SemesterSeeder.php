@@ -13,8 +13,8 @@ class SemesterSeeder extends Seeder
     public function run(): void
     {
         DB::table('semesters')->insert([
-            ['id' => 1, 'name' => '1st - 2025', 'year_id' => 1, 'level' => 1, 'status' => 'Inactive', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 16:30:00', 'updated_at' => '2025-04-15 16:30:00'],
-            ['id' => 2, 'name' => '2nd - 2025', 'year_id' => 1, 'level' => 2, 'status' => 'Active', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 16:40:00', 'updated_at' => '2025-04-15 16:40:00'],
+            ['id' => 1, 'name' => '1st - 2025', 'year_id' => 1, 'level' => 1, 'status' => 'Active', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 16:30:00', 'updated_at' => '2025-04-15 16:30:00'],
+            ['id' => 2, 'name' => '2nd - 2025', 'year_id' => 1, 'level' => 2, 'status' => 'Inactive', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 16:40:00', 'updated_at' => '2025-04-15 16:40:00'],
             ['id' => 3, 'name' => 'Rainy Season - 2025', 'year_id' => 1, 'level' => 3, 'status' => 'Inactive', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 16:50:00', 'updated_at' => '2025-04-15 16:50:00'],
             ['id' => 4, 'name' => '1st - 2024', 'year_id' => 2, 'level' => 1, 'status' => 'Inactive', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 17:00:00', 'updated_at' => '2025-04-15 17:00:00'],
             ['id' => 5, 'name' => '2nd - 2024', 'year_id' => 2, 'level' => 2, 'status' => 'Inactive', 'is_approved' => 1, 'is_completed' => 1, 'created_at' => '2025-04-15 17:10:00', 'updated_at' => '2025-04-15 17:10:00'],

@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
         // After creating the roles, permissions, SuperAdmin
         $this->call(UserSeeder::class);
         $this->call(TenantSeeder::class);
+        $this->call(CourseSeeder::class);
+        $this->call(StudyModeSeeder::class);
         $this->call(ProgramSeeder::class);
         $this->call(TrackSeeder::class);
-        $this->call(StudyModeSeeder::class);
-        $this->call(CourseSeeder::class);
         $this->call(YearSeeder::class);
         $this->call(SemesterSeeder::class);
         $this->call(SectionSeeder::class);

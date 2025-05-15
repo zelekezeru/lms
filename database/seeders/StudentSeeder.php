@@ -30,7 +30,7 @@ class StudentSeeder extends Seeder
                 'remember_token' => null,
                 'created_at' => '2025-05-11 18:28:40',
                 'updated_at' => '2025-05-11 18:28:40',
-                'tenant_id' => null,
+                'tenant_id' => 1,
             ],
         ]);
 
@@ -48,7 +48,7 @@ class StudentSeeder extends Seeder
                 'marital_status' => 'Single',
                 'sex' => 'M',
                 'address' => 'Weldeamanuel Avenue, Hawassa, Sidama, Ethiopia',
-                'tenant_id' => null,
+                'tenant_id' => 1,
                 'program_id' => 1,
                 'track_id' => 1,
                 'year_id' => 1,
@@ -122,8 +122,8 @@ class StudentSeeder extends Seeder
             $middleName = $faker->firstName;
             $lastName = $faker->lastName;
             $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
-            $phone = substr($faker->phoneNumber, 0, 13); // Truncate to 15 characters
-            $officePhone = substr($faker->phoneNumber, 0, 13); // Truncate to 15 characters
+            $phone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
+            $officePhone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
             $dateOfBirth = $faker->date('Y-m-d', '2005-12-31'); // Set an upper limit
 
             DB::table('users')->insert([
@@ -135,13 +135,13 @@ class StudentSeeder extends Seeder
                     'phone' => $phone,
                     'profile_img' => null,
                     'email_verified_at' => null,
-                    'password' => Hash::make('password'), // You might want a more complex default password
-                    'default_password' => 'password',
+                    'password' => Hash::make('password'), // Default password
+                    'default_password' => $firstName . '@' . substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
                     'created_at' => now(),
                     'updated_at' => now(),
-                    'tenant_id' => null,
+                    'tenant_id' => 1,
                 ],
             ]);
 
@@ -159,9 +159,10 @@ class StudentSeeder extends Seeder
                     'marital_status' => $faker->randomElement(['Single', 'Married', 'Divorced']),
                     'sex' => $faker->randomElement(['M', 'F']),
                     'address' => $faker->address,
-                    'tenant_id' => null,
+                    'tenant_id' => 1,
                     'program_id' => $faker->numberBetween(1, 5), // Adjust based on your program IDs
                     'track_id' => $faker->numberBetween(1, 3),   // Adjust based on your track IDs
+                    'study_mode_id' => $faker->numberBetween(1, 4), // Adjust based on your study mode IDs
                     'year_id' => $faker->numberBetween(1, 4),    // Adjust based on your year IDs
                     'semester_id' => $faker->numberBetween(1, 2), // Adjust based on your semester IDs
                     'section_id' => $faker->numberBetween(1, 5),  //  Adjust

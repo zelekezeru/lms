@@ -10,7 +10,7 @@ import {
     Squares2X2Icon,
     TableCellsIcon,
 } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { AcademicCapIcon, CalendarIcon, PencilSquareIcon, LanguageIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
@@ -224,30 +224,44 @@ const searchPrograms = () => {
             <Link
                 v-if="userCan('view-programs')"
                 :href="route('programs.show', { program: program.id })"
-                class="text-blue-500 hover:text-blue-700"
-            >
+                class="text-blue-500 hover:text-blue-700">
 
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">
-                        {{ program.name }}
-                    </h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Language: {{ program.language }}
-                    </p>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">
-                        Duration: {{ program.duration }}
-                    </p>
+                    <div
+                        class="mb-3 flex items-center font-bold text-gray-700 dark:text-gray-300">
+                        <AcademicCapIcon class="w-5  h-5 mr-2 text-indigo-500" />
+                            {{ program.name }}
+                    </div>
 
-                    <div class="mt-3 flex space-x-3">
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                    >
+                        <LanguageIcon class="w-5 h-5 mr-2 text-teal-500" />
+                        <span class="font-semibold">Language:</span>
+                        <span class="ml-1">{{ program.language }}</span>
+                    </div>
+                    
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                    >
+                        <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
+                        <span class="font-semibold">Duration :</span>
+                        <span class="ml-1">{{ program.duration }}</span>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-4">
                         <Link
-                            v-if="userCan('view-programs')"
-                            :href="route('programs.show', { program: program.id })"
+                            :href="
+                                route('programs.show', { program: program.id })
+                            "
                             class="text-blue-500 hover:text-blue-700"
                         >
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
                             v-if="userCan('update-programs')"
-                            :href="route('programs.edit', { program: program.id })"
+                            :href="
+                                route('programs.edit', { program: program.id })
+                            "
                             class="text-green-500 hover:text-green-700"
                         >
                             <PencilSquareIcon class="w-5 h-5" />

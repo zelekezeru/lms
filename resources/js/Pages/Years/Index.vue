@@ -132,7 +132,13 @@ const searchYears = () => {
                 {{ year.name }}
               </Link>
             </td>
-            <td class="px-6 py-4">{{ year.status }}</td>
+            <td>
+              <span class="px-2 py-2 text-sm px-2 py-1 rounded"
+              :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+            >
+              {{ year.status }}
+            </span>
+            </td>
             <td class="flex items-center gap-3 px-6 py-4">
               <Link :href="route('years.show', { year: year.id })" class="text-blue-500 hover:text-blue-700">
                 <EyeIcon class="w-5 h-5" />
@@ -158,7 +164,10 @@ const searchYears = () => {
       >
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ year.name }}</h2>
-          <span class="text-sm px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+          <span
+            class="text-sm px-2 py-1 rounded"
+            :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+          >
             {{ year.status }}
           </span>
         </div>

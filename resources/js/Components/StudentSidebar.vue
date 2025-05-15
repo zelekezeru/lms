@@ -93,7 +93,7 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="ArrowPathIcon"
                     label="Drop Semester"
-                    href="/student/add"
+                    href="#"
                     :isCollapsed="!isOpen"
                 />
             </nav>
@@ -103,13 +103,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="CogIcon"
                     label="Settings"
-                    href="/settings"
+                    href="#"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="QuestionMarkCircleIcon"
                     label="Help"
-                    href="/help"
+                    href="#"
                     :isCollapsed="!isOpen"
                 />
             </div>

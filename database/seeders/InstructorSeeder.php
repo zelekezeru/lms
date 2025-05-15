@@ -24,8 +24,8 @@ class InstructorSeeder extends Seeder
             'phone' => '0911000000',
             'profile_img' => null,
             'email_verified_at' => null,
-            'password' => Hash::make('Instructor@0000'), // default password
-            'default_password' => 'Instructor@0000',
+            'password' => Hash::make('123456789'), // default password
+            'default_password' => '123456789',
             'password_changed' => false,
             'tenant_id' => 1,
             'created_at' => now(),

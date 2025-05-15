@@ -19,13 +19,13 @@ class StudentSeeder extends Seeder
             [
                 'id' => 3,
                 'user_uuid' => 'SITS-0019-25',
-                'name' => 'Abel Tamene Mekonnen',
-                'email' => 'abel.tamene@sits.edu.et',
-                'phone' => '0975228855',
+                'name' => 'Student User Test',
+                'email' => 'student.user@sits.edu.et',
+                'phone' => '0975000000',
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => Hash::make('Abel@8855'),
-                'default_password' => 'Abel@8855',
+                'password' => Hash::make('Student@0000'),
+                'default_password' => 'Student@0000',
                 'password_changed' => 0,
                 'remember_token' => null,
                 'created_at' => '2025-05-11 18:28:40',
@@ -39,10 +39,10 @@ class StudentSeeder extends Seeder
                 'id' => 1,
                 'user_id' => 3,
                 'id_no' => 'SITS-0019-25',
-                'first_name' => 'Abel',
-                'middle_name' => 'Tamene',
-                'last_name' => 'Mekonnen',
-                'mobile_phone' => '0975228855',
+                'first_name' => 'Student',
+                'middle_name' => 'User',
+                'last_name' => 'Test',
+                'mobile_phone' => '0975000000',
                 'office_phone' => '0954756431',
                 'date_of_birth' => '2000-02-02',
                 'marital_status' => 'Single',
@@ -112,6 +112,15 @@ class StudentSeeder extends Seeder
                 'created_at' => '2025-05-11 18:28:40',
                 'updated_at' => '2025-05-11 18:28:40',
             ],
+        ]);        
+
+        // Assign the SUPER-ADMIN role to the user
+        DB::table('model_has_roles')->insert([
+            [
+                'role_id' => 8, // SUPER-ADMIN role ID
+                'model_type' => 'App\Models\User', // The model type for the user
+                'model_id' => 3, // The user ID
+            ],
         ]);
 
         // Generate 19 more random students
@@ -135,7 +144,7 @@ class StudentSeeder extends Seeder
                     'phone' => $phone,
                     'profile_img' => null,
                     'email_verified_at' => null,
-                    'password' => Hash::make('password'), // Default password
+                    'password' => Hash::make($firstName . '@' . substr($phone, -4)), // Default password
                     'default_password' => $firstName . '@' . substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
@@ -222,6 +231,15 @@ class StudentSeeder extends Seeder
                     'user_id' => $i + 2,
                     'created_at' => now(),
                     'updated_at' => now(),
+                ],
+            ]);
+            
+            // Assign the SUPER-ADMIN role to the user
+            DB::table('model_has_roles')->insert([
+                [
+                    'role_id' => 8, // SUPER-ADMIN role ID
+                    'model_type' => 'App\Models\User', // The model type for the user
+                    'model_id' => $i + 2, // The user ID
                 ],
             ]);
         }

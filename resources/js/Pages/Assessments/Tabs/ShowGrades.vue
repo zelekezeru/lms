@@ -48,6 +48,7 @@ const getGradeLetter = (point) => {
   return "F";
 };
 
+// Function to generate grades for all students in the section
 const generateGrades = () => {
   const gradesPayload = props.section.students.map((student) => {
     const totalPoint = getStudentTotalPoints(student.id);
@@ -83,6 +84,16 @@ const generateGrades = () => {
   });
 };
 
+// Function to check if the weights have results
+const allWeightsHaveValues = computed(() => {
+  return props.section.students.every((student) => {
+    return props.weights.every((weight) => {
+      return weight.results?.some(result => result.student_id === student.id && result.point !== null && result.point !== undefined);
+    });
+  });
+});
+
+
 // Function to get the grade for a specific student
 const getStudentGrade = (studentId) =>
   props.section.grades.find(g => g.student_id === studentId);
@@ -92,7 +103,7 @@ const getStudentGrade = (studentId) =>
 <template>
   <div class="overflow-x-auto px-4 py-6">
     <!-- Grades not yet submitted: show grade generation table -->
-    <div v-if="!props.section.grades || props.section.grades.length === 0">
+    <div v-if="!props.section.grades || props.section.grades.filter(grade => grade.course_id === props.course.id).length === 0">
       <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
       <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
         <thead class="bg-gray-100 dark:bg-gray-800 text-sm font-semibold">
@@ -119,12 +130,17 @@ const getStudentGrade = (studentId) =>
         <tfoot>
           <tr>
             <td colspan="100%" class="text-center py-4 bg-gray-50 dark:bg-gray-800">
-              <button
-                @click="generateGrades"
-                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded"
-              >
-                Submit Grades
-              </button>
+                <!-- Only show the button if all weights have values -->
+                <button
+                    v-if="allWeightsHaveValues"
+                    @click="generateGrades"
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded"
+                >
+                    Submit Grades
+                </button>
+                <p v-else class="text-sm text-red-600 dark:text-red-400">
+                    Please enter all required weight values before submitting grades.
+                </p>
             </td>
           </tr>
         </tfoot>

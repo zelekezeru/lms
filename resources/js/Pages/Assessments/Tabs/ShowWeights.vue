@@ -56,9 +56,31 @@ const weightForm = useForm({
 const createWeight = ref(false);
 
 const addWeight = () => {
+    // Convert current weights to numbers and sum them
+    const totalWeight = props.weights.reduce(
+        (sum, weight) => sum + parseFloat(weight.point || 0), 
+        0
+    );
+
+    const newWeight = parseFloat(weightForm.point || 0);
+
+    // Check if the new total exceeds 100
+    if (totalWeight + newWeight > 100) {
+        Swal.fire(
+            "Error",
+            "Total weight cannot exceed 100.",
+            "error"
+        );
+        return;
+    }
+
+    // Submit if everything is okay
     weightForm.post(
         route("weights.store", {
-            redirectTo: route('assessments.section_course',{course: props.course.id, section: props.section.id}),
+            redirectTo: route('assessments.section_course', {
+                course: props.course.id,
+                section: props.section.id
+            }),
             params: { section: props.section.id, course: props.course.id },
         }),
         {
@@ -74,6 +96,13 @@ const addWeight = () => {
         }
     );
 };
+
+// Checkif weight is full
+const isWeightFull = computed(() => {
+  const total = props.weights.reduce((sum, weight) => sum + parseFloat(weight.point || 0), 0);
+  return total >= 100;
+});
+
 </script>
 
 <template>
@@ -85,15 +114,18 @@ const addWeight = () => {
         >
             Assessment Weights
         </h2>
-        <button
-            @click="createWeight = !createWeight"
-            class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
-        >
-            <PlusCircleIcon class="w-8 h-8" />
-            <span class="hidden sm:inline"
-                >Add Weight</span
+        <div 
+            v-if="(!props.section.grades || props.section.grades.filter(grade => grade.course_id === props.course.id).length === 0) && !isWeightFull"
             >
-        </button>
+            <button
+                @click="createWeight = !createWeight"
+                class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
+            >
+                <PlusCircleIcon class="w-8 h-8" />
+                <span class="hidden sm:inline">Add Weight</span>
+            </button>
+        </div>
+
     </div>
 
     <!--  weights List -->

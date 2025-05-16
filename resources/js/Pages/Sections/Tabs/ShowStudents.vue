@@ -3,6 +3,7 @@ import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { CogIcon } from "@heroicons/vue/24/solid";
+import { EyeIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     section: {
@@ -18,20 +19,11 @@ const props = defineProps({
         required: false,
     },
 });
+
 </script>
 
 <template>
     <div class="">
-        <!-- <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Students
-            </h2>
-            <button
-                class="flex items-center text-indigo-600 hover:text-indigo-800"
-            >
-                Add Student
-            </button>
-        </div> -->
 
         <div class="overflow-x-auto">
             <div
@@ -74,13 +66,13 @@ const props = defineProps({
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    Assesment
+                                    Status
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in section.students"
+                                v-for="(student, index) in [...section.students].sort((a, b) => a.first_name.localeCompare(b.first_name))"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0
@@ -123,24 +115,11 @@ const props = defineProps({
                                 <!-- Course Assessments -->
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    <Link
-                                        :href="
-                                            route(
-                                                'assessments.section_student',
-                                                {
-                                                    student: student.id,
-                                                    section: section.id,
-                                                }
-                                            )
-                                        "
-                                        class="text-green-500 hover:text-green-700"
-                                    >
-                                        <CogIcon class="w-5 h-5 inline-block" />
-                                        <span class="inline-block"
-                                            >Assessments</span
-                                        >
-                                    </Link>
+                                >   
+                                    <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">
+                                        <EyeIcon class="w-5 h-5" />
+                                    </Link> 
+                                    
                                 </td>
                             </tr>
                         </tbody>

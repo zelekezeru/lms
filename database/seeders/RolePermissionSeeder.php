@@ -120,11 +120,13 @@ class RolePermissionSeeder extends Seeder
             'create-years',
             'update-years',
             'delete-years',
+
             // Semester (CRUD)
             'view-semesters',
             'create-semesters',
             'update-semesters',
             'delete-semesters',
+
             // Section (CRUD)
             'view-sections',
             'create-sections',
@@ -371,6 +373,11 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
+                    // Schedule (CRUD)
+                    'create-schedules',
+                    'update-schedules',
+                    'delete-schedules',
+
                     // Section (CRUD)
                     'create-sections',
                     'update-sections',
@@ -553,6 +560,11 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
+                    // Schedule (CRUD)
+                    'create-schedules',
+                    'update-schedules',
+                    'delete-schedules',
+
                     // Section (CRUD)
                     'create-sections',
                     'update-sections',
@@ -719,6 +731,11 @@ class RolePermissionSeeder extends Seeder
                     'create-semesters',
                     'update-semesters',
                     'delete-semesters',
+
+                    // Schedule (CRUD)
+                    'create-schedules',
+                    'update-schedules',
+                    'delete-schedules',
 
                     // Section (CRUD)
                     'view-sections',
@@ -920,6 +937,11 @@ class RolePermissionSeeder extends Seeder
                     'create-semesters',
                     'update-semesters',
                     'delete-semesters',
+
+                    // Schedule (CRUD)
+                    'create-schedules',
+                    'update-schedules',
+                    'delete-schedules',
 
                     // Section (CRUD)
                     'view-sections',

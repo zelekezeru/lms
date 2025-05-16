@@ -1,46 +1,169 @@
 <script setup>
-import { defineProps } from "vue";
-import { Link } from "@inertiajs/vue3";
-import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { ref, computed } from "vue";
+import { useForm } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
+// Props from parent (must be passed from the backend)
 const props = defineProps({
-    results: {
-        type: Object,
-        required: true,
-    },
-    weights: {
-        type: Object,
-        required: false,
-    },
+  section: { type: Object, required: true },        // Section includes students and grades
+  course: { type: Object, required: true },
+  semester: { type: Object, required: true },
+  weights: { type: Array, required: true },         // Grade weights (e.g., Exam 60%, Quiz 20%)
+  instructor: { type: Object, required: true },
 });
+
+const authUser = ref({ id: 1 }); // Replace with actual auth user logic if needed
+
+const sumOfWeightPoints = computed(() =>
+  props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
+);
+
+const gradeForm = useForm({
+  grades: [],
+});
+
+const getStudentTotalPoints = (studentId) => {
+  let total = 0;
+  props.weights.forEach((weight) => {
+    const result = weight.results.find(r => r.student_id === studentId);
+    total += parseFloat(result?.point || 0);
+  });
+  return total.toFixed(2);
+};
+
+const getGradeLetter = (point) => {
+  point = parseFloat(point);
+  if (isNaN(point)) return "N/A";
+  if (point >= 94) return "A";
+  if (point >= 90) return "A-";
+  if (point >= 87) return "B+";
+  if (point >= 84) return "B";
+  if (point >= 80) return "B-";
+  if (point >= 77) return "C+";
+  if (point >= 74) return "C";
+  if (point >= 70) return "C-";
+  if (point >= 67) return "D+";
+  if (point >= 64) return "D";
+  if (point >= 60) return "D-";
+  return "F";
+};
+
+const generateGrades = () => {
+  const gradesPayload = props.section.students.map((student) => {
+    const totalPoint = getStudentTotalPoints(student.id);
+    return {
+      student_id: student.id,
+      grade_point: totalPoint,
+      grade_letter: getGradeLetter(totalPoint),
+      grade_description: "",
+      grade_scale: sumOfWeightPoints.value.toString(),
+      grade_complaint: false,
+      grade_comment: "",
+      changed_grade: null,
+      grade_status: "Pending",
+      changed_by: null,
+      user_id: authUser.value.id,
+      year_id: props.semester.year_id,
+      semester_id: props.semester.id,
+      section_id: props.section.id,
+      course_id: props.course.id,
+    };
+  });
+
+  gradeForm.grades = gradesPayload;
+
+  gradeForm.post(route("grades.store"), {
+    onSuccess: () => {
+      Swal.fire("Success", "Grades successfully submitted!", "success");
+      gradeForm.reset();
+    },
+    onError: () => {
+      Swal.fire("Error", "Failed to submit grades.", "error");
+    },
+  });
+};
+
+// Function to get the grade for a specific student
+const getStudentGrade = (studentId) =>
+  props.section.grades.find(g => g.student_id === studentId);
+
 </script>
 
 <template>
-        <!-- Grades Panel -->
-    <div v-show="selectedTab === 'grades'" class="grid grid-cols-2 gap-2">
-        <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Grades</span
-            >
-            <span
-                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-            >
-                {{ section.grades }}
-            </span>
-        </div>
-
-        <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Actions</span
-            >
-            <Link
-                :href="route('grades.create', { section: section.id })"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-                <PlusCircleIcon class="w-5 h-5 mr-2" />
-                Add Grade
-            </Link>
-        </div>
+  <div class="overflow-x-auto px-4 py-6">
+    <!-- Grades not yet submitted: show grade generation table -->
+    <div v-if="!props.section.grades || props.section.grades.length === 0">
+      <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
+      <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
+        <thead class="bg-gray-100 dark:bg-gray-800 text-sm font-semibold">
+          <tr>
+            <th class="px-4 py-2">#</th>
+            <th class="px-4 py-2 text-left">Student Name</th>
+            <th class="px-4 py-2">Total ({{ sumOfWeightPoints }} pt)</th>
+            <th class="px-4 py-2">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(student, index) in props.section.students"
+            :key="student.id"
+            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+            class="text-sm border-b"
+          >
+            <td class="px-4 py-2">{{ index + 1 }}</td>
+            <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
+            <td class="px-4 py-2 font-semibold">{{ getStudentTotalPoints(student.id) }}</td>
+            <td class="px-4 py-2">{{ getGradeLetter(getStudentTotalPoints(student.id)) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="100%" class="text-center py-4 bg-gray-50 dark:bg-gray-800">
+              <button
+                @click="generateGrades"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded"
+              >
+                Submit Grades
+              </button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
+
+    <!-- Grades already submitted: display only -->
+    <div v-else>
+      <h2 class="text-xl font-bold mb-4">Submitted Grades</h2>
+      <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
+        <thead class="bg-gray-100 dark:bg-gray-800 text-sm font-semibold">
+          <tr>
+            <th class="px-4 py-2">#</th>
+            <th class="px-4 py-2 text-left">Student Name</th>
+            <th class="px-4 py-2">Total ({{ sumOfWeightPoints }} pt)</th>
+            <th class="px-4 py-2">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr
+                v-for="(student, index) in props.section.students"
+                :key="student.id"
+                :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+                class="text-sm border-b"
+                >
+                <td class="px-4 py-2">{{ index + 1 }}</td>
+                <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
+
+                <!-- Fetch the grade that matches the current student -->
+                <td class="px-4 py-2 font-semibold">
+                    {{ getStudentGrade(student.id)?.grade_point ?? "N/A" }}
+                </td>
+                <td class="px-4 py-2">
+                    {{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}
+                </td>
+                </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>

@@ -250,6 +250,16 @@ const afterLeave = (el) => {
                         <ChartPieIcon class="w-4 h-5 mr-2 text-gray-200" />
                         <span class="text-sm">Manage Semesters</span>
                     </SidebarDrowpdownLink>
+
+                    <!-- Scheduling -->
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-schedules')"
+                        :href="route('schedules.index')"
+                    >
+                        <ClockIcon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">Manage Schedules</span>
+                    </SidebarDrowpdownLink>
+                    
                 </SidebarDropdownMenu>
 
                 <!-- Academic Structure Navigation -->

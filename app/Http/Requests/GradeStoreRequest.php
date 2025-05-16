@@ -16,18 +16,29 @@ class GradeStoreRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            // Student and grade details
+            'student_id' => 'required|exists:students,id',
             'grade_point' => 'required|numeric|min:0|max:100',
-            'description' => 'nullable|string|max:255',
+            'grade_letter' => 'required|string|max:10',
+            'grade_description' => 'nullable|string|max:255',
+            'grade_scale' => 'required|numeric|min:0|max:100',
+            'grade_complaint' => 'required|boolean',
+            'grade_comment' => 'nullable|string|max:255',
+            'changed_grade' => 'nullable|numeric|min:0|max:100',
+
+            // Grade status and metadata
+            'grade_status' => 'required|string|in:Pending,Final',
+            'changed_by' => 'nullable|exists:users,id',
+
+            // Related entities
             'user_id' => 'required|exists:users,id',
             'year_id' => 'required|exists:years,id',
             'semester_id' => 'required|exists:semesters,id',
+            'section_id' => 'required|exists:sections,id',
             'course_id' => 'required|exists:courses,id',
         ];
     }

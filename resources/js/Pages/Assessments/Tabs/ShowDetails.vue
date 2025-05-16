@@ -10,10 +10,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    students: {
-        type: Array,
-        required: true,
-    },
     section: {
         type: Object,
         required: true,
@@ -67,7 +63,13 @@ const props = defineProps({
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
             >
+            <div v-if ="instructor" class="flex items-center">
                 {{ instructor.user.name }}
+            </div>
+            <div v-else class="text-red-500 dark:text-gray-400">
+                No instructor assigned 
+            </div>
+                
             </span>
         </div>
 

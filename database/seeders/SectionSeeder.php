@@ -57,6 +57,7 @@ class SectionSeeder extends Seeder
 
         // Ensure course_section references valid section IDs
         $validSectionIds = DB::table('sections')->pluck('id')->toArray();
+        $instructor = 1;
 
         foreach ($validSectionIds as $sectionId) {
             for ($courseId = 1; $courseId <= 30; $courseId++) {

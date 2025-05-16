@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { usePage } from "@inertiajs/vue3"; // Import usePage
+import { Link, usePage } from "@inertiajs/vue3";
 import StudentSidebar from "@/Components/StudentSidebar.vue";
 import { Bars3Icon, MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
+import { router } from "@inertiajs/vue3";
 
 // Auth User
 const user = computed(() => usePage().props.auth.user);

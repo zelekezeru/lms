@@ -132,20 +132,6 @@ const deleteWeight = (id) => {
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link
-                                :href="
-                                    route('weights.edit', { weight: weight.id })
-                                "
-                                class="text-green-500 hover:text-green-700"
-                            >
-                                <PencilSquareIcon class="w-5 h-5" />
-                            </Link>
-                            <button
-                                @click="deleteWeight(weight.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -154,18 +140,24 @@ const deleteWeight = (id) => {
 
         <!-- Pagination Links -->
         <div class="mt-3 flex justify-center space-x-6">
-            <Link
-                v-for="link in weights.links"
-                :key="link.label"
-                :href="link.url"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
-                :class="{
-                    'text-gray-700 dark:text-gray-400': true,
-                    'cursor-not-allowed opacity-50': !link.url,
-                    '!bg-gray-100 !dark:bg-gray-800': link.active,
-                }"
-                v-html="link.label"
-            />
+            <template v-for="link in weights.links" :key="link.label">
+                <Link
+                    v-if="link.url"
+                    :href="link.url"
+                    class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                    :class="{
+                        'text-gray-700 dark:text-gray-400': true,
+                        'cursor-not-allowed opacity-50': !link.url,
+                        '!bg-gray-100 !dark:bg-gray-800': link.active,
+                    }"
+                    v-html="link.label"
+                />
+                <span
+                    v-else
+                    class="p-2 px-4 text-sm font-medium rounded-lg text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-50"
+                    v-html="link.label"
+                ></span>
+            </template>
         </div>
     </AppLayout>
 </template>

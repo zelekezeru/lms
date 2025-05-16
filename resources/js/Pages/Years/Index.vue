@@ -11,6 +11,7 @@ import {
   MagnifyingGlassIcon,
   Squares2X2Icon,
   TableCellsIcon,
+  CalendarIcon,
 } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
@@ -162,26 +163,37 @@ const searchYears = () => {
         :key="year.id"
         class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 border dark:border-gray-700"
       >
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ year.name }}</h2>
-          <span
-            class="text-sm px-2 py-1 rounded"
-            :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
-          >
-            {{ year.status }}
-          </span>
-        </div>
-        <div class="flex justify-start items-center space-x-4 mt-3">
-          <Link :href="route('years.show', { year: year.id })" class="text-blue-500 hover:text-blue-700">
-            <EyeIcon class="w-5 h-5" />
-          </Link>
-          <Link :href="route('years.edit', { year: year.id })" class="text-green-500 hover:text-green-700">
-            <PencilSquareIcon class="w-5 h-5" />
-          </Link>
-          <button @click="deleteYear(year.id)" class="text-red-500 hover:text-red-700">
-            <TrashIcon class="w-5 h-5" />
-          </button>
-        </div>
+      
+      <Link
+        v-if="userCan('view-years')"
+        :href="route('years.show', { year: year.id })"
+        class="text-blue-500 hover:text-blue-700">
+          <div class="flex justify-between items-center mb-2">
+            <div
+                class="mb-3 text-center flex items-center justify-center gap-2 font-bold text-gray-700 dark:text-gray-300">
+                <CalendarIcon class="w-5  h-5 mr-2 text-red-500" />
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ year.name }}</h2>
+            </div>
+
+             
+            <span
+              class="text-sm px-2 py-1 rounded"
+              :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+            >
+              {{ year.status }}
+            </span>
+          </div>
+          <div class="flex justify-start items-center space-x-4 mt-3">
+            <Link :href="route('years.show', { year: year.id })" class="text-blue-500 hover:text-blue-700">
+              <EyeIcon class="w-5 h-5" />
+            </Link>
+            <Link :href="route('years.edit', { year: year.id })" class="text-green-500 hover:text-green-700">
+              <PencilSquareIcon class="w-5 h-5" />
+            </Link>
+
+          </div>
+        </Link>
+
       </div>
     </div>
 

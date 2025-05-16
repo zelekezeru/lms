@@ -18,12 +18,19 @@ return new class extends Migration
             $table->string('grade_description')->nullable();
             $table->string('grade_scale');
 
-            $table->foreignId('student_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('year_id')->constrained();
-            $table->foreignId('semester_id')->constrained();
-            $table->foreignId('section_id')->constrained();
-            $table->foreignId('course_id')->constrained();
+            $table->boolean('grade_complaint')->default(false);
+            $table->string('grade_comment')->nullable();
+            $table->string('changed_grade')->nullable();
+            $table->string('grade_status')->default('Pending');
+            $table->string('changed_by')->nullable();
+            
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('year_id')->constrained()->onDelete('cascade');
+            $table->foreignId('semester_id')->constrained()->onDelete('cascade');
+            $table->foreignId('section_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+
             $table->timestamps();
         });
     }

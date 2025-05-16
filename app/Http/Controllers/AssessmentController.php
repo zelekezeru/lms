@@ -10,7 +10,7 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::find($section)->load(['user', 'program', 'track', 'students']);
+        $section = Section::find($section)->load(['user', 'program', 'track', 'students', 'grades',]);
 
         $course = $section->courses()->find($course)->load(['instructors', 'students']);
 
@@ -18,12 +18,18 @@ class AssessmentController extends Controller
 
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
 
-        $instructor = $section->courses()
-            ->where('course_id', $course->id)
-            ->first()->pivot->instructor_id;
+        $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
+
+        $grades = $section->grades()->where('course_id', $course->id)->get();
 
         // Load the instructor details
-        $instructor = Instructor::find($instructor)->load(['user']);
+        if ($instructor) {
+            $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
+
+            $instructor = Instructor::find($instructor)->load(['user']);
+        } else {
+            $instructor = null;
+        }
 
         // Check if the section and course exist
         if (! $section || ! $course) {
@@ -36,6 +42,7 @@ class AssessmentController extends Controller
             'semester' => $semester,
             'weights' => $weights,
             'instructor' => $instructor,
+            'grades' => $grades,
         ]);
     }
 

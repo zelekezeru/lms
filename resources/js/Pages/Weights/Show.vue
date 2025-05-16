@@ -1,10 +1,34 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { Head, Link, router } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 defineProps({
     weight: Object,
 });
+
+// Confirm delete method
+const deleteWeight = (id) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.delete(route("weights.destroy", { weight: id }), {
+                onSuccess: () => {
+                    Swal.fire("Deleted!", "The weight has been deleted.", "success");
+                    router.visit(route("weights.index")); // Redirect to index after deletion
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>
@@ -87,6 +111,22 @@ defineProps({
                             {{ weight.course?.name || "N/A" }}
                         </p>
                     </div>
+                </div>
+                <div class="flex justify-end items-center space-x-4 mt-6">
+                    <Link
+                        :href="route('weights.edit', { weight: weight.id })"
+                        class="inline-flex items-center text-green-500 hover:text-green-700"
+                    >
+                        <PencilSquareIcon class="w-5 h-5 mr-1" />
+                        <span>Edit</span>
+                    </Link>
+                    <button
+                        @click="deleteWeight(weight.id)"
+                        class="inline-flex items-center text-red-500 hover:text-red-700"
+                    >
+                        <TrashIcon class="w-5 h-5 mr-1" />
+                        <span>Delete</span>
+                    </button>
                 </div>
             </div>
         </div>

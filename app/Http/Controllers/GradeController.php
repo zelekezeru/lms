@@ -23,15 +23,42 @@ class GradeController extends Controller
         return inertia('Grades/Create');
     }
 
-    public function store(GradeStoreRequest $request)
+    public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
+            'grades' => 'required|array',
+            'grades.*.student_id' => 'required|integer|exists:students,id',
+            'grades.*.grade_point' => 'required|string',
+            'grades.*.grade_letter' => 'required|string',
+            'grades.*.grade_description' => 'nullable|string',
+            'grades.*.grade_scale' => 'required|string',
+            'grades.*.grade_complaint' => 'required|boolean',
+            'grades.*.grade_comment' => 'nullable|string',
+            'grades.*.changed_grade' => 'nullable',
+            'grades.*.grade_status' => 'required|string',
+            'grades.*.user_id' => 'required|integer|exists:users,id',
+            'grades.*.year_id' => 'required|integer',
+            'grades.*.semester_id' => 'required|integer',
+            'grades.*.section_id' => 'required|integer',
+            'grades.*.course_id' => 'required|integer',
         ]);
-        $fields = $request->validated();
+        
+        foreach ($data['grades'] as $gradeData) {
+            // Update existing or create new based on unique keys (e.g. student, course, section, year, semester)
+            Grade::updateOrCreate(
+                [
+                    'student_id' => $gradeData['student_id'],
+                    'course_id' => $gradeData['course_id'],
+                    'section_id' => $gradeData['section_id'],
+                    'year_id' => $gradeData['year_id'],
+                    'semester_id' => $gradeData['semester_id'],
+                    
+                ],
+                $gradeData
+            );
+        }
 
-        Grade::create($fields);
-
-        return redirect()->route('grades.index')->with('success', 'Grade created successfully.');
+        return redirect()->back()->with('success', 'Grade created successfully.');
     }
 
     public function show(Grade $grade)

@@ -53,7 +53,7 @@ class StudentSeeder extends Seeder
                 'track_id' => 1,
                 'year_id' => 1,
                 'semester_id' => 1,
-                'section_id' => 2,
+                'section_id' => 1,
                 'created_at' => '2025-05-11 18:28:40',
                 'updated_at' => '2025-05-11 18:28:50',
             ],
@@ -125,7 +125,7 @@ class StudentSeeder extends Seeder
 
         // Generate 19 more random students
         $faker = Faker::create();
-        for ($i = 2; $i <= 40; $i++) { // Changed loop to start from 2
+        for ($i = 2; $i <= 20; $i++) { // Changed loop to start from 2
             $user_uuid = 'SITS-' . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT) . '-' . mt_rand(20, 30);
             $firstName = $faker->firstName;
             $middleName = $faker->firstName;
@@ -174,7 +174,7 @@ class StudentSeeder extends Seeder
                     'study_mode_id' => $faker->numberBetween(1, 4), // Adjust based on your study mode IDs
                     'year_id' => $faker->numberBetween(1, 4),    // Adjust based on your year IDs
                     'semester_id' => $faker->numberBetween(1, 2), // Adjust based on your semester IDs
-                    'section_id' => $faker->numberBetween(1, 5),  //  Adjust
+                    'section_id' => 1,  //  Adjust
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],

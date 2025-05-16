@@ -32,7 +32,7 @@ class InstructorSeeder extends Seeder
             'updated_at' => now(),
         ]);
         Instructor::create([
-            'user_id' => 43,
+            'user_id' => 23,
             'specialization' => 'Hermeneutics',
             'employment_type' => 'FULL-TIME',
             'hire_date' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
@@ -60,10 +60,11 @@ class InstructorSeeder extends Seeder
 
         for ($i = 1; $i <= 7; $i++) {
             $name = fake()->name;
-            $email = fake()->unique()->safeEmail;
+            $firstName = explode(' ', $name)[0]; // Extract the first name
+            $lastName = explode(' ', $name)[1] ?? ''; // Extract the last name (if available)
+            $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
             $phone = fake()->phoneNumber;
             $specialization = $specializations[array_rand($specializations)];
-            $firstName = explode(' ', $name)[0]; // Extract the first name
 
             $user = User::create([
                 'user_uuid' => 'SITS-IN-'.str_pad($i+1, 3, '0', STR_PAD_LEFT),

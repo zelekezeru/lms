@@ -1,26 +1,84 @@
 <script setup>
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref, computed } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Modal from "@/Components/Modal.vue";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {
     PencilIcon, EyeIcon, XMarkIcon, CogIcon,
     PlusCircleIcon, DocumentTextIcon, PresentationChartBarIcon,
     CheckBadgeIcon, TrashIcon
 } from "@heroicons/vue/24/solid";
+import Modal from "@/Components/Modal.vue";
+import TextInput from "@/Components/TextInput.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
+// Props
 const props = defineProps({
+    section: {
+        type: Object,
+        required: true,
+    },
+    course: {
+        type: Object,
+        required: true,
+    },
+    semester: {
+        type: Object,
+        required: true,
+    },
     weights: {
         type: Array,
         required: true,
     },
+    instructor: {
+        type: Object,
+        required: true,
+    },
 });
+
+// Computed
+const sumOfWeightPoints = computed(() => {
+    return props.weights.reduce((sum, weight) => {
+        return sum + (parseFloat(weight.point) || 0);
+    }, 0);
+});
+
+const weightForm = useForm({
+    name: "",
+    point: "",
+    description: "",
+    course_id: props.course.id,
+    section_id: props.section.id,
+    semester_id: props.semester.id,
+});
+
+const createWeight = ref(false);
+
+const addWeight = () => {
+    weightForm.post(
+        route("weights.store", {
+            redirectTo: route('assessments.section_course',{course: props.course.id, section: props.section.id}),
+            params: { section: props.section.id, course: props.course.id },
+        }),
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    "Added!",
+                    "Weight added successfully.",
+                    "success"
+                );
+                createWeight.value = false;
+                weightForm.reset();
+            },
+        }
+    );
+};
 </script>
 
 <template>
+    
+                    <!-- Weights Panel -->
     <div class="flex items-center justify-between mb-4">
         <h2
             class="text-xl font-semibold text-gray-900 dark:text-gray-100"

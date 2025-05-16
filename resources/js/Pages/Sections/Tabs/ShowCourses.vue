@@ -9,6 +9,7 @@ import {
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
+import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     section: {
         type: Object,
@@ -235,11 +236,10 @@ const submitInstructorAssignment = () => {
                                         </button>
                                     </span>
                                 </td>
-                                <!-- Course Assessments -->
-                                <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
+                                <!-- Course Assessments showed if instructors are assigned-->
+                                <td>
                                     <Link
+                                        v-if="course.instructor"
                                         :href="
                                             route(
                                                 'assessments.section_course',
@@ -256,7 +256,15 @@ const submitInstructorAssignment = () => {
                                             >Assessments</span
                                         >
                                     </Link>
+                                    <span
+                                        v-else
+                                        class="text-red-500 cursor-not-allowed"
+                                    ><InformationCircleIcon class="w-5 h-5 inline-block" />
+                                        <span class="inline-block">
+                                             No Instructor</span>
+                                    </span>
                                 </td>
+                                
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >

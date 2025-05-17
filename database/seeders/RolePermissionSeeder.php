@@ -127,6 +127,12 @@ class RolePermissionSeeder extends Seeder
             'update-semesters',
             'delete-semesters',
 
+            // Schedule (CRUD)
+            'view-schedules',
+            'create-schedules',
+            'update-schedules',
+            'delete-schedules',
+
             // Section (CRUD)
             'view-sections',
             'create-sections',

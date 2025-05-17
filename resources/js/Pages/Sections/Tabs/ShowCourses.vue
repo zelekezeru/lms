@@ -265,11 +265,25 @@ const submitInstructorAssignment = () => {
                                     </span>
                                 </td>
                                 
+                                <!-- Course Grades -->
                                 <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    {{ course.status }}
+                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                    <span
+                                        :class="section.grades && section.grades.filter(grade => grade.course_id === course.id).length > 0 
+                                            ? 'text-green-500 cursor-not-allowed' 
+                                            : 'text-red-500 cursor-not-allowed'"
+                                    >
+                                        {{
+                                            section.grades && section.grades.filter(grade => grade.course_id === course.id).length > 0
+                                                ? 'Grade Submitted'
+                                                : 'Not Submitted'
+                                        }}
+                                    </span>
                                 </td>
+
+
+
                             </tr>
                         </tbody>
                     </table>

@@ -52,7 +52,6 @@ const tabs = [
 
 const selectedTab = ref("details");
 
-
 </script>
 
 <template>

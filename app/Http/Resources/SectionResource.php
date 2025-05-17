@@ -28,20 +28,8 @@ class SectionResource extends JsonResource
             'track' => $this->whenLoaded('track'),
             'studyMode' => $this->whenLoaded('studyMode'),
             'instructors' => $this->whenLoaded('instructors'),
-            'grades' => $this->whenLoaded('grades', function () {
-                return $this->grades->map(function ($grade) {
-                    return [
-                        'id' => $grade->id,
-                        'name' => $grade->name,
-                        'code' => $grade->code,
-                        'creditHour' => $grade->credit_hours,
-                        'instructor' => $grade->instructor ? [
-                            'id' => $grade->instructor->id,
-                            'name' => $grade->instructor->user->name,
-                        ] : null,
-                    ];
-                });
-            }),
+            'grades' => $this->whenLoaded('grades'),
+            
             'yearLevel' => $this->yearLevel(),
 
             'status' => $this->status,

@@ -79,7 +79,7 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'grades', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
 
         $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
             return $query->where('sections.id', $section->id);

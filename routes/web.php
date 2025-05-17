@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
         'users' => 'user',
         'years' => 'year',
         'semesters' => 'semester',
+        'schedules' => 'schedule',
         'sections' => 'section',
         'results' => 'result',
         'weights' => 'weight',

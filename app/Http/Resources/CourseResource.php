@@ -39,6 +39,7 @@ class CourseResource extends JsonResource
             'isPublished' => $this->is_published,
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,
+            'grades' => $this->whenLoaded('grades'),
         ];
     }
 }

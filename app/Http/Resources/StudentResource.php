@@ -45,6 +45,9 @@ class StudentResource extends JsonResource
             'createdBy' => $this->whenLoaded('createdBy'),
             'activeCurricula' => $this->section ? CurriculumResource::collection($this->section->getActiveCurricula()) : null,
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
+
+            'results' => $this->whenLoaded('results'),
+            'grades' => $this->whenLoaded('grades'),
         ];
     }
 }

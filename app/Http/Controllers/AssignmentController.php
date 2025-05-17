@@ -62,17 +62,23 @@ class AssignmentController extends Controller
 
     public function assignCoursesToStudents(Request $request, Student $student)
     {
-        $student->courses()->sync($request['courses']);
+        $coursesWithStatus = collect($request['courses'])
+            ->mapWithKeys(fn($courseId) => [$courseId => ['status' => 'Enrolled']])
+            ->toArray();
 
-        // Student Enrollment status made active by Auth::user()->id
+        $student->courses()->sync($coursesWithStatus);
+
         $student->status()->update([
             'is_enrolled' => true,
             'enrolled_by_name' => Auth::user()->name,
             'enrolled_at' => now(),
         ]);
 
-        return redirect()->route('students.show', $student->id)->with('success', 'Courses Assigned successfully.');
+        return redirect()
+            ->route('students.show', $student->id)
+            ->with('success', 'Courses assigned successfully.');
     }
+
 
     // this method is used to assign student to a section
     public function assignStudentsToSection(Request $request)

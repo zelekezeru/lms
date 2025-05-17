@@ -35,6 +35,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    students: {
+        type: Array,
+        required: true,
+    },
 });
 
 // Computed
@@ -212,10 +216,10 @@ const submitWeightResults = () => {
 };
 
 // Fetch student results
-const getResultPoint = (weight, studentId) => {
-  return weight.results?.find(result => result.student_id === studentId)?.point ?? null;
-};
-
+function getResultPoint(weight, studentId) {
+  const result = weight.results?.find(r => r.student_id === studentId);
+  return result ? result.point : null;
+}
 </script>
 
 <template>
@@ -244,7 +248,7 @@ const getResultPoint = (weight, studentId) => {
             <tbody>
                 <!-- Section Students Iteration -->
                 <tr
-                    v-for="(student, index) in section.students.sort((a, b) => a.first_name.localeCompare(b.first_name))"
+                    v-for="(student, index) in students"
                     :key="student.id"
                     :class="
                         index % 2 === 0
@@ -259,7 +263,7 @@ const getResultPoint = (weight, studentId) => {
                     <td class="px-4 py-2">
                         {{ student.first_name }} {{ student.middle_name }}
                     </td>
-
+                    
                     <!-- Section Course Weights -->
                     <td
                         v-for="weight in weights"
@@ -278,7 +282,7 @@ const getResultPoint = (weight, studentId) => {
                                 @input="setResultValue(student.id, weight.id, $event.target.value)"
                             />
                         </span>
-
+                        
                         <!-- Result or N/A when not active -->
                         <span v-else>
                             <span v-if="getResultPoint(weight, student.id) !== null"
@@ -286,7 +290,7 @@ const getResultPoint = (weight, studentId) => {
                             >
                                 {{ getResultPoint(weight, student.id) }}
                             </span>
-                            
+
                             <span v-else class="text-gray-400">N/A</span>
                         </span>
 

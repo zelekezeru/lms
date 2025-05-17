@@ -42,9 +42,9 @@ class Student extends Model
         return $this->belongsTo(StudyMode::class);
     }
 
-    public function courses(): BelongsToMany
+    public function courses()
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class)->withPivot('status');
     }
 
     public function section()
@@ -66,4 +66,15 @@ class Student extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
 }

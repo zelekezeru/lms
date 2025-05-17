@@ -16,12 +16,21 @@ class AssessmentController extends Controller
 
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
 
-        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->get()->load(['results']);
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
 
         $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
 
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
+        $students = $section->students()
+                            ->whereHas('courses', function ($query) use ($course) {
+                                $query->where('course_id', $course->id); 
+                            })
+                            ->orderBy('first_name')
+                            ->orderBy('middle_name')
+                            ->orderBy('last_name')
+                            ->get();
+                            
         // Load the instructor details
         if ($instructor) {
             $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
@@ -43,6 +52,7 @@ class AssessmentController extends Controller
             'weights' => $weights,
             'instructor' => $instructor,
             'grades' => $grades,
+            'students' => $students,
         ]);
     }
 

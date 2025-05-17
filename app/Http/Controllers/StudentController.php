@@ -88,7 +88,7 @@ class StudentController extends Controller
             $status->save();
         }
 
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status'));
+        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode'));
 
         // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {

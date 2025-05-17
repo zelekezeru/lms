@@ -40,6 +40,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    students: {
+        type: Array,
+        required: true,
+    },
 });
 
 // Tabs
@@ -62,7 +66,7 @@ const selectedTab = ref("details");
             >
                 {{ section.name }} - {{ course.name }} Course Assessments
             </h1>
-
+            
             <nav class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700" >
                 <button
                     v-for="tab in tabs"
@@ -111,6 +115,7 @@ const selectedTab = ref("details");
                         :semester="semester"
                         :instructor="instructor"
                         :weights="weights"
+                        :students="students"
                     />
 
                     <!-- Weights Panel -->
@@ -130,6 +135,7 @@ const selectedTab = ref("details");
                         :semester="semester"
                         :instructor="instructor"
                         :grades="grades"
+                        :students="students"
                     />
                 </div>
             </transition>

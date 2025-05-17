@@ -1,16 +1,19 @@
 <script setup>
-
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
 import { Listbox, MultiSelect } from "primevue";
-import { defineProps, ref } from "vue";
-import {  useForm } from "@inertiajs/vue3";
+import { defineProps, ref, computed, watch } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import {
     CogIcon,
-    PencilSquareIcon, XMarkIcon, PlusCircleIcon} from "@heroicons/vue/24/solid";
+    PencilSquareIcon,
+    XMarkIcon,
+    PlusCircleIcon,
+} from "@heroicons/vue/24/solid";
+
 const props = defineProps({
     student: {
         type: Object,
@@ -23,9 +26,27 @@ const props = defineProps({
 });
 
 const assignCourses = ref(false);
+
 const courseAssignmentForm = useForm({
-    courses: props.student.courses.map(course => course.id),
+    // Initialize with already enrolled course IDs
+    courses: props.student.courses.map((course) => course.id),
 });
+
+// Create a set of enrolled course IDs for easy lookup
+const enrolledCourseIds = computed(() =>
+    new Set(props.student.courses.map((course) => course.id))
+);
+
+// Format courses so that enrolled ones are disabled and labeled accordingly
+const formattedCourses = computed(() =>
+    props.courses.map((course) => ({
+        ...course,
+        disabled: enrolledCourseIds.value.has(course.id),
+        label: enrolledCourseIds.value.has(course.id)
+            ? `${course.name} (Already Enrolled)`
+            : course.name,
+    }))
+);
 
 const closeCourseAssignment = () => {
     assignCourses.value = false;
@@ -33,25 +54,30 @@ const closeCourseAssignment = () => {
     courseAssignmentForm.clearErrors();
 };
 
+// Reset selected courses to enrolled courses on modal open
+watch(assignCourses, (visible) => {
+    if (visible) {
+        courseAssignmentForm.courses = props.student.courses.map((course) => course.id);
+    }
+});
+
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
-        route('courses-student.assign', { student: props.student.id }),
+        route("courses-student.assign", { student: props.student.id }),
         {
             onSuccess: () => {
-                Swal.fire(
-                    'Successful!',
-                    'Courses assigned successfully.',
-                    'success'
-                );
+                Swal.fire("Successful!", "Courses assigned successfully.", "success");
                 assignCourses.value = false;
                 courseAssignmentForm.reset();
-                courseAssignmentForm.courses = props.section.courses.map(course => course.id);
+                courseAssignmentForm.courses = props.student.courses.map(
+                    (course) => course.id
+                );
             },
         }
     );
 };
-
 </script>
+
 
 
 <template>
@@ -116,6 +142,11 @@ const submitCourseAssignment = () => {
                                         <th
                                             class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                         >
+                                            Grade
+                                        </th>
+                                        <th
+                                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                        >
                                             Status
                                         </th>
                                     </tr>
@@ -161,24 +192,29 @@ const submitCourseAssignment = () => {
                                         >
                                             {{ course.credit_hours }}
                                         </td>
-
-                                        
-                                        <!-- Course Assessments -->
+                                        <td
+                                            class="w-40 px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                        >
+                                            <span>
+                                                {{
+                                                    student.grades?.find(grade => grade.course_id === course.id)?.grade_letter ?? 'Not Graded'
+                                                }}
+                                            </span>
+                                        </td>
                                         <td
                                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                         >
                                         <!-- If Status is 1 Active in Green and if Status is 0 Inactive in red -->
-                                            <span
-                                                :class="
-                                                    course.status === 1
-                                                        ? 'text-green-500'
-                                                        : 'text-red-500'
-                                                "
-                                                >{{ course.status === 1
-                                                    ? 'Active'
-                                                    : 'Inactive'
-                                                }}</span
+                                        <span
+                                            :class="
+                                                course.pivot.status === 'Enrolled'
+                                                ? 'text-green-500'
+                                                : 'text-red-500'
+                                            "
                                             >
+                                            {{ course.pivot.status }}
+                                            </span>
+
                                         </td>
                                     </tr>
                                 </tbody>
@@ -209,29 +245,40 @@ const submitCourseAssignment = () => {
     >
         <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">
-                Pick Courses You Would like To Assign To This Section
+                Pick Courses You Would like To Enroll To {{ student.name }}
             </h1>
 
             <Listbox
-                id="cousesList"
+                id="coursesList"
                 v-model="courseAssignmentForm.courses"
-                :options="courses"
-                optionLabel="name"
-                option-value="id"
+                :options="formattedCourses"
+                optionLabel="label"
+                optionValue="id"
                 appendTo="self"
                 filter
                 checkmark
                 multiple
                 list-style="max-height: 500px"
                 placeholder="Select Courses"
-                :maxSelectedLabels="3"
+                :optionDisabled="option => option.disabled"
+                :maxSelectedLabels="5"
                 class="w-full"
-            />
+                >
+                <template #option="slotProps">
+                    <div class="flex justify-between items-center w-full">
+                        <span>{{ slotProps.option.name }}</span>
+                        <span v-if="slotProps.option.disabled" class="text-xs text-yellow-600 bg-yellow-100 px-2 rounded">
+                            Already Enrolled
+                        </span>
+                    </div>
+                </template>
+            </Listbox>
 
             <InputError
                 :message="courseAssignmentForm.errors.programs"
                 class="mt-2 text-sm text-red-500"
             />
+
             <div class="flex justify-end mt-4">
                 <button
                     @click="submitCourseAssignment"
@@ -250,4 +297,5 @@ const submitCourseAssignment = () => {
             </div>
         </div>
     </Modal>
+
 </template>

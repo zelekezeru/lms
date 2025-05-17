@@ -6,6 +6,7 @@ use App\Http\Requests\GradeStoreRequest;
 use App\Http\Requests\GradeUpdateRequest;
 use App\Models\Grade;
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class GradeController extends Controller
 {
@@ -54,8 +55,15 @@ class GradeController extends Controller
                     'semester_id' => $gradeData['semester_id'],
                     
                 ],
-                $gradeData
+                $gradeData,
+
             );
+
+            $student = Student::find($gradeData['student_id']); // Corrected method
+            
+            $student->courses()->updateExistingPivot($gradeData['course_id'], [
+                'status' => 'Completed'
+            ]);
         }
 
         return redirect()->back()->with('success', 'Grade created successfully.');

@@ -34,7 +34,6 @@ class CourseController extends Controller
     public function create()
     {
         $programs = ProgramResource::collection(Program::with('tracks')->get());
-        $programs = ProgramResource::collection(Program::with('tracks')->get());
 
         return inertia('Courses/Create', [
             'programs' => $programs,

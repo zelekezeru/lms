@@ -100,11 +100,6 @@ const submitInstructorAssignment = () => {
                                     Name
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Sections
-                                </th>
-                                <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
                                     Actions
@@ -144,47 +139,17 @@ const submitInstructorAssignment = () => {
                                     </Link>
                                 </td>
 
-                                <td
-                                    class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    <Link
-                                        v-for="(
-                                            section, index
-                                        ) in course.sections.filter(
-                                            (section) =>
-                                                section.course.id ==
-                                                course.id
-                                        )"
-                                        :href="
-                                            route('sections.show', {
-                                                section: section.id,
-                                            })
-                                        "
-                                        :key="section.id"
-                                    >
-                                        {{ section.name
-                                        }}{{
-                                            index + 1 ==
-                                            course.sections.filter(
-                                                (section) =>
-                                                    section.course.id ==
-                                                    course.id
-                                            ).length
-                                                ? ""
-                                                : ", "
-                                        }}</Link
-                                    >
-                                </td>
                                 <!-- Instructor Assessments -->
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
                                     <Link
                                         class="text-green-500 hover:text-green-700"
+                                        :href="route('instructors.show', {instructor: instructor.id})"
                                     >
                                         <CogIcon class="w-5 h-5 inline-block" />
                                         <span class="inline-block"
-                                            >Assessments</span
+                                            >View</span
                                         >
                                     </Link>
                                 </td>

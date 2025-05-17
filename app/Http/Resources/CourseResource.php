@@ -22,9 +22,7 @@ class CourseResource extends JsonResource
             'tracks' => $this->whenLoaded('tracks'),
             'instructors' => InstructorResource::collection($this->whenLoaded('instructors')),
             'sections' => SectionResource::collection($this->whenLoaded('courseSectionAssignments', function () {
-                return $this->courseSectionAssignments->flatMap(function ($assignment) {
-                    return $assignment->section;
-                });
+                return $this->courseSectionAssignments->map(fn($assignment) => $assignment->section);
             })),
             'instructor' => $this->whenLoaded('courseSectionAssignments', function () {
                 $assignment = $this->courseSectionAssignments->first();

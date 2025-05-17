@@ -41,6 +41,14 @@ class AssignmentController extends Controller
     }
 
     // this method is used to assign courses to a program
+    public function assignInstructorsToCourse(Request $request, Course $course)
+    {
+        $course->instructors()->sync($request['instructors']);
+
+        return redirect()->route('courses.show', $course->id)->with('success', 'Instructors Assigned successfully.');
+    }
+
+    // this method is used to assign courses to a program
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
         $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id);

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CourseStoreRequest;
 use App\Http\Requests\CourseUpdateRequest;
 use App\Http\Resources\CourseResource;
+use App\Http\Resources\InstructorResource;
 use App\Http\Resources\ProgramResource;
 use App\Models\Course;
+use App\Models\Instructor;
 use App\Models\Program;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,7 +33,6 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $programs = ProgramResource::collection(Program::with('tracks')->get());
         $programs = ProgramResource::collection(Program::with('tracks')->get());
 
         return inertia('Courses/Create', [
@@ -76,9 +77,10 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course = $course->load('track');
+        $course = new CourseResource($course->load('track', 'instructors', 'courseSectionAssignments.instructor', 'courseSectionAssignments.section'));
+        $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
 
-        return inertia('Courses/Show', compact('course'));
+        return inertia('Courses/Show', compact('course', 'instructors'));
     }
 
     /**

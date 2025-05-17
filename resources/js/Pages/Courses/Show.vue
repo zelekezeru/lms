@@ -1,10 +1,11 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { defineProps } from "vue";
-import { Link, router } from "@inertiajs/vue3";
-import Swal from "sweetalert2";
+import { defineProps, ref } from "vue";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { AcademicCapIcon, CogIcon } from "@heroicons/vue/24/outline";
+import ShowDetails from "./Tabs/ShowDetails.vue";
+import ShowCourses from "../Instructors/Tabs/ShowCourses.vue";
+import ShowInstructors from "./Tabs/ShowInstructors.vue";
 
 // Define the props for the course
 defineProps({
@@ -12,141 +13,78 @@ defineProps({
         type: Object,
         required: true,
     },
+    instructors: {
+        type: Object,
+        required: true,
+    },
 });
 
-// Delete function with SweetAlert confirmation
-const deleteCourse = (id) => {
-    Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            router.delete(route("courses.destroy", { course: id }), {
-                onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The course has been deleted.",
-                        "success"
-                    );
-                },
-            });
-        }
-    });
-};
+const selectedTab = ref("details");
+
+const tabs = [
+    { key: "details", label: "Details", icon: CogIcon },
+    { key: "instructors", label: "Instructors", icon: AcademicCapIcon },
+];  
+
+
 </script>
 
 <template>
-    <AppLayout title="course Details">
-        <div class="max-w-8xl mx-auto p-6">
+    <AppLayout>
+        <div class="max-w-7xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                Course Details
+                {{ course.name }} Course
             </h1>
 
-            <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            <nav
+                class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- course Code -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Code</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ course.code }}</span
-                        >
-                    </div>
+                <button
+                    v-for="tab in tabs"
+                    :key="tab.key"
+                    @click="selectedTab = tab.key"
+                    class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                    :class="
+                        selectedTab === tab.key
+                            ? 'border-b-2 border-indigo-500 text-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    "
+                >
+                    <component :is="tab.icon" class="w-5 h-5" />
+                    <span>{{ tab.label }}</span>
+                </button>
+            </nav>
 
-                    <!-- course Name -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Name</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ course.name || "N/A" }}</span
-                        >
-                    </div>
 
-                    <!-- Credit -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Credit Hours</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ course.credit_hours }}</span
-                        >
-                    </div>
-                    <!-- Duration -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Duration</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ course.duration }}</span
-                        >
-                    </div>
-                    <!-- Description -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Description</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ course.description }}</span
-                        >
-                    </div>
+            <!-- Details Panel -->
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <ShowDetails
+                    v-if="selectedTab === 'details'"
+                    :course="course"
+                />
 
-                    <!-- Status -->
-                    <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Status</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{ course.status ? "Active" : "Inactive" }}
-                        </span>
-                    </div>
+                <!-- Courses Panel -->
+                    <ShowInstructors
+                    v-else-if="selectedTab === 'instructors'"
+                    :course="course"
+                    :instructors="instructors"
+                    />
                 </div>
-
-                <!-- Edit and Delete Buttons -->
-                <div class="flex justify-end mt-6 space-x-4">
-                    <!-- Edit Button, only show if user has permission -->
-                    <div v-if="userCan('update-courses')">
-                        <Link
-                            :href="
-                                route('courses.edit', {
-                                    course: course.id,
-                                })
-                            "
-                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
-                        >
-                            <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                        </Link>
-                    </div>
-                    <!-- Delete Button, only show if user has permission -->
-                    <div v-if="userCan('delete-courses')">
-                        <button
-                            @click="deleteCourse(course.id)"
-                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
-                        >
-                            <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </transition>
         </div>
     </AppLayout>
 </template>

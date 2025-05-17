@@ -71,7 +71,9 @@ class AssignmentController extends Controller
     public function assignCoursesToStudents(Request $request, Student $student)
     {
         $coursesWithStatus = collect($request['courses'])
-            ->mapWithKeys(fn($courseId) => [$courseId => ['status' => 'Enrolled']])
+            ->mapWithKeys(function ($courseId) use ($student) {
+                return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
+            })
             ->toArray();
 
         $student->courses()->sync($coursesWithStatus);

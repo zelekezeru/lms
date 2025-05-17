@@ -77,4 +77,9 @@ class Student extends Model
         return $this->hasMany(Grade::class);
     }
 
+    public function semesterStudent()
+    {
+        return $this->hasMany(SemesterStudent::class);
+    }
+
 }

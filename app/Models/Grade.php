@@ -42,4 +42,9 @@ class Grade extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function semesterStudent()
+    {
+        return $this->belongsTo(SemesterStudent::class);
+    }
 }

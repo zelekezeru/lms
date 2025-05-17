@@ -17,6 +17,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    grades: {
+        type: Array,
+        required: true,
+    },
 });
 
 
@@ -102,8 +106,8 @@ function calculateGPA(grades) {
                 :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-50 dark:bg-gray-700'"
                 class="text-sm text-gray-900 dark:text-gray-100 border-b"
               >
-                <td class="px-4 py-2">{{ record.course?.title }}</td>
-                <td class="px-4 py-2">{{ record.course?.credit }}</td>
+                <td class="px-4 py-2">{{ record.course?.name }}</td>
+                <td class="px-4 py-2">{{ record.course?.creditHrs }}</td>
                 <td class="px-4 py-2">{{ record.grade_point }}</td>
                 <td class="px-4 py-2">{{ record.grade_letter }}</td>
               </tr>

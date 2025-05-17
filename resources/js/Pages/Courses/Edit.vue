@@ -47,7 +47,7 @@ const submit = (id) => {
                     Please fill out the form below to Update the course.
                 </p>
             </div>
-
+{{ course.credit_hours }}
             <!-- Form Card -->
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"

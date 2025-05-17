@@ -34,7 +34,7 @@ class CourseResource extends JsonResource
                 $this->pivot?->is_common !== null,
                 fn() => $this->pivot->is_common
             ),
-            'creditHours' => $this->credit_hours,
+            'credit_hours' => $this->credit_hours,
             'duration' => $this->duration,
             'description' => $this->description,
             'isTraining' => $this->is_training,

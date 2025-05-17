@@ -44,4 +44,9 @@ class Semester extends Model
 
         return $activeSemester;
     }
+
+    public function semesterStudent()
+    {
+        return $this->hasMany(SemesterStudent::class);
+    }
 }

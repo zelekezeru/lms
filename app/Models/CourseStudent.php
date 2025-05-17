@@ -4,10 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PromotionStatus extends Model
+class CourseStudent extends Model
 {
-    protected $guarded = [];
-
     public function semesterStudent()
     {
         return $this->belongsTo(SemesterStudent::class);

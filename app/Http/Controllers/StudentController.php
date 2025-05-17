@@ -271,11 +271,16 @@ class StudentController extends Controller
     {
         $student = new StudentResource($student->load('user', 'program', 'track', 'studyMode', 'year', 'semester', 'section', 'results', 'grades'));
 
-        $semesters = SemesterResource::collection(Semester::get());
+        // Student Grades
+        $grades = $student->grades()->with(['course', 'section', 'year', 'semester'])->get();
+        
+        // Student Semesters
+        $semesters = SemesterResource::collection(Semester::where('status', 'Active')->get());
         
         return Inertia::render('Students/Transcript', [
             'student' => $student,
             'semesters' => $semesters,
+            'grades' => $grades,
         ]);
     }
 }

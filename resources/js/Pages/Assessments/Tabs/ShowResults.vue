@@ -210,6 +210,12 @@ const submitWeightResults = () => {
         }
     });
 };
+
+// Fetch student results
+const getResultPoint = (weight, studentId) => {
+  return weight.results?.find(result => result.student_id === studentId)?.point ?? null;
+};
+
 </script>
 
 <template>
@@ -256,7 +262,7 @@ const submitWeightResults = () => {
 
                     <!-- Section Course Weights -->
                     <td
-                        v-for="weight in props.weights"
+                        v-for="weight in weights"
                         :key="weight.id"
                         class="px-4 py-2 text-center border-gray-300 dark:border-gray-600"
                     >
@@ -275,14 +281,15 @@ const submitWeightResults = () => {
 
                         <!-- Result or N/A when not active -->
                         <span v-else>
-                            <span
-                                v-if="weight.results.some(result => result.student_id === student.id)"
+                            <span v-if="getResultPoint(weight, student.id) !== null"
                                 class="text-gray-900 dark:text-gray-100"
                             >
-                                {{ weight.results.find(result => result.student_id === student.id)?.point }}
+                                {{ getResultPoint(weight, student.id) }}
                             </span>
+                            
                             <span v-else class="text-gray-400">N/A</span>
                         </span>
+
                     </td>
 
                     <!-- Total Points Column -->

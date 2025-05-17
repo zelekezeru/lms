@@ -28,6 +28,8 @@ const props = defineProps({
 const assignInstructor = ref(false);
 const assignCourses = ref(false);
 const assignToCourse = ref({});
+
+const elegibleInstructorsList = ref([]);
 const courseAssignmentForm = useForm({
     courses: props.section.courses.map(course => course.id),
 });
@@ -63,7 +65,8 @@ const instructorAssignmentForm = useForm({
 const openInstructorAssignemnt = (course) => {
     assignInstructor.value = true;
     assignToCourse.value = course;
-    instructorAssignmentForm.instructor_id = course.instructor.id;
+    elegibleInstructorsList.value = props.instructors.filter(instructor => instructor.courses.some(c => c.id == assignToCourse.value.id))
+    instructorAssignmentForm.instructor_id = course.instructor ? course.instructor.id : ""; 
 };
 
 const closeInstructorAssignemnt = () => {
@@ -353,15 +356,17 @@ const submitInstructorAssignment = () => {
                 Select Instructor You Would like To Assign To The Course "{{ assignToCourse.name }}" In Section {{ section.name }}
             </h1>
 
+            <h2>Eligible Instructors List</h2>
             <Listbox
                 id="cousesList"
                 v-model="instructorAssignmentForm.instructor_id"
-                :options="instructors"
+                :options="elegibleInstructorsList"
                 :optionLabel="(option) => `${option.name} - (${option.specialization})`"
                 option-value="id"
                 appendTo="self"
                 checkmark
                 filter
+                empty-message="There Are No Eligible Instructors to teach this course. First Assign Instructors Who Can Teach This Course"
                 list-style="max-height: 500px"
                 placeholder="Select Instructor"
                 :maxSelectedLabels="3"

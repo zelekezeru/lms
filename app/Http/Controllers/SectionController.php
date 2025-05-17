@@ -85,7 +85,7 @@ class SectionController extends Controller
             return $query->where('sections.id', $section->id);
         }])->orderByDesc('related_to_section')->orderBy('name')->get());
 
-        $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
+        $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
 
         return Inertia::render('Sections/Show', [
             'section' => $section,

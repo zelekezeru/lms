@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('instructor_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
 
-            $table->unique(['course_id', 'section_id']);           // A course in a section is unique
+            $table->unique(['course_id', 'section_id', 'instructor_id']);       // A course in a section is unique
         });
     }
 

@@ -12,6 +12,7 @@ import {
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
+import { EyeIcon } from "@heroicons/vue/24/outline";
 
 // Define the props for the instructor
 const props = defineProps({
@@ -147,7 +148,7 @@ const submitInstructorAssignment = () => {
                                         class="text-green-500 hover:text-green-700"
                                         :href="route('instructors.show', {instructor: instructor.id})"
                                     >
-                                        <CogIcon class="w-5 h-5 inline-block" />
+                                        <EyeIcon class="w-5 h-5 inline-block" />
                                         <span class="inline-block"
                                             >View</span
                                         >

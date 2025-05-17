@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
     Route::post('/students/{student}/verify', [StudentController::class, 'verify'])->name('students.verify');
+    Route::get('/students/{student}/transcript', [StudentController::class, 'transcript'])->name('students.transcript');
 
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');

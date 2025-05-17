@@ -265,4 +265,17 @@ class StudentController extends Controller
 
         return Inertia::render('Students/Index', compact('students'));
     }
+
+    // Show student Transcript
+    public function transcript(Student $student)
+    {
+        $student = new StudentResource($student->load('user', 'program', 'track', 'studyMode', 'year', 'semester', 'section', 'results', 'grades'));
+
+        $semesters = SemesterResource::collection(Semester::get());
+        
+        return Inertia::render('Students/Transcript', [
+            'student' => $student,
+            'semesters' => $semesters,
+        ]);
+    }
 }

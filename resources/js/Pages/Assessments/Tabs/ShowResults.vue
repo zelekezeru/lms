@@ -35,8 +35,8 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    students: {
-        type: Array,
+    studentsList: {
+        type: Object,
         required: true,
     },
 });
@@ -50,7 +50,7 @@ const sumOfWeightPoints = computed(() => {
 
 // States
 const students = ref({
-    data: [],
+    students: [],
     meta: {
         current_page: 1,
         per_page: 50,
@@ -222,7 +222,7 @@ function getResultPoint(weight, studentId) {
 }
 </script>
 
-<template>
+<template>    
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 border rounded shadow-sm bg-white dark:bg-gray-900">
             <thead class="bg-gray-100 dark:bg-gray-800 text-md font-semibold text-gray-700 dark:text-gray-200">
@@ -248,7 +248,7 @@ function getResultPoint(weight, studentId) {
             <tbody>
                 <!-- Section Students Iteration -->
                 <tr
-                    v-for="(student, index) in students"
+                    v-for="(student, index) in studentsList"
                     :key="student.id"
                     :class="
                         index % 2 === 0

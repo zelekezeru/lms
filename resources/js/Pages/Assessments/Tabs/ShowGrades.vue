@@ -10,6 +10,7 @@ const props = defineProps({
   semester: { type: Object, required: true },
   weights: { type: Array, required: true },         // Grade weights (e.g., Exam 60%, Quiz 20%)
   instructor: { type: Object, required: true },
+  studentsList: { type: Object, required: true }, // List of students in the section
 });
 
 const authUser = ref({ id: 1 }); // Replace with actual auth user logic if needed
@@ -50,7 +51,7 @@ const getGradeLetter = (point) => {
 
 // Function to generate grades for all students in the section
 const generateGrades = () => {
-  const gradesPayload = props.section.students.map((student) => {
+  const gradesPayload = props.studentsList.map((student) => {
     const totalPoint = getStudentTotalPoints(student.id);
     return {
       student_id: student.id,
@@ -86,7 +87,7 @@ const generateGrades = () => {
 
 // Function to check if the weights have results
 const allWeightsHaveValues = computed(() => {
-  return props.section.students.every((student) => {
+  return props.studentsList.every((student) => {
     return props.weights.every((weight) => {
       return weight.results?.some(result => result.student_id === student.id && result.point !== null && result.point !== undefined);
     });
@@ -116,7 +117,7 @@ const getStudentGrade = (studentId) =>
         </thead>
         <tbody>
           <tr
-            v-for="(student, index) in props.section.students"
+            v-for="(student, index) in props.studentsList"
             :key="student.id"
             :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
             class="text-sm border-b"
@@ -161,7 +162,7 @@ const getStudentGrade = (studentId) =>
         </thead>
         <tbody>
             <tr
-                v-for="(student, index) in props.section.students"
+                v-for="(student, index) in props.studentsList"
                 :key="student.id"
                 :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
                 class="text-sm border-b"
@@ -176,7 +177,7 @@ const getStudentGrade = (studentId) =>
                 <td class="px-4 py-2">
                     {{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}
                 </td>
-                </tr>
+            </tr>
 
         </tbody>
       </table>

@@ -69,12 +69,6 @@ const deleteDocument = (id) => {
                 <div v-else class="text-center text-gray-500 dark:text-gray-400 py-2">
                     <p>Unable to add documents. User ID is missing.</p>
                 </div>
-                <Link
-                    :href="route('students.transcript', { student: student.id })"
-                    class="inline-flex items-center rounded-md bg-purple-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-yellow-700 focus:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-                >
-                    Show Transcript
-                </Link>
             </div>
         </div>
 

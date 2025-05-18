@@ -55,7 +55,6 @@ function calculateGPA(grades, studentId) {
 }
 
 // Export PDF
-// This function generates a PDF of the student's transcript
 function exportPDF() {
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -67,6 +66,13 @@ function exportPDF() {
   const semesters = props.semesters;
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+
+  const footerY = pageHeight - 30;
+  const summaryY = footerY - 20; // space above the footer for the two rows
+
+  doc.setFontSize(10);
+  const blockWidth = 60;
+  const marginRight = 14;
 
   // === Header ===
   doc.setFontSize(16);
@@ -89,94 +95,84 @@ function exportPDF() {
 
   const allGrades = [];
 
-  // === Show 2 semesters per row ===
-  for (let i = 0; i < semesters.length; i += 2) {
-    const sem1 = semesters[i];
-    const sem2 = semesters[i + 1];
-
-    let maxY = y;
-
-    // Helper function to draw a semester block
-    const drawSemester = (semester, startX) => {
-      if (!semester) return;
-
-      const grades = semester.grades.filter(g => g.student_id === student.id);
-      if (grades.length === 0) return;
-
-      doc.setFontSize(12);
-      doc.text(
-        `Semester: ${semester.name || ''} ${semester.year?.name || ''} `,
-        startX,
-        y
-      );
-
-      const tableData = grades.map((g) => {
-        const credit = parseFloat(g.course?.credit_hours || 0);
-        const numericScore = parseFloat(g.grade_point || 0);
-        const gradePoint = getGradePointFromLetter(numericScore);
-        const points = (gradePoint * credit).toFixed(2);
-        return [
-          g.course?.code || 'N/A',
-          g.course?.name || 'N/A',
-          credit.toString(),
-          g.grade_letter || 'N/A',
-          points
-        ];
-      });
-
-      autoTable(doc, {
-        head: [['Course', 'Course Name', 'Credit', 'Grade', 'Points']],
-        body: tableData,
-        startY: y + 6,
-        startX: startX,
-        theme: 'grid',
-        styles: { fontSize: 10 },
-        headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-        margin: { left: startX, right: 10 },
-        didDrawPage: (data) => {
-          if (data.cursor.y > maxY) maxY = data.cursor.y;
-        }
-      });
-
-      const semGPA = calculateGPA(grades, student.id);
-      allGrades.push(...grades);
-      doc.setFontSize(11);
-      // Right-align the Semester GPA at the far right end of the table
-      doc.text(`Sem GPA: ${semGPA}`, pageWidth - 20, maxY + 6, { align: "right" });
-    };
-
-    // Draw both semesters side by side
-    drawSemester(sem1, 14);              // Left table
-    drawSemester(sem2, pageWidth / 2);   // Right table
-
-    y = maxY + 16;
-  }
-// GPA 
-  
-
   // === Cumulative GPA ===
-  const cumulativeGPA = calculateGPA(allGrades, student.id);
-  doc.setFontSize(12);
-  doc.setTextColor(41, 128, 185); // Match the blue style used above
-  doc.text(`Cum GPA: ${cumulativeGPA}`, pageWidth - 20, y, { align: "right" });
-  y += 20;
+  for (const semester of semesters) {
+    const grades = semester.grades.filter(g => g.student_id === student.id);
+    allGrades.push(...grades);
+  }
+  const cumulativeGPA = calculateGPA(allGrades, student.id); // <-- FIXED: Calculate it early
 
-  // === Footer Section ===
-  const footerY = pageHeight - 30;
-  doc.setFontSize(10);
+  // === Iterate through each semester ===
+  for (const semester of semesters) {
+    const grades = semester.grades.filter(g => g.student_id === student.id);
+    if (grades.length === 0) continue;
 
-  // Straight line to separate the footer
+    doc.setFontSize(12);
+    doc.text(`Semester: ${semester.year?.name ?? 'Unknown Year'} - ${semester.name ?? 'Unknown Semester'}`, 14, y);
+
+    const tableData = grades.map((g) => {
+      const credit = parseFloat(g.course?.credit_hours || 0);
+      const numericScore = parseFloat(g.grade_point || 0);
+      const gradePoint = getGradePointFromLetter(numericScore);
+      const points = (gradePoint * credit).toFixed(2);
+      return [
+        g.course?.code || 'N/A',
+        g.course?.name || 'N/A',
+        credit.toString(),
+        g.grade_letter || 'N/A',
+        points
+      ];
+    });
+
+    autoTable(doc, {
+      head: [['Course', 'Course Name', 'Credit', 'Grade', 'Points']],
+      body: tableData,
+      startY: y + 6,
+      theme: 'grid',
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+      margin: { left: 14, right: 10 },
+      didDrawPage: (data) => {
+        y = data.cursor.y + 4;
+      }
+    });
+
+    const semGPA = calculateGPA(grades, student.id);
+    const totalCredits = grades.reduce((acc, g) => acc + parseFloat(g.course?.credit_hours || 0), 0);
+    const totalPoints = grades.reduce((acc, g) => {
+      const gp = getGradePointFromLetter(parseFloat(g.grade_point));
+      const credit = parseFloat(g.course?.credit_hours || 0);
+      return acc + gp * credit;
+    }, 0);
+
+    doc.setFontSize(11);
+    doc.text(`Semester GPA: ${semGPA}`, pageWidth - (blockWidth * 2 + marginRight), y + 2);
+    doc.text(`Total Credits: ${totalCredits}`, pageWidth - (blockWidth + marginRight), y + 2);
+
+    doc.text(`Total Points: ${totalPoints.toFixed(2)}`, pageWidth - (blockWidth * 2 + marginRight), y + 10);
+    doc.text(`Cumulative GPA: ${cumulativeGPA}`, pageWidth - (blockWidth + marginRight), y + 10);
+
+    y = y + 18; // update y for next content
+
+    if (y > pageHeight - 40) {
+      doc.addPage();
+      y = 20;
+    }
+  }
+
+  // === Footer ===
   doc.setDrawColor(200);
   doc.line(14, footerY - 2, pageWidth - 14, footerY);
-
   doc.text("Registrar Signature: ____________________", 14, footerY + 2);
+
   const today = new Date().toLocaleDateString();
   doc.text("Date: " + today, pageWidth - 50, footerY + 7, { align: "right" });
   doc.text("Email: registerar@sits.edu.et", pageWidth - 50, footerY + 16, { align: "right" });
+
   doc.text("Grading Scale: A = 4.0, A- = 3.7, B+ = 3.3, B = 3.0, B- = 2.7, etc.", 14, footerY + 10);
   doc.text("This is an official transcript issued by Shiloh International Theological Seminary.", 14, footerY + 16);
 
-  doc.save(`${student.firstName}_${student.middleName}_${student.lastName}_Transcript.pdf`);
+  doc.save(`${student.firstName}_${student.midleName}_${student.lastName}_Transcript.pdf`);
 }
 
 </script>
@@ -201,13 +197,15 @@ function exportPDF() {
       </Link>
 
       <div class="mb-4 text-sm text-gray-600 dark:text-gray-300">
-        <p><strong>Student:</strong> {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}</p>
-        <p><strong>ID:</strong> {{ student.idNo }}</p>
-        <p><strong>Program:</strong> {{ student.program?.name }}</p>
-        <p><strong>Track:</strong> {{ student.track?.name }}</p>
-        <p><strong>Class of:</strong> {{ student.year?.name }}</p>
-        <p><strong>Semester:</strong> {{ student.semester?.name }}</p>
-        <p><strong>Study Mode:</strong> {{ student.studyMode?.name }}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
+          <p><strong>Student:</strong> {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}</p>
+          <p><strong>ID:</strong> {{ student.idNo }}</p>
+          <p><strong>Program:</strong> {{ student.program?.name }}</p>
+          <p><strong>Track:</strong> {{ student.track?.name }}</p>
+          <p><strong>Class of:</strong> {{ student.year?.name }}</p>
+          <p><strong>Semester:</strong> {{ student.semester?.name }}</p>
+          <p><strong>Study Mode:</strong> {{ student.studyMode?.name }}</p>
+        </div>
       </div>
 
       <div v-for="(semester, index) in semesters" :key="index" class="mb-8">

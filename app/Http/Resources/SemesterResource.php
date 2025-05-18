@@ -24,6 +24,10 @@ class SemesterResource extends JsonResource
             'is_completed' => $this->is_completed,
             'created_at' => $this->created_at,
 
+            'students' => StudentResource::collection($this->whenLoaded('students')),
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
+            'grades' => GradeResource::collection($this->whenLoaded('grades')),
+
         ];
     }
 }

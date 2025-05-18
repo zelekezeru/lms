@@ -27,6 +27,7 @@ use App\Models\StudyMode;
 use App\Models\Track;
 use App\Models\User;
 use App\Models\Year;
+use App\Models\SemesterStudent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,6 +113,16 @@ class StudentController extends Controller
 
         $user = new UserResource($student->user->load('userDocuments'));
         
+        // For Transcript
+        $student->load([
+            'user', 'program', 'track', 'studyMode',
+            'year', 'semester', 'section',
+        ]);
+
+        $semesters = $student->semesters()
+                                ->with(['year','grades' => fn($q) => $q
+                                ->with(['course', 'section', 'semester']),])->get();
+                                
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => $user,
@@ -122,6 +133,7 @@ class StudentController extends Controller
             'paymentCategories' => $paymentCategories,
             'paymentMethods' => $paymentMethods,
             'payments' => $payments,
+            'semesters' => $semesters,
         ]);
     }
 
@@ -269,18 +281,22 @@ class StudentController extends Controller
     // Show student Transcript
     public function transcript(Student $student)
     {
-        $student = new StudentResource($student->load('user', 'program', 'track', 'studyMode', 'year', 'semester', 'section', 'results', 'grades'));
+        $student->load([
+            'user', 'program', 'track', 'studyMode',
+            'year', 'semester', 'section',
+        ]);
 
-        // Student Grades
-        $grades = $student->grades()->with(['course', 'section', 'year', 'semester'])->get();
-        
-        // Student Semesters
-        $semesters = SemesterResource::collection(Semester::where('status', 'Active')->get());
-        
+        $semesters = $student->semesters()
+            ->with([
+                'year',
+                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
+            ])
+            ->get();
+
         return Inertia::render('Students/Transcript', [
-            'student' => $student,
+            'student' => new StudentResource($student),
             'semesters' => $semesters,
-            'grades' => $grades,
         ]);
     }
+
 }

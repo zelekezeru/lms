@@ -45,6 +45,11 @@ class Semester extends Model
         return $activeSemester;
     }
 
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
     public function semesterStudent()
     {
         return $this->hasMany(SemesterStudent::class);

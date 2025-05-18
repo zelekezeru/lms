@@ -75,7 +75,7 @@ class AssignmentController extends Controller
                 return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
             })
             ->toArray();
-
+            
         $student->courses()->sync($coursesWithStatus);
 
         $student->status()->update([

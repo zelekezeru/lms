@@ -68,6 +68,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    semesters: {
+        type: Object,
+        required: true,
+    },
     showVerifyModal: Boolean,
 });
 
@@ -211,6 +215,7 @@ const deleteStudent = (id) => {
                         v-else-if="selectedTab === 'documents'"
                         :student="student"
                         :documents="documents"
+                        :semesters="semesters"
                     />
 
                     </div>

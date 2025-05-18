@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('semester_id')->constrained()->onDelete('cascade');
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->string('status')->default('Active')->comment('Active, Inactive, Graduated, Dropped');
+            $table->string('status')->default('Active', ['Active, Inactive, Graduated, Dropped']);
             $table->timestamps();
         });
     }

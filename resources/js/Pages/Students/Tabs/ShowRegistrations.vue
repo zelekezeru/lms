@@ -14,19 +14,6 @@ const props = defineProps({
     status: Object,
 });
 
-// Array list of Status elaments
-// const $statuses = [
-//            'Status'=> 'active',
-//            'Approval'=> 'verified',
-//            'Document_Submittion' => 'completed',
-//             '''verified',
-//             'enrolled',
-//             'graduated',
-//             'scholarship',
-//             'scholarship_approved',
-//             'scholarship_verified'
-//         ];
-
 // Clone and track the status
 const student = ref({ ...props.student });
 

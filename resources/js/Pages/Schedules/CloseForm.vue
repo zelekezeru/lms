@@ -5,7 +5,7 @@ import { watch } from "vue";
 
 const props = defineProps({
   semester: Object,
-  semesters: Array,
+  semesters: Object,
 });
 
 // Initialize form with inertia useForm for posting
@@ -59,7 +59,7 @@ const submit = () => {
     <div class="bg-white dark:bg-gray-800 p-6 rounded shadow space-y-4">
       <p class="text-gray-700 dark:text-gray-300 underline">
         <strong class="text-gray-900 dark:text-white">Current Active Semester: </strong> 
-                        <span class="mb-1 text-md font-bold text-green-900 dark:text-green-200"> {{ semester.name }} </span>
+                        <span class="mb-1 text-lg font-bold text-green-500 dark:text-green-200"> {{ semester.name }} </span>
       </p>
       
       <form @submit.prevent="submit" class="space-y-4">
@@ -75,7 +75,7 @@ const submit = () => {
               disabled
               class="text-green-500 dark:text-green-400 bg-white dark:bg-gray-700"
             >
-              🟢 {{ semester.name }} of Year {{ semester.year?.name ?? 'N/A' }} - Current Active
+              🟢  Current Active : {{ semester.name }}
             </option>
 
             <!-- Loop Through Inactive Semesters -->
@@ -83,9 +83,9 @@ const submit = () => {
               v-for="sem in semesters"
               :key="sem.id"
               :value="sem.id"
-              class="bg-white text-green-500 dark:text-green-400 bg-white dark:bg-gray-700"
+              class="bg-white text-blue-500 dark:text-blue-400 bg-white dark:bg-gray-700"
             >
-              🔴 <span class="text-red-600 dark:text-red-400">{{ sem.name }}</span> of Year {{ sem.year?.name ?? 'N/A' }}
+              🔴 <span class="text-red-600 dark:text-red-400">{{ sem.name }} - Semester</span>
             </option>
           </select>
 

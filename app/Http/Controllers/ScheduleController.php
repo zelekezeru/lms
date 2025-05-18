@@ -65,12 +65,13 @@ class ScheduleController extends Controller
             return redirect()->back()->with('error', 'No active semester to close.');
         }
 
-        $semesters = SemesterResource::collection(Semester::where('status', 'Inactive')->with('year')->orderByDesc('name')->get());
+        $semesters = SemesterResource::collection(
+            Semester::where('status', 'Inactive')->with('year')->orderByDesc('name')->get()
+        );
         
         return Inertia::render('Schedules/CloseForm', [
             'semester' => $activeSemester,
             'semesters' => $semesters,
-
         ]);
     }
 

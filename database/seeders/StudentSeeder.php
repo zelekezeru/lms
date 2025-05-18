@@ -172,7 +172,7 @@ class StudentSeeder extends Seeder
                     'program_id' => $faker->numberBetween(1, 5), // Adjust based on your program IDs
                     'track_id' => $faker->numberBetween(1, 3),   // Adjust based on your track IDs
                     'study_mode_id' => $faker->numberBetween(1, 4), // Adjust based on your study mode IDs
-                    'year_id' => $faker->numberBetween(1, 4),    // Adjust based on your year IDs
+                    'year_id' => 1,    // Adjust based on your year IDs
                     'semester_id' => $faker->numberBetween(1, 2), // Adjust based on your semester IDs
                     'section_id' => 1,  //  Adjust
                     'created_at' => now(),

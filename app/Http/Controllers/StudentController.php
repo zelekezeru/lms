@@ -31,6 +31,7 @@ use App\Models\SemesterStudent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -122,7 +123,15 @@ class StudentController extends Controller
         $semesters = $student->semesters()
                                 ->with(['year','grades' => fn($q) => $q
                                 ->with(['course', 'section', 'semester']),])->get();
-                                
+        
+        $activeSemester = Semester::where('status', 'Active')->with('year')->get();
+
+        if ($activeSemester->isEmpty()) {
+            $activeSemester = null;
+        } else {
+            $activeSemester = SemesterResource::collection($activeSemester)->first()->load('year');
+        }
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => $user,
@@ -134,6 +143,7 @@ class StudentController extends Controller
             'paymentMethods' => $paymentMethods,
             'payments' => $payments,
             'semesters' => $semesters,
+            'activeSemester' => $activeSemester,
         ]);
     }
 
@@ -297,6 +307,36 @@ class StudentController extends Controller
             'student' => new StudentResource($student),
             'semesters' => $semesters,
         ]);
+    }
+
+    /**
+     * Register a student to a semester.
+     */
+    public function registerSemester(Request $request, Student $student)
+    {
+        $request->validate([
+            'semester_id' => 'required|exists:semesters,id',
+        ]);
+
+        // Set all previous semester_student records for this student to Inactive
+        DB::table('semester_student')
+            ->where('student_id', $student->id)
+            ->whereIn('status', ['Active', 'Enrolled'])
+            ->update(['status' => 'Completed']);
+
+        // Upsert the new/selected semester as Active for this student
+        DB::table('semester_student')->updateOrInsert(
+            [
+                'student_id' => $student->id,
+                'semester_id' => $request->semester_id,
+            ],
+            [
+                'status' => 'Enrolled',
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]
+        );
+        return back()->with('success', 'Student registered to semester successfully.');
     }
 
 }

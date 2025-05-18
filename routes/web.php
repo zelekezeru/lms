@@ -55,6 +55,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{semester}', [ScheduleController::class, 'show'])->name('show');
     });
 
+    // Student Semester Registration
+    Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
+
+    // Student Academics
+
+    
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);
     Route::middleware(['can:view-permissions'])->resource('permissions', PermissionController::class);

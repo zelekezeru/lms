@@ -36,6 +36,7 @@ function getGradePointFromLetter(point) {
   return 0.0;                    // F
 }
 
+// Calculate GPA
 function calculateGPA(grades, studentId) {
   const filtered = grades.filter(g => g.student_id === studentId);
 
@@ -53,6 +54,26 @@ function calculateGPA(grades, studentId) {
 
   return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00";
 }
+
+// Calculate Commulative GPA
+function calculateCumulativeGPA(semesters, studentId) {
+  const semesterGPAs = [];
+
+  semesters.forEach((semester) => {
+    const grades = semester.grades.filter(g => g.student_id === studentId);
+
+    if (grades.length > 0) {
+      const gpa = calculateGPA(grades, studentId); // uses your existing GPA function
+      semesterGPAs.push(parseFloat(gpa));
+    }
+  });
+
+  if (semesterGPAs.length === 0) return "0.00";
+
+  const total = semesterGPAs.reduce((sum, gpa) => sum + gpa, 0);
+  return (total / semesterGPAs.length).toFixed(2);
+}
+
 
 // Export PDF
 function exportPDF() {
@@ -93,14 +114,7 @@ function exportPDF() {
 
   y += 30;
 
-  const allGrades = [];
-
-  // === Cumulative GPA ===
-  for (const semester of semesters) {
-    const grades = semester.grades.filter(g => g.student_id === student.id);
-    allGrades.push(...grades);
-  }
-  const cumulativeGPA = calculateGPA(allGrades, student.id); // <-- FIXED: Calculate it early
+const cumulativeGPA = calculateCumulativeGPA(semesters, student.id);
 
   // === Iterate through each semester ===
   for (const semester of semesters) {

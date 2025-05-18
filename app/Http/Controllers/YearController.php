@@ -50,7 +50,7 @@ class YearController extends Controller
         // Format the dates
         $year->created_at_formatted = \Carbon\Carbon::parse($year->created_at)->format('F j, Y');
         $year->updated_at_formatted = \Carbon\Carbon::parse($year->updated_at)->format('F j, Y');
-
+        
         return inertia('Years/Show', [
             'year' => $year,
             'semesters' => $year->semesters,

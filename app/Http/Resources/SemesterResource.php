@@ -22,11 +22,14 @@ class SemesterResource extends JsonResource
             'status' => $this->status,
             'is_approved' => $this->is_approved,
             'is_completed' => $this->is_completed,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'created_at' => $this->created_at,
 
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'grades' => GradeResource::collection($this->whenLoaded('grades')),
+            'year' => YearResource::collection($this->whenLoaded('years')),
 
         ];
     }

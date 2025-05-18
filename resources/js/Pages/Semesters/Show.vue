@@ -45,69 +45,72 @@ const deleteSemester = (id) => {
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
             <h1 class="text-3xl font-semibold mb-6 text-center text-gray-900 dark:text-gray-100">
-                Semester Details
+                {{ semester.name }} - Semester  of {{ semester.year.name }} Details
             </h1>
 
             <!-- Semester Information -->
-            <div
-                class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 border dark:border-gray-700"
-            >
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 border dark:border-gray-700">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- Semester Name -->
-                    <div class="flex flex-col">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Semester</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             {{ semester.name }}
-                        </span>
+                        </div>
                     </div>
 
-                    <!-- year Name -->
-                    <div class="flex flex-col">
+                    <!-- Year Name -->
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Year</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ semester.year.name }}
-                        </span>
+                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            <Link
+                                :href="route('years.show', { year: semester.year.id })"
+                                class="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                                {{ semester.year.name }}
+                            </Link>
+                        </div>
                     </div>
 
                     <!-- Semester Status -->
-                    <div class="flex flex-col">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <div :class="semester.status === 'Active' ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
                             {{ semester.status }}
-                        </span>
+                        </div>
                     </div>
+
+                    <!-- Semester Start Date -->
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Start Date</span>
+                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            {{ new Date(semester.start_date).toLocaleDateString() }}
+                        </div>
+                    </div>
+
+                    <!-- Semester End Date -->
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">End Date</span>
+                        <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            {{ new Date(semester.end_date).toLocaleDateString() }}
+                        </div>
+                    </div>
+
                     <!-- Semester Approval -->
-                    <div class="flex flex-col">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                         <span class="text-sm text-gray-500 dark:text-gray-400">Approval</span>
-                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <div :class="semester.is_approved ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
                             {{ semester.is_approved ? "Approved" : "Not Approved" }}
-                        </span>
+                        </div>
                     </div>
-                        
                 </div>
-                
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-4">
-                    <!-- Edit Button, only show if user has permission -->
-                    <div v-if="userCan('update-semesters')">
-                        <!-- <Link
-                            :href="
-                                route('semesters.edit', {
-                                    semester: semester.id,
-                                })
-                            "
-                            class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
-                        >
-                            <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
-                        </Link> -->
-                    </div>
-                    <!-- Delete Button, only show if user has permission -->
                     <div v-if="userCan('delete-semesters')">
                         <button
                             @click="deleteSemester(semester.id)"
-                            class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                            class="inline-flex items-center space-x-2 text-red-600 hover:text-red-800 hover:underline"
                         >
                             <TrashIcon class="w-5 h-5" />
                             <span>Delete</span>

@@ -114,6 +114,9 @@ const searchSemesters = () => {
         <TableHeader>
           <tr>
             <Thead>Semester</Thead>
+            <Thead>Year</Thead>
+            <Thead>Start Date</Thead>
+            <Thead>End Date</Thead>
             <Thead>Status</Thead>
             <Thead>Action</Thead>
           </tr>
@@ -129,6 +132,15 @@ const searchSemesters = () => {
                 {{ semester.name }}
               </Link>
             </td>
+            <td class="px-6 py-4">
+              {{ semester.year?.name ?? 'N/A' }}
+            </td>
+            <td class="px-6 py-4">
+              {{ new Date(semester.start_date).toLocaleDateString() }}
+            </td>
+            <td class="px-6 py-4">
+              {{ new Date(semester.end_date).toLocaleDateString() }}
+            </td>
             <td>
               <span class="px-2 py-2 text-sm px-2 py-1 rounded"
               :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
@@ -138,14 +150,8 @@ const searchSemesters = () => {
             </td>
             <td class="flex px-6 py-4">
               <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
-                <EyeIcon class="w-5 h-5" />
+                  <EyeIcon class="w-5 h-5" />
               </Link>
-              <Link :href="route('semesters.edit', { semester: semester.id })" class="text-green-500 hover:text-green-700">
-                <PencilSquareIcon class="w-5 h-5 mx-3" />
-              </Link>
-              <button @click="deleteSemester(semester.id)" class="text-red-500 hover:text-red-700">
-                <TrashIcon class="w-5 h-5" />
-              </button>
             </td>
           </tr>
         </tbody>
@@ -164,8 +170,17 @@ const searchSemesters = () => {
       >
         <div>
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white my-4">
-            {{ semester.name }}
+            Semester: {{ semester.name }}
           </h2>
+          <p class="text-gray-700 font-semibold dark:text-gray-300">
+            Year: {{ semester.year?.name ?? 'N/A' }}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300">
+            Start Date: {{ new Date(semester.start_date).toLocaleDateString() }}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300">
+            End Date: {{ new Date(semester.end_date).toLocaleDateString() }}
+          </p>
           
           <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Status: 
@@ -179,14 +194,8 @@ const searchSemesters = () => {
         </div>
         <div class="mt-4 flex justify-end gap-3">
           <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
-            <EyeIcon class="w-5 h-5" />
+              <EyeIcon class="w-5 h-5" />
           </Link>
-          <Link :href="route('semesters.edit', { semester: semester.id })" class="text-green-500 hover:text-green-700">
-            <PencilSquareIcon class="w-5 h-5" />
-          </Link>
-          <button @click="deleteSemester(semester.id)" class="text-red-500 hover:text-red-700">
-            <TrashIcon class="w-5 h-5" />
-          </button>
         </div>
       </div>
     </div>

@@ -21,7 +21,9 @@ class SemesterController extends Controller
         }
 
         // Paginate the results
-        $semesters = $query->paginate(15)->appends($request->query());
+        $semesters = $query->orderBy('status', 'asc')
+                        ->orderByDesc('start_date')
+                        ->with('year')->paginate(15)->appends($request->query());
 
         // Return inertia view with data
         return inertia('Semesters/Index', [
@@ -52,6 +54,8 @@ class SemesterController extends Controller
             'name' => 'required|string|unique:semesters,name',
             'year_id' => 'required|exists:years,id',
             'status' => 'required|string|in:Active,Inactive',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
@@ -90,12 +94,14 @@ class SemesterController extends Controller
             'name' => 'required|string|unique:semesters,name,'.$semester->id,
             'year_id' => 'required|exists:years,id',
             'status' => 'required|string|in:Active,Inactive',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'is_approved' => 'required|boolean',
             'is_completed' => 'required|boolean',
         ]);
 
         // Update the semester record
-        $semester->update($request->only(['name', 'year_id', 'status', 'is_approved', 'is_completed']));
+        $semester->update($request->only(['name', 'year_id', 'status', 'start_date', 'end_date', 'is_approved', 'is_completed']));
 
         return redirect()->route('semesters.show', $semester)->with('success', 'Semester updated successfully.');
     }
@@ -108,5 +114,11 @@ class SemesterController extends Controller
 
         return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
 
+    }
+
+    // Close Semester
+    public function close(Semester $semester)
+    {
+        
     }
 }

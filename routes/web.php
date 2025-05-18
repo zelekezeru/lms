@@ -10,6 +10,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\UserDocumentController;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -44,6 +46,14 @@ Route::middleware(['auth'])->group(function () {
     // User Ducuments
     Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');
 
+    // Semester Managment
+    Route::prefix('semesters')->name('semesters.')->group(function () {
+        Route::get('/', [ScheduleController::class, 'index'])->name('index');
+        Route::get('/active', [ScheduleController::class, 'showActive'])->name('showActive');
+        Route::get('/close', [ScheduleController::class, 'closeSemesterForm'])->name('closeForm');
+        Route::post('/close', [ScheduleController::class, 'closeSemester'])->name('close');
+        Route::get('/{semester}', [ScheduleController::class, 'show'])->name('show');
+    });
 
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);
@@ -103,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('Instructor/Schedule');
     })->name('instructor.schedule');
 
+    // Resource Routes
     $resourceRoutes = [
         'tracks' => 'track',
         'students' => 'student',

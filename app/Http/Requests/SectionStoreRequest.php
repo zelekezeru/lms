@@ -15,11 +15,12 @@ class SectionStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'user_id' => 'exists:users,id',
+            'user_id' => 'nullable|exists:users,id',
             'program_id' => 'exists:programs,id',
             'track_id' => 'exists:tracks,id',
             'year_id' => 'exists:years,id',
             'semester_id' => 'exists:semesters,id',
+            'study_mode_id' => 'exists:study_modes,id',
         ];
     }
 }

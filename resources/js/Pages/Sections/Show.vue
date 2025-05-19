@@ -1,24 +1,14 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
-    PencilIcon,
-    EyeIcon,
-    TrashIcon,
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PencilSquareIcon,
-    PlusCircleIcon,
 } from "@heroicons/vue/24/solid";
-import Modal from "@/Components/Modal.vue";
-import { formToJSON } from "axios";
-import { Listbox, MultiSelect } from "primevue";
-import InputLabel from "@/Components/InputLabel.vue";
-import InputError from "@/Components/InputError.vue";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
@@ -34,6 +24,14 @@ const props = defineProps({
     },
     instructors: {
         type: Object,
+        required: false,
+    },
+    currentYearLevel: {
+        type: Number,
+        required: false,
+    },
+    currentSemesterLevel: {
+        type: Number,
         required: false,
     },
 });
@@ -135,6 +133,8 @@ const deletesection = (id) => {
                     :courses="courses"
                     :section="section"
                     :instructors="instructors"
+                    :currentYearLevel="currentYearLevel"
+                    :currentSemesterLevel="currentSemesterLevel"
                     />
                     
                     <!-- Students Panel -->

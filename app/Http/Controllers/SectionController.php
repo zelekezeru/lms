@@ -63,14 +63,28 @@ class SectionController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $section_id = 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
+        $track = Track::find($fields['track_id']);
+
+        $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
+            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+        }])->get();
+
+        $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
+            $curriculum = $trackCourse->curricula->first();
+            return [
+                $trackCourse->id => [
+                    'year_level' => $curriculum->year_level ?? null,
+                    'semester' => $curriculum->semester ?? null,
+                ]
+            ];
+        });
 
         $section = Section::create($fields);
 
-        $trackCourses = $section->track->courses;
-        $section->courses()->sync($trackCourses);
+        $section->courses()->sync($trackCoursesOrganized);
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the sections.show method is the default
         $redirectTo = $request->input('redirectTo', route('sections.show', $section));
 
@@ -85,8 +99,9 @@ class SectionController extends Controller
             return $query->where('sections.id', $section->id);
         }])->orderByDesc('related_to_section')->orderBy('name')->get());
 
+        $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
+        $currentSemesterLevel = $section->semester->level;
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
-
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,
@@ -95,6 +110,8 @@ class SectionController extends Controller
             'status' => $section->status,
             'isApproved' => $section->is_approved,
             'isCompleted' => $section->is_completed,
+            'currentYearLevel' => $currentYearLevel, 
+            'currentSemesterLevel' => $currentSemesterLevel, 
         ]);
     }
 

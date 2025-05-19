@@ -1,11 +1,14 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { computed, defineProps, nextTick, ref, Teleport } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     CogIcon,
-    PencilSquareIcon, XMarkIcon, PlusCircleIcon} from "@heroicons/vue/24/solid";
+    PencilSquareIcon,
+    XMarkIcon,
+    PlusCircleIcon,
+} from "@heroicons/vue/24/solid";
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
@@ -23,6 +26,25 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    currentYearLevel: {
+        type: Number,
+        required: false,
+    },
+    currentSemesterLevel: {
+        type: Number,
+        required: false,
+    },
+});
+
+const selectedYearLevel = ref(props.currentYearLevel);
+const selectedSemester = ref(props.currentSemesterLevel);
+
+const filteredCourses = computed(() => {
+    return props.section.courses.filter(
+        (course) =>
+            course.yearLevel === selectedYearLevel.value &&
+            course.semester === selectedSemester.value
+    );
 });
 
 const assignInstructor = ref(false);
@@ -30,8 +52,9 @@ const assignCourses = ref(false);
 const assignToCourse = ref({});
 
 const elegibleInstructorsList = ref([]);
+
 const courseAssignmentForm = useForm({
-    courses: props.section.courses.map(course => course.id),
+    courses: props.section.courses.map((course) => course.id),
 });
 
 const closeCourseAssignment = () => {
@@ -42,17 +65,19 @@ const closeCourseAssignment = () => {
 
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
-        route('courses-section.assign', { section: props.section.id }),
+        route("courses-section.assign", { section: props.section.id }),
         {
             onSuccess: () => {
                 Swal.fire(
-                    'Successful!',
-                    'Courses assigned successfully.',
-                    'success'
+                    "Successful!",
+                    "Courses assigned successfully.",
+                    "success"
                 );
                 assignCourses.value = false;
                 courseAssignmentForm.reset();
-                courseAssignmentForm.courses = props.section.courses.map(course => course.id);
+                courseAssignmentForm.courses = props.section.courses.map(
+                    (course) => course.id
+                );
             },
         }
     );
@@ -65,8 +90,12 @@ const instructorAssignmentForm = useForm({
 const openInstructorAssignemnt = (course) => {
     assignInstructor.value = true;
     assignToCourse.value = course;
-    elegibleInstructorsList.value = props.instructors.filter(instructor => instructor.courses.some(c => c.id == assignToCourse.value.id))
-    instructorAssignmentForm.instructor_id = course.instructor ? course.instructor.id : ""; 
+    elegibleInstructorsList.value = props.instructors.filter((instructor) =>
+        instructor.courses.some((c) => c.id == assignToCourse.value.id)
+    );
+    instructorAssignmentForm.instructor_id = course.instructor
+        ? course.instructor.id
+        : "";
 };
 
 const closeInstructorAssignemnt = () => {
@@ -77,13 +106,16 @@ const closeInstructorAssignemnt = () => {
 
 const submitInstructorAssignment = () => {
     instructorAssignmentForm.post(
-        route('instructor-courseSection.assign', { section: props.section.id, course: assignToCourse.value.id}),
+        route("instructor-courseSection.assign", {
+            section: props.section.id,
+            course: assignToCourse.value.id,
+        }),
         {
             onSuccess: () => {
                 Swal.fire(
-                    'Successful!',
-                    'Instructors assigned successfully.',
-                    'success'
+                    "Successful!",
+                    "Instructors assigned successfully.",
+                    "success"
                 );
                 assignInstructor.value = false;
                 instructorAssignmentForm.reset();
@@ -92,208 +124,407 @@ const submitInstructorAssignment = () => {
     );
 };
 
-</script>
+const moveCourse = ref(null);
+const popoverX = ref(0);
+const popoverY = ref(0);
+const targetYear = ref(null);
+const targetSemester = ref(null);
 
+// store button DOM nodes by course id
+const buttonRefs = {};
+
+// called when you click “Move”
+function openMovePopover(course) {
+    moveCourse.value = course.id;
+    targetYear.value = course.yearLevel;
+    targetSemester.value = course.semester;
+
+    // wait for the click to register the ref
+    nextTick(() => {
+        const btn = buttonRefs[course.id];
+        if (!btn) return;
+        const { x, y, height } = btn.getBoundingClientRect();
+        // include any scrolling
+        popoverX.value = x + window.scrollX;
+        popoverY.value = y + height + window.scrollY + 4;
+    });
+}
+
+function submitMove(course) {
+    // … your existing move logic …
+    moveCourse.value = null;
+}
+</script>
 
 <template>
     <div class="">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Courses
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Courses Of Year {{ selectedYearLevel }}
+                <span class="text-indigo-600"
+                    >Semester {{ selectedSemester }}</span
+                >
+                {{
+                    selectedYearLevel == currentYearLevel &&
+                    selectedSemester == currentSemesterLevel
+                        ? "(Current)"
+                        : ""
+                }}
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
-                class="flex text-indigo-600 hover:text-indigo-800"
+                class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800"
             >
                 <component
                     :is="assignCourses ? XMarkIcon : PlusCircleIcon"
-                    class="w-8 h-8"
+                    class="w-6 h-6"
                 />
-                Assign Courses
+                <span class="font-medium">
+                    {{ assignCourses ? "Close" : "Assign Courses" }}
+                </span>
             </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap items-end gap-4 mb-2">
+            <div class="flex flex-col">
+                <label
+                    for="year-select"
+                    class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Year Level
+                </label>
+                <select
+                    id="year-select"
+                    v-model="selectedYearLevel"
+                    class="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    <option
+                        v-for="i in section.track.duration"
+                        :key="i"
+                        :value="i"
+                    >
+                        Year {{ i }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label
+                    for="semester-select"
+                    class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Semester
+                </label>
+                <select
+                    id="semester-select"
+                    v-model="selectedSemester"
+                    class="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    <option
+                        v-for="i in section.track.duration"
+                        :key="i"
+                        :value="i"
+                    >
+                        Semester {{ i }}
+                    </option>
+                </select>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
             <div
-                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="mt-4 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
-                <div class="flex items-center justify-between mb-4">
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                        Courses
-                    </h2>
-                </div>
                 <!-- Section courses list -->
                 <div class="overflow-x-auto">
-                    <table
-                        class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                    <transition
+                        mode="out-in"
+                        enter-active-class="transition duration-300 ease-out"
+                        enter-from-class="opacity-0 scale-75"
+                        enter-to-class="opacity-100 scale-100"
+                        leave-active-class="transition duration-200 ease-in"
+                        leave-from-class="opacity-100 scale-100"
+                        leave-to-class="opacity-0 scale-75"
                     >
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700">
-                                <th
-                                    class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    No.
-                                </th>
-                                <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    Name
-                                </th>
-                                <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    Course Code
-                                </th>
-                                <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Credit Hours
-                                </th>
-                                <th
-                                    class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Instructor
-                                </th>
-                                <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Actions
-                                </th>
-                                <th
-                                    class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Status
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(course, index) in section.courses"
-                                :key="course.id"
-                                :class="
-                                    index % 2 === 0
-                                        ? 'bg-white dark:bg-gray-800'
-                                        : 'bg-gray-50 dark:bg-gray-700'
-                                "
-                                class="border-b border-gray-300 dark:border-gray-600"
-                            >
-                                <td
-                                    class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    {{
-                                        index + 1
-                                    }}
-                                </td>
-
-                                <td
-                                    class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    <Link
-                                        :href="
-                                            route('courses.show', {
-                                                course: course.id,
-                                            })
-                                        "
+                        <table
+                            class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                            :key="filteredCourses"
+                        >
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-700">
+                                    <th
+                                        class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ course.name }}
-                                    </Link>
-                                </td>
-                                <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    {{ course.code }}
-                                </td>
-                                <td
-                                    class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    {{ course.creditHour }}
-                                </td>
-
-                                <td
-                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                >
-                                    <span
-                                        v-if="course.instructor"
-                                        class="flex justify-between"
+                                        No.
+                                    </th>
+                                    <th
+                                        class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        <Link :href="route('instructors.show', {instructor: course.instructor})">
-                                            {{ course.instructor.name }}
-                                        </Link>
-                                        <PencilSquareIcon
-                                            @click="
-                                                openInstructorAssignemnt(course)
-                                            "
-                                            class="w-5 text-green-600 cursor-pointer"
-                                        />
-                                    </span>
-                                    <span v-else>
-                                        <button
-                                            @click="
-                                                openInstructorAssignemnt(course)
-                                            "
-                                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-1 rounded-lg shadow-md transition mr-5"
-                                        >
-                                            Assign
-                                        </button>
-                                    </span>
-                                </td>
-                                <!-- Course Assessments showed if instructors are assigned-->
-                                <td>
-                                    <Link
-                                        v-if="course.instructor"
-                                        :href="
-                                            route(
-                                                'assessments.section_course',
-                                                {
+                                        Name
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        Course Code
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Credit Hours
+                                    </th>
+                                    <th
+                                        class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Instructor
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Actions
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Status
+                                    </th>
+                                    <th
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    >
+                                        Operations
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(course, index) in filteredCourses"
+                                    :key="course.id"
+                                    :class="
+                                        index % 2 === 0
+                                            ? 'bg-white dark:bg-gray-800'
+                                            : 'bg-gray-50 dark:bg-gray-700'
+                                    "
+                                    class="border-b border-gray-300 dark:border-gray-600"
+                                >
+                                    <td
+                                        class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        {{ index + 1 }}
+                                    </td>
+
+                                    <td
+                                        class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        <Link
+                                            :href="
+                                                route('courses.show', {
                                                     course: course.id,
-                                                    section: section.id,
-                                                }
-                                            )
-                                        "
-                                        class="text-green-500 hover:text-green-700"
-                                    >
-                                        <CogIcon class="w-5 h-5 inline-block" />
-                                        <span class="inline-block"
-                                            >Assessments</span
+                                                })
+                                            "
                                         >
-                                    </Link>
-                                    <span
-                                        v-else
-                                        class="text-red-500 cursor-not-allowed"
-                                    ><InformationCircleIcon class="w-5 h-5 inline-block" />
-                                        <span class="inline-block">
-                                             No Instructor</span>
-                                    </span>
-                                </td>
-                                
-                                <!-- Course Grades -->
-                                <td
-                                    class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                            {{ course.name }}
+                                        </Link>
+                                    </td>
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                    <span
-                                        :class="section.grades && section.grades.filter(grade => grade.course_id === course.id).length > 0 
-                                            ? 'text-green-500 cursor-not-allowed' 
-                                            : 'text-red-500 cursor-not-allowed'"
+                                        {{ course.code }}
+                                    </td>
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{
-                                            section.grades && section.grades.filter(grade => grade.course_id === course.id).length > 0
-                                                ? 'Grade Submitted'
-                                                : 'Not Submitted'
-                                        }}
-                                    </span>
-                                </td>
+                                        {{ course.creditHour }}
+                                    </td>
 
+                                    <td
+                                        class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        <span
+                                            v-if="course.instructor"
+                                            class="flex justify-between"
+                                        >
+                                            <Link
+                                                :href="
+                                                    route('instructors.show', {
+                                                        instructor:
+                                                            course.instructor,
+                                                    })
+                                                "
+                                            >
+                                                {{ course.instructor.name }}
+                                            </Link>
+                                            <PencilSquareIcon
+                                                @click="
+                                                    openInstructorAssignemnt(
+                                                        course
+                                                    )
+                                                "
+                                                class="w-5 text-green-600 cursor-pointer"
+                                            />
+                                        </span>
+                                        <span v-else>
+                                            <button
+                                                @click="
+                                                    openInstructorAssignemnt(
+                                                        course
+                                                    )
+                                                "
+                                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-1 rounded-lg shadow-md transition mr-5"
+                                            >
+                                                Assign
+                                            </button>
+                                        </span>
+                                    </td>
+                                    <!-- Course Assessments showed if instructors are assigned-->
+                                    <td>
+                                        <Link
+                                            v-if="course.instructor"
+                                            :href="
+                                                route(
+                                                    'assessments.section_course',
+                                                    {
+                                                        course: course.id,
+                                                        section: section.id,
+                                                    }
+                                                )
+                                            "
+                                            class="text-green-500 hover:text-green-700"
+                                        >
+                                            <CogIcon
+                                                class="w-5 h-5 inline-block"
+                                            />
+                                            <span class="inline-block"
+                                                >Assessments</span
+                                            >
+                                        </Link>
+                                        <span
+                                            v-else
+                                            class="text-red-500 cursor-not-allowed"
+                                            ><InformationCircleIcon
+                                                class="w-5 h-5 inline-block"
+                                            />
+                                            <span class="inline-block">
+                                                No Instructor</span
+                                            >
+                                        </span>
+                                    </td>
 
-
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <!-- Course Grades -->
+                                    <td
+                                        class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        <span
+                                            :class="
+                                                section.grades &&
+                                                section.grades.filter(
+                                                    (grade) =>
+                                                        grade.course_id ===
+                                                        course.id
+                                                ).length > 0
+                                                    ? 'text-green-500 cursor-not-allowed'
+                                                    : 'text-red-500 cursor-not-allowed'
+                                            "
+                                        >
+                                            {{
+                                                section.grades &&
+                                                section.grades.filter(
+                                                    (grade) =>
+                                                        grade.course_id ===
+                                                        course.id
+                                                ).length > 0
+                                                    ? "Grade Submitted"
+                                                    : "Not Submitted"
+                                            }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button
+                                            ref="el => (buttonRefs[course.id] = el)"
+                                            @click="openMovePopover(course)"
+                                            class="text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                                        >
+                                            Move
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </transition>
                 </div>
             </div>
         </div>
     </div>
+    <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 scale-95"
+        enter-to-class="opacity-100 scale-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-95"
+    >
+        <Teleport to="body">
+            <div
+                v-if="moveCourse"
+                @click.self="moveCourse = null"
+                class="fixed inset-0 z-40"
+            >
+                <div
+                    class="absolute bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 space-y-2 ring-1 ring-black ring-opacity-5"
+                    :style="{
+                        top: `${popoverY}px`,
+                        left: `${popoverX}px`,
+                        width: '180px',
+                    }"
+                >
+                    <!-- Year Select -->
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Year
+                        <select
+                            v-model="targetYear"
+                            class="mt-1 block w-full px-2 py-1 border rounded focus:ring-indigo-500"
+                        >
+                            <option
+                                v-for="y in section.track.duration"
+                                :key="y"
+                                :value="y"
+                            >
+                                Year {{ y }}
+                            </option>
+                        </select>
+                    </label>
+
+                    <!-- Semester Select -->
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Semester
+                        <select
+                            v-model="targetSemester"
+                            class="mt-1 block w-full px-2 py-1 border rounded focus:ring-indigo-500"
+                        >
+                            <option
+                                v-for="s in section.track.duration"
+                                :key="s"
+                                :value="s"
+                            >
+                                Semester {{ s }}
+                            </option>
+                        </select>
+                    </label>
+
+                    <!-- Confirm Button -->
+                    <button
+                        @click="submitMove(moveCourse)"
+                        class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3 py-1 rounded-lg"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </Teleport>
+    </transition>
 
     <Modal
         :show="assignCourses"
@@ -332,7 +563,11 @@ const submitInstructorAssignment = () => {
                     :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ courseAssignmentForm.processing ? "Assigning..." : "Assign" }}
+                    {{
+                        courseAssignmentForm.processing
+                            ? "Assigning..."
+                            : "Assign"
+                    }}
                 </button>
 
                 <button
@@ -353,7 +588,9 @@ const submitInstructorAssignment = () => {
     >
         <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">
-                Select Instructor You Would like To Assign To The Course "{{ assignToCourse.name }}" In Section {{ section.name }}
+                Select Instructor You Would like To Assign To The Course "{{
+                    assignToCourse.name
+                }}" In Section {{ section.name }}
             </h1>
 
             <h2>Eligible Instructors List</h2>
@@ -361,7 +598,9 @@ const submitInstructorAssignment = () => {
                 id="cousesList"
                 v-model="instructorAssignmentForm.instructor_id"
                 :options="elegibleInstructorsList"
-                :optionLabel="(option) => `${option.name} - (${option.specialization})`"
+                :optionLabel="
+                    (option) => `${option.name} - (${option.specialization})`
+                "
                 option-value="id"
                 appendTo="self"
                 checkmark
@@ -383,7 +622,11 @@ const submitInstructorAssignment = () => {
                     :disabled="instructorAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ instructorAssignmentForm.processing ? "Assigning..." : "Assign" }}
+                    {{
+                        instructorAssignmentForm.processing
+                            ? "Assigning..."
+                            : "Assign"
+                    }}
                 </button>
 
                 <button

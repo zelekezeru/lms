@@ -26,10 +26,11 @@ const props = defineProps({
 const sectionForm = useForm({
     name: "",
     track_id: props.track.id,
-    user_id: 1,
     program_id: props.track.program.id,
+    user_id: "",
     year_id: "",
     semester_id: "",
+    study_mode_id: "",
     fees: "",
 });
 
@@ -92,17 +93,22 @@ const addSection = () => {
                             No.
                         </th>
                         <th
-                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                         >
                             Name
                         </th>
                         <th
-                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            Study Mode
+                        </th>
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
                             Year
                         </th>
                         <th
-                            class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
                             Semster
                         </th>
@@ -143,6 +149,12 @@ const addSection = () => {
                                 {{ section.name }}
                             </Link>
                         </td>
+                        <td
+                            class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{ section.studyMode ? section.studyMode.id : 'N/A' }}
+                        </td>
+
                         <td
                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
@@ -191,6 +203,21 @@ const addSection = () => {
 
                             <td class="px-4 py-2">
                                 <Select
+                                    id="studyModesList"
+                                    v-model="sectionForm.study_mode_id"
+                                    :options="track.program.studyModes"
+                                    option-value="id"
+                                    option-label="name"
+                                    checkmark
+                                    filter
+                                    placeholder="Select Study Mode"
+                                    :maxSelectevdLabels="3"
+                                    class="w-40"
+                                />
+                            </td>
+                            
+                            <td class="px-4 py-2">
+                                <Select
                                     id="yearsList"
                                     v-model="sectionForm.year_id"
                                     :options="years"
@@ -200,7 +227,7 @@ const addSection = () => {
                                     filter
                                     placeholder="Select Year"
                                     :maxSelectevdLabels="3"
-                                    class="w-full"
+                                    class="w-40"
                                 />
                             </td>
 
@@ -215,8 +242,10 @@ const addSection = () => {
                                     filter
                                     placeholder="Select Semster"
                                     :maxSelectevdLabels="3"
-                                    class="w-full"
+                                    class="w-40"
                                 />
+                            </td>
+                            <td>
                                 <PrimaryButton
                                     class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
                                     @click="addSection"

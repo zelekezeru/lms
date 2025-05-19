@@ -17,7 +17,8 @@ class StudyModeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'program' => $this->whenLoaded('program'),
+            'program' => new ProgramResource($this->whenLoaded('program')),
+            'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
             'duration' => $this->whenPivotLoaded('program_study_mode', function () { 
                 return $this->pivot->duration;
             }),

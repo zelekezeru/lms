@@ -92,11 +92,12 @@ class TrackController extends Controller
         $track = Track::create($fields);
         $studyModes = $track->program->studyModes->pluck('id');
         
-        // Create Section-1 by default for each study modes the program that the created track belongs has.
-        $sections = $studyModes->map(function ($studyModeId) use ($fields, $track) {
+        $year = substr(Carbon::now()->year, -2);
+        // Create Section-1 by default for each study modes the program that the created track belongs to has.
+        $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
             return Section::create([
                 'name' => 'Section-1',
-                'code' => 'section-1-'.$track->id.$studyModeId,
+                'code' => 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                 'program_id' => $fields['program_id'],
                 'track_id' => $track->id,
                 'study_mode_id' => $studyModeId,
@@ -125,7 +126,7 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
+        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode','curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
 
         $courses = CourseResource::collection(Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
             return $query->where('tracks.id', $track->id);

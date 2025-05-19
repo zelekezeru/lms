@@ -42,6 +42,8 @@ class SectionResource extends JsonResource
                         'name' => $assignment->course->name,
                         'code' => $assignment->course->code,
                         'creditHour' => $assignment->course->credit_hours,
+                        'yearLevel' => $assignment->year_level,
+                        'semester' => $assignment->semester,
                         'instructor' => $assignment->instructor ? [
                             'id' => $assignment->instructor->id,
                             'name' => $assignment->instructor->user->name,

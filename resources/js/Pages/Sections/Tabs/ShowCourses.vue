@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineProps, nextTick, ref, Teleport } from "vue";
-import { Link, useForm } from "@inertiajs/vue3";
+import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
@@ -10,7 +10,7 @@ import {
     PlusCircleIcon,
 } from "@heroicons/vue/24/solid";
 import Modal from "@/Components/Modal.vue";
-import { Listbox } from "primevue";
+import { Button, Listbox, Popover } from "primevue";
 import InputError from "@/Components/InputError.vue";
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
@@ -124,36 +124,47 @@ const submitInstructorAssignment = () => {
     );
 };
 
-const moveCourse = ref(null);
-const popoverX = ref(0);
-const popoverY = ref(0);
+// Popover state
+const popOverRef = ref(null);
+const selectedCourse = ref(null);
+const targetEvent = ref(null);
 const targetYear = ref(null);
 const targetSemester = ref(null);
 
-// store button DOM nodes by course id
-const buttonRefs = {};
-
-// called when you click “Move”
-function openMovePopover(course) {
-    moveCourse.value = course.id;
+function openMovePopover(event, course) {
+    selectedCourse.value = course;
+    targetEvent.value = event;
     targetYear.value = course.yearLevel;
     targetSemester.value = course.semester;
-
-    // wait for the click to register the ref
-    nextTick(() => {
-        const btn = buttonRefs[course.id];
-        if (!btn) return;
-        const { x, y, height } = btn.getBoundingClientRect();
-        // include any scrolling
-        popoverX.value = x + window.scrollX;
-        popoverY.value = y + height + window.scrollY + 4;
-    });
+    // show popover next to the clicked element
+    popOverRef.value.show(event);
 }
 
-function submitMove(course) {
-    // … your existing move logic …
-    moveCourse.value = null;
+const form = useForm({
+  course_id: null,
+  year: null,
+  semester: null,
+});
+
+function submitMove() {
+  if (!selectedCourse.value) return;
+
+  form.course_id = selectedCourse.value.id;
+  form.year = targetYear.value;
+  form.semester = targetSemester.value;
+
+  form.post(route('update-section-course', {section: props.section.id}), {
+    onSuccess: () => {
+      Swal.fire('Success', `Course moved successfully.`, 'success');
+      popOverRef.value.hide();
+      selectedCourse.value = null;
+    },
+    onError: () => {
+      Swal.fire('Error', `There was a problem moving the course.`, 'error');
+    }
+  });
 }
+
 </script>
 
 <template>
@@ -438,13 +449,15 @@ function submitMove(course) {
                                         </span>
                                     </td>
                                     <td>
-                                        <button
-                                            ref="el => (buttonRefs[course.id] = el)"
-                                            @click="openMovePopover(course)"
-                                            class="text-indigo-600 hover:text-indigo-800 focus:outline-none"
-                                        >
-                                            Move
-                                        </button>
+                                        <Button
+                                            type="button"
+                                            icon="pi pi-arrows"
+                                            label="Move"
+                                            @click="
+                                                (e) =>
+                                                    openMovePopover(e, course)
+                                            "
+                                        />
                                     </td>
                                 </tr>
                             </tbody>
@@ -454,78 +467,47 @@ function submitMove(course) {
             </div>
         </div>
     </div>
-    <transition
-        enter-active-class="transition ease-out duration-200"
-        enter-from-class="opacity-0 scale-95"
-        enter-to-class="opacity-100 scale-100"
-        leave-active-class="transition ease-in duration-150"
-        leave-from-class="opacity-100 scale-100"
-        leave-to-class="opacity-0 scale-95"
-    >
-        <Teleport to="body">
-            <div
-                v-if="moveCourse"
-                @click.self="moveCourse = null"
-                class="fixed inset-0 z-40"
-            >
-                <div
-                    class="absolute bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 space-y-2 ring-1 ring-black ring-opacity-5"
-                    :style="{
-                        top: `${popoverY}px`,
-                        left: `${popoverX}px`,
-                        width: '180px',
-                    }"
+    <Popover ref="popOverRef">
+        <div v-if="selectedCourse" class="space-y-4 w-64">
+            <h3 class="font-semibold">
+                Move
+                {{ selectedCourse.name }}
+            </h3>
+            <div>
+                <label class="block text-sm">Year</label>
+                <select
+                    v-model="targetYear"
+                    class="mt-1 block w-full border rounded"
                 >
-                    <!-- Year Select -->
-                    <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    <option
+                        v-for="y in section.track.duration"
+                        :key="y"
+                        :value="y"
                     >
-                        Year
-                        <select
-                            v-model="targetYear"
-                            class="mt-1 block w-full px-2 py-1 border rounded focus:ring-indigo-500"
-                        >
-                            <option
-                                v-for="y in section.track.duration"
-                                :key="y"
-                                :value="y"
-                            >
-                                Year {{ y }}
-                            </option>
-                        </select>
-                    </label>
-
-                    <!-- Semester Select -->
-                    <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                    >
-                        Semester
-                        <select
-                            v-model="targetSemester"
-                            class="mt-1 block w-full px-2 py-1 border rounded focus:ring-indigo-500"
-                        >
-                            <option
-                                v-for="s in section.track.duration"
-                                :key="s"
-                                :value="s"
-                            >
-                                Semester {{ s }}
-                            </option>
-                        </select>
-                    </label>
-
-                    <!-- Confirm Button -->
-                    <button
-                        @click="submitMove(moveCourse)"
-                        class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3 py-1 rounded-lg"
-                    >
-                        Confirm
-                    </button>
-                </div>
+                        Year {{ y }}
+                    </option>
+                </select>
             </div>
-        </Teleport>
-    </transition>
-
+            <div>
+                <label class="block text-sm">Semester</label>
+                <select
+                    v-model="targetSemester"
+                    class="mt-1 block w-full border rounded"
+                >
+                    <option
+                        v-for="s in section.track.duration"
+                        :key="s"
+                        :value="s"
+                    >
+                        Semester {{ s }}
+                    </option>
+                </select>
+            </div>
+            <div class="flex justify-end">
+                <Button label="Confirm" @click="submitMove" />
+            </div>
+        </div>
+    </Popover>
     <Modal
         :show="assignCourses"
         @close="assignCourses = !assignCourses"

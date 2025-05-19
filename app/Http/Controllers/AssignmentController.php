@@ -75,7 +75,7 @@ class AssignmentController extends Controller
                 return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
             })
             ->toArray();
-            
+
         $student->courses()->sync($coursesWithStatus);
 
         $student->status()->update([
@@ -134,13 +134,12 @@ class AssignmentController extends Controller
             return redirect()
                 ->route('programs.show', $program->id)
                 ->with('error', 'Study Mode already assigned to this program.');
-        }
-        else {
+        } else {
             $program->studyModes()->attach($studyMode, [
                 'duration' => $fields['duration'],
             ]);
         }
-    
+
 
         $program->studyModes()->syncWithoutDetaching([
             $fields['study_mode_id'] => ['duration' => $fields['duration']],
@@ -149,5 +148,27 @@ class AssignmentController extends Controller
         return redirect()
             ->route('programs.show', $program->id)
             ->with('success', 'Study Mode assigned successfully.');
+    }
+
+
+    public function updateSectionCourse(Request $request, Section $section)
+    {
+        $validated = $request->validate([
+            'course_id' => ['required', 'exists:courses,id'],
+            'year' => ['required', 'integer', 'min:1'],
+            'semester' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $course = $section->courses()->where('courses.id', $validated['course_id'])->first();
+
+        if (!$course) {
+            return back()->withErrors(['course_id' => 'Course not found in this section.']);
+        }
+
+        $course->pivot->year_level = $validated['year'];
+        $course->pivot->semester = $validated['semester'];
+        $course->pivot->save();
+
+        return back()->with('success', 'Course updated successfully.');
     }
 }

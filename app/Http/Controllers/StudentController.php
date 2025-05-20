@@ -314,17 +314,34 @@ class StudentController extends Controller
      */
     public function registerSemester(Request $request, Student $student)
     {
-        $request->validate([
+        $fields = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
         ]);
+        
+        $section = $student->section;
+        $semester = Semester::find($fields['semester_id']);
+        $year = $semester->year;
 
+        $semesterLevel = $semester->level;
+        $yearLevel = intval($year->name) - intval($section->year->name) + 1;
+
+        $sectionCourseIds = $section->courseSectionAssignments()->where('semester', $semesterLevel)->where('year_level', $yearLevel)->with('course')->get()->pluck('course.id');
+        $organizedCourses = [];
+        foreach ($sectionCourseIds as $courseId) {
+            $organizedCourses[$courseId] = [
+                'section_id' => $section->id
+            ];
+        }
+        
+        $student->courses()->attach($organizedCourses);
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
             ->where('student_id', $student->id)
             ->whereIn('status', ['Active', 'Enrolled'])
             ->update(['status' => 'Completed']);
+            
 
-        // Upsert the new/selected semester as Active for this student
+            // Upsert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [
                 'student_id' => $student->id,
@@ -336,6 +353,7 @@ class StudentController extends Controller
                 'created_at' => now(),
             ]
         );
+
         return back()->with('success', 'Student registered to semester successfully.');
     }
 

@@ -12,7 +12,11 @@ import {
 import Modal from "@/Components/Modal.vue";
 import { Button, Listbox, Popover } from "primevue";
 import InputError from "@/Components/InputError.vue";
-import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import {
+    ArrowsRightLeftIcon,
+    InformationCircleIcon,
+} from "@heroicons/vue/24/outline";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 const props = defineProps({
     section: {
         type: Object,
@@ -141,30 +145,33 @@ function openMovePopover(event, course) {
 }
 
 const form = useForm({
-  course_id: null,
-  year: null,
-  semester: null,
+    course_id: null,
+    year: null,
+    semester: null,
 });
 
 function submitMove() {
-  if (!selectedCourse.value) return;
+    if (!selectedCourse.value) return;
 
-  form.course_id = selectedCourse.value.id;
-  form.year = targetYear.value;
-  form.semester = targetSemester.value;
+    form.course_id = selectedCourse.value.id;
+    form.year = targetYear.value;
+    form.semester = targetSemester.value;
 
-  form.post(route('update-section-course', {section: props.section.id}), {
-    onSuccess: () => {
-      Swal.fire('Success', `Course moved successfully.`, 'success');
-      popOverRef.value.hide();
-      selectedCourse.value = null;
-    },
-    onError: () => {
-      Swal.fire('Error', `There was a problem moving the course.`, 'error');
-    }
-  });
+    form.post(route("update-section-course", { section: props.section.id }), {
+        onSuccess: () => {
+            Swal.fire("Success", `Course moved successfully.`, "success");
+            popOverRef.value.hide();
+            selectedCourse.value = null;
+        },
+        onError: () => {
+            Swal.fire(
+                "Error",
+                `There was a problem moving the course.`,
+                "error"
+            );
+        },
+    });
 }
-
 </script>
 
 <template>
@@ -333,7 +340,7 @@ function submitMove() {
                                                 })
                                             "
                                         >
-                                            {{ course.name }}
+                                            e{{ course.name }}
                                         </Link>
                                     </td>
                                     <td
@@ -449,15 +456,17 @@ function submitMove() {
                                         </span>
                                     </td>
                                     <td>
-                                        <Button
+                                        <PrimaryButton
                                             type="button"
-                                            icon="pi pi-arrows"
-                                            label="Move"
+                                            class="!bg-green-500 "
                                             @click="
                                                 (e) =>
                                                     openMovePopover(e, course)
                                             "
-                                        />
+                                        >
+                                            <ArrowsRightLeftIcon class="w-5" />
+                                            Move
+                                        </PrimaryButton>
                                     </td>
                                 </tr>
                             </tbody>

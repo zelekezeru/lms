@@ -249,7 +249,7 @@ function submitMove() {
                 </select>
             </div>
         </div>
-
+        
         <div class="overflow-x-auto">
             <div
                 class="mt-4 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
@@ -313,9 +313,10 @@ function submitMove() {
                                     </th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 <tr
-                                    v-for="(course, index) in filteredCourses"
+                                    v-for="(course, index) in courses"
                                     :key="course.id"
                                     :class="
                                         index % 2 === 0
@@ -340,7 +341,7 @@ function submitMove() {
                                                 })
                                             "
                                         >
-                                            e{{ course.name }}
+                                            {{ course.name }}
                                         </Link>
                                     </td>
                                     <td
@@ -351,7 +352,7 @@ function submitMove() {
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ course.creditHour }}
+                                        {{ course.credit_hours }}
                                     </td>
 
                                     <td
@@ -517,6 +518,7 @@ function submitMove() {
             </div>
         </div>
     </Popover>
+
     <Modal
         :show="assignCourses"
         @close="assignCourses = !assignCourses"

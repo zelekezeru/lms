@@ -67,11 +67,6 @@ defineProps({
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
                         </div>
-                        <!-- <div v-if="userCan('delete-courses')">
-                            <button @click="deleteCourse(course.id)" class="text-red-500 hover:text-red-700">
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
-                        </div> -->
                     </td>
                 </TableZebraRows>
             </tbody>

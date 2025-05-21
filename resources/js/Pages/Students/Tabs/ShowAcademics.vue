@@ -10,8 +10,10 @@ import { Listbox } from "primevue";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { AcademicCapIcon } from "@heroicons/vue/24/outline";
+import { AcademicCapIcon, CheckBadgeIcon, PresentationChartBarIcon } from "@heroicons/vue/24/outline";
 import ShowSemesters from "./ShowSemesters.vue";
+import ShowResults from "./ShowResults.vue";
+import ShowGrades from "./ShowGrades.vue";
 
 const props = defineProps({
     student: {
@@ -36,8 +38,11 @@ const props = defineProps({
 const selectedTab = ref('academics');
 
 const tabs = [
-    { key: 'academics', label: 'Academics', icon: AcademicCapIcon },
+    { key: 'academics', label: 'Academic Info', icon: AcademicCapIcon },
     { key: 'semesters', label: 'Semesters', icon: CogIcon },
+    { key: 'Results', label: 'results', icon: PresentationChartBarIcon },
+    { key: 'grades', label: 'Grades', icon: CheckBadgeIcon },
+
 ];
 // Assign Student to Section
 
@@ -243,13 +248,25 @@ const addSection = () => {
                             </td>
                         </tr>
                     </transition>
-
                 </div>
             </div>
             <!-- Closing the div for Academic Information -->
         </div>
         <ShowSemesters
             v-else-if="selectedTab === 'semesters'"
+            :student="student"
+            :semesters="semesters"
+            :activeSemester="activeSemester"
+        />
+        <ShowResults
+            v-else-if="selectedTab === 'results'"
+            :student="student"
+            :section="student.section"
+            :courses="student.courses"
+            :activeSemester="student.semester"
+        />
+        <ShowGrades
+            v-else-if="selectedTab === 'grades'"
             :student="student"
             :semesters="semesters"
             :activeSemester="activeSemester"

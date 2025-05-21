@@ -101,6 +101,7 @@ class SectionController extends Controller
 
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $section->semester->level;
+        
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
         return Inertia::render('Sections/Show', [
             'section' => $section,

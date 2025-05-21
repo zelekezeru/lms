@@ -316,7 +316,7 @@ function submitMove() {
 
                             <tbody>
                                 <tr
-                                    v-for="(course, index) in courses"
+                                    v-for="(course, index) in filteredCourses"
                                     :key="course.id"
                                     :class="
                                         index % 2 === 0

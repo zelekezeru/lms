@@ -39,19 +39,15 @@ class SectionController extends Controller
     {
         $tracks = TrackResource::collection(Track::all());
 
-        $programs = ProgramResource::collection(Program::all());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
-        $years = YearResource::collection(Year::all()->sortBy('name', true));
-
-        $semesters = SemesterResource::collection(Semester::all()->sortBy('name'));
+        $years = YearResource::collection(Year::with('semesters')->get()->sortBy('name'));
 
         $users = UserResource::collection(User::all()->sortBy('name'));
 
         return Inertia::render('Sections/Create', [
-            'tracks' => $tracks,
             'programs' => $programs,
             'years' => $years,
-            'semesters' => $semesters,
             'users' => $users,
         ]);
     }

@@ -7,9 +7,7 @@ import { useForm } from "@inertiajs/vue3";
 const props = defineProps({
     users: { type: Array, required: true },
     programs: { type: Array, required: true },
-    tracks: { type: Array, required: true },
     years: { type: Array, required: true },
-    semesters: { type: Array, required: true },
 });
 
 // Form initialization
@@ -21,6 +19,7 @@ const form = useForm({
     track_id: "",
     year_id: "",
     semester_id: "",
+    study_mode_id: "",
 });
 
 // Submit handler
@@ -46,9 +45,7 @@ const submit = () => {
                 :form="form"
                 :users="users"
                 :programs="programs"
-                :tracks="tracks"
                 :years="years"
-                :semesters="semesters"
                 @submit="submit"
             />
         </div>

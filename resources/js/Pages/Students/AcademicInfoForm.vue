@@ -161,7 +161,7 @@ const emit = defineEmits(["next", "previous"]);
                 />
             </div>
 
-            <!-- Tracks Dropdown-->
+            <!-- Study Modes Dropdown-->
             <div>
                 <InputLabel
                     for="track_id"

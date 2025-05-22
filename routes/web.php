@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
+use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ScheduleController;
@@ -18,17 +19,26 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
+    // Student Dashboard
     Route::get('/', function() {
         if (request()->user()->hasRole('STUDENT')) {
             return redirect(route('student.dashboard'));
-        } else {
+        } 
+        elseif (request()->user()->hasRole('INSTRUCTOR')) {
+            return redirect(route('instructor.dashboard'));            
+        } 
+        elseif (request()->user()->hasRole('EMPLOYEE')) {
+            return redirect(route('employee.dashboard'));
+        }
+        else {
             return redirect(route('admin.dashboard'));
         }
     })->name('dashboard');
 
+    // Admin Dashboard
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
     
+            // Student Portal
         Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
             Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
             Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
@@ -36,6 +46,16 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
             Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
             Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
+        });
+
+        // Instructor Portal
+        Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
+            Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
+            Route::get('/courses', [InstructorPortalController::class, 'courses'])->name('instructor.courses');
+            Route::get('/courses/{course}', [InstructorPortalController::class, 'show'])->name('instructor.courses.show');
+            Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
+            Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
+            Route::get('/schedules', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
         });
         
     // Profiles related routes
@@ -100,9 +120,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
 
-    Route::get('/instructor', function () {
-        return Inertia::render('Instructor');
-    })->name('instructor.dashboard');
+    // Instructor Routes
+    // Route::get('/instructor', function () {
+    //     return Inertia::render('Instructor');
+    // })->name('instructor.dashboard');
 
     // INstructor related routes
     Route::get('/instructor/course', function () {

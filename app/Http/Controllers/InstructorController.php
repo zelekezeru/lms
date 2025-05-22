@@ -31,7 +31,14 @@ class InstructorController extends Controller
                 ->orWhere('employment_type', 'LIKE', "%{$search}%");
         }
 
-        $instructors = InstructorResource::collection($query->paginate(15)->withQueryString());
+        // Move orderBy('name') before paginate()
+        $instructors = InstructorResource::collection(
+            $query->join('users', 'instructors.user_id', '=', 'users.id')
+                ->orderBy('users.name')
+                ->select('instructors.*')
+                ->paginate(15)
+                ->withQueryString()
+        );
 
         return inertia('Instructors/Index', [
             'instructors' => $instructors,
@@ -48,7 +55,7 @@ class InstructorController extends Controller
 
         $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor) {
             return $query->where('instructors.id', $instructor->id);
-        }])->orderByDesc('related_to_instructor', 'name')->get());
+        }])->orderBy('name')->orderByDesc('related_to_instructor', 'name')->get());
 
         return Inertia::render('Instructors/Show', [
             'instructor' => $instructor,

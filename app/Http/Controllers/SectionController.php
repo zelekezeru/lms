@@ -91,8 +91,8 @@ class SectionController extends Controller
 
         $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
             return $query->where('sections.id', $section->id);
-        }])->orderByDesc('related_to_section')->orderBy('name')->get());
-
+        }])->orderBy('name')->orderByDesc('related_to_section')->get());
+        
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $section->semester->level;
 

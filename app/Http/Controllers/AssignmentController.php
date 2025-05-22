@@ -27,7 +27,7 @@ class AssignmentController extends Controller
     // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {
-        dd($request);
+        
         $section->courses()->sync($request['courses']);
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');

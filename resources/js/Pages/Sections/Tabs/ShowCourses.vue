@@ -53,6 +53,8 @@ const filteredCourses = computed(() => {
         courses = courses.filter(
             (course) => course.yearLevel === null && course.semester === null
         );
+        // Sort by name
+        courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     } else {
         // Show courses based on selected filters
         courses = courses.filter(
@@ -60,6 +62,8 @@ const filteredCourses = computed(() => {
                 course.yearLevel === selectedYearLevel.value &&
                 course.semester === selectedSemester.value
         );
+        // Sort by name
+        courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return courses;
@@ -72,7 +76,10 @@ const assignToCourse = ref({});
 const elegibleInstructorsList = ref([]);
 
 const courseAssignmentForm = useForm({
-    courses: props.section.courses.map((course) => course.id),
+    courses: props.section.courses
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((course) => course.id),
 });
 
 const closeCourseAssignment = () => {

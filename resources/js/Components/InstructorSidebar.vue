@@ -45,13 +45,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="AcademicCapIcon"
                     label="Dashboard"
-                    href="/instructor"
+                    :href="route('instructor.dashboard')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="BookOpenIcon"
                     label="My Courses"
-                    href="/instructor/course"
+                    :href="route('instructor.courses')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
@@ -63,13 +63,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="ChartBarIcon"
                     label="Grades"
-                    href="/instructor/grades"
+                    :href="route('instructor.grades')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="CalendarIcon"
                     label="Schedule"
-                    href="/instructor/schedule"
+                    :href="route('instructor.schedule')"
                     :isCollapsed="!isOpen"
                 />
             </nav>
@@ -78,13 +78,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="CogIcon"
                     label="Settings"
-                    href="/settings"
+                    href="#"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="QuestionMarkCircleIcon"
                     label="Help"
-                    href="/help"
+                    href="#"
                     :isCollapsed="!isOpen"
                 />
             </div>

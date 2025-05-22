@@ -63,7 +63,7 @@ const emit = defineEmits(["submit"]);
         <!-- Section Name -->
         <div>
             <InputLabel for="name" value="Section Name" />
-            <input
+            <inputOnly
                 id="name"
                 type="text"
                 v-model="form.name"

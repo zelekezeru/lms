@@ -192,16 +192,22 @@ function submitMove() {
     <div class="">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Courses Of Year {{ selectedYearLevel }}
-                <span class="text-indigo-600"
-                    >Semester {{ selectedSemester }}</span
-                >
-                {{
-                    selectedYearLevel == currentYearLevel &&
-                    selectedSemester == currentSemesterLevel
-                        ? "(Current)"
-                        : ""
-                }}
+                <span v-if="!showUnassignedOnly">
+                    Courses Of Year {{ selectedYearLevel }}
+                    <span class="text-indigo-600"
+                        >Semester {{ selectedSemester }}</span
+                    >
+                    {{
+                        selectedYearLevel == currentYearLevel &&
+                        selectedSemester == currentSemesterLevel
+                            ? "(Current)"
+                            : ""
+                    }}
+
+                </span> 
+                <span v-else>
+                    Courses That Are Not Assigned To A Year and Semester
+                </span>
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
@@ -217,66 +223,71 @@ function submitMove() {
             </button>
         </div>
 
-        <!-- Filters -->
-        <div class="flex flex-wrap items-end gap-4 mb-2">
-            <div class="flex flex-col">
-                <label
-                    for="year-select"
-                    class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                    Year Level
-                </label>
-                <select
-                    id="year-select"
-                    v-model="selectedYearLevel"
-                    class="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                    <option
-                        v-for="i in section.track.duration"
-                        :key="i"
-                        :value="i"
-                    >
-                        Year {{ i }}
-                    </option>
-                </select>
-            </div>
+<!-- Filters -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+    <!-- Year Level -->
+    <div>
+        <label
+            for="year-select"
+            class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+            Year Level
+        </label>
+        <select
+            id="year-select"
+            v-model="selectedYearLevel"
+            class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+            <option
+                v-for="i in section.track.duration"
+                :key="i"
+                :value="i"
+            >
+                Year {{ i }}
+            </option>
+        </select>
+    </div>
 
-            <div class="flex flex-col">
-                <label
-                    for="semester-select"
-                    class="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                    Semester
-                </label>
-                <select
-                    id="semester-select"
-                    v-model="selectedSemester"
-                    class="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                    <option
-                        v-for="i in section.track.duration"
-                        :key="i"
-                        :value="i"
-                    >
-                        Semester {{ i }}
-                    </option>
-                </select>
-            </div>
-            <div class="flex items-center space-x-2">
-                <input
-                    type="checkbox"
-                    id="unassignedOnly"
-                    v-model="showUnassignedOnly"
-                    class="rounded text-indigo-600"
-                />
-                <label
-                    for="unassignedOnly"
-                    class="text-sm text-gray-700 dark:text-gray-300"
-                >
-                    Show Only Courses Not Assigned to Any Curricula
-                </label>
-            </div>
-        </div>
+    <!-- Semester -->
+    <div>
+        <label
+            for="semester-select"
+            class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+            Semester
+        </label>
+        <select
+            id="semester-select"
+            v-model="selectedSemester"
+            class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+            <option
+                v-for="i in section.track.duration"
+                :key="i"
+                :value="i"
+            >
+                Semester {{ i }}
+            </option>
+        </select>
+    </div>
+
+    <!-- Unassigned Only Checkbox -->
+    <div class="flex items-center mt-6">
+        <input
+            type="checkbox"
+            id="unassignedOnly"
+            v-model="showUnassignedOnly"
+            class="w-5 h-5 text-indigo-600 border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600"
+        />
+        <label
+            for="unassignedOnly"
+            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+            Show Only Courses Not Assigned to Any Curricula
+        </label>
+    </div>
+</div>
+
 
         <div class="overflow-x-auto">
             <div

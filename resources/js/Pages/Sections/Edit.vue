@@ -7,19 +7,19 @@ const props = defineProps({
     section: Object,
     users: Array,
     programs: Array,
-    tracks: Array,
     years: Array,
-    semesters: Array,
 });
+console.log(props.section);
 
 const form = useForm({
     name: props.section?.name || "",
     code: props.section?.code || "",
-    user_id: props.section?.user_id || "",
-    program_id: props.section?.program_id || "",
-    track_id: props.section?.track_id || "",
-    year_id: props.section?.year_id || "",
-    semester_id: props.section?.semester_id || "",
+    user_id: props.section.user?.id || "",
+    program_id: props.section.program?.id || "",
+    track_id: props.section.track?.id || "",
+    year_id: props.section.year?.id || "",
+    semester_id: props.section.semester?.id || "",
+    study_mode_id: props.section.studyMode?.id || "",
     _method: "PATCH",
 });
 
@@ -45,9 +45,7 @@ const submit = () => {
                 :form="form"
                 :users="users"
                 :programs="programs"
-                :tracks="tracks"
                 :years="years"
-                :semesters="semesters"
                 @submit="submit"
             />
         </div>

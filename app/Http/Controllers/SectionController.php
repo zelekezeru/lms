@@ -37,8 +37,6 @@ class SectionController extends Controller
 
     public function create()
     {
-        $tracks = TrackResource::collection(Track::all());
-
         $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
         $years = YearResource::collection(Year::with('semesters')->get()->sortBy('name'));
@@ -97,7 +95,7 @@ class SectionController extends Controller
 
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $section->semester->level;
-        
+
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
         return Inertia::render('Sections/Show', [
             'section' => $section,
@@ -107,8 +105,8 @@ class SectionController extends Controller
             'status' => $section->status,
             'isApproved' => $section->is_approved,
             'isCompleted' => $section->is_completed,
-            'currentYearLevel' => $currentYearLevel, 
-            'currentSemesterLevel' => $currentSemesterLevel, 
+            'currentYearLevel' => $currentYearLevel,
+            'currentSemesterLevel' => $currentSemesterLevel,
         ]);
     }
 
@@ -116,21 +114,44 @@ class SectionController extends Controller
     {
         $fields = $request->validated();
 
+                $track = Track::find($fields['track_id']);
+
+        $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
+            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+        }])->get();
+
+        $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
+            $curriculum = $trackCourse->curricula->first();
+            return [
+                $trackCourse->id => [
+                    'year_level' => $curriculum->year_level ?? null,
+                    'semester' => $curriculum->semester ?? null,
+                ]
+            ];
+        });
+
         // Update the section record
         $section->update($fields);
+
+        $section->courses()->sync($trackCoursesOrganized);
 
         return redirect()->route('sections.show', $section)->with('success', 'Section updated successfully.');
     }
 
     public function edit(Section $section)
     {
+        $section = new SectionResource($section->load('program', 'track', 'studyMode', 'year', 'semester', 'user'));
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
+
+        $years = YearResource::collection(Year::with('semesters')->get()->sortBy('name'));
+
+        $users = UserResource::collection(User::all()->sortBy('name'));
+
         return Inertia::render('Sections/Edit', [
-            'section' => $section->load(['user', 'program', 'track', 'year', 'semester']),
-            'programs' => Program::all(),
-            'tracks' => Track::all(),
-            'users' => User::all(),
-            'years' => Year::all(),
-            'semesters' => Semester::all(),
+            'section' => $section,
+            'programs' => $programs,
+            'years' => $years,
+            'users' => $users,
         ]);
     }
 

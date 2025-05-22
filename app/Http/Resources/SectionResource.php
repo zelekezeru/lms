@@ -24,9 +24,10 @@ class SectionResource extends JsonResource
             }),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'year' => new YearResource($this->whenLoaded('year')),
-            'program' => $this->whenLoaded('program'),
-            'track' => $this->whenLoaded('track'),
-            'studyMode' => $this->whenLoaded('studyMode'),
+            'program' => new ProgramResource($this->whenLoaded('program')),
+            'user' => new UserResource($this->whenLoaded('user')),
+            'track' => new TrackResource($this->whenLoaded('track')),
+            'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
             'instructors' => $this->whenLoaded('instructors'),
             'grades' => $this->whenLoaded('grades'),
             

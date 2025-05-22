@@ -20,6 +20,7 @@ class SectionUpdateRequest extends FormRequest
             'track_id' => 'exists:tracks,id',
             'year_id' => 'exists:years,id',
             'semester_id' => 'exists:semesters,id',
+            'study_mode_id' => 'exists:study_modes,id',
         ];
     }
 }

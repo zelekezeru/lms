@@ -43,12 +43,26 @@ const props = defineProps({
 const selectedYearLevel = ref(props.currentYearLevel);
 const selectedSemester = ref(props.currentSemesterLevel);
 
+const showUnassignedOnly = ref(false);
+
 const filteredCourses = computed(() => {
-    return props.section.courses.filter(
-        (course) =>
-            course.yearLevel === selectedYearLevel.value &&
-            course.semester === selectedSemester.value
-    );
+    let courses = props.section.courses;
+
+    if (showUnassignedOnly.value) {
+        // Show only unassigned courses
+        courses = courses.filter(
+            (course) => course.yearLevel === null && course.semester === null
+        );
+    } else {
+        // Show courses based on selected filters
+        courses = courses.filter(
+            (course) =>
+                course.yearLevel === selectedYearLevel.value &&
+                course.semester === selectedSemester.value
+        );
+    }
+
+    return courses;
 });
 
 const assignInstructor = ref(false);
@@ -248,8 +262,22 @@ function submitMove() {
                     </option>
                 </select>
             </div>
+            <div class="flex items-center space-x-2">
+                <input
+                    type="checkbox"
+                    id="unassignedOnly"
+                    v-model="showUnassignedOnly"
+                    class="rounded text-indigo-600"
+                />
+                <label
+                    for="unassignedOnly"
+                    class="text-sm text-gray-700 dark:text-gray-300"
+                >
+                    Show Only Courses Not Assigned to Any Curricula
+                </label>
+            </div>
         </div>
-        
+
         <div class="overflow-x-auto">
             <div
                 class="mt-4 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
@@ -459,7 +487,7 @@ function submitMove() {
                                     <td>
                                         <PrimaryButton
                                             type="button"
-                                            class="!bg-green-500 "
+                                            class="!bg-green-500"
                                             @click="
                                                 (e) =>
                                                     openMovePopover(e, course)

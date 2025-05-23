@@ -1,0 +1,41 @@
+{
+    
+    "admin_dashboard": {
+        "title": "የአስተዳደር ዳሽቦርድ",
+        "subtitle": "LMS አስተዳደር፣ እድገትን አቁም፣ እና ቁልፍ ሜትሪኮችን ይመልከቱ።",
+        "courses": "ኮርሶች",
+        "students": "ተማሪዎች",
+        "instructors": "መምህራን",
+        "revenue": "ገቢ",
+        "enrollment_chart": "ተማሪዎች ምዝገባ በጊዜ",
+        "user_distribution": "የተጠቃሚ ቅርፀት",
+        "manage_instructors": "መምህራንን አስተዳድር"
+      },
+      "table": {
+        "name": "ስም",
+        "email": "ኢሜይል",
+        "specialization": "ስፋት ስራ",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች"
+      },
+      "status": {
+        "active": "ንቁ"
+      },
+      "actions": {
+        "edit": "አርትዕ",
+        "delete": "ሰርዝ"
+      },
+
+    "login": "ግባ",
+    "email": "ኢሜል",
+    "password": "የይለፍ ቃል",
+    "remember_me": "አስታውሰኝ",
+    "forgot_password": "የይለፍ ቃልን ረሱኽ?",
+    "create_account": "መለያ ፍጠር",
+    "welcome_back": "እንኳን ደህና መጡ",
+    "submit": "አስገባ",
+    "forgot_password_title": "የይለፍ ቃል ረስተዋል?",
+    "forgot_password_info": "የይለፍ ቃልዎን ረስተዋል? ምንም ችግር የለም። ኢሜይል አድራሻዎን ያስገቡ፣ እኛም አዲስ የይለፍ ቃል ለመመረጥ የሚያስችል የማስጀመሪያ አገናኝ እንልክልዎታለን።",
+    "email_password_reset_link": "የይለፍ ቃል ማስጀመሪያን በኢሜይል ላክ"
+  }
+  

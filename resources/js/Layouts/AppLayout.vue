@@ -11,6 +11,7 @@ import {
     ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 import Sidebar from "@/Components/Sidebar.vue";
+import LanguageToggle from '@/Components/LanguageToggle.vue';
 
 // Auth User
 const user = computed(() => usePage().props.auth.user);
@@ -81,7 +82,7 @@ const logout = () => {
 
 <template>
     <div
-        class="flex h-screen bg-gray-100 dark:bg-gray-900 relative transition-colors duration-900"
+        class="relative flex h-screen transition-colors bg-gray-100 dark:bg-gray-900 duration-900"
     >
         <Sidebar
             :sidebarHovered="sidebarHovered"
@@ -93,13 +94,13 @@ const logout = () => {
         <!-- Mobile Sidebar Overlay -->
         <div
             v-if="isMobile && sidebarVisible"
-            class="fixed inset-0 bg-gray-800 dark:bg-gray-800 bg-opacity-50 z-40"
+            class="fixed inset-0 z-40 bg-gray-800 bg-opacity-50 dark:bg-gray-800"
             @click="sidebarVisible = false"
         ></div>
 
         <!-- Main Content -->
         <div
-            class="flex-1 flex flex-col transition-margin duration-300 overflow-x-hidden"
+            class="flex flex-col flex-1 overflow-x-hidden duration-300 transition-margin"
             :class="{
                 'ml-64': !isMobile && sidebarVisible,
                 'ml-20': !isMobile && !sidebarVisible,
@@ -107,7 +108,7 @@ const logout = () => {
         >
             <!-- Fixed Navbar -->
             <nav
-                class="fixed top-0 right-0 z-50 border-b border-gray-300 dark:border-gray-700 px-4 py-4 flex justify-between items-center bg-gray-800 text-gray-200 transition-all duration-300"
+                class="fixed top-0 right-0 z-50 flex items-center justify-between px-4 py-4 text-gray-200 transition-all duration-300 bg-gray-800 border-b border-gray-300 dark:border-gray-700"
                 :class="{
                     'left-64': !isMobile && sidebarVisible,
                     'left-20': !isMobile && !sidebarVisible,
@@ -120,13 +121,13 @@ const logout = () => {
                     </button>
                     <button
                         @click="goBack"
-                        class="p-2 hover:bg-gray-700 rounded-md"
+                        class="p-2 rounded-md hover:bg-gray-700"
                     >
                         <ArrowLeftIcon class="w-6 h-6 text-gray-200" />
                     </button>
                     <button
                         @click="goForward"
-                        class="p-2 hover:bg-gray-700 rounded-md"
+                        class="p-2 rounded-md hover:bg-gray-700"
                     >
                         <ArrowRightIcon class="w-6 h-6 text-gray-200" />
                     </button>
@@ -139,7 +140,7 @@ const logout = () => {
                         class="relative nav-item topbar-user dropdown hidden-caret"
                     >
                         <button
-                            class="dropdown-toggle profile-pic flex items-center gap-2 focus:outline-none"
+                            class="flex items-center gap-2 dropdown-toggle profile-pic focus:outline-none"
                             @click="toggleDropdown"
                             aria-expanded="dropdownVisible"
                         >
@@ -151,13 +152,13 @@ const logout = () => {
                                             : '/img/profile.jpg'
                                     "
                                     alt="Profile Image"
-                                    class="avatar-img rounded-circle w-10 h-10"
+                                    class="w-10 h-10 avatar-img rounded-circle"
                                 />
                             </div>
                             <span
-                                class="profile-username text-sm hidden md:block"
+                                class="hidden text-sm profile-username md:block"
                             >
-                                <span class="fw-bold font-semibold">{{
+                                <span class="font-semibold fw-bold">{{
                                     user.name
                                 }}</span>
                             </span>
@@ -166,12 +167,12 @@ const logout = () => {
                         <ul
                             v-show="dropdownVisible"
                             @click.outside="closeDropdown"
-                            class="dropdown-menu dropdown-user animated fadeIn absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 shadow-lg rounded-md z-50"
+                            class="absolute right-0 z-50 w-64 mt-2 bg-white border border-gray-300 rounded-md shadow-lg dropdown-menu dropdown-user animated fadeIn dark:bg-gray-800 dark:border-gray-700"
                         >
                             <div
-                                class="dropdown-user-scroll scrollbar-outer p-4"
+                                class="p-4 dropdown-user-scroll scrollbar-outer"
                             >
-                                <li class="user-box flex items-center gap-4">
+                                <li class="flex items-center gap-4 user-box">
                                     <div class="avatar-lg">
                                         <img
                                             :src="
@@ -180,7 +181,7 @@ const logout = () => {
                                                     : '/img/profile.jpg'
                                             "
                                             alt="Profile Image"
-                                            class="avatar-img rounded-full w-16 h-16"
+                                            class="w-16 h-16 rounded-full avatar-img"
                                         />
                                     </div>
                                     <div class="u-text">
@@ -196,7 +197,7 @@ const logout = () => {
                                         </p>
                                         <Link
                                             :href="route('profile.edit')"
-                                            class="btn btn-xs btn-secondary btn-sm mt-2 inline-block px-3 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                            class="inline-block px-3 py-1 mt-2 text-white bg-gray-800 rounded-md btn btn-xs btn-secondary btn-sm hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                                         >
                                             View Profile
                                         </Link>
@@ -205,43 +206,43 @@ const logout = () => {
 
                                 <li>
                                     <div
-                                        class="dropdown-divider border-t my-2"
+                                        class="my-2 border-t dropdown-divider"
                                     ></div>
                                     <Link
-                                        class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         :href="route('profile.edit')"
                                     >
                                         My Profile
                                     </Link>
                                     <Link
-                                        class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         My Balance
                                     </Link>
                                     <Link
-                                        class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         Inbox
                                     </Link>
                                     <div
-                                        class="dropdown-divider border-t my-2"
+                                        class="my-2 border-t dropdown-divider"
                                     ></div>
                                     <Link
-                                        class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
                                     >
                                         Account Settings
                                     </Link>
                                     <div
-                                        class="dropdown-divider border-t my-2"
+                                        class="my-2 border-t dropdown-divider"
                                     ></div>
                                     <div>
                                         <button
                                             @click="logout"
                                             type="submit"
-                                            class="dropdown-item block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            class="block w-full px-4 py-2 text-left text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         >
                                             Log Out
                                         </button>
@@ -259,6 +260,9 @@ const logout = () => {
                         />
                         <SunIcon v-else class="w-6 h-6 text-gray-200" />
                     </button>
+
+                    <LanguageToggle />
+
                 </div>
             </nav>
 

@@ -94,44 +94,44 @@ onMounted(createCharts);
     <div class="space-y-8">
       <!-- Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Admin Dashboard</h1>
-        <p class="text-gray-600 dark:text-gray-400">Manage the LMS, monitor progress, and overview key metrics.</p>
+        <h1 class="mb-2 text-3xl font-bold text-gray-800 dark:text-white">{{ $t('admin_dashboard.title') }}</h1>
+        <p class="text-gray-600 dark:text-gray-400">{{ $t('admin_dashboard.subtitle') }}</p>
       </div>
 
       <!-- Summary Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
           <div class="flex items-center space-x-4">
             <AcademicCapIcon class="w-8 h-8 text-blue-500" />
             <div>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Courses</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin_dashboard.courses') }}</p>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ courses }}</h2>
             </div>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+        <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
           <div class="flex items-center space-x-4">
             <UserGroupIcon class="w-8 h-8 text-green-500" />
             <div>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Students</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin_dashboard.students') }}</p>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ students }}</h2>
             </div>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+        <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
           <div class="flex items-center space-x-4">
             <ClipboardDocumentCheckIcon class="w-8 h-8 text-yellow-500" />
             <div>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Instructors</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin_dashboard.instructors') }}</p>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ instructors }}</h2>
             </div>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow hover:shadow-lg transition">
+        <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
           <div class="flex items-center space-x-4">
             <CurrencyDollarIcon class="w-8 h-8 text-purple-500" />
             <div>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">Revenue</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin_dashboard.revenue') }}</p>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">$45,000</h2>
             </div>
           </div>
@@ -139,44 +139,46 @@ onMounted(createCharts);
       </div>
 
       <!-- Charts Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-          <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Student Enrollment Over Time</h2>
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="p-6 bg-white shadow-md dark:bg-gray-800 rounded-xl">
+          <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-white">{{ $t('admin_dashboard.enrollment_chart') }}</h2>
           <canvas id="lineChart" class="w-full h-64"></canvas>
         </div>
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-          <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">User Distribution</h2>
+        <div class="p-6 bg-white shadow-md dark:bg-gray-800 rounded-xl">
+          <h2 class="mb-4 text-lg font-semibold text-gray-800 dark:text-white">{{ $t('admin_dashboard.user_distribution') }}</h2>
           <canvas id="pieChart" class="w-full h-64"></canvas>
         </div>
       </div>
 
       <!-- Instructor Management Section -->
-      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+      <div class="p-6 bg-white shadow-md dark:bg-gray-800 rounded-xl">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Manage Instructors</h2>
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $t('admin_dashboard.manage_instructors') }}</h2>
         </div>
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="bg-gray-100 dark:bg-gray-700">
               <tr>
-                <th class="py-3 px-6">Name</th>
-                <th class="py-3 px-6">Email</th>
-                <th class="py-3 px-6">Specialization</th>
-                <th class="py-3 px-6">Status</th>
-                <th class="py-3 px-6">Actions</th>
+                <th class="px-6 py-3">{{ $t('table.name') }}</th>
+                <th class="px-6 py-3">{{ $t('table.email') }}</th>
+                <th class="px-6 py-3">{{ $t('table.specialization') }}</th>
+                <th class="px-6 py-3">{{ $t('table.status') }}</th>
+                <th class="px-6 py-3">{{ $t('table.actions') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900">
-                <td class="py-4 px-6">Dr. Jane Smith</td>
-                <td class="py-4 px-6">jane.smith@example.com</td>
-                <td class="py-4 px-6">Computer Science</td>
-                <td class="py-4 px-6">
-                  <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">Active</span>
+                <td class="px-6 py-4">Dr. Jane Smith</td>
+                <td class="px-6 py-4">jane.smith@example.com</td>
+                <td class="px-6 py-4">Computer Science</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                    {{ $t('status.active') }}
+                  </span>
                 </td>
-                <td class="py-4 px-6 space-x-2">
-                  <button class="text-blue-600 hover:underline">Edit</button>
-                  <button class="text-red-600 hover:underline">Delete</button>
+                <td class="px-6 py-4 space-x-2">
+                  <button class="text-blue-600 hover:underline">{{ $t('actions.edit') }}</button>
+                  <button class="text-red-600 hover:underline">{{ $t('actions.delete') }}</button>
                 </td>
               </tr>
               <!-- Add more instructors here -->
@@ -184,7 +186,7 @@ onMounted(createCharts);
           </table>
         </div>
       </div>
-
     </div>
   </AppLayout>
 </template>
+

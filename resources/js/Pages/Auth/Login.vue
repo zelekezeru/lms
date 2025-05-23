@@ -6,6 +6,8 @@ import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+import LanguageToggle from '@/Components/LanguageToggle.vue';
+
 
 defineProps({
     canResetPassword: {
@@ -30,20 +32,21 @@ const submit = () => {
 </script>
 
 <template>
+    <LanguageToggle />
     <div class="flex items-center justify-center min-h-screen bg-gray-100">
         <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
             <h2 class="mb-6 text-3xl font-bold text-center text-gray-800">
-                Login
+                {{ $t('login') }}
             </h2>
             <form
                 @submit.prevent="submit"
-                class="flex flex-col justify-center items-center"
+                class="flex flex-col items-center justify-center"
             >
-                <div class="mb-4 w-full">
+                <div class="w-full mb-4">
                     <label
                         for="email"
                         class="block mb-2 text-sm font-medium text-gray-700"
-                        >Email</label
+                        >{{ $t('email') }}</label
                     >
                     <TextInput
                         id="email"
@@ -55,11 +58,11 @@ const submit = () => {
                         form.errors.email
                     }}</span>
                 </div>
-                <div class="mb-4 w-full">
+                <div class="w-full mb-4">
                     <label
                         for="password"
                         class="block mb-2 text-sm font-medium text-gray-700"
-                        >Password</label
+                        >{{ $t('password') }}</label
                     >
                     <TextInput
                         type="password"
@@ -72,7 +75,7 @@ const submit = () => {
                         form.errors.password
                     }}</span>
                 </div>
-                <div class="flex items-center mb-4 w-full">
+                <div class="flex items-center w-full mb-4">
                     <input
                         type="checkbox"
                         id="remember"
@@ -80,15 +83,15 @@ const submit = () => {
                         class="mr-2"
                     />
                     <label for="remember" class="text-sm text-gray-600"
-                        >Remember Me</label
+                        >{{ $t('remember_me') }}</label
                     >
                 </div>
                 <div class="flex justify-center w-full">
                     <PrimaryButton
                         type="submit"
-                        class="w-full flex justify-center items-center"
+                        class="flex items-center justify-center w-full"
                     >
-                        Login
+                    {{ $t('login') }}
                     </PrimaryButton>
                 </div>
             </form>
@@ -96,12 +99,12 @@ const submit = () => {
                 <Link
                     href="/forgot-password"
                     class="text-blue-600 hover:underline"
-                    >Forgot Password?</Link
+                    >{{ $t('forgot_password') }}</Link
                 >
             </p>
             <p class="mt-2 text-center">
                 <Link href="/register" class="text-blue-600 hover:underline"
-                    >Create an Account</Link
+                    >{{ $t('create_account') }}</Link
                 >
             </p>
         </div>

@@ -48,11 +48,24 @@ class InstructorPortalController extends Controller
         ]);
     }
 
-    public function show(Course $course)
+    public function courseDetail(Course $course)
     {
+        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later 
+        if (!$course->instructors->contains(request()->user()->instructor->id)) {
+            abort(403);
+        }
+        
         $instructor = new InstructorResource(
             request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
         );
+
+        $course = new CourseResource($course->load([
+                'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+                'courseSectionAssignments.section',
+                'courseSectionAssignments.section.program',
+                'courseSectionAssignments.section.track',
+                'courseSectionAssignments.section.studyMode'
+            ]));
 
         // Optionally, fetch more details about the course for the instructor
         return Inertia::render('InstructorPortal/CourseDetail', [

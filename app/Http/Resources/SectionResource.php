@@ -32,7 +32,7 @@ class SectionResource extends JsonResource
             'grades' => $this->whenLoaded('grades'),
             
             'yearLevel' => $this->yearLevel(),
-
+            'semesterLevel' => $this->semester->level,
             'status' => $this->status,
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,

@@ -1,4 +1,5 @@
 <script setup>
+import InstructorLayout from "@/Layouts/InstructorLayout.vue";
 import StudentLayout from "@/Layouts/StudentLayout.vue";
 import {
     BookOpenIcon,
@@ -12,35 +13,17 @@ import {
 
 const props = defineProps({
     course: Object,
+    instructor: Object,
 });
 
-// Sample assessments data with marks
-const assessments = [
-    {
-        id: 1,
-        title: "Midterm Exam",
-        date: "2025-05-15",
-        description: "The midterm exam covering all topics so far.",
-        due_date: "2025-05-14",
-        mark: 85, // Mark out of 100
-    },
-    {
-        id: 2,
-        title: "Final Project",
-        date: "2025-06-01",
-        description:
-            "A final project that includes a detailed report and presentation.",
-        due_date: "2025-05-30",
-        mark: 92, // Mark out of 100
-    },
-    {
-        id: 3,
-        title: "Quiz 1",
-        date: "2025-05-10",
-        description: "A short quiz on the first 5 lectures.",
-        due_date: "2025-05-09",
-        mark: 75, // Mark out of 100
-    },
+// Right menu navigation items
+const rightMenu = [
+    { name: "Outline", icon: BookOpenIcon },
+    { name: "Sections", icon: DocumentIcon },
+    { name: "Other Instructors", icon: ClipboardIcon },
+    { name: "Assignments", icon: PencilSquareIcon },
+    { name: "Forum", icon: ChatBubbleBottomCenterTextIcon },
+    { name: "Announcements", icon: MegaphoneIcon },
 ];
 
 // Function to determine progress bar color based on marks
@@ -52,7 +35,7 @@ const getProgressColor = (mark) => {
 </script>
 
 <template>
-    <StudentLayout>
+    <InstructorLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 flex flex-col lg:flex-row">
             <!-- Course Info -->
             <div class="flex-1">
@@ -69,67 +52,87 @@ const getProgressColor = (mark) => {
                         <strong>Description:</strong>
                         {{ course.description || "No description available." }}
                     </p>
-                    <p><strong>Instructor:</strong> Dr. Jane Doe</p>
+                    <p>
+                        <strong>Sections:</strong> {{ course.sections.length }}
+                    </p>
                     <p><strong>Credits:</strong> {{ course.credit_hours }}</p>
                 </div>
 
-                <!-- Assessments Section -->
-                <div class="mt-4">
+                <!-- Sections Section -->
+                <div class="mt-10">
                     <h2
                         class="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
                     >
-                        Assessments
+                        Sections Taught
                     </h2>
 
                     <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     >
                         <div
-                            v-for="assessment in assessments"
-                            :key="assessment.id"
-                            class="transition duration-300 transform hover:-translate-y-1 hover:shadow-xl bg-gray-200 dark:bg-gray-800 rounded-xl p-6 space-y-4"
+                            v-for="section in course.sections"
+                            :key="section.id"
+                            class="transition duration-300 transform hover:-translate-y-1 hover:shadow-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6 space-y-4"
                         >
-                            <!-- Title -->
-                            <h3
-                                class="text-xl font-semibold text-gray-900 dark:text-white"
-                            >
-                                {{ assessment.title }}
-                            </h3>
-
-                            <!-- Mark and Progress Bar -->
-                            <div>
-                                <div
-                                    class="flex items-center justify-between mb-2"
+                            <!-- Section Title -->
+                            <div class="flex justify-between items-center">
+                                <h3
+                                    class="text-xl font-bold text-gray-900 dark:text-white"
                                 >
-                                    <span
-                                        class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                                    >
-                                        Score:
-                                    </span>
-                                    <span
-                                        class="font-semibold text-gray-800 dark:text-white"
-                                    >
-                                        {{ assessment.mark }} / 100
-                                    </span>
-                                </div>
-                                <div
-                                    class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2"
+                                    {{ section.name }}
+                                </h3>
+                                <span
+                                    class="text-xs font-medium text-white bg-blue-500 rounded-full px-3 py-1"
                                 >
-                                    <div
-                                        :style="{
-                                            width: assessment.mark + '%',
-                                        }"
-                                        class="h-2 rounded-full transition-all duration-300"
-                                        :class="
-                                            getProgressColor(assessment.mark)
-                                        "
-                                    ></div>
-                                </div>
+                                    {{ section.code }}
+                                </span>
                             </div>
 
-                            <!-- Button -->
+                            <!-- Program and Track Info -->
+                            <div
+                                class="text-sm text-gray-700 dark:text-gray-300 space-y-1"
+                            >
+                                <p>
+                                    <strong>Program:</strong>
+                                    {{ section.program?.name }} ({{
+                                        section.program?.code
+                                    }})
+                                </p>
+                                <p>
+                                    <strong>Track:</strong>
+                                    {{ section.track?.name }} ({{
+                                        section.track?.code
+                                    }})
+                                </p>
+                                <p>
+                                    <strong>Year Level:</strong>
+                                    {{ section.yearLevel }}
+                                </p>
+                                <p>
+                                    <strong>Semester:</strong>
+                                    {{ section.semesterLevel }}
+                                </p>
+                            </div>
+
+                            <!-- Status / Completion -->
+                            <div class="text-sm">
+                                <p
+                                    class="text-green-600 dark:text-green-400"
+                                    v-if="section.isCompleted"
+                                >
+                                    ✅ Completed
+                                </p>
+                                <p
+                                    class="text-yellow-600 dark:text-yellow-400"
+                                    v-else
+                                >
+                                    ⏳ In Progress
+                                </p>
+                            </div>
+
+                            <!-- View Details Button -->
                             <button
-                                class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
+                                class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
                             >
                                 View Details
                             </button>
@@ -137,32 +140,6 @@ const getProgressColor = (mark) => {
                     </div>
                 </div>
             </div>
-
-            <!-- Course Navigation -->
-            <div class="w-full lg:w-1/3 mt-8 lg:mt-0 lg:relative z-50">
-                <div
-                    class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4 max-h-[70vh] lg:fixed lg:top-32 lg:right-12 lg:w-64 overflow-y-auto"
-                >
-                    <h2
-                        class="text-lg font-bold text-gray-800 dark:text-white mb-4 lg:mb-4"
-                    >
-                        Course Navigation
-                    </h2>
-
-                    <ul
-                        class="space-y-2 lg:space-y-2 flex flex-col lg:flex-col"
-                    >
-                        <li
-                            v-for="item in rightMenu"
-                            :key="item.name"
-                            class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition duration-200 cursor-pointer"
-                        >
-                            <component :is="item.icon" class="w-5 h-5 mr-3" />
-                            <span>{{ item.name }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
-    </StudentLayout>
+    </InstructorLayout>
 </template>

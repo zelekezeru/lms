@@ -5,6 +5,7 @@ import {
     ClockIcon,
     UserGroupIcon,
 } from "@heroicons/vue/24/outline";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     courses: {
@@ -63,11 +64,12 @@ const props = defineProps({
                 </div>
 
                 <div class="mt-4 flex justify-between">
-                    <button
+                    <Link
+                        :href="route('instructor.courses.detail', {course: course.id})"
                         class="text-sm px-4 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
                     >
                         View
-                    </button>
+                    </Link>
                     <button
                         class="text-sm px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                     >

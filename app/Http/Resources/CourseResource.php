@@ -24,6 +24,7 @@ class CourseResource extends JsonResource
             'sections' => SectionResource::collection($this->whenLoaded('courseSectionAssignments', function () {
                 return $this->courseSectionAssignments->map(fn($assignment) => $assignment->section);
             })),
+            'sectionsCount' => $this->sectionsCount ?? null,
             'instructor' => $this->whenLoaded('courseSectionAssignments', function () {
                 $assignment = $this->courseSectionAssignments->first();
                 return $assignment && $assignment->instructor

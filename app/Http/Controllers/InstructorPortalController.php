@@ -25,26 +25,24 @@ class InstructorPortalController extends Controller
 
     public function courses()
     {
-        $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
-        );
+        $instructor = request()->user()->instructor;
 
-        // Example: fetch sections the instructor is assigned to
-        $courses = CourseResource::collection(
-            $instructor->courses()
-                ->with([
-                    'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
-                    'courseSectionAssignments.section.program',
-                    'courseSectionAssignments.section.track',
-                    'courseSectionAssignments.section.studyMode',
-                ])
-                ->get()
-        );
+        $instructor->load([
+            'user',
+            'courses' => function ($query) use ($instructor) {
+                $query->withCount([
+                    'courseSectionAssignments as sectionsCount' => function ($q) use ($instructor) {
+                        $q->where('instructor_id', $instructor->id);
+                    }
+                ]);
+            },
+        ]);
+
+
 
 
         return inertia('InstructorPortal/Courses', [
             'instructor' => $instructor,
-            'courses' => $courses,
         ]);
     }
 
@@ -54,18 +52,18 @@ class InstructorPortalController extends Controller
         if (!$course->instructors->contains(request()->user()->instructor->id)) {
             abort(403);
         }
-        
+
         $instructor = new InstructorResource(
             request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
         );
 
         $course = new CourseResource($course->load([
-                'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
-                'courseSectionAssignments.section',
-                'courseSectionAssignments.section.program',
-                'courseSectionAssignments.section.track',
-                'courseSectionAssignments.section.studyMode'
-            ]));
+            'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseSectionAssignments.section',
+            'courseSectionAssignments.section.program',
+            'courseSectionAssignments.section.track',
+            'courseSectionAssignments.section.studyMode'
+        ]));
 
         // Optionally, fetch more details about the course for the instructor
         return Inertia::render('InstructorPortal/CourseDetail', [

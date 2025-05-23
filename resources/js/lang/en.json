@@ -1,0 +1,42 @@
+{
+    
+    "admin_dashboard": {
+        "title": "Admin Dashboard",
+        "subtitle": "Manage the LMS, monitor progress, and overview key metrics.",
+        "courses": "Courses",
+        "students": "Students",
+        "instructors": "Instructors",
+        "revenue": "Revenue",
+        "enrollment_chart": "Student Enrollment Over Time",
+        "user_distribution": "User Distribution",
+        "manage_instructors": "Manage Instructors"
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "specialization": "Specialization",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "remember_me": "Remember Me",
+    "forgot_password": "Forgot Password?",
+    "create_account": "Create an Account",
+    "welcome_back": "Welcome Back",
+    "submit": "Submit",
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_info": "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
+    "email_password_reset_link": "Email Password Reset Link"
+
+  }
+  

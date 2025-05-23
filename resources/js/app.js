@@ -1,6 +1,5 @@
-import '../css/app.css'; // Revert to the original path or adjust based on the actual location
+import '../css/app.css';
 import './bootstrap';
-
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
@@ -9,38 +8,52 @@ import { Head } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 
+import { createI18n } from 'vue-i18n';
+import en from './lang/en.json';
+import am from './lang/am.json';
+
+const savedLocale = localStorage.getItem('locale') || 'en'
+
+const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
+  locale: savedLocale,
+  fallbackLocale: 'en',
+  messages: {
+    en,
+    am
+  }
+});
+
 const appName = import.meta.env.VITE_APP_NAME || 'LMS';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.vue`,
-            import.meta.glob('./Pages/**/*.vue'),
-        ),
+        resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) });
 
-        app.use(plugin).use(ZiggyVue).use(PrimeVue, {
-            theme: {
-                preset: Aura,
-                options: {
-                    darkModeSelector: '.dark',
-                },
-            },
-        });
+        app.use(plugin)
+           .use(ZiggyVue)
+           .use(PrimeVue, {
+               theme: {
+                   preset: Aura,
+                   options: {
+                       darkModeSelector: '.dark',
+                   },
+               },
+           })
+           .use(i18n);
 
-        // Register Head globally
         app.component('Head', Head);
 
-        // Define a global getter for authUser that always reads from the reactive $page property
         Object.defineProperty(app.config.globalProperties, 'authUser', {
             get() {
                 return this.$page.props.auth?.user || null;
             },
         });
 
-        // Define global functions that use this.$page so they update when auth changes
         app.config.globalProperties.userCan = function(permission) {
             return this.$page.props.auth?.user?.permissions?.includes(permission) || false;
         };

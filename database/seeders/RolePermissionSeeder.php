@@ -279,66 +279,68 @@ class RolePermissionSeeder extends Seeder
 
                 ]);
                 $role->syncPermissions($tenantAdminPermissions);
-            }
-            elseif (in_array($roleName, ['STUDENT', 'STUDENT'])) {
+            } elseif (in_array($roleName, ['STUDENT'])) {
                 $studentPermissions = array_diff($permissions, [
-
-                    // Except these permissions
-
-                    // Permissions resource (CRUD)
+                    // Tenants (CRUD)
                     'view-tenants',
                     'create-tenants',
                     'update-tenants',
                     'delete-tenants',
 
-                    // Roles permissions (CRUD)
+                    // Roles (CRUD)
                     'view-roles',
                     'create-roles',
                     'update-roles',
                     'delete-roles',
 
-                    // Permissions resource (CRUD)
+                    // Permissions (CRUD)
                     'view-permissions',
                     'create-permissions',
                     'update-permissions',
                     'delete-permissions',
 
-                    // Additional routes for roles
+                    // Additional role routes
                     'assign-permissions-roles',
                     'attach-permissions-roles',
                     'detach-permissions-roles',
 
                     // Programs (CRUD)
+                    'view-programs',
                     'create-programs',
                     'update-programs',
                     'delete-programs',
 
                     // StudyMode (CRUD)
+                    'view-studyModes',
                     'create-studyModes',
                     'update-studyModes',
                     'delete-studyModes',
 
                     // Tracks (CRUD)
+                    'view-tracks',
                     'create-tracks',
                     'update-tracks',
                     'delete-tracks',
 
                     // Courses (CRUD)
+                    'view-courses',
                     'create-courses',
                     'update-courses',
                     'delete-courses',
 
-                    // User (CRUD)
+                    // Users (CRUD)
                     'view-users',
                     'create-users',
                     'update-users',
                     'delete-users',
 
                     // Students (CRUD)
+                    'view-students',
                     'create-students',
                     'delete-students',
 
                     // Instructors (CRUD)
+                    'view-instructors',
                     'create-instructors',
                     'update-instructors',
                     'delete-instructors',
@@ -349,92 +351,110 @@ class RolePermissionSeeder extends Seeder
                     'update-employees',
                     'delete-employees',
 
-                    // User Document (CRUD)
+                    // User Documents (CRUD)
+                    'view-userDocuments',
                     'create-userDocuments',
                     'update-userDocuments',
                     'delete-userDocuments',
 
-                    // Inventory (CRUD)
+                    // Inventories (CRUD)
+                    'view-inventories',
                     'create-inventories',
                     'update-inventories',
                     'delete-inventories',
 
-                    // Inventory Category (CRUD)
+                    // Inventory Categories (CRUD)
+                    'view-inventory-categories',
                     'create-inventory-categories',
                     'update-inventory-categories',
                     'delete-inventory-categories',
 
-                    // Inventory Supplier (CRUD)
+                    // Inventory Suppliers (CRUD)
+                    'view-inventory-suppliers',
                     'create-inventory-suppliers',
                     'update-inventory-suppliers',
                     'delete-inventory-suppliers',
 
-                    // Year (CRUD)
+                    // Years (CRUD)
+                    'view-years',
                     'create-years',
                     'update-years',
                     'delete-years',
 
-                    // Semester (CRUD)
+                    // Semesters (CRUD)
+                    'view-semesters',
                     'create-semesters',
                     'update-semesters',
                     'delete-semesters',
 
-                    // Schedule (CRUD)
+                    // Schedules (CRUD)
+                    'view-schedules',
                     'create-schedules',
                     'update-schedules',
                     'delete-schedules',
 
-                    // Section (CRUD)
+                    // Sections (CRUD)
+                    'view-sections',
                     'create-sections',
                     'update-sections',
                     'delete-sections',
 
                     // Results (CRUD)
+                    'view-results',
                     'create-results',
                     'update-results',
                     'delete-results',
 
                     // Weights (CRUD)
+                    'view-weights',
                     'create-weights',
                     'update-weights',
                     'delete-weights',
 
                     // Grades (CRUD)
+                    'view-grades',
                     'create-grades',
                     'update-grades',
                     'delete-grades',
 
-                    // Curriculum (CRUD)
+                    // Curriculums (CRUD)
+                    'view-curriculums',
                     'create-curriculums',
                     'update-curriculums',
                     'delete-curriculums',
 
-                    // Payment (CRUD)
+                    // Payments (CRUD)
+                    'view-payments',
                     'create-payments',
                     'update-payments',
                     'delete-payments',
 
                     // Payment Categories (CRUD)
+                    'view-paymentCategories',
                     'create-paymentCategories',
                     'update-paymentCategories',
                     'delete-paymentCategories',
 
                     // Payment Items (CRUD)
+                    'view-paymentItems',
                     'create-paymentItems',
                     'update-paymentItems',
                     'delete-paymentItems',
 
-                    // Payment Schedule (CRUD)
+                    // Payment Schedules (CRUD)
+                    'view-paymentSchedules',
                     'create-paymentSchedules',
                     'update-paymentSchedules',
                     'delete-paymentSchedules',
 
-                    // Payment Method (CRUD)
+                    // Payment Methods (CRUD)
+                    'view-paymentMethods',
                     'create-paymentMethods',
                     'update-paymentMethods',
                     'delete-paymentMethods',
 
-                    // Payment Type (CRUD)
+                    // Payment Types (CRUD)
+                    'view-paymentTypes',
                     'create-paymentTypes',
                     'update-paymentTypes',
                     'delete-paymentTypes',
@@ -463,15 +483,13 @@ class RolePermissionSeeder extends Seeder
                     'update-user-document',
                     'update-user-document-image',
 
-                    // Password Related
+                    // Password/Account
                     'default-password',
                     'reset-password',
                     'update-profile',
-
                 ]);
                 $role->syncPermissions($studentPermissions);
-            }
-            elseif (in_array($roleName, ['INSTRUCTOR'])) {
+            } elseif (in_array($roleName, ['INSTRUCTOR'])) {
                 $instructorPermissions = array_diff($permissions, [
 
                     // Except these permissions
@@ -515,6 +533,7 @@ class RolePermissionSeeder extends Seeder
                     'delete-tracks',
 
                     // Courses (CRUD)
+                    'view-courses',
                     'create-courses',
                     'update-courses',
                     'delete-courses',
@@ -633,8 +652,7 @@ class RolePermissionSeeder extends Seeder
 
                 ]);
                 $role->syncPermissions($instructorPermissions);
-            }
-            elseif (in_array($roleName, ['EMPLOYEE'])) {
+            } elseif (in_array($roleName, ['EMPLOYEE'])) {
                 $employeePermissions = array_diff($permissions, [
 
                     // Except these permissions
@@ -1010,10 +1028,8 @@ class RolePermissionSeeder extends Seeder
 
                 ]);
                 $role->syncPermissions($financeAdminPermissions);
-            }
-            else {
+            } else {
                 $role->syncPermissions([]);
-                
             }
         }
     }

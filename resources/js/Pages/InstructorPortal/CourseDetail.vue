@@ -14,16 +14,6 @@ const props = defineProps({
     course: Object,
 });
 
-// Right menu navigation items
-const rightMenu = [
-    { name: "Outline", icon: BookOpenIcon },
-    { name: "Materials", icon: DocumentIcon },
-    { name: "Assessments", icon: ClipboardIcon },
-    { name: "Assignments", icon: PencilSquareIcon },
-    { name: "Forum", icon: ChatBubbleBottomCenterTextIcon },
-    { name: "Announcements", icon: MegaphoneIcon },
-];
-
 // Sample assessments data with marks
 const assessments = [
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
 use App\Models\CourseSectionAssignment;
 use App\Models\Course;
@@ -29,13 +30,21 @@ class InstructorPortalController extends Controller
         );
 
         // Example: fetch sections the instructor is assigned to
-        $sections = $instructor->courses->flatMap(function ($course) {
-            return $course->sections ?? [];
-        })->unique('id')->values();
+        $courses = CourseResource::collection(
+            $instructor->courses()
+                ->with([
+                    'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+                    'courseSectionAssignments.section.program',
+                    'courseSectionAssignments.section.track',
+                    'courseSectionAssignments.section.studyMode',
+                ])
+                ->get()
+        );
+
 
         return inertia('InstructorPortal/Courses', [
             'instructor' => $instructor,
-            'sections' => $sections,
+            'courses' => $courses,
         ]);
     }
 

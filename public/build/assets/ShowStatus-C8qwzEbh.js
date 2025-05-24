@@ -1,0 +1,1 @@
+import{c as e,o,a}from"./app-BWmH8QMa.js";const l={__name:"ShowStatus",setup(s){return(r,t)=>(o(),e("div",null,t[0]||(t[0]=[a("h1",{class:"text-2xl font-bold text-gray-900 dark:text-white"}," Payment Status ",-1),a("p",{class:"text-gray-500 dark:text-gray-400"}," No payment status information available at the moment. ",-1)])))}};export{l as default};

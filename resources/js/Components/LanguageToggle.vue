@@ -37,14 +37,7 @@
               class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <LanguageIcon class="w-4 h-4 mr-2" /> አማርኛ
-            </button>
-            <!-- Swahili -->
-            <button
-              @click="changeLocale('sw')"
-              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <LanguageIcon class="w-4 h-4 mr-2" /> Kiswahili
-            </button>            
+            </button>          
             <!-- Chinese -->
             <button
               @click="changeLocale('zh')"
@@ -59,19 +52,19 @@
             >
               <LanguageIcon class="w-4 h-4 mr-2" /> Urdu - اردو
             </button>
+            <!-- Swahili -->
+            <button
+              @click="changeLocale('sw')"
+              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <LanguageIcon class="w-4 h-4 mr-2" /> Kiswahili
+            </button>  
             <!-- Arabic -->
             <button
               @click="changeLocale('ar')"
               class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <LanguageIcon class="w-4 h-4 mr-2" /> Arabic - العربية
-            </button>
-            <!-- Afan Oromo -->
-            <button
-              @click="changeLocale('om')"
-              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <LanguageIcon class="w-4 h-4 mr-2" /> Afaan Oromoo
             </button>
             <!-- Spanish -->
             <button
@@ -86,6 +79,13 @@
               class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <LanguageIcon class="w-4 h-4 mr-2" /> Français
+            </button>
+            <!-- Afan Oromo -->
+            <button
+              @click="changeLocale('om')"
+              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <LanguageIcon class="w-4 h-4 mr-2" /> Afaan Oromoo
             </button>
             <!-- Tigrigna -->
             <button

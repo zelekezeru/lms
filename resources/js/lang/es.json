@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "Panel de Administrador",
+    "subtitle": "Gestiona el LMS, monitorea el progreso y revisa métricas clave.",
+    "courses": "Cursos",
+    "students": "Estudiantes",
+    "instructors": "Instructores",
+    "revenue": "Ingresos",
+    "enrollment_chart": "Inscripción de Estudiantes a lo Largo del Tiempo",
+    "user_distribution": "Distribución de Usuarios",
+    "manage_instructors": "Gestionar Instructores"
+  },
+  "table": {
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "specialization": "Especialización",
+    "status": "Estado",
+    "actions": "Acciones"
+  },
+  "status": {
+    "active": "Activo"
+  },
+  "actions": {
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "login": "Iniciar sesión",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "remember_me": "Recordarme",
+  "forgot_password": "¿Olvidaste tu contraseña?",
+  "create_account": "Crear una cuenta",
+  "welcome_back": "Bienvenido de nuevo",
+  "submit": "Enviar",
+  "forgot_password_title": "Contraseña olvidada",
+  "forgot_password_info": "¿Olvidaste tu contraseña? No hay problema. Simplemente dinos tu dirección de correo electrónico y te enviaremos un enlace para restablecer la contraseña que te permitirá elegir una nueva.",
+  "email_password_reset_link": "Enviar enlace para restablecer contraseña por correo electrónico"
+}

@@ -98,7 +98,7 @@ class StudentController extends Controller
                 ->get()->load('program', 'courses');
             $courses = [];
         } else {
-            $courses = $student->section->courses;
+            $courses = $student->section->courses->sortBy('name')->values();
             $sections = [];
         }
 

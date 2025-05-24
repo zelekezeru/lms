@@ -13,6 +13,8 @@ use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ExportController;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -79,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
 
     // Student Academics
-
+    Route::get('/students/export', [ExportController::class, 'exportStudents'])->name('students.export');
     
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);
@@ -91,25 +93,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Assignment routes
     Route::post('/courses-track/{track}', [AssignmentController::class, 'assignCoursesToTracks'])->name('courses-track.assign');
-
     Route::post('/courses-section/{section}', [AssignmentController::class, 'assignCoursesToSections'])->name('courses-section.assign');
-
     Route::post('/courses-instructor/{instructor}', [AssignmentController::class, 'assignCoursesToInstructor'])->name('courses-instructor.assign');
     Route::post('/instructors-course/{course}', [AssignmentController::class, 'assignInstructorsToCourse'])->name('instructors-course.assign');
-
     Route::post('/instructor-courseSection/{section}/{course}', [AssignmentController::class, 'assignInstructorToCourseSection'])->name('instructor-courseSection.assign');
-
     Route::post('/students-section', [AssignmentController::class, 'assignStudentsToSection'])->name('students-section.assign');
-
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
-
-    Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');
-
-    // For One Student To One Section Assignement
+    Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
-
     Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
- 
+    
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
@@ -119,11 +112,6 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
-
-    // Instructor Routes
-    // Route::get('/instructor', function () {
-    //     return Inertia::render('Instructor');
-    // })->name('instructor.dashboard');
 
     // INstructor related routes
     Route::get('/instructor/course', function () {

@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "Dashibodi ya Msimamizi",
+    "subtitle": "Simamia LMS, fuatilia maendeleo, na uangalie vipimo muhimu.",
+    "courses": "Kozi",
+    "students": "Wanafunzi",
+    "instructors": "Wafundishaji",
+    "revenue": "Mapato",
+    "enrollment_chart": "Usajili wa Wanafunzi kwa Wakati",
+    "user_distribution": "Usambazaji wa Watumiaji",
+    "manage_instructors": "Simamia Wafundishaji"
+  },
+  "table": {
+    "name": "Jina",
+    "email": "Barua pepe",
+    "specialization": "Utaalam",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "status": {
+    "active": "Amilifu"
+  },
+  "actions": {
+    "edit": "Hariri",
+    "delete": "Futa"
+  },
+  "login": "Ingia",
+  "email": "Barua pepe",
+  "password": "Nenosiri",
+  "remember_me": "Nikumbuke",
+  "forgot_password": "Umesahau Nenosiri?",
+  "create_account": "Fungua Akaunti",
+  "welcome_back": "Karibu Tena",
+  "submit": "Wasilisha",
+  "forgot_password_title": "Umesahau Nenosiri",
+  "forgot_password_info": "Umesahau nenosiri lako? Hakuna shida. Tujulishe tu anwani yako ya barua pepe na tutakutumia barua pepe ya kiungo cha kuweka upya nenosiri ambacho kitakuruhusu kuchagua nenosiri jipya.",
+  "email_password_reset_link": "Tuma Kiungo cha Kuweka Upya Nenosiri kwa Barua Pepe"
+}

@@ -11,6 +11,13 @@ import Aura from '@primeuix/themes/aura';
 import { createI18n } from 'vue-i18n';
 import en from './lang/en.json';
 import am from './lang/am.json';
+import ar from './lang/ar.json';
+import es from './lang/es.json';
+import om from './lang/om.json';
+import sw from './lang/sw.json';
+import ur from './lang/ur.json';
+import zh from './lang/zh.json';
+
 
 const savedLocale = localStorage.getItem('locale') || 'en'
 
@@ -21,7 +28,13 @@ const i18n = createI18n({
   fallbackLocale: 'en',
   messages: {
     en,
-    am
+    am,
+    ar,
+    es,
+    om,
+    sw,
+    ur,
+    zh,
   }
 });
 

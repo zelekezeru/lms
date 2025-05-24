@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "Daashbordii Bulchaa",
+    "subtitle": "LMS bulchi, adeemsa to'adhu, fi madaalliiwwan gurguddoo ilaali.",
+    "courses": "Koorsiiwwan",
+    "students": "Barattoota",
+    "instructors": "Barsiisota",
+    "revenue": "Galii",
+    "enrollment_chart": "Galmee Barattootaa Yeroo Keessa",
+    "user_distribution": "Raabsa Dalagaa",
+    "manage_instructors": "Barsiisota Bulchi"
+  },
+  "table": {
+    "name": "Maqaa",
+    "email": "Imeelii",
+    "specialization": "Adda Ta'uu",
+    "status": "Haala",
+    "actions": "Hojiiwwan"
+  },
+  "status": {
+    "active": "Hoofaa"
+  },
+  "actions": {
+    "edit": "Fooyyeessi",
+    "delete": "Haqa"
+  },
+  "login": "Seeni",
+  "email": "Imeelii",
+  "password": "Jecha Darbii",
+  "remember_me": "Na Yaadadhu",
+  "forgot_password": "Jecha Darbii Irraanfatame?",
+  "create_account": "Akkaawuntii Uumi",
+  "welcome_back": "Deebana Nagaan Dhuftan",
+  "submit": "Dhiyeessi",
+  "forgot_password_title": "Jecha Darbii Irraanfatame",
+  "forgot_password_info": "Jecha darbii kee irraanfattee? Rakkoo hin qabu. Teessoo imeelii kee nuuf himi, nuti imeelii keetti hidhaa jecha darbii haaromsuu siif ergina, kunis isa haaraa filachuuf si dandeessisa.",
+  "email_password_reset_link": "Jecha Darbii Haaromsuu Hidhaa Imeelii Godhi"
+}

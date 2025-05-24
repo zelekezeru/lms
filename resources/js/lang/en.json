@@ -11,20 +11,21 @@
         "user_distribution": "User Distribution",
         "manage_instructors": "Manage Instructors"
       },
-      "table": {
-        "name": "Name",
-        "email": "Email",
-        "specialization": "Specialization",
-        "status": "Status",
-        "actions": "Actions"
-      },
-      "status": {
-        "active": "Active"
-      },
-      "actions": {
-        "edit": "Edit",
-        "delete": "Delete"
-      },
+      
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "specialization": "Specialization",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
 
     "login": "Login",
     "email": "Email",

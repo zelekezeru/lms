@@ -1,41 +1,38 @@
 {
-    
-    "admin_dashboard": {
-        "title": "የአስተዳደር ዳሽቦርድ",
-        "subtitle": "LMS አስተዳደር፣ እድገትን አቁም፣ እና ቁልፍ ሜትሪኮችን ይመልከቱ።",
-        "courses": "ኮርሶች",
-        "students": "ተማሪዎች",
-        "instructors": "መምህራን",
-        "revenue": "ገቢ",
-        "enrollment_chart": "ተማሪዎች ምዝገባ በጊዜ",
-        "user_distribution": "የተጠቃሚ ቅርፀት",
-        "manage_instructors": "መምህራንን አስተዳድር"
-      },
-      "table": {
-        "name": "ስም",
-        "email": "ኢሜይል",
-        "specialization": "ስፋት ስራ",
-        "status": "ሁኔታ",
-        "actions": "እርምጃዎች"
-      },
-      "status": {
-        "active": "ንቁ"
-      },
-      "actions": {
-        "edit": "አርትዕ",
-        "delete": "ሰርዝ"
-      },
-
-    "login": "ግባ",
+  "admin_dashboard": {
+    "title": "አድሚን ዳሽቦርድ",
+    "subtitle": "LMS ን ያስተዳድሩ፣ ሂደት ይቆጣጠሩ እና ቁልፍ መለኪያዎችን ይገምግሙ።",
+    "courses": "ኮርሶች",
+    "students": "ተማሪዎች",
+    "instructors": "አስተማሪዎች",
+    "revenue": "ገቢ",
+    "enrollment_chart": "የተማሪ ምዝገባ በጊዜ ሂደት",
+    "user_distribution": "የተጠቃሚ ስርጭት",
+    "manage_instructors": "አስተማሪዎችን ያስተዳድሩ"
+  },
+  "table": {
+    "name": "ስም",
     "email": "ኢሜል",
-    "password": "የይለፍ ቃል",
-    "remember_me": "አስታውሰኝ",
-    "forgot_password": "የይለፍ ቃልን ረሱኽ?",
-    "create_account": "መለያ ፍጠር",
-    "welcome_back": "እንኳን ደህና መጡ",
-    "submit": "አስገባ",
-    "forgot_password_title": "የይለፍ ቃል ረስተዋል?",
-    "forgot_password_info": "የይለፍ ቃልዎን ረስተዋል? ምንም ችግር የለም። ኢሜይል አድራሻዎን ያስገቡ፣ እኛም አዲስ የይለፍ ቃል ለመመረጥ የሚያስችል የማስጀመሪያ አገናኝ እንልክልዎታለን።",
-    "email_password_reset_link": "የይለፍ ቃል ማስጀመሪያን በኢሜይል ላክ"
-  }
-  
+    "specialization": "ስፔሻላይዜሽን",
+    "status": "ሁኔታ",
+    "actions": "ድርጊቶች"
+  },
+  "status": {
+    "active": "ገባሪ"
+  },
+  "actions": {
+    "edit": "አርትዕ",
+    "delete": "ሰርዝ"
+  },
+  "login": "ግባ",
+  "email": "ኢሜል",
+  "password": "የይለፍ ቃል",
+  "remember_me": "አስታውሰኝ",
+  "forgot_password": "የይለፍ ቃል ረስተዋል?",
+  "create_account": "መለያ ይፍጠሩ",
+  "welcome_back": "እንኳን ደህና መጡ",
+  "submit": "አስገባ",
+  "forgot_password_title": "የይለፍ ቃል ረሱ",
+  "forgot_password_info": "የይለፍ ቃልዎን ረሱ? ችግር የለም። የኢሜል አድራሻዎን ብቻ ያሳውቁን እና አዲስ የይለፍ ቃል እንዲመርጡ የሚያስችል የይለፍ ቃል ዳግም ማስጀመር አገናኝ እንልክልዎታለን።",
+  "email_password_reset_link": "የይለፍ ቃል ዳግም ማስጀመር አገናኝ ኢሜል ያድርጉ"
+}

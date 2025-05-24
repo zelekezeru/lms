@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "ایڈمن ڈیش بورڈ",
+    "subtitle": "LMS کا انتظام کریں، پیشرفت کی نگرانی کریں، اور اہم میٹرکس کا جائزہ لیں۔",
+    "courses": "کورسز",
+    "students": "طلباء",
+    "instructors": "انسٹرکٹرز",
+    "revenue": "آمدنی",
+    "enrollment_chart": "طلباء کی رجسٹریشن وقت کے ساتھ",
+    "user_distribution": "صارف کی تقسیم",
+    "manage_instructors": "انسٹرکٹرز کا انتظام کریں"
+  },
+  "table": {
+    "name": "نام",
+    "email": "ای میل",
+    "specialization": "تخصص",
+    "status": "حالت",
+    "actions": "کارروائیاں"
+  },
+  "status": {
+    "active": "فعال"
+  },
+  "actions": {
+    "edit": "ترمیم",
+    "delete": "حذف"
+  },
+  "login": "لاگ ان",
+  "email": "ای میل",
+  "password": "پاس ورڈ",
+  "remember_me": "مجھے یاد رکھیں",
+  "forgot_password": "پاس ورڈ بھول گئے؟",
+  "create_account": "ایک اکاؤنٹ بنائیں",
+  "welcome_back": "خوش آمدید",
+  "submit": "جمع کرائیں",
+  "forgot_password_title": "پاس ورڈ بھول گئے",
+  "forgot_password_info": "اپنا پاس ورڈ بھول گئے؟ کوئی مسئلہ نہیں۔ بس ہمیں اپنا ای میل پتہ بتائیں اور ہم آپ کو پاس ورڈ ری سیٹ لنک ای میل کریں گے جو آپ کو ایک نیا منتخب کرنے کی اجازت دے گا۔",
+  "email_password_reset_link": "پاس ورڈ ری سیٹ لنک ای میل کریں"
+}

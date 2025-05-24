@@ -16,7 +16,9 @@ const props = defineProps({
 const authUser = ref({ id: 1 }); // Replace with actual user logic
 
 const sumOfWeightPoints = computed(() =>
-  props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
+  Array.isArray(props.weights)
+    ? props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
+    : 0
 );
 
 const gradeForm = useForm({
@@ -32,19 +34,21 @@ const gradeForm = useForm({
     grade_status: "Pending",
     changed_by: null,
     user_id: authUser.value.id,
-    year_id: props.semester.year_id,
-    semester_id: props.semester.id,
-    section_id: props.section.id,
-    course_id: props.course.id,
+    year_id: props.semester && props.semester.year_id ? props.semester.year_id : null,
+    semester_id: props.semester && props.semester.id ? props.semester.id : null,
+    section_id: props.section && props.section.id ? props.section.id : null,
+    course_id: props.course && props.course.id ? props.course.id : null,
   },
 });
 
 const getStudentTotalPoints = () => {
   let total = 0;
-  props.weights.forEach((weight) => {
-    const result = weight.results.find(r => r.student_id === props.student.id);
-    total += parseFloat(result?.point || 0);
-  });
+  if (Array.isArray(props.weights)) {
+    props.weights.forEach((weight) => {
+      const result = weight.results?.find(r => r.student_id === props.student.id);
+      total += parseFloat(result?.point || 0);
+    });
+  }
   return total.toFixed(2);
 };
 
@@ -92,7 +96,9 @@ const hasAllWeightValues = computed(() => {
 });
 
 const getStudentGrade = () =>
-  props.section.grades.find(g => g.student_id === props.student.id);
+  props.section && Array.isArray(props.section.grades)
+    ? props.section.grades.find(g => g.student_id === props.student.id)
+    : undefined;
 </script>
 
 <template>

@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "管理员仪表盘",
+    "subtitle": "管理学习管理系统，监控进度，并概览关键指标。",
+    "courses": "课程",
+    "students": "学生",
+    "instructors": "讲师",
+    "revenue": "收入",
+    "enrollment_chart": "学生入学随时间变化图",
+    "user_distribution": "用户分布",
+    "manage_instructors": "管理讲师"
+  },
+  "table": {
+    "name": "姓名",
+    "email": "电子邮件",
+    "specialization": "专业",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "status": {
+    "active": "活跃"
+  },
+  "actions": {
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "login": "登录",
+  "email": "电子邮件",
+  "password": "密码",
+  "remember_me": "记住我",
+  "forgot_password": "忘记密码？",
+  "create_account": "创建账户",
+  "welcome_back": "欢迎回来",
+  "submit": "提交",
+  "forgot_password_title": "忘记密码",
+  "forgot_password_info": "忘记密码？没问题。只需告诉我们您的电子邮件地址，我们就会给您发送一个密码重置链接，让您选择一个新密码。",
+  "email_password_reset_link": "发送密码重置链接到电子邮件"
+}

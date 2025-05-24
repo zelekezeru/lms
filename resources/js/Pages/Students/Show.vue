@@ -44,6 +44,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    studyModes: {
+        type: Array,
+        required: true,
+    },
     sections: {
         type: Array,
         required: true,
@@ -188,6 +192,7 @@ const deleteStudent = (id) => {
                         v-else-if="selectedTab === 'courses'"
                         :student="student"
                         :courses="courses"
+                        :studyModes="studyModes"
                         />
 
                     <!-- Registrations Panel -->

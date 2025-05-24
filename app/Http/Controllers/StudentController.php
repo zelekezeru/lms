@@ -44,7 +44,7 @@ class StudentController extends Controller
         // Apply search filter
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
-            
+
             $query->whereHas('status', function ($q) {
                 $q->where('is_deleted', false);
             })->where(function ($q) use ($search) {
@@ -54,7 +54,7 @@ class StudentController extends Controller
                     ->orWhere('id_no', 'LIKE', "%{$search}%");
             });
         }
-        
+
         // Set up sorting
         $allowedSorts = ['first_name', 'middle_name', 'last_name', 'id_no', 'contact_phone'];
         $sortColumn = $request->input('sortColumn', 'first_name');
@@ -92,6 +92,7 @@ class StudentController extends Controller
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode'));
 
+        $studyModes = StudyModeResource::collection(StudyMode::with('sections')->get());
         // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)
@@ -113,17 +114,22 @@ class StudentController extends Controller
             ->get();
 
         $user = new UserResource($student->user->load('userDocuments'));
-        
+
         // For Transcript
         $student->load([
-            'user', 'program', 'track', 'studyMode',
-            'year', 'semester', 'section',
+            'user',
+            'program',
+            'track',
+            'studyMode',
+            'year',
+            'semester',
+            'section',
         ]);
 
         $semesters = $student->semesters()
-                                ->with(['year','grades' => fn($q) => $q
-                                ->with(['course', 'section', 'semester']),])->get();
-        
+            ->with(['year', 'grades' => fn($q) => $q
+                ->with(['course', 'section', 'semester']),])->get();
+
         $activeSemester = Semester::where('status', 'Active')->with('year')->get();
 
         if ($activeSemester->isEmpty()) {
@@ -138,6 +144,7 @@ class StudentController extends Controller
             'documents' => UserDocumentResource::collection($user->userDocuments),
             'status' => new StatusResource($student->status),
             'sections' => $sections,
+            'studyModes' => $studyModes,
             'courses' => $courses,
             'paymentCategories' => $paymentCategories,
             'paymentMethods' => $paymentMethods,
@@ -205,7 +212,7 @@ class StudentController extends Controller
         $student->status->deleted_at = now();
         $student->status->deleted_by_name = Auth::user()->name;
         $student->status->save();
-        
+
         // Optionally, you can also delete the associated user record
         $user = $student->user;
         if ($user) {
@@ -256,17 +263,17 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_'.$statusField)) {
+                if ($request->has('is_' . $statusField)) {
                     // Check if the status field is already set to 1
-                    if ($status->{'is_'.$statusField} == 1) {
+                    if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
-                        $status->{'is_'.$statusField} = 0;
+                        $status->{'is_' . $statusField} = 0;
                     } else {
                         // If it's not set, set it to 1
-                        $status->{'is_'.$statusField} = 1;
+                        $status->{'is_' . $statusField} = 1;
                     }
-                    $status->{$statusField.'_by_name'} = Auth::user()->name;
-                    $status->{$statusField.'_at'} = now();
+                    $status->{$statusField . '_by_name'} = Auth::user()->name;
+                    $status->{$statusField . '_at'} = now();
                 }
             }
         }
@@ -292,8 +299,13 @@ class StudentController extends Controller
     public function transcript(Student $student)
     {
         $student->load([
-            'user', 'program', 'track', 'studyMode',
-            'year', 'semester', 'section',
+            'user',
+            'program',
+            'track',
+            'studyMode',
+            'year',
+            'semester',
+            'section',
         ]);
 
         $semesters = $student->semesters()
@@ -317,7 +329,8 @@ class StudentController extends Controller
         $fields = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
         ]);
-        
+
+        // retrieve the section of the student and the year level and semester of the section he/she belongs too
         $section = $student->section;
         $semester = Semester::find($fields['semester_id']);
         $year = $semester->year;
@@ -325,23 +338,34 @@ class StudentController extends Controller
         $semesterLevel = $semester->level;
         $yearLevel = intval($year->name) - intval($section->year->name) + 1;
 
+        // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
         $sectionCourseIds = $section->courseSectionAssignments()->where('semester', $semesterLevel)->where('year_level', $yearLevel)->with('course')->get()->pluck('course.id');
+
+        /**
+         * Arrange the courses so that it is suitable to sync the student to the courses with section_id pivot column
+         * eg: 
+         * [
+         *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
+         * ]
+         */
         $organizedCourses = [];
         foreach ($sectionCourseIds as $courseId) {
             $organizedCourses[$courseId] = [
                 'section_id' => $section->id
             ];
         }
-        
+
+        // sync the courses (when a student registers the courses will be added, but if the students wants to drop all of them...don't worry he can)
         $student->courses()->attach($organizedCourses);
+
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
             ->where('student_id', $student->id)
             ->whereIn('status', ['Active', 'Enrolled'])
             ->update(['status' => 'Completed']);
-            
 
-            // Upsert the new/selected semester as Active for this student
+
+        // Upsert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [
                 'student_id' => $student->id,
@@ -357,4 +381,36 @@ class StudentController extends Controller
         return back()->with('success', 'Student registered to semester successfully.');
     }
 
+    public function addCourse(Request $request, Student $student)
+    {
+        $fields = $request->validate([
+            'course_id' => ['required', 'exists:courses,id'],
+            'section_id' => ['required', 'exists:sections,id'],
+        ]);
+
+        // Prevent duplicate entries
+        if ($student->courses()->where('course_id', $fields['course_id'])->exists()) {
+            return back()->withErrors(['course_id' => 'This course is already assigned to the student.']);
+        }
+
+        $student->courses()->attach($fields['course_id'], [
+            'status' => 'Enrolled',
+            'section_id' => $fields['section_id'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Course added successfully.');
+    }
+
+    public function dropCourse(Request $request, Student $student)
+    {
+        $fields = $request->validate([
+            'course_id' => ['required', 'exists:courses,id'],
+        ]);
+
+        $student->courses()->detach($fields['course_id']);
+
+        return back()->with('success', 'Course dropped successfully.');
+    }
 }

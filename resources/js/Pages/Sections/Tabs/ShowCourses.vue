@@ -171,6 +171,8 @@ const form = useForm({
     semester: null,
 });
 
+console.log(studyModes);
+
 function submitMove() {
     if (!selectedCourse.value) return;
 

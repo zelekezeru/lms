@@ -9,6 +9,7 @@ import {
     ArrowLeftOnRectangleIcon,
     CogIcon,
     QuestionMarkCircleIcon,
+    Square2StackIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 
@@ -55,7 +56,7 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
-                    :icon="BookOpenIcon"
+                    :icon="Square2StackIcon"
                     label="My Sections"
                     :href="route('instructor.sections')"
                     :isCollapsed="!isOpen"

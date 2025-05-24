@@ -17,6 +17,9 @@ import om from './lang/om.json';
 import sw from './lang/sw.json';
 import ur from './lang/ur.json';
 import zh from './lang/zh.json';
+import fr from './lang/fr.json';
+import ti from './lang/ti.json';
+
 
 
 const savedLocale = localStorage.getItem('locale') || 'en'
@@ -35,6 +38,8 @@ const i18n = createI18n({
     sw,
     ur,
     zh,
+    fr,
+    ti,
   }
 });
 

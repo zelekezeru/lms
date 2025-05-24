@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { CogIcon } from "@heroicons/vue/24/solid";
@@ -19,7 +19,6 @@ const props = defineProps({
         required: false,
     },
 });
-
 </script>
 
 <template>
@@ -36,6 +35,15 @@ const props = defineProps({
                         Students
                     </h2>
                 </div>
+                <div class="flex items-center mb-4">
+                    <div class="relative">
+                        <!-- Export list to Excel -->
+                        <a :href="route('sectionStudents.export', section.id)" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
+                            Export All to Excel
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Section Students list -->
                 <div class="overflow-x-auto">
                     <table

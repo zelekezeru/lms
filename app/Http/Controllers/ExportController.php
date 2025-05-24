@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\StudentsExport; // Import the StudentsExport class
 use App\Models\User;
 use App\Models\Student;
+use App\Models\Section;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings; // Optional: To add a header row
 use Maatwebsite\Excel\Concerns\WithMapping; // Optional: To customize the data in the export
@@ -15,12 +16,33 @@ use Maatwebsite\Excel\Concerns\WithMapping; // Optional: To customize the data i
 class ExportController extends Controller
 {
     // Export StudentsExcel with a parameter list
-    public function exportStudents(Request $request)
+    public function exportSectionstudents($section_id)    
     {
-        $studentIds = $request->input('student_ids', []);
-        
-        $students = Student::whereIn('id', $studentIds)->get();
+        // Get the student IDs from the section
+        $section = Section::find($section_id);
+
+        $students = $section->students()->with('user', 'status', 'church')->get();
 
         return Excel::download(new StudentsExport($students), 'students list.xlsx');
+    }
+    // Export UsersExcel with a parameter list
+    public function exportUsers($role)
+    {
+        // Get the users based on the role
+        if ($role == 'all') {
+            $users = User::all();
+        } elseif ($role == 'INSTRUCTOR') {
+            $users = User::whereHas('roles', function($query) use ($role) {
+                $query->where('name', $role);
+            })->with('instructor')->get();
+        } elseif ($role == 'EMPLOYEE') {
+            $users = User::whereHas('roles', function($query) use ($role) {
+                $query->where('name', $role);
+            })->with('employee')->get();
+        } else {
+            $users = collect();
+        }
+        
+        return Excel::download(new UsersExport($users), 'users.xlsx');
     }
 }

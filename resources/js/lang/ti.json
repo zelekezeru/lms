@@ -1,0 +1,38 @@
+{
+  "admin_dashboard": {
+    "title": "ዳሽቦርድ ኣድሚን",
+    "subtitle": "LMS ኣመሓድር፣ ንዕብየት ተኸታተል፣ ከምኡ'ውን ንቐንዲ መለክዒታት ርአ።",
+    "courses": "ኮርሳት",
+    "students": "ተምሃሮ",
+    "instructors": "መምህራን",
+    "revenue": "ኣታዊ",
+    "enrollment_chart": "ምዝገባ ተምሃሮ ኣብ ዝሓለፈ ግዜ",
+    "user_distribution": "ኣከፋፍላ ተጠቀምቲ",
+    "manage_instructors": "መምህራን ኣመሓድር"
+  },
+  "table": {
+    "name": "ሽም",
+    "email": "ኢመይል",
+    "specialization": "ልዩ ሙያ",
+    "status": "ኩነታት",
+    "actions": "ስጉምቲታት"
+  },
+  "status": {
+    "active": "ንቁጥ"
+  },
+  "actions": {
+    "edit": "ኣስተኻኽል",
+    "delete": "ኣጥፍእ"
+  },
+  "login": "እቶ",
+  "email": "ኢመይል",
+  "password": "ሕቡእ ቃል",
+  "remember_me": "ኣባኺ ዘክረኒ",
+  "forgot_password": "ሕቡእ ቃል ረሲዕካ?",
+  "create_account": "ሓድሽ ኣካውንት ፍጠር",
+  "welcome_back": "እንቋዕ ድሓን መጻእኹም",
+  "submit": "ኣቕርብ",
+  "forgot_password_title": "ሕቡእ ቃል ረሲዕካ",
+  "forgot_password_info": "ሕቡእ ቃልካ ረሲዕካዮ? ጸገም የለን። ንኣባና ናይ ኢመይል ኣድራሻኻ ምሕባር ጥራይ እዩ ዝድለ፣ ድማ ሓድሽ ሕቡእ ቃል ክትመርጽ ዘኽእለካ ሊንክ ናይ ዳግማይ ምትእትታው ሕቡእ ቃል ክንልእከልካ ኢና።",
+  "email_password_reset_link": "ሊንክ ዳግማይ ምትእትታው ሕቡእ ቃል ብኢመይል ስደድ"
+}

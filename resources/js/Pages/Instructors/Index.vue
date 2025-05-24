@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 defineProps({
     instructors: {
@@ -62,6 +62,8 @@ const searchInstructors = () => {
         { preserveState: true }
     );
 };
+
+const tenantId = computed(() => usePage().props.auth?.user?.tenant?.id);
 </script>
 
 <template>
@@ -108,6 +110,13 @@ const searchInstructors = () => {
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
                     + Add Instructor
+                </Link>
+
+                <Link
+                    :href="route('instructors.export', 'INSTRUCTOR')"
+                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                    Export All to Excel
                 </Link>
 
                 <button

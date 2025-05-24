@@ -8,8 +8,6 @@ import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
-import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver'
 import { computed } from 'vue'
 
 defineProps({
@@ -31,43 +29,9 @@ defineProps({
     },
 });
 
-// Export to Excel
-const exportToExcel = () => {
-  if (!students?.data?.length) return
-
-  const exportData = students.data.map((student, index) => ({
-    'No.': index + 1 + ((students.meta.current_page - 1) * students.meta.per_page),
-    'Full Name': `${student.firstName} ${student.middleName} ${student.lastName}`,
-    'ID Number': student.idNo,
-    'Phone': student.mobilePhone,
-  }))
-
-  const worksheet = XLSX.utils.json_to_sheet(exportData)
-  const workbook = XLSX.utils.book_new()
-
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Students')
-
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array',
-  })
-
-  const blob = new Blob([excelBuffer], {
-    type:
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
-  })
-
-  saveAs(blob, `Students_List_${new Date().toISOString().slice(0, 10)}.xlsx`)
-}
-
-
 </script>
 
 <template>
-    <!-- Export list to Excel -->
-     <a :href="route('students.export')" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">
-        Export All to Excel
-    </a>
 
     <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
         <!-- Export list to Excel -->

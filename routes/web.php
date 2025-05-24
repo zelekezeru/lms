@@ -79,10 +79,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Student Semester Registration
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
-
-    // Student Academics
-    Route::get('/students/export', [ExportController::class, 'exportStudents'])->name('students.export');
     
+    // Excel Export Routes
+    Route::get('/students/export', [ExportController::class, 'exportStudents'])->name('students.export');
+    Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
+    Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
+
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);
     Route::middleware(['can:view-permissions'])->resource('permissions', PermissionController::class);

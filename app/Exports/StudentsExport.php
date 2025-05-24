@@ -23,8 +23,10 @@ class StudentsExport implements FromCollection, WithHeadings
     */
     public function collection()
     {
-        return $this->students->map(function ($student) {
+        $i = 1;
+        return $this->students->map(function ($student) use (&$i) {
             return [
+                "No" => $i++,
                 'ID_Number' => $student->id_no,
                 'Full Name' => trim("{$student->first_name} {$student->middle_name} {$student->last_name}"),
                 'Sex' => $student->sex,

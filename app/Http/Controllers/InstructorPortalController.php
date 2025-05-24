@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
+use App\Http\Resources\SectionResource;
+use App\Http\Resources\StudentResource;
 use App\Models\CourseSectionAssignment;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Instructor;
+use App\Models\Section;
 
 class InstructorPortalController extends Controller
 {
@@ -38,7 +41,7 @@ class InstructorPortalController extends Controller
             },
         ]);
 
-
+        $instructor = new InstructorResource($instructor);
 
 
         return inertia('InstructorPortal/Courses', [
@@ -65,10 +68,75 @@ class InstructorPortalController extends Controller
             'courseSectionAssignments.section.studyMode'
         ]));
 
-        // Optionally, fetch more details about the course for the instructor
         return Inertia::render('InstructorPortal/CourseDetail', [
             'course' => $course,
             'instructor' => $instructor,
+        ]);
+    }
+
+    public function sections()
+    {
+        $instructor = request()->user()->instructor;
+
+        $instructor->load([
+            'user',
+            'courseSectionAssignments',
+            'courseSectionAssignments.section',
+            'courseSectionAssignments.section.program',
+            'courseSectionAssignments.section.track',
+            'courseSectionAssignments.section.studyMode',
+        ]);
+
+        $instructor = new InstructorResource($instructor);
+
+        return inertia('InstructorPortal/Sections', [
+            'instructor' => $instructor,
+        ]);
+    }
+
+    public function sectionDetail(Section $section)
+    {
+        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later 
+        // if (!$course->instructors->contains(request()->user()->instructor->id)) {
+        //     abort(403);
+        // }
+
+        $instructor = new InstructorResource(
+            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+        );
+
+        $section = new SectionResource($section->load([
+            'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseSectionAssignments.course',
+            'program',
+            'track',
+            'studyMode'
+        ]));
+
+        return Inertia::render('InstructorPortal/SectionDetail', [
+            'section' => $section,
+            'instructor' => $instructor,
+        ]);
+    }
+
+
+    public function sectionCourseStudents(Section $section, Course $course)
+    {
+        $instructor = new InstructorResource(
+            request()->user()->instructor->load('user')
+        );
+
+        $validInstructor = $instructor->courseSectionAssignments()->where('section_id', $section->id)->where('course_id', $course->id)->exists();
+        if (! $validInstructor) {
+            abort(403);
+        }
+
+        $students = StudentResource::collection($section->students);
+
+        return inertia('InstructorPortal/CourseStudents', [
+            'students' => $students,
+            'course' => $course,
+            'section' => $section,
         ]);
     }
 

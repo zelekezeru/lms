@@ -51,7 +51,13 @@ class InstructorController extends Controller
      */
     public function show(Instructor $instructor)
     {
-        $instructor = new InstructorResource($instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course'));
+        $instructor = new InstructorResource($instructor->load([
+            'user',
+            'courses',
+            'courseSectionAssignments.section.courseSectionAssignments' => function ($q) use ($instructor) {
+                $q->where('instructor_id', $instructor->id);
+            },
+        ]));
 
         $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor) {
             return $query->where('instructors.id', $instructor->id);
@@ -94,7 +100,7 @@ class InstructorController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = 'instructor@'.$user_phone;
+        $user_password = 'instructor@' . $user_phone;
 
         // Merge the default password into the request
         $request->merge([

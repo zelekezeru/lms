@@ -38,18 +38,7 @@ class InstructorResource extends JsonResource
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'sections' => $this->whenLoaded('courseSectionAssignments', function () {
                 return $this->courseSectionAssignments->map(function ($courseSectionAssignment) {
-                    return
-                    [
-                        'id' => $courseSectionAssignment->section->id,
-                        'name' => $courseSectionAssignment->section->name,
-                        'code' => $courseSectionAssignment->section->code,
-                        'course' => [
-                            'id' => $courseSectionAssignment->course->id,
-                            'name' => $courseSectionAssignment->course->name,
-                            'code' => $courseSectionAssignment->course->code,
-                            'creaditHours' => $courseSectionAssignment->course->creadit_hours,
-                        ],
-                    ];
+                    return new SectionResource($courseSectionAssignment->section);
                 });
             }),
         ];

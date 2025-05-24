@@ -80,7 +80,7 @@ const props = defineProps({
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in [...section.students].sort((a, b) => a.first_name.localeCompare(b.first_name))"
+                                v-for="(student, index) in [...section.students].sort((a, b) => a.firstName.localeCompare(b.firstName))"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0
@@ -104,15 +104,15 @@ const props = defineProps({
                                             })
                                         "
                                     >
-                                        {{ student.first_name }}
-                                        {{ student.middle_name }}
-                                        {{ student.last_name }}
+                                        {{ student.firstName }}
+                                        {{ student.middleName }}
+                                        {{ student.lastName }}
                                     </Link>
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ student.id_no }}
+                                    {{ student.idNo }}
                                 </td>
                                 <td
                                     class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"

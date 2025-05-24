@@ -31,7 +31,7 @@ const assignCourses = ref(false);
 const assignToCourse = ref({});
 
 const courseAssignmentForm = useForm({
-    courses: props.instructor.courses.map(course => course.id),
+    courses: props.instructor.courses.map((course) => course.id),
 });
 
 const closeCourseAssignment = () => {
@@ -42,24 +42,25 @@ const closeCourseAssignment = () => {
 
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
-        route('courses-instructor.assign', { instructor: props.instructor.id }),
+        route("courses-instructor.assign", { instructor: props.instructor.id }),
         {
             onSuccess: () => {
                 Swal.fire(
-                    'Successful!',
-                    'Courses assigned successfully.',
-                    'success'
+                    "Successful!",
+                    "Courses assigned successfully.",
+                    "success"
                 );
                 assignCourses.value = false;
                 courseAssignmentForm.reset();
-                courseAssignmentForm.courses = props.instructor.courses.map(course => course.id);
+                courseAssignmentForm.courses = props.instructor.courses.map(
+                    (course) => course.id
+                );
             },
         }
     );
 };
 
 const imageLoaded = ref(false);
-
 </script>
 
 <template>
@@ -159,19 +160,55 @@ const imageLoaded = ref(false);
                                 <td
                                     class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                <Link v-for="(section, index) in instructor.sections.filter((section) => section.course.id == course.id)" :href="route('sections.show', {section: section.id})" :key="section.id">
-                                    {{ section.name }}{{ (index + 1) == instructor.sections.filter((section) => section.course.id == course.id).length ? "" : ", " }}</Link>
+                                    <Link
+                                        v-for="(
+                                            section, index
+                                        ) in instructor.sections.filter(
+                                            (section) =>
+                                                section.courses
+                                                    .map((course) => course.id)
+                                                    .includes(course.id)
+                                        )"
+                                        :href="
+                                            route('sections.show', {
+                                                section: section.id,
+                                            })
+                                        "
+                                        :key="section.id"
+                                    >
+                                        {{ section.name
+                                        }}{{
+                                            index + 1 ==
+                                            instructor.sections.filter(
+                                                (section) =>
+                                                    section.courses
+                                                        .map(
+                                                            (course) =>
+                                                                course.id
+                                                        )
+                                                        .includes(course.id)
+                                            ).length
+                                                ? ""
+                                                : ", "
+                                        }}</Link
+                                    >
                                 </td>
                                 <!-- Course Show Page -->
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                <div v-if="userCan('view-courses')">
-                                    <Link :href="route('courses.show', { course: course.id })" class="text-blue-500 hover:text-blue-700">
-                                        <EyeIcon class="w-5 h-5" />
-                                    </Link>
-                                </div>
-                                    
+                                    <div v-if="userCan('view-courses')">
+                                        <Link
+                                            :href="
+                                                route('courses.show', {
+                                                    course: course.id,
+                                                })
+                                            "
+                                            class="text-blue-500 hover:text-blue-700"
+                                        >
+                                            <EyeIcon class="w-5 h-5" />
+                                        </Link>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -218,7 +255,9 @@ const imageLoaded = ref(false);
                     :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ courseAssignmentForm.processing ? "Assign..." : "Assign"}}
+                    {{
+                        courseAssignmentForm.processing ? "Assign..." : "Assign"
+                    }}
                 </button>
 
                 <button

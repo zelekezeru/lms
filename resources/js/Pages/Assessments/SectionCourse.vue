@@ -1,18 +1,20 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref, computed } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
-import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
-    PencilIcon, EyeIcon, XMarkIcon, CogIcon,
-    PlusCircleIcon, DocumentTextIcon, PresentationChartBarIcon,
-    CheckBadgeIcon, TrashIcon
+    CogIcon,
+    DocumentTextIcon,
+    PresentationChartBarIcon,
+    CheckBadgeIcon,
 } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowResults from "./Tabs/ShowResults.vue";
 import ShowWeights from "./Tabs/ShowWeights.vue";
 import ShowGrades from "./Tabs/ShowGrades.vue";
+
+import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue"; // default
+import { usePage } from "@inertiajs/vue3";
 
 // Props
 const props = defineProps({
@@ -56,10 +58,16 @@ const tabs = [
 
 const selectedTab = ref("details");
 
+const user = usePage().props.auth.user;
+
+const LayoutComponent = computed(() => {
+    if (user.roles?.includes("INSTRUCTOR")) return InstructorLayout;
+    return AppLayout;
+});
 </script>
 
 <template>
-    <AppLayout>
+    <component :is="LayoutComponent">
         <div class="max-w-5xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
@@ -67,7 +75,9 @@ const selectedTab = ref("details");
                 {{ section.name }} - {{ course.name }} Course Assessments
             </h1>
 
-            <nav class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700" >
+            <nav
+                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
+            >
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
@@ -84,63 +94,66 @@ const selectedTab = ref("details");
                 </button>
             </nav>
 
-            <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700" >
-
-                <transition
-                mode="out-in"
-                enter-active-class="transition duration-300 ease-out"
-                enter-from-class="opacity-0 scale-75"
-                enter-to-class="opacity-100 scale-100"
-                leave-active-class="transition duration-200 ease-in"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-75"
+            <div
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
             >
-                <div
-                    :key="selectedTab"
-                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                <transition
+                    mode="out-in"
+                    enter-active-class="transition duration-300 ease-out"
+                    enter-from-class="opacity-0 scale-75"
+                    enter-to-class="opacity-100 scale-100"
+                    leave-active-class="transition duration-200 ease-in"
+                    leave-from-class="opacity-100 scale-100"
+                    leave-to-class="opacity-0 scale-75"
                 >
-                    <!-- Details Panel -->
-                    <ShowDetails
-                        v-if="selectedTab == 'details'"
-                        :section="section"
-                        :course="course"
-                        :semester="semester"
-                        :instructor="instructor"
-                    />
+                    <div
+                        :key="selectedTab"
+                        class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                    >
+                        <!-- Details Panel -->
+                        <ShowDetails
+                            v-if="selectedTab == 'details'"
+                            :section="section"
+                            :course="course"
+                            :semester="semester"
+                            :instructor="instructor"
+                        />
 
-                    <!-- Results Panel -->
-                    <ShowResults v-else-if="selectedTab == 'results'" 
-                        :section="section"
-                        :course="course"
-                        :semester="semester"
-                        :instructor="instructor"
-                        :weights="weights"
-                        :studentsList="students"
-                    />
+                        <!-- Results Panel -->
+                        <ShowResults
+                            v-else-if="selectedTab == 'results'"
+                            :section="section"
+                            :course="course"
+                            :semester="semester"
+                            :instructor="instructor"
+                            :weights="weights"
+                            :studentsList="students"
+                        />
 
-                    <!-- Weights Panel -->
-                    <ShowWeights v-else-if="selectedTab == 'weights'" 
-                        :weights="weights"
-                        :section="section"
-                        :course="course"
-                        :semester="semester"
-                        :instructor="instructor"
-                    />
+                        <!-- Weights Panel -->
+                        <ShowWeights
+                            v-else-if="selectedTab == 'weights'"
+                            :weights="weights"
+                            :section="section"
+                            :course="course"
+                            :semester="semester"
+                            :instructor="instructor"
+                        />
 
-                    <!-- Grades Panel -->
-                    <ShowGrades v-else-if="selectedTab == 'grades'"
-                        :section="section"
-                        :weights="weights"
-                        :course="course"
-                        :semester="semester"
-                        :instructor="instructor"
-                        :grades="grades"
-                        :studentsList="students"
-                    />
-                </div>
-            </transition>
-                
-            </div>  
+                        <!-- Grades Panel -->
+                        <ShowGrades
+                            v-else-if="selectedTab == 'grades'"
+                            :section="section"
+                            :weights="weights"
+                            :course="course"
+                            :semester="semester"
+                            :instructor="instructor"
+                            :grades="grades"
+                            :studentsList="students"
+                        />
+                    </div>
+                </transition>
+            </div>
         </div>
-    </AppLayout>
+    </component>
 </template>

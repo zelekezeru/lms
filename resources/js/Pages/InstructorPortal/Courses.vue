@@ -24,7 +24,7 @@ const props = defineProps({
                 My Courses
             </h1>
             <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                Courses you're teaching and With Sections
+                Courses you're teaching in different sections.
             </p>
         </div>
 

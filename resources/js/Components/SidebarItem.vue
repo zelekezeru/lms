@@ -5,7 +5,7 @@ import { usePage, Link } from "@inertiajs/vue3";
 const props = defineProps({
     href: { type: String, default: "#" },
     label: { type: String, required: true },
-    icon: { type: Object, required: true },
+    icon: { type: Function, required: true },
     isCollapsed: { type: Boolean, default: false },
 });
 

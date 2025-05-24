@@ -55,6 +55,12 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
+                    :icon="BookOpenIcon"
+                    label="My Sections"
+                    :href="route('instructor.sections')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
                     :icon="ClipboardDocumentListIcon"
                     label="Attendance"
                     href="/instructor/attendance"

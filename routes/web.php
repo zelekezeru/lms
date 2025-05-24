@@ -22,44 +22,48 @@ Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
     // Student Dashboard
-    Route::get('/', function() {
+    Route::get('/', function () {
         if (request()->user()->hasRole('STUDENT')) {
             return redirect(route('student.dashboard'));
-        } 
-        elseif (request()->user()->hasRole('INSTRUCTOR')) {
-            return redirect(route('instructor.dashboard'));            
-        } 
-        elseif (request()->user()->hasRole('EMPLOYEE')) {
+        } elseif (request()->user()->hasRole('INSTRUCTOR')) {
+            return redirect(route('instructor.dashboard'));
+        } elseif (request()->user()->hasRole('EMPLOYEE')) {
             return redirect(route('employee.dashboard'));
-        }
-        else {
+        } else {
             return redirect(route('admin.dashboard'));
         }
     })->name('dashboard');
 
     // Admin Dashboard
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
-    
-            // Student Portal
-        Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
-            Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
-            Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
-            Route::get('/courses/{course}', [StudentPortalController::class, 'show'])->name('student.courses.show');
-            Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
-            Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
-            Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
-        });
 
-        // Instructor Portal
-        Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
-            Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
-            Route::get('/courses', [InstructorPortalController::class, 'courses'])->name('instructor.courses');
-            Route::get('/courses/{course}', [InstructorPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
-            Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
-            Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
-            Route::get('/schedules', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
-        });
-        
+    // Student Portal
+    Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
+        Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
+        Route::get('/courses', [StudentPortalController::class, 'courses'])->name('student.courses');
+        Route::get('/courses/{course}', [StudentPortalController::class, 'show'])->name('student.courses.show');
+        Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
+        Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
+        Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
+    });
+
+    // Instructor Portal
+    Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
+        Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
+        Route::get('/courses', [InstructorPortalController::class, 'courses'])->name('instructor.courses');
+        Route::get('/courses/{course}', [InstructorPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
+        Route::get('/sections', [InstructorPortalController::class, 'sections'])->name('instructor.sections');
+        Route::get('/sections/{section}', [InstructorPortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
+
+        Route::get('sections/{section}/courses/{course}/students', [InstructorPortalController::class, 'sectionCourseStudents'])->name('instructor.sections.courses.students');
+        Route::get('sections/{section}/courses/{course}/assessments', [InstructorPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
+        Route::get('sections/{section}/courses/{course}/attendance', [InstructorPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
+
+        Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
+        Route::get('/schedules', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
+        Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
+    });
+
     // Profiles related routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -79,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Student Semester Registration
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
-    
+
     // Excel Export Routes
     Route::get('/students/export', [ExportController::class, 'exportStudents'])->name('students.export');
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
@@ -104,7 +108,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
     Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
-    
+
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
@@ -183,4 +187,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

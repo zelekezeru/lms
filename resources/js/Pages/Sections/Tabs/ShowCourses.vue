@@ -183,6 +183,11 @@ function submitMove() {
             Swal.fire("Success", `Course moved successfully.`, "success");
             popOverRef.value.hide();
             selectedCourse.value = null;
+            showUnassignedOnly.value = false;
+            
+            selectedYearLevel.value = form.year;
+            selectedSemester.value = form.semester;
+            form.reset();
         },
         onError: () => {
             Swal.fire(

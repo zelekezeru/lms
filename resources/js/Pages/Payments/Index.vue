@@ -6,7 +6,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { Cog6ToothIcon, BookOpenIcon, AcademicCapIcon, UsersIcon, CurrencyDollarIcon, BuildingLibraryIcon, InformationCircleIcon, BanknotesIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
-import ShowDetails from "./Tabs/showDetails.vue";
+import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowCategories from "./Tabs/ShowCategories.vue";
 import ShowMethods from "./Tabs/ShowMethods.vue";

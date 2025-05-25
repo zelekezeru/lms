@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
+use function PHPSTORM_META\map;
+
 class StudentController extends Controller
 {
     public function index(Request $request): Response
@@ -92,7 +94,21 @@ class StudentController extends Controller
 
         $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode'));
 
-        $studyModes = StudyModeResource::collection(StudyMode::with('sections')->get());
+        $yearLevel = $student->section->yearLevel();
+        $semester = $student->section->semester->level;
+
+        $studyModes = StudyMode::with(['sections' => function ($query) use ($yearLevel, $semester) {
+            $query->whereHas('courseSectionAssignments', function ($q) use ($yearLevel, $semester) {
+                $q->where('year_level', $yearLevel)
+                    ->where('semester', $semester);
+            })->with(['courseSectionAssignments' => function ($q) use ($yearLevel, $semester) {
+                $q->where('year_level', $yearLevel)
+                    ->where('semester', $semester);
+            }]);
+        }])->get();
+
+        $studyModes = StudyModeResource::collection($studyModes);
+
         // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)

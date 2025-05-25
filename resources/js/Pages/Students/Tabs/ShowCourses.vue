@@ -22,6 +22,8 @@ const props = defineProps({
   studyModes: { type: Array, required: false, default: () => [] },
 });
 
+console.log(props.studyModes);
+
 const showAddModal = ref(false);
 const showDropModal = ref(false);
 

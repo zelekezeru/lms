@@ -321,6 +321,7 @@ watch(showDropModal, (v) => {
                     v-model="addForm.section_id"
                     :options="sectionOptions"
                     placeholder="This course is available in..."
+                    empty-message="no available section!"
                     option-label="name"
                     append-to="self"
                     option-value="id"

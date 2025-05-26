@@ -129,13 +129,13 @@ watch(showDropModal, (v) => {
             </div>
         </div>
 
-        <div v-if="!student.courses" class="text-center">
+        <div v-if="!student.courses.filter(course => course.studentStatus == 'Enrolled')" class="text-center">
             <p class="text-gray-500 dark:text-gray-400">
                 No course information available.
             </p>
         </div>
 
-        <div v-else-if="student.courses" class="flex flex-col">
+        <div v-else-if="student.courses.filter(course => course.studentStatus == 'Enrolled')" class="flex flex-col">
             <div
                 class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
@@ -187,7 +187,7 @@ watch(showDropModal, (v) => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(course, index) in student.courses"
+                            v-for="(course, index) in student.courses.filter(course => course.studentStatus == 'Enrolled')"
                             :key="course.id"
                             :class="
                                 index % 2 === 0

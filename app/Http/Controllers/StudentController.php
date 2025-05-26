@@ -428,8 +428,13 @@ class StudentController extends Controller
             'course_id' => ['required', 'exists:courses,id'],
         ]);
 
-        $student->courses()->detach($fields['course_id']);
+        // Instead of detaching, update the pivot status to "Dropped"
+        $student->courses()
+            ->updateExistingPivot(
+                $fields['course_id'],
+                ['status' => 'Dropped']
+            );
 
-        return back()->with('success', 'Course dropped successfully.');
+        return back()->with('success', 'Course marked as dropped successfully.');
     }
 }

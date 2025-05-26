@@ -22,7 +22,9 @@ const props = defineProps({
     studyModes: { type: Array, required: false, default: () => [] },
 });
 
-console.log(props.studyModes);
+const unAddableCourses = computed(() => props.student.courses.filter(course => course.studentStatus == "Enrolled" || course.studentStatus == "Completed").map(c => c.id));
+const filteredCoursesList = computed(() => props.courses.filter(course => ! unAddableCourses.value.includes(course.id)));
+
 
 const showAddModal = ref(false);
 const showDropModal = ref(false);
@@ -31,7 +33,7 @@ const addForm = useForm({ course_id: "", section_id: "" });
 const dropForm = useForm({});
 
 const enrolledIds = computed(
-    () => new Set(props.student.courses.map((c) => c.id))
+    () => new Set(props.student.courses.filter((c) => c.studenStatus == "enrolled").map(c => c.id))
 );
 const availableCourses = computed(() =>
     props.courses
@@ -235,12 +237,12 @@ watch(showDropModal, (v) => {
                             >
                                 <span
                                     :class="
-                                        course.pivot.status === 'Enrolled'
+                                        course.studentStatus === 'Enrolled'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
                                 >
-                                    {{ course.pivot.status }}
+                                    {{ course.studentStatus }}
                                 </span>
                             </td>
                             <td class="px-4 py-2 text-sm">
@@ -277,7 +279,7 @@ watch(showDropModal, (v) => {
                 </p>
                 <Listbox
                     v-model="addForm.course_id"
-                    :options="courses"
+                    :options="filteredCoursesList"
                     checkmark
                     optionLabel="name"
                     option-value="id"

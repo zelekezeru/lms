@@ -92,7 +92,7 @@ class StudentController extends Controller
             $status->save();
         }
 
-        $student = new StudentResource($student->load('user', 'courses', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode'));
+        $student = new StudentResource($student->load(['user', 'courses' => fn($q) => $q->withPivot('status'), 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
 
         $yearLevel = $student->section->yearLevel();
         $semester = $student->section->semester->level;
@@ -132,15 +132,18 @@ class StudentController extends Controller
         $user = new UserResource($student->user->load('userDocuments'));
 
         // For Transcript
-        $student->load([
-            'user',
-            'program',
-            'track',
-            'studyMode',
-            'year',
-            'semester',
-            'section',
-        ]);
+        // $student->load([
+        //     'user',
+        //     'program',
+        //     'track',
+        //     'studyMode',
+        //     'year',
+        //     'courses' => function ($q) {
+        //         $q->withPivot('status');
+        //     },
+        //     'semester',
+        //     'section',
+        // ]);
 
         $semesters = $student->semesters()
             ->with(['year', 'grades' => fn($q) => $q

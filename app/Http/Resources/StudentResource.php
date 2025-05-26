@@ -34,9 +34,9 @@ class StudentResource extends JsonResource
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
 
-            'courses' => $this->whenLoaded('courses'),
-            'program' => $this->whenLoaded('program'),
-            'track' => $this->whenLoaded('track'),
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
+            'program' => new ProgramResource($this->whenLoaded('program')),
+            'track' => new TrackResource($this->whenLoaded('track')),
             'section' => new SectionResource($this->whenLoaded('section')),
             'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
             'year' => new YearResource($this->whenLoaded('year')),

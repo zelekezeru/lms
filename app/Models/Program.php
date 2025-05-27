@@ -30,7 +30,6 @@ class Program extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
     public function sections()
     {
         return $this->hasMany(Section::class);

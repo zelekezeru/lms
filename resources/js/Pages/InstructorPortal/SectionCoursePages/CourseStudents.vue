@@ -1,5 +1,6 @@
 <script setup>
 import InstructorLayout from '@/Layouts/InstructorLayout.vue';
+import SectionCourseLayout from './SectionCourseLayout.vue';
 
 const props = defineProps({
   course: Object,
@@ -10,7 +11,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <InstructorLayout>
+  <SectionCourseLayout>
     <div class="max-w-7xl mx-auto py-10 px-4">
       <h1 class="text-2xl font-bold mb-6">Students for {{ course.name }} ({{ course.code }})</h1>
       <table class="min-w-full text-left bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
@@ -30,6 +31,6 @@ const props = defineProps({
         </tbody>
       </table>
     </div>
-  </InstructorLayout>
+  </SectionCourseLayout>
 </template>
 

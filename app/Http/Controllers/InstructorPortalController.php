@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Instructor;
 use App\Models\Section;
+use App\Models\Semester;
 
 class InstructorPortalController extends Controller
 {
@@ -121,7 +122,6 @@ class InstructorPortalController extends Controller
         ]);
     }
 
-
     public function sectionCourseStudents(Section $section, Course $course)
     {
         $instructor = new InstructorResource(
@@ -135,10 +135,56 @@ class InstructorPortalController extends Controller
 
         $students = StudentResource::collection($section->students);
 
-        return inertia('InstructorPortal/CourseStudents', [
+        return inertia('InstructorPortal/SectionCoursePages/CourseStudents', [
             'students' => $students,
             'course' => $course,
             'section' => $section,
+        ]);
+    }
+
+    public function sectionCourseAssessments($section, $course)
+    {
+        $section = Section::find($section)->load(['user', 'program', 'track', 'students', 'grades',]);
+
+        $course = $section->courses()->find($course)->load(['instructors', 'students']);
+
+        $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
+
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
+
+        $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
+
+        $grades = $section->grades()->where('course_id', $course->id)->get();
+
+        $students = $section->students()
+                            ->whereHas('courses', function ($query) use ($course) {
+                                $query->where('course_id', $course->id); 
+                            })
+                            ->orderBy('first_name')
+                            ->orderBy('middle_name')
+                            ->orderBy('last_name')
+                            ->get();
+                            
+        // Load the instructor details
+        if ($instructor) {
+            $instructor = Instructor::find($instructor)->load(['user']);
+        } else {
+            $instructor = null;
+        }
+
+        // Check if the section and course exist
+        if (! $section || ! $course) {
+            return redirect()->back()->with('error', 'Section or Course not found.');
+        }
+
+        return inertia('InstructorPortal/SectionCoursePages/CourseAssessments', [
+            'section' => $section,
+            'course' => $course,
+            'semester' => $semester,
+            'weights' => $weights,
+            'instructor' => $instructor,
+            'grades' => $grades,
+            'students' => $students,
         ]);
     }
 

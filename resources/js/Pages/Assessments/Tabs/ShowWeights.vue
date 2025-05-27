@@ -35,6 +35,11 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+
+    redirectTo: {
+        type: String,
+        required:false
+    }
 });
 
 // Computed
@@ -77,7 +82,7 @@ const addWeight = () => {
     // Submit if everything is okay
     weightForm.post(
         route("weights.store", {
-            redirectTo: route('assessments.section_course', {
+            redirectTo: props.redirectTo ?? route('assessments.section_course', {
                 course: props.course.id,
                 section: props.section.id
             }),

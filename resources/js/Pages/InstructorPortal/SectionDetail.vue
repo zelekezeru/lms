@@ -66,7 +66,7 @@ const props = defineProps({
                 <ClipboardIcon class="w-5 h-5 mr-2" /> Students
               </Link>
               <Link
-                :href="route('assessments.section_course', { section: section.id, course: course.id })"
+                :href="route('instructor.sections.courses.assessments', { section: section.id, course: course.id })"
                 class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition"
               >
                 <ClipboardIcon class="w-5 h-5 mr-2" /> Assessments

@@ -99,7 +99,6 @@ const user = usePage().props.auth.user;
                         :key="selectedTab"
                         class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
                     >
-                    {{ instructor }}
                         <!-- Results Panel -->
                         <ShowResults
                             v-if="selectedTab == 'results'"
@@ -118,6 +117,7 @@ const user = usePage().props.auth.user;
                             :section="section"
                             :course="course"
                             :semester="semester"
+                            :redirect-to="$page.url"
                             :instructor="instructor"
                         />
 

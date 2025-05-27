@@ -16,34 +16,28 @@ const tabs = [
         key: "student",
         label: "Student",
         icon: UserGroupIcon,
-        get route() {
-            return route("instructor.sections.courses.students", {
-                section: props.section.id,
-                course: props.course.id,
-            });
-        },
+        route: route("instructor.sections.courses.students", {
+            section: props.section.id,
+            course: props.course.id,
+        }),
     },
     {
         key: "assessments",
         label: "Assessments",
         icon: ClipboardDocumentListIcon,
-        get route() {
-            return route("instructor.sections.courses.assessments", {
-                section: props.section.id,
-                course: props.course.id,
-            });
-        },
+        route: route("instructor.sections.courses.assessments", {
+            section: props.section.id,
+            course: props.course.id,
+        }),
     },
     {
         key: "attendance",
         label: "Attendance",
         icon: CalendarDaysIcon,
-        get route() {
-            return route("instructor.sections.courses.attendance", {
-                section: props.section.id,
-                course: props.course.id,
-            });
-        },
+        route: route("instructor.sections.courses.attendance", {
+            section: props.section.id,
+            course: props.course.id,
+        }),
     },
 ];
 

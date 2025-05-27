@@ -1,4 +1,25 @@
 {
+  "tracks": {
+    "title": "የትራክ ዝርዝሮች",
+    "search_placeholder": "ትራኮችን ፈልግ...",
+    "add": "+ ትራክ አክል",
+    "refresh": "መረጃ አድስ",
+    "toggle_view": "እይታ ቀይር",
+    "name": "የትራክ ስም",
+    "program": "ፕሮግራም",
+    "code": "ኮድ",
+    "description": "መግለጫ",
+    "actions": "እርምጃዎች",
+    "track_title_suffix": "ትራክ",
+    "duration": "ቆይታ",
+    "tabs": {
+      "details": "ዝርዝሮች",
+      "curriculums": "ትምህርት ዝርዝሮች",
+      "courses": "ኮርሶች",
+      "sections": "ክፍሎች",
+      "students": "ተማሪዎች"
+    }
+  },
   "programs": {
     "title": "ፕሮግራሞች",
     "search_placeholder": "ፕሮግራሞችን ፈልግ...",

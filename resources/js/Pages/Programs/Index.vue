@@ -236,7 +236,7 @@ const searchPrograms = () => {
                         class="flex items-center mb-3 text-gray-700 dark:text-gray-300"
                     >
                         <LanguageIcon class="w-5 h-5 mr-2 text-teal-500" />
-                        <span class="font-semibold">Language:</span>
+                        <span class="font-semibold">{{ $t('programs.language') }} :</span>
                         <span class="ml-1">{{ program.language }}</span>
                     </div>
                     
@@ -244,7 +244,7 @@ const searchPrograms = () => {
                         class="flex items-center mb-3 text-gray-700 dark:text-gray-300"
                     >
                         <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
-                        <span class="font-semibold">Duration :</span>
+                        <span class="font-semibold">{{ $t('programs.duration') }} :</span>
                         <span class="ml-1">{{ program.duration }}</span>
                     </div>
 

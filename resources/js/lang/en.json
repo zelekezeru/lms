@@ -1,4 +1,25 @@
 {
+  "tracks": {
+    "title": "Track Details",
+    "search_placeholder": "Search Tracks...",
+    "add": "+ Add Track",
+    "refresh": "Refresh Data",
+    "toggle_view": "Toggle View",
+    "name": "Track Name",
+    "program": "Program",
+    "code": "Code",
+    "description": "Description",
+    "actions": "Actions",
+    "track_title_suffix": "Track",
+    "duration": "Duration",
+    "tabs": {
+      "details": "Details",
+      "curriculums": "Curriculums",
+      "courses": "Courses",
+      "sections": "Sections",
+      "students": "Students"
+    }
+  },
   "programs": {
     "title": "Programs",
     "search_placeholder": "Search Programs...",

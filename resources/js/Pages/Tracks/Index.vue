@@ -81,14 +81,12 @@ const deleteTrack = (id) => {
 
 <template>
     <AppLayout>
-        <h1
-            class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
-        >
-            Track Details
+        <h1 class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100">
+            {{ $t('tracks.title') }}
         </h1>
 
-        <!-- View Mode Toggle -->
-        <div class="flex justify-between items-center mb-3">
+               <!-- View Mode Toggle -->
+               <div class="flex items-center justify-between mb-3">
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
@@ -109,8 +107,8 @@ const deleteTrack = (id) => {
                 <input
                     type="text"
                     v-model="search"
-                    placeholder="Search Tracks..."
-                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                    :placeholder="$t('tracks.search_placeholder')"
+                    class="p-2 pl-10 text-gray-900 border rounded-lg dark:text-white dark:bg-gray-700"
                     @input="searchTracks"
                 />
             </div>
@@ -119,26 +117,26 @@ const deleteTrack = (id) => {
                 <Link
                     v-if="userCan('create-tracks')"
                     :href="route('tracks.create')"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-600 rounded-md hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + Add Track
+                    {{ $t('tracks.add') }}
                 </Link>
 
                 <button
                     @click="refreshData"
-                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-blue-800 rounded-md hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     title="Refresh Data"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    Refresh Data
+                    {{ $t('tracks.refresh') }}
                 </button>
                 <!-- Toggle View Button -->
                 <button
                     @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
-                    class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
                     title="Toggle View"
                 >
                     <component
@@ -152,80 +150,39 @@ const deleteTrack = (id) => {
                 </button>
             </div>
         </div>
-
         <!-- Table View -->
-        <div
-            v-if="viewMode === 'table'"
-            class="overflow-x-auto shadow-md sm:rounded-lg mt-3"
-        >
+        <div v-if="viewMode === 'table'" class="mt-3 overflow-x-auto shadow-md sm:rounded-lg">
             <Table>
                 <TableHeader>
                     <tr>
-                        <Thead
-                            :sortable="true"
-                            :sort-info="sortInfo"
-                            :sortColumn="'name'"
-                            >Track Name</Thead
-                        >
-                        <Thead
-                            :sortable="true"
-                            :sort-info="sortInfo"
-                            :sortColumn="'code'"
-                            >Code</Thead
-                        >
-                        <Thead
-                            :sortable="true"
-                            :sort-info="sortInfo"
-                            :sortColumn="'description'"
-                            >Description</Thead
-                        >
-                        <Thead>Actions</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">{{ $t('tracks.name') }}</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">{{ $t('tracks.code') }}</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'description'">{{ $t('tracks.description') }}</Thead>
+                        <Thead>{{ $t('tracks.actions') }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
-                    <TableZebraRows
-                        v-for="track in tracks.data"
-                        :key="track.id"
-                    >
-                        <th
-                            scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                        >
-                            <Link
-                                :href="
-                                    route('tracks.show', { track: track.id })
-                                "
-                            >
-                                {{ track.name }}
-                            </Link>
+                    <TableZebraRows v-for="track in tracks.data" :key="track.id">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            <Link :href="route('tracks.show', { track: track.id })">{{ track.name }}</Link>
                         </th>
                         <td class="px-6 py-4">{{ track.code }}</td>
                         <td class="px-6 py-4">{{ track.description }}</td>
-                        <td class="px-6 py-4 flex space-x-6">
-                            <div v-if="userCan('view-tracks')">
-                                <Link
-                                    :href="
-                                        route('tracks.show', {
-                                            track: track.id,
-                                        })
-                                    "
-                                    class="text-blue-500 hover:text-blue-700"
-                                >
-                                    <EyeIcon class="w-5 h-5" />
-                                </Link>
-                            </div>
-                            <div v-if="userCan('update-tracks')">
-                                <Link
-                                    :href="
-                                        route('tracks.edit', {
-                                            track: track.id,
-                                        })
-                                    "
-                                    class="text-green-500 hover:text-green-700"
-                                >
-                                    <PencilSquareIcon class="w-5 h-5" />
-                                </Link>
-                            </div>
+                        <td class="flex px-6 py-4 space-x-6">
+                            <Link
+                                v-if="userCan('view-tracks')"
+                                :href="route('tracks.show', { track: track.id })"
+                                class="text-blue-500 hover:text-blue-700"
+                            >
+                                <EyeIcon class="w-5 h-5" />
+                            </Link>
+                            <Link
+                                v-if="userCan('update-tracks')"
+                                :href="route('tracks.edit', { track: track.id })"
+                                class="text-green-500 hover:text-green-700"
+                            >
+                                <PencilSquareIcon class="w-5 h-5" />
+                            </Link>
                         </td>
                     </TableZebraRows>
                 </tbody>
@@ -233,62 +190,49 @@ const deleteTrack = (id) => {
         </div>
 
         <!-- Card View -->
-        <div
-            v-else
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-3"
-        >
+        <div v-else class="grid grid-cols-1 gap-6 mt-3 sm:grid-cols-2 md:grid-cols-3">
             <div
                 v-for="track in tracks.data"
                 :key="track.id"
-                class="bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-lg shadow-md p-6 flex flex-col transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+                class="flex flex-col p-6 transition duration-300 ease-in-out bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border dark:border-gray-700 hover:scale-105 hover:shadow-lg"
             >
-            
                 <Link
                     v-if="userCan('view-tracks')"
                     :href="route('tracks.show', { track: track.id })"
-                    class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    class="text-blue-500 hover:text-blue-700"
                 >
-
-                    <h3
-                        class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
-                    >
-                        {{ track.name }}
-                    </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                        <strong>Code:</strong> {{ track.code }}
+                    <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">{{ track.name }}</h3>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <strong>{{ $t('tracks.code') }}:</strong> {{ track.code }}
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 flex-grow">
-                        {{ track.description }}
-                    </p>
-                    <div class="mt-4 flex space-x-4">
-                        <Link
-                            v-if="userCan('view-tracks')"
-                            :href="route('tracks.show', { track: track.id })"
-                            class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        >
-                            <EyeIcon class="w-5 h-5" />
-                        </Link>
-                        <Link
-                            v-if="userCan('update-tracks')"
-                            :href="route('tracks.edit', { track: track.id })"
-                            class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                        >
-                            <PencilSquareIcon class="w-5 h-5" />
-                        </Link>
-                    </div>
-
+                    <p class="flex-grow text-sm text-gray-500 dark:text-gray-400">{{ track.description }}</p>
                 </Link>
-
+                <div class="flex mt-4 space-x-4">
+                    <Link
+                        v-if="userCan('view-tracks')"
+                        :href="route('tracks.show', { track: track.id })"
+                        class="text-blue-500 hover:text-blue-700"
+                    >
+                        <EyeIcon class="w-5 h-5" />
+                    </Link>
+                    <Link
+                        v-if="userCan('update-tracks')"
+                        :href="route('tracks.edit', { track: track.id })"
+                        class="text-green-500 hover:text-green-700"
+                    >
+                        <PencilSquareIcon class="w-5 h-5" />
+                    </Link>
+                </div>
             </div>
         </div>
 
-        <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-6">
+        <!-- Pagination -->
+        <div class="flex justify-center mt-3 space-x-6">
             <Link
                 v-for="link in tracks.meta.links"
                 :key="link.label"
                 :href="link.url ? `${link.url}&search=${search}` : '#'"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"
                 :class="{
                     'text-gray-700 dark:text-gray-400': true,
                     'cursor-not-allowed opacity-50': !link.url,

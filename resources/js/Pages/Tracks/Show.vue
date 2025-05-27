@@ -50,16 +50,14 @@ const tabs = [
 
 <template>
     <AppLayout>
-        <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="p-4 mx-auto max-w-7xl sm:p-6 lg:p-8">
             <h1
-                class="text-3xl sm:text-4xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100"
+                class="mb-6 text-3xl font-bold text-center text-gray-900 sm:text-4xl dark:text-gray-100"
             >
-                {{ track.name }} Track
+                {{ track.name }} {{ $t('tracks.track_title_suffix') }}
             </h1>
 
-            <nav
-                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
-            >
+            <nav class="flex justify-center mb-6 space-x-4 border-b border-gray-200 dark:border-gray-700">
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
@@ -72,54 +70,41 @@ const tabs = [
                     ]"
                 >
                     <component :is="tab.icon" class="w-5 h-5" />
-                    <span>{{ tab.label }}</span>
+                    <span>{{ $t(`tracks.tabs.${tab.key}`) }}</span>
                 </button>
             </nav>
 
-            <div
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
+            <div class="p-6 bg-white border shadow dark:bg-gray-800 rounded-xl dark:border-gray-700">
                 <transition
                     mode="out-in"
                     enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
+                    enter-from-class="scale-75 opacity-0"
+                    enter-to-class="scale-100 opacity-100"
                     leave-active-class="transition duration-200 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
+                    leave-from-class="scale-100 opacity-100"
+                    leave-to-class="scale-75 opacity-0"
                 >
                     <div :key="selectedTab">
-                        <!-- Details Panel -->
-                        <ShowDetails
-                            v-if="selectedTab == 'details'"
-                            :track="track"
-                        />
-
-                        <!-- Curriculum Panel -->
+                        <ShowDetails v-if="selectedTab === 'details'" :track="track" />
                         <ShowCurriculum
-                            v-else-if="selectedTab == 'curriculums'"
+                            v-else-if="selectedTab === 'curriculums'"
                             :track="track"
                             :curriculums="curriculums"
                             :courses="courses"
                         />
-
-                        <!-- Courses Panel -->
                         <ShowCourses
-                            v-else-if="selectedTab == 'courses'"
+                            v-else-if="selectedTab === 'courses'"
                             :track="track"
                             :courses="courses"
                         />
-
-                        <!-- Section Panel -->
                         <ShowSections
-                            v-else-if="selectedTab == 'sections'"
+                            v-else-if="selectedTab === 'sections'"
                             :track="track"
                             :years="years"
                             :courses="courses"
                         />
-
                         <ShowStudents
-                            v-else-if="selectedTab == 'students'"
+                            v-else-if="selectedTab === 'students'"
                             :track="track"
                         />
                     </div>
@@ -128,3 +113,4 @@ const tabs = [
         </div>
     </AppLayout>
 </template>
+

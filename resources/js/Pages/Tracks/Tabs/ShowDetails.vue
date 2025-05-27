@@ -54,13 +54,13 @@ const deleteTrack = (id) => {
 
 <template>
     <div
-        class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700"
+        class="p-6 bg-white border border-gray-200 shadow-lg dark:bg-gray-800 rounded-xl dark:border-gray-700"
     >
         <div class="grid gap-4 sm:grid-cols-2">
             <!-- Track Code -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >Code</span
+                    >{{ $t('tracks.code') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -72,7 +72,7 @@ const deleteTrack = (id) => {
             <!-- Track Program -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >Program</span
+                    >{{ $t('tracks.program') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -89,7 +89,7 @@ const deleteTrack = (id) => {
             <!-- Description -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >Description</span
+                    >{{ $t('tracks.description') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -101,7 +101,7 @@ const deleteTrack = (id) => {
             <!-- Duration -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >Duration</span
+                    >{{ $t('tracks.duration') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -123,15 +123,15 @@ const deleteTrack = (id) => {
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>Edit</span>
+                <span>{{ $t('actions.edit') }}</span>
             </Link>
             <button
                 v-if="userCan('delete-tracks')"
                 @click="deleteTrack(program.id)"
-                class="ml-4 inline-flex items-center space-x-2 text-red-500 hover:text-red-700"
+                class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />
-                <span>Delete</span>
+                <span>{{ $t('actions.delete') }}</span>
             </button>
         </div>
     </div>

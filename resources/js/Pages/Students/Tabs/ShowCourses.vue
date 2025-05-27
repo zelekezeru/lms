@@ -66,8 +66,6 @@ const resetDrop = () => {
 };
 
 const submitAdd = () => {
-    console.log(addForm.section_id);
-
     addForm.post(route("courses-student.add", { student: props.student.id }), {
         onSuccess: () => {
             Swal.fire("Added!", "Course added successfully.", "success");

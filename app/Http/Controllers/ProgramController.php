@@ -23,19 +23,18 @@ class ProgramController extends Controller
     public function index(Request $request)
     {
 
-        $query = Program::query();
+        $query = Program::with('director');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
 
-            $query = Program::with('user')
-                ->when($search, function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('language', 'like', "%{$search}%")
-                        ->orWhereHas('user', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-                });
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('language', 'like', "%{$search}%")
+                    ->orWhereHas('director', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         $allowedSorts = ['name', 'language'];
@@ -65,7 +64,7 @@ class ProgramController extends Controller
         $program = new ProgramResource($program->load('tracks', 'director', 'studyModes'));
 
         $studyModes = StudyModeResource::collection(StudyMode::all());
-        
+
         return inertia('Programs/Show', [
             'program' => $program,
             'studyModes' => $studyModes,

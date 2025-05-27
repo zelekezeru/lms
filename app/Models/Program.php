@@ -27,8 +27,9 @@ class Program extends Model
 
     public function director()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
+
 
     public function sections()
     {

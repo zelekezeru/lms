@@ -80,12 +80,14 @@ class InstructorPortalController extends Controller
 
         $instructor->load([
             'user',
-            'courseSectionAssignments',
-            'courseSectionAssignments.section',
             'courseSectionAssignments.section.program',
             'courseSectionAssignments.section.track',
             'courseSectionAssignments.section.studyMode',
         ]);
+
+        $uniqueAssignments = $instructor->courseSectionAssignments->unique('section_id');
+
+        $instructor->setRelation('courseSectionAssignments', $uniqueAssignments);
 
         $instructor = new InstructorResource($instructor);
 

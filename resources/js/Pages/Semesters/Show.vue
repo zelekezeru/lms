@@ -43,25 +43,25 @@ const deleteSemester = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-4xl mx-auto p-6">
-            <h1 class="text-3xl font-semibold mb-6 text-center text-gray-900 dark:text-gray-100">
-                {{ semester.name }} - Semester  of {{ semester.year.name }} Details
+        <div class="max-w-4xl p-6 mx-auto">
+            <h1 class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100">
+                {{ semester.name }} - {{ $t('semester.details_title', { year: semester.year.name }) }}
             </h1>
 
             <!-- Semester Information -->
-            <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 border dark:border-gray-700">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="p-6 bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <!-- Semester Name -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Semester</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.name') }}</span>
                         <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             {{ semester.name }}
                         </div>
                     </div>
 
                     <!-- Year Name -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Year</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.year') }}</span>
                         <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             <Link
                                 :href="route('years.show', { year: semester.year.id })"
@@ -73,34 +73,34 @@ const deleteSemester = (id) => {
                     </div>
 
                     <!-- Semester Status -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.status') }}</span>
                         <div :class="semester.status === 'Active' ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
-                            {{ semester.status }}
+                            {{ semester.status === 'Active' ? $t('semester.active') : $t('semester.inactive') }}
                         </div>
                     </div>
 
                     <!-- Semester Start Date -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Start Date</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.start_date') }}</span>
                         <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             {{ new Date(semester.start_date).toLocaleDateString() }}
                         </div>
                     </div>
 
                     <!-- Semester End Date -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">End Date</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.end_date') }}</span>
                         <div class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             {{ new Date(semester.end_date).toLocaleDateString() }}
                         </div>
                     </div>
 
                     <!-- Semester Approval -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Approval</span>
+                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.approval') }}</span>
                         <div :class="semester.is_approved ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
-                            {{ semester.is_approved ? "Approved" : "Not Approved" }}
+                            {{ semester.is_approved ? $t('semester.approved') : $t('semester.not_approved') }}
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@ const deleteSemester = (id) => {
                             class="inline-flex items-center space-x-2 text-red-600 hover:text-red-800 hover:underline"
                         >
                             <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                            <span>{{ $t('semester.delete') }}</span>
                         </button>
                     </div>
                 </div>
@@ -121,3 +121,7 @@ const deleteSemester = (id) => {
         </div>
     </AppLayout>
 </template>
+
+
+
+

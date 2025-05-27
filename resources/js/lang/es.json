@@ -1,4 +1,30 @@
 {
+  "role": {
+    "title": "Roles",
+    "add": "Agregar Rol",
+    "role": "Rol",
+    "search": "Buscar...",
+    "refresh": "Actualizar Datos",
+    "no_roles": "No se encontraron roles.",
+    "adjust_search": "Intenta ajustar tu búsqueda o agregar un nuevo rol.",
+    "manage_permissions": "Administrar Permisos",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "view_permissions": "Todos los permisos para este rol"
+  },
+  "tenant": {
+    "details": "Detalles del inquilino",
+    "code": "Código",
+    "name": "Nombre de la institución",
+    "email": "Correo electrónico de la institución",
+    "phone": "Teléfono de la institución",
+    "rep_name": "Nombre del representante",
+    "rep_phone": "Teléfono del representante",
+    "status": "Estado",
+    "payment": "Pago",
+    "default_password": "Contraseña predeterminada",
+    "agreement": "Acuerdo"
+  },
   "admin_dashboard": {
     "title": "Panel de Administrador",
     "subtitle": "Gestiona el LMS, monitorea el progreso y revisa métricas clave.",

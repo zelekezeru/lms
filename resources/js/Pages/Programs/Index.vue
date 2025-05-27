@@ -72,12 +72,12 @@ const searchPrograms = () => {
     <AppLayout>
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Programs
+                {{ $t('programs.title') }}
             </h1>
         </div>
 
         <!-- Header Toolbar -->
-        <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center justify-between mb-3">
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
@@ -97,8 +97,8 @@ const searchPrograms = () => {
                 <input
                     type="text"
                     v-model="search"
-                    placeholder="Search Programs..."
-                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                    :placeholder="$t('programs.search_placeholder')"
+                    class="p-2 pl-10 text-gray-900 border rounded-lg dark:text-white dark:bg-gray-700"
                     @input="searchPrograms"
                 />
             </div>
@@ -107,25 +107,25 @@ const searchPrograms = () => {
                 <Link
                     v-if="userCan('create-programs')"
                     :href="route('programs.create')"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-green-600 rounded-md hover:bg-green-700"
                 >
-                    + Add Program
+                    + {{ $t('programs.add_program') }}
                 </Link>
 
                 <button
                     @click="refreshData"
-                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-blue-700"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-blue-800 rounded-md hover:bg-blue-700"
                     title="Refresh Data"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    Refresh
+                    {{ $t('programs.refresh') }}
                 </button>
                 <button
                     @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
-                    class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
                     title="Toggle View"
                 >
                     <component
@@ -149,16 +149,16 @@ const searchPrograms = () => {
                             :sortable="true"
                             :sort-info="sortInfo"
                             sortColumn="name"
-                            >Program Name</Thead
+                            >{{ $t('programs.name') }}</Thead
                         >
                         <Thead
                             :sortable="true"
                             :sort-info="sortInfo"
                             sortColumn="language"
-                            >Language</Thead
+                            >{{ $t('programs.language') }}</Thead
                         >
-                        <Thead>Duration</Thead>
-                        <Thead>Action</Thead>
+                        <Thead>{{ $t('programs.duration') }}</Thead>
+                        <Thead>{{ $t('programs.action') }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
@@ -181,7 +181,7 @@ const searchPrograms = () => {
                         </th>
                         <td class="px-6 py-4">{{ program.language }}</td>
                         <td class="px-6 py-4">{{ program.duration }}</td>
-                        <td class="px-6 py-4 flex space-x-2">
+                        <td class="flex px-6 py-4 space-x-2">
                             <Link
                                 v-if="userCan('view-programs')"
                                 :href="
@@ -213,12 +213,12 @@ const searchPrograms = () => {
         <!-- Card View -->
         <div
             v-else
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6"
+            class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         >
             <div
                 v-for="program in programs.data"
                 :key="program.id"
-                class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600"
+                class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-600"
             >
             
             <Link
@@ -227,13 +227,13 @@ const searchPrograms = () => {
                 class="text-blue-500 hover:text-blue-700">
 
                     <div
-                        class="mb-3 flex items-center font-bold text-gray-700 dark:text-gray-300">
-                        <AcademicCapIcon class="w-5  h-5 mr-2 text-indigo-500" />
+                        class="flex items-center mb-3 font-bold text-gray-700 dark:text-gray-300">
+                        <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
                             {{ program.name }}
                     </div>
 
                     <div
-                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                        class="flex items-center mb-3 text-gray-700 dark:text-gray-300"
                     >
                         <LanguageIcon class="w-5 h-5 mr-2 text-teal-500" />
                         <span class="font-semibold">Language:</span>
@@ -241,14 +241,14 @@ const searchPrograms = () => {
                     </div>
                     
                     <div
-                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                        class="flex items-center mb-3 text-gray-700 dark:text-gray-300"
                     >
                         <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
                         <span class="font-semibold">Duration :</span>
                         <span class="ml-1">{{ program.duration }}</span>
                     </div>
 
-                    <div class="flex justify-end space-x-3 mt-4">
+                    <div class="flex justify-end mt-4 space-x-3">
                         <Link
                             :href="
                                 route('programs.show', { program: program.id })
@@ -273,12 +273,12 @@ const searchPrograms = () => {
         </div>
 
         <!-- Pagination -->
-        <div class="mt-6 flex justify-center space-x-2">
+        <div class="flex justify-center mt-6 space-x-2">
             <Link
                 v-for="link in programs.meta.links"
                 :key="link.label"
                 :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"
                 :class="{
                     'text-gray-700 dark:text-gray-400': true,
                     'cursor-not-allowed opacity-50': !link.url,

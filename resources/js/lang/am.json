@@ -1,4 +1,127 @@
 {
+  "programs": {
+    "title": "ፕሮግራሞች",
+    "search_placeholder": "ፕሮግራሞችን ፈልግ...",
+    "add_program": "ፕሮግራም አክል",
+    "name": "ፕሮግራም ስም",
+    "language": "ቋንቋ",
+    "refresh": "ዳግም አስነሳ",
+    "duration": "ቆይታ",
+    "action": "እርምጃ",
+    "view": "እይታ",
+    "edit": "አርትዕ",
+    "studymode": {
+      "title": "የትምህርት ዘዴዎች",
+      "add": "የትምህርት ዘዴ ያክሉ",
+      "name": "ይህ ፕሮግራም በሚቀርበባቸው የትምህርት ዘዴዎች",
+      "description": "መግለጫ",
+      "namePlaceholder": "የዘዴውን ስም ያስገቡ",
+      "descriptionPlaceholder": "መግለጫ ያስገቡ",
+      "save": "አስቀምጥ",
+      "duration": "ቆይታ ጊዜ"
+    },
+    "details": {
+      "code": "ኮድ",
+      "name": "ስም",
+      "language": "ቋንቋ",
+      "description": "መግለጫ",
+      "program_director": "የፕሮግራሙ ዳይሬክተር",
+      "edit": "አስተካክል",
+      "delete": "ሰርዝ",
+      "not_available": "አልተገኘም"
+    },
+    "tracks": {
+      "title": "ትራክስ",
+      "add": "አዲስ ትራክ ያክሉ",
+      "name": "ስም",
+      "description": "መግለጫ",
+      "duration": "ቆይታ ጊዜ"
+    },
+    "show": {
+      "title": "ፕሮግራም",
+      "tabs": {
+        "details": "ዝርዝሮች",
+        "tracks": "ትምህርት አሰራሮች",
+        "modes": "የትምህርት ዘዴዎች"
+      }
+    }
+  },
+  "common": {
+    "save": "አስቀምጥ"
+  },
+  "semester": {
+    "details_title": "የ {year} ሴሚስተር ዝርዝር",
+    "name": "ሴሚስተር",
+    "start_date": "የመጀመሪያ ቀን",
+    "end_date": "የመጨረሻ ቀን",
+    "approval": "አጽዳቂነት",
+    "approved": "ተፈቅዷል",
+    "not_approved": "አልተፈቀደም",
+    "active": "ንቁ",
+    "inactive": "አትኩስ",
+    "delete": "ሰርዝ",
+    "title": "ሴሚስተሮች",
+    "search": "ፈልግ...",
+    "refresh": "ዳግም አስነሳ",
+    "toggleView": "እይታ ቀይር",
+    "semester": "ሴሚስተር",
+    "close_current": "የአሁኑን ሴሚስተር ዝጋ",
+    "year": "አመት",
+    "startDate": "የመጀመሪያ ቀን",
+    "endDate": "የመጨረሻ ቀን",
+    "status": "ሁኔታ",
+    "action": "ተግባር",
+    "noSemesters": "ምንም ሴሚስተሮች አልተገኙም።"
+  },  
+  "permission": {
+    "title": "ፍቃዶች",
+    "add": "ፍቃድ ያክሉ",
+    "search": "ፍቃዶችን ፈልግ...",
+    "refresh": "መረጃን አዘምን",
+    "no_permissions": "ምንም ፍቃዶች አልተገኙም።",
+    "adjust_search": "ፍለጋዎን ያስተካክሉ ወይም አዲስ ፍቃድ ያክሉ።",
+    "name": "የፍቃድ ስም",
+    "action": "ተግባር",
+    "view": "እይታ",
+    "detailsTitle": "የፍቃድ ዝርዝሮች",
+    "permission": "ፍቃድ",
+    "id": "መለያ",
+    "edit": "አርትዕ",
+    "delete": "ሰርዝ",
+    "pagination": {
+      "next": "ቀጣይ",
+      "previous": "የቀድመው"
+    }
+  }, 
+
+
+
+  "role": {
+    "title": "የሚከተሉ ሚናዎች",
+    "add": "ሚና አክል",
+    "role": "ሚና",
+    "search": "ፈልግ...",
+    "refresh": "ዳታ አድስ",
+    "no_roles": "ምንም ሚና አልተገኘም።",
+    "adjust_search": "ፍለጋውን ማስተካከል ወይም አዲስ ሚና አክል።",
+    "manage_permissions": "ፍቃድ አስተዳድር",
+    "edit": "አስተካክል",
+    "delete": "ሰርዝ",
+    "view_permissions": "ለዚህ ሚና ሁሉንም ፍቃዶች"
+  },
+  "tenant": {
+    "details": "ተኛንት ዝርዝር",
+    "code": "ኮድ",
+    "name": "የተቋሙ ስም",
+    "email": "የተቋሙ ኢሜል",
+    "phone": "የተቋሙ ስልክ",
+    "rep_name": "የተወካዩ ስም",
+    "rep_phone": "የተወካዩ ስልክ",
+    "status": "ሁኔታ",
+    "payment": "ክፍያ",
+    "default_password": "ነባሪ የይለፍ ቃል",
+    "agreement": "ስምምነት"
+  },
   "admin_dashboard": {
     "title": "አድሚን ዳሽቦርድ",
     "subtitle": "LMS ን ያስተዳድሩ፣ ሂደት ይቆጣጠሩ እና ቁልፍ መለኪያዎችን ይገምግሙ።",

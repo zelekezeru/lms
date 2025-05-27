@@ -1,4 +1,30 @@
 {
+  "role": {
+    "title": "Raawwachiistoota",
+    "add": "Raawwachiistuu Dabaluu",
+    "role": "Hojii",
+    "search": "Barbaadi...",
+    "refresh": "Daataa Haaromsuu",
+    "no_roles": "Raawwachiistuu hin argamne.",
+    "adjust_search": "Barbaachisummaa kee sirreessi yookiin raawwachiistuu haaraa dabaluu yaali.",
+    "manage_permissions": "Hayyama To'achuu",
+    "edit": "Gulaali",
+    "delete": "Haquu",
+    "view_permissions": "Hayyamoota Hundaa Raawwachiistuu Kanaaf"
+  },
+  "tenant": {
+    "details": "Odeeffannoo Abbaa Kontraataa",
+    "code": "Lakkoofsa",
+    "name": "Maqaa Dhaabbataa",
+    "email": "Imeelii Dhaabbataa",
+    "phone": "Bilbila Dhaabbataa",
+    "rep_name": "Maqaa Waliigalaa",
+    "rep_phone": "Bilbila Waliigalaa",
+    "status": "Haala",
+    "payment": "Kaffaltii",
+    "default_password": "Jecha Darbii Durtii",
+    "agreement": "Waliigaltee"
+  },
   "admin_dashboard": {
     "title": "Daashbordii Bulchaa",
     "subtitle": "LMS bulchi, adeemsa to'adhu, fi madaalliiwwan gurguddoo ilaali.",

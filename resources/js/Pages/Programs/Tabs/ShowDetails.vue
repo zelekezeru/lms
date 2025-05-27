@@ -37,14 +37,14 @@ const deleteProgram = (id) => {
 <template>
     <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">CODE</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{$t('programs.details.code')}}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.code }}</span
             >
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{$t('programs.details.name')}}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.name }}</span
@@ -52,7 +52,7 @@ const deleteProgram = (id) => {
         </div>
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Language</span
+                >{{$t('programs.details.language')}}</span
             >
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -61,7 +61,7 @@ const deleteProgram = (id) => {
         </div>
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Description</span
+                >{{$t('programs.details.description')}}</span
             >
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -70,7 +70,7 @@ const deleteProgram = (id) => {
         </div>
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Program Director</span
+                >{{$t('programs.details.program_director')}}</span
             >
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -88,15 +88,15 @@ const deleteProgram = (id) => {
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>Edit</span>
+                <span>{{$t('programs.details.edit')}}</span>
             </Link>
             <button
                 v-if="userCan('delete-programs')"
                 @click="deleteProgram(program.id)"
-                class="ml-4 inline-flex items-center space-x-2 text-red-500 hover:text-red-700"
+                class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />
-                <span>Delete</span>
+                <span>{{$t('programs.details.delete')}}</span>
             </button>
         </div>
     </div>

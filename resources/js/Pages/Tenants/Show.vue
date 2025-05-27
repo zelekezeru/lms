@@ -50,35 +50,36 @@ const deleteTenant = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-8xl mx-auto p-6">
+        <div class="p-6 mx-auto max-w-8xl">
             <h1
-                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+                class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100"
             >
-                Tenant Details
+                {{ $t("tenant.details") }}
             </h1>
 
             <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+                class="p-6 border shadow-lg dark:bg-gray-800 rounded-xl dark:border-gray-700"
             >
                 <div class="flex justify-center mb-8">
                     <div
                         v-if="!imageLoaded"
-                        class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                        class="bg-gray-300 rounded-full w-44 h-44 dark:bg-gray-700 animate-pulse"
                     ></div>
 
                     <img
                         v-show="imageLoaded"
-                        class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                        class="object-contain bg-gray-400 rounded-full w-44 h-44"
                         :src="tenant.logo"
                         :alt="`Logo of ` + tenant.name"
                         @load="handleImageLoad"
                     />
                 </div>
-                <div class="grid sm:grid-cols-2 gap-4 lg:pl-36 sm:gap-2">
+                <div class="grid gap-4 sm:grid-cols-2 lg:pl-36 sm:gap-2">
                     <!-- Tenant Code -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Code</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("tenant.code") }}</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -88,9 +89,9 @@ const deleteTenant = (id) => {
 
                     <!-- Tenant Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Institution Name</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.name") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.name }}</span
@@ -99,9 +100,9 @@ const deleteTenant = (id) => {
 
                     <!-- Tenant Email -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Institution Email</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.email") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.email }}</span
@@ -110,9 +111,9 @@ const deleteTenant = (id) => {
 
                     <!-- Tenant Phone -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Institution Phone</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.phone") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.phone }}</span
@@ -121,9 +122,9 @@ const deleteTenant = (id) => {
 
                     <!-- Representative Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Representative Name</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.rep_name") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.contact_person }}</span
@@ -132,9 +133,9 @@ const deleteTenant = (id) => {
 
                     <!-- Representative Phone -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Representative Phone</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.phone") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.contact_phone }}</span
@@ -143,9 +144,9 @@ const deleteTenant = (id) => {
 
                     <!-- Status -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Status</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.status") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
@@ -158,9 +159,9 @@ const deleteTenant = (id) => {
 
                     <!-- Payment -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Payment</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.payment") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
@@ -176,9 +177,9 @@ const deleteTenant = (id) => {
                         v-if="tenant.password_changed === 0"
                         class="flex flex-col"
                     >
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Default Password</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.default_password") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.default_password }}</span
@@ -187,9 +188,9 @@ const deleteTenant = (id) => {
 
                     <!-- Aggrement -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Aggrement</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t("tenant.agreement") }}
+                        </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >{{ tenant.aggrement }}</span

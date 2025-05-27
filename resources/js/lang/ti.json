@@ -1,4 +1,30 @@
 {
+  "role": {
+    "title": "ናይ ሓላፊት ስም",
+    "add": "ሓላፊት ስም ኣእትው",
+    "role": "ተግባር",
+    "search": "ድለ...",
+    "refresh": "ዳታ ኣምሓይሽ",
+    "no_roles": "ሓላፊት ስም ኣይተረኸበን።",
+    "adjust_search": "ድለኩም ምቕጻል ወይ ሓድሽ ሓላፊት ስም ኣእትዉ።",
+    "manage_permissions": "ቅድመ ፍቓድታት ኣትዉ",
+    "edit": "ኣስተኻኺሉ",
+    "delete": "ሰርዝ",
+    "view_permissions": "ኩሎም ፍቓድታት ንዚ ሓላፊት ስም"
+  },
+  "tenant": {
+    "details": "ዝርዝር ናይ ኪራይ ኣብራሪ",
+    "code": "ኮድ",
+    "name": "ስም ኣውናት",
+    "email": "ኢመይል ኣውናት",
+    "phone": "ተሌፎን ኣውናት",
+    "rep_name": "ስም ተወካይ",
+    "rep_phone": "ተሌፎን ተወካይ",
+    "status": "ሕደት",
+    "payment": "ክፍሊት",
+    "default_password": "ናይ ቀዳማይ መሕለፊ ቃል",
+    "agreement": "ሓሳብ"
+  },
   "admin_dashboard": {
     "title": "ዳሽቦርድ ኣድሚን",
     "subtitle": "LMS ኣመሓድር፣ ንዕብየት ተኸታተል፣ ከምኡ'ውን ንቐንዲ መለክዒታት ርአ።",

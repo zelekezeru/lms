@@ -61,11 +61,11 @@ const searchSemesters = () => {
   <AppLayout>
     <!-- Title -->
     <div class="my-6 text-center">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Semesters</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('semester.title') }}</h1>
     </div>
 
     <!-- Toolbar -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+    <div class="flex flex-col items-center justify-between gap-4 mb-4 md:flex-row">
       <!-- Search -->
       <div class="relative w-full max-w-xs">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -76,56 +76,53 @@ const searchSemesters = () => {
         <input
           type="text"
           v-model="search"
-          placeholder="Search..."
-          class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700 w-full"
+          :placeholder="$t('semester.search')"
+          class="w-full p-2 pl-10 text-gray-900 border rounded-lg dark:text-white dark:bg-gray-700"
           @input="searchSemesters"
         />
       </div>
 
       <!-- Actions -->
       <div class="flex gap-2">
-          
-          <!-- Refresh -->
+        <!-- Refresh -->
         <button
           @click="refreshData"
-          class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-blue-700"
-          title="Refresh Data"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-blue-800 rounded-md hover:bg-blue-700"
+          :title="$t('semester.refresh')"
         >
-        <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
-        Refresh
-    </button>
-    <!-- View Toggle -->
-    <button
-      @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
-      class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
-      title="Toggle View"
-    >
-      <component :is="viewMode === 'table' ? Squares2X2Icon : TableCellsIcon" class="w-5 h-5" />
-    </button>
-</div>
-</div>
+          <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
+          {{ $t('semester.refresh') }}
+        </button>
+
+        <!-- View Toggle -->
+        <button
+          @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
+          class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
+          :title="$t('semester.toggleView')"
+        >
+          <component :is="viewMode === 'table' ? Squares2X2Icon : TableCellsIcon" class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
 
     <!-- Table View -->
-    <div
-      v-if="viewMode === 'table' && semesters.data.length > 0"
-      class="overflow-x-auto shadow-md sm:rounded-lg"
-    >
+    <div v-if="viewMode === 'table' && semesters.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
       <Table>
         <TableHeader>
           <tr>
-            <Thead>Semester</Thead>
-            <Thead>Year</Thead>
-            <Thead>Start Date</Thead>
-            <Thead>End Date</Thead>
-            <Thead>Status</Thead>
-            <Thead>Action</Thead>
+            <Thead>{{ $t('semester.semester') }}</Thead>
+            <Thead>{{ $t('semester.year') }}</Thead>
+            <Thead>{{ $t('semester.startDate') }}</Thead>
+            <Thead>{{ $t('semester.endDate') }}</Thead>
+            <Thead>{{ $t('semester.status') }}</Thead>
+            <Thead>{{ $t('semester.action') }}</Thead>
           </tr>
         </TableHeader>
         <tbody>
           <tr
             v-for="semester in semesters.data"
             :key="semester.id"
-            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+            class="border-b odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700"
           >
             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
               <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
@@ -142,15 +139,14 @@ const searchSemesters = () => {
               {{ new Date(semester.end_date).toLocaleDateString() }}
             </td>
             <td>
-              <span class="px-2 py-2 text-sm px-2 py-1 rounded"
-              :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
-            >
-              {{ semester.status }}
-            </span>
+              <span class="px-2 py-1 py-2 text-sm rounded"
+                :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'">
+                {{ semester.status }}
+              </span>
             </td>
             <td class="flex px-6 py-4">
               <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
-                  <EyeIcon class="w-5 h-5" />
+                <EyeIcon class="w-5 h-5" />
               </Link>
             </td>
           </tr>
@@ -159,50 +155,44 @@ const searchSemesters = () => {
     </div>
 
     <!-- Card View -->
-    <div
-      v-if="viewMode === 'card' && semesters.data.length > 0"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-    >
+    <div v-if="viewMode === 'card' && semesters.data.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       <div
         v-for="semester in semesters.data"
         :key="semester.id"
-        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border border-gray-200 dark:border-gray-700 flex flex-col justify-between transition hover:shadow-md"
+        class="flex flex-col justify-between p-5 transition bg-white border border-gray-200 shadow-sm dark:bg-gray-800 rounded-2xl dark:border-gray-700 hover:shadow-md"
       >
         <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white my-4">
-            Semester: {{ semester.name }}
+          <h2 class="my-4 text-xl font-semibold text-gray-900 dark:text-white">
+            {{ $t('semester.semester') }}: {{ semester.name }}
           </h2>
-          <p class="text-gray-700 font-semibold dark:text-gray-300">
-            Year: {{ semester.year?.name ?? 'N/A' }}
+          <p class="font-semibold text-gray-700 dark:text-gray-300">
+            {{ $t('semester.year') }}: {{ semester.year?.name ?? 'N/A' }}
           </p>
           <p class="text-gray-700 dark:text-gray-300">
-            Start Date: {{ new Date(semester.start_date).toLocaleDateString() }}
+            {{ $t('semester.startDate') }}: {{ new Date(semester.start_date).toLocaleDateString() }}
           </p>
           <p class="text-gray-700 dark:text-gray-300">
-            End Date: {{ new Date(semester.end_date).toLocaleDateString() }}
+            {{ $t('semester.endDate') }}: {{ new Date(semester.end_date).toLocaleDateString() }}
           </p>
-          
           <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Status: 
-          <span
-            class="text-sm px-2 py-1 rounded"
-            :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
-          >
-            {{ semester.status }}
-          </span>
+            {{ $t('semester.status') }}:
+            <span class="px-2 py-1 text-sm rounded"
+              :class="semester.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'">
+              {{ semester.status }}
+            </span>
           </p>
         </div>
-        <div class="mt-4 flex justify-end gap-3">
+        <div class="flex justify-end gap-3 mt-4">
           <Link :href="route('semesters.show', { semester: semester.id })" class="text-blue-500 hover:text-blue-700">
-              <EyeIcon class="w-5 h-5" />
+            <EyeIcon class="w-5 h-5" />
           </Link>
         </div>
       </div>
     </div>
 
     <!-- Empty State -->
-    <div v-if="semesters.data.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
-      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">No semesters found.</p>
+    <div v-if="semesters.data.length === 0" class="py-6 text-center text-gray-500 dark:text-gray-400">
+      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ $t('semester.noSemesters') }}</p>
     </div>
   </AppLayout>
 </template>

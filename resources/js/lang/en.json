@@ -1,17 +1,144 @@
 {
+  "programs": {
+    "title": "Programs",
+    "search_placeholder": "Search Programs...",
+    "add_program": "Add Program",
+    "name": "Program Name",
+    "refresh": "Refresh",
+    "language": "Language",
+    "duration": "Duration",
+    "action": "Action",
+    "view": "View",
+    "edit": "Edit",
+    "studymode": {
+      "title": "Study Modes",
+      "add": "Add Study Mode",
+      "name": "Study Modes This Program Is Offered In",
+      "description": "Description",
+      "namePlaceholder": "Enter mode name",
+      "descriptionPlaceholder": "Enter mode description",
+      "save": "Save",
+      "duration": "Duration"
+    },
+    "details": {
+      "code": "CODE",
+      "name": "Name",
+      "language": "Language",
+      "description": "Description",
+      "program_director": "Program Director",
+      "edit": "Edit",
+      "delete": "Delete",
+      "not_available": "N/A"
+    },
+    "tracks": {
+      "title": "Tracks",
+      "add": "Add Track",
+      "name": "Name",
+      "description": "Description",
+      "duration": "Duration"
+    },
+    "show": {
+      "title": "Program",
+      "tabs": {
+        "details": "Details",
+        "tracks": "Tracks",
+        "modes": "Study Modes"
+      }
+    }
+  },
+  "common": {
+    "save": "Save"
+  },
+  "semester": {
+    "details_title": "Semester of {year} Details",
+    "name": "Semester",
+    "year": "Year",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "status": "Status",
+    "approval": "Approval",
+    "approved": "Approved",
+    "not_approved": "Not Approved",
+    "active": "Active",
+    "inactive": "Inactive",
+    "delete": "Delete",
+    "title": "Semesters",
+    "search": "Search...",
+    "refresh": "Refresh",
+    "toggleView": "Toggle View",
+    "semester": "Semester",
+    "close_current": "Close Current Semester",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "action": "Action",
+    "noSemesters": "No semesters found."
+  },  
+  "permission": {
+    "title": "Permissions",
+    "add": "Add Permission",
+    "search": "Search permissions...",
+    "refresh": "Refresh Data",
+    "no_permissions": "No permissions found.",
+    "adjust_search": "Try adjusting your search or add a new permission.",
+    "name": "Permission Name",
+    "action": "Action",
+    "view": "View",
+    "detailsTitle": "Permission Details",
+    "permission": "Permission",
+    "id": "ID",
+    "edit": "Edit",
+    "delete": "Delete",
+    "pagination": {
+      "next": "Next",
+      "previous": "Previous"
+    }
+  },
     
+
+
+
+
+
+
+
+
+    "role": {
+      "title": "Roles",
+      "add": "Add Role",
+      "role": "Role",
+      "search": "Search...",
+      "refresh": "Refresh Data",
+      "no_roles": "No roles found.",
+      "adjust_search": "Try adjusting your search or adding a new role.",
+      "manage_permissions": "Manage Permissions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view_permissions": "All Permissions For This Role"
+    },
+    "tenant": {
+      "details": "Tenant Details",
+      "code": "Code",
+      "name": "Institution Name",
+      "email": "Institution Email",
+      "phone": "Institution Phone",
+      "rep_name": "Representative Name",
+      "rep_phone": "Representative Phone",
+      "status": "Status",
+      "payment": "Payment",
+      "default_password": "Default Password",
+      "agreement": "Aggrement"
+    },
     "admin_dashboard": {
-        "title": "Admin Dashboard",
-        "subtitle": "Manage the LMS, monitor progress, and overview key metrics.",
-        "courses": "Courses",
-        "students": "Students",
-        "instructors": "Instructors",
-        "revenue": "Revenue",
-        "enrollment_chart": "Student Enrollment Over Time",
-        "user_distribution": "User Distribution",
-        "manage_instructors": "Manage Instructors"
-      },
-      
+      "title": "Admin Dashboard",
+      "subtitle": "Manage the LMS, monitor progress, and overview key metrics.",
+      "courses": "Courses",
+      "students": "Students",
+      "instructors": "Instructors",
+      "revenue": "Revenue",
+      "enrollment_chart": "Student Enrollment Over Time",
+      "user_distribution": "User Distribution",
+      "manage_instructors": "Manage Instructors"
+    },
     "table": {
       "name": "Name",
       "email": "Email",
@@ -26,7 +153,6 @@
       "edit": "Edit",
       "delete": "Delete"
     },
-
     "login": "Login",
     "email": "Email",
     "password": "Password",
@@ -38,6 +164,4 @@
     "forgot_password_title": "Forgot Password",
     "forgot_password_info": "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
     "email_password_reset_link": "Email Password Reset Link"
-
   }
-  

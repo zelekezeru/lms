@@ -41,64 +41,59 @@ const deletePermission = (id) => {
 </script>
 
 <template>
-    <Head title="Permission Details" />
+    <Head :title="$t('permission.detailsTitle')" />
     <AppLayout>
-        <div class="max-w-8xl mx-auto p-6">
+        <div class="p-6 mx-auto max-w-8xl">
             <h1
-                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+                class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100"
             >
-                {{ permission.name }} Permission
+                {{ permission.name }} {{ $t('permission.permission') }}
             </h1>
 
             <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+                class="p-6 border shadow-lg dark:bg-gray-800 rounded-xl dark:border-gray-700"
             >
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- permission ID -->
+                    <!-- Permission ID -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >ID</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ permission.id }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t('permission.id') }}
+                        </span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ permission.id }}
+                        </span>
                     </div>
 
-                    <!-- permission Name -->
+                    <!-- Permission Name -->
                     <div class="flex flex-col">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Name</span
-                        >
-                        <span
-                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >{{ permission.name }}</span
-                        >
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ $t('permission.name') }}
+                        </span>
+                        <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ permission.name }}
+                        </span>
                     </div>
                 </div>
 
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
                     <Link
-                        :href="
-                            route('permissions.edit', {
-                                permission: permission.id,
-                            })
-                        "
+                        :href="route('permissions.edit', { permission: permission.id })"
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                        <span>Edit</span>
+                        <span>{{ $t('permission.edit') }}</span>
                     </Link>
                     <button
                         @click="deletePermission(permission.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                        <span>Delete</span>
+                        <span>{{ $t('permission.delete') }}</span>
                     </button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+

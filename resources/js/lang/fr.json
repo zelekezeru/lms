@@ -1,4 +1,30 @@
 {
+  "role": {
+    "title": "Rôles",
+    "add": "Ajouter un rôle",
+    "role": "Rôle",
+    "search": "Rechercher...",
+    "refresh": "Rafraîchir les données",
+    "no_roles": "Aucun rôle trouvé.",
+    "adjust_search": "Essayez d'ajuster votre recherche ou d'ajouter un nouveau rôle.",
+    "manage_permissions": "Gérer les autorisations",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "view_permissions": "Toutes les autorisations pour ce rôle"
+  },
+  "tenant": {
+    "details": "Détails du locataire",
+    "code": "Code",
+    "name": "Nom de l'institution",
+    "email": "Email de l'institution",
+    "phone": "Téléphone de l'institution",
+    "rep_name": "Nom du représentant",
+    "rep_phone": "Téléphone du représentant",
+    "status": "Statut",
+    "payment": "Paiement",
+    "default_password": "Mot de passe par défaut",
+    "agreement": "Accord"
+  },  
   "admin_dashboard": {
     "title": "Tableau de bord administrateur",
     "subtitle": "Gérez le LMS, surveillez les progrès et obtenez un aperçu des métriques clés.",

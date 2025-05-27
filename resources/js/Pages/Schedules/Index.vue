@@ -29,44 +29,44 @@ const searchSemesters = () => {
 
 <template>
     <AppLayout>
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-white">Semester Management</h1>
+        <h1 class="mb-6 text-3xl font-bold text-center text-gray-900 dark:text-white">{{ $t('semester.title') }}</h1>
 
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center justify-between mb-4">
             <input
                 type="text"
                 v-model="search"
-                placeholder="Search semesters..."
-                class="pl-3 p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                :placeholder="$t('semester.search')"
+                class="p-2 pl-3 text-gray-900 bg-white border border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 @input="searchSemesters"
             />
 
             <div class="flex gap-3">
                 <Link
                     :href="route('semesters.closeForm')"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                    class="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
                 >
-                    Close Current Semester
+                    {{ $t('semester.close_current') }}
                 </Link>
 
                 <button
                     @click="refreshData"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center"
+                    class="flex items-center px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
                 >
                     <ArrowPathIcon class="w-5 h-5 mr-1" :class="{ 'animate-spin': refreshing }" />
-                    Refresh
+                    {{ $t('semester.refresh') }}
                 </button>
             </div>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <table class="min-w-full bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <thead>
-                    <tr class="bg-gray-100 dark:bg-gray-700 text-left">
-                        <th class="p-3 text-gray-900 dark:text-white">Name</th>
-                        <th class="p-3 text-gray-900 dark:text-white">Start Date</th>
-                        <th class="p-3 text-gray-900 dark:text-white">End Date</th>
-                        <th class="p-3 text-gray-900 dark:text-white">Status</th>
-                        <th class="p-3 text-gray-900 dark:text-white">Actions</th>
+                    <tr class="text-left bg-gray-100 dark:bg-gray-700">
+                        <th class="p-3 text-gray-900 dark:text-white">{{ $t('semester.name') }}</th>
+                        <th class="p-3 text-gray-900 dark:text-white">{{ $t('semester.start_date') }}</th>
+                        <th class="p-3 text-gray-900 dark:text-white">{{ $t('semester.end_date') }}</th>
+                        <th class="p-3 text-gray-900 dark:text-white">{{ $t('semester.status') }}</th>
+                        <th class="p-3 text-gray-900 dark:text-white">{{ $t('semester.action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +76,7 @@ const searchSemesters = () => {
                         <td class="p-3 text-gray-900 dark:text-white">{{ semester.end_date }}</td>
                         <td class="p-3">
                             <span :class="semester.status === 'Active' ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'">
-                                {{ semester.status }}
+                                {{ semester.status === 'Active' ? $t('semester.active') : $t('semester.inactive') }}
                             </span>
                         </td>
                         <td class="p-3">
@@ -90,3 +90,4 @@ const searchSemesters = () => {
         </div>
     </AppLayout>
 </template>
+

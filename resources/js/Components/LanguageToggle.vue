@@ -117,7 +117,20 @@
   }
   
   const languageName = (lang) => {
-    return lang === 'en' ? 'English' : 'አማርኛ'
+  const languages = {
+    en: 'English',
+    am: 'አማርኛ',
+    zh: '中文',
+    ur: 'Urdu - اردو',
+    sw: 'Kiswahili',
+    ar: 'Arabic - العربية',
+    es: 'Español',
+    fr: 'Français',
+    om: 'Afaan Oromoo',
+    ti: 'ትግርኛ'
   }
+
+  return languages[lang] || 'Unknown'
+}
   </script>
   

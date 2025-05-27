@@ -42,28 +42,30 @@ const deleteRole = (id) => {
 
 <template>
     <AppLayout>
-        <div class="max-w-8xl mx-auto p-6">
+        <div class="p-6 mx-auto max-w-8xl">
             <h1
-                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+                class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100"
             >
-                {{ role.name }} Role
+                {{ role.name }} {{ $t('role.role') }}
             </h1>
 
             <div
-                class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+                class="p-6 border shadow-lg dark:bg-gray-800 rounded-xl dark:border-gray-700"
             >
-
-                <h1 class="text-center text-xl font-bold my-4 text-gray-900 dark:text-gray-100">
-                    All Permissions For This Role
+                <h1 class="my-4 text-xl font-bold text-center text-gray-900 dark:text-gray-100">
+                    {{ $t('role.view_permissions') }}
                 </h1>
+
                 <div class="grid grid-cols-3 gap-4 ml-16">
                     <span
                         v-for="permission in role.permissions"
                         class="text-gray-800 dark:text-gray-100"
                         :key="permission.id"
-                        >{{ permission.name }}</span
                     >
+                        {{ permission.name }}
+                    </span>
                 </div>
+
                 <!-- Edit and Delete Buttons -->
                 <div class="flex justify-end mt-6 space-x-6">
                     <Link
@@ -71,17 +73,18 @@ const deleteRole = (id) => {
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                        <span>Edit</span>
+                        <span>{{ $t('role.edit') }}</span>
                     </Link>
                     <button
                         @click="deleteRole(role.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                        <span>Delete</span>
+                        <span>{{ $t('role.delete') }}</span>
                     </button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+

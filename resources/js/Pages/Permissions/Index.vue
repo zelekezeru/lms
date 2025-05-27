@@ -69,11 +69,13 @@ const deletepermission = (id) => {
     <AppLayout>
         <!-- Page Title -->
         <div class="my-6 text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Permissions</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                {{ $t('permission.title') }}
+            </h1>
         </div>
 
         <!-- Search Bar and Header Toolbar -->
-        <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center justify-between mb-3">
             <!-- Search Bar with Icon -->
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -95,8 +97,8 @@ const deletepermission = (id) => {
                 <input
                     type="text"
                     v-model="searchQuery"
-                    placeholder="Search permissions..."
-                    class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                    :placeholder="$t('permission.search')"
+                    class="p-2 pl-10 text-gray-900 border rounded-lg dark:text-white dark:bg-gray-700"
                     @input="searchPermissions"
                 />
             </div>
@@ -105,21 +107,21 @@ const deletepermission = (id) => {
             <div class="flex space-x-6">
                 <Link
                     :href="route('permissions.create')"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-600 rounded-md hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + Add Permission
+                    + {{ $t('permission.add') }}
                 </Link>
 
                 <button
                     @click="refreshData"
-                    class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    title="Refresh Data"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-blue-800 rounded-md hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    :title="$t('permission.refresh')"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    Refresh Data
+                    {{ $t('permission.refresh') }}
                 </button>
             </div>
         </div>
@@ -128,8 +130,8 @@ const deletepermission = (id) => {
         <Table>
             <TableHeader>
                 <tr>
-                    <th scope="col" class="px-6 py-3">Permission Name</th>
-                    <th scope="col" class="px-6 py-3">Action</th>
+                    <th scope="col" class="px-6 py-3">{{ $t('permission.name') }}</th>
+                    <th scope="col" class="px-6 py-3">{{ $t('permission.action') }}</th>
                 </tr>
             </TableHeader>
             <tbody>
@@ -142,25 +144,28 @@ const deletepermission = (id) => {
                             {{ permission.name }}
                         </Link>
                     </th>
-                    <td class="py-4 flex items-center justify-around">
+                    <td class="flex items-center justify-around py-4">
                         <Link
                             :href="route('permissions.show', { permission: permission.id })"
                             class="text-blue-500 hover:text-blue-700"
+                            :title="$t('permission.view')"
                         >
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
                             :href="route('permissions.edit', { permission: permission.id })"
                             class="text-green-500 hover:text-green-700"
+                            :title="$t('permission.edit')"
                         >
                             <PencilSquareIcon class="w-5 h-5" />
                         </Link>
                         <button
                             @click="deletepermission(permission.id)"
                             class="text-red-500 hover:text-red-700"
+                            :title="$t('permission.delete')"
                         >
                             <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                            <span>{{ $t('permission.delete') }}</span>
                         </button>
                     </td>
                 </TableZebraRows>
@@ -168,12 +173,12 @@ const deletepermission = (id) => {
         </Table>
 
         <!-- Pagination Links -->
-        <div class="mt-3 flex justify-center space-x-6">
+        <div class="flex justify-center mt-3 space-x-6">
             <Link
                 v-for="link in permissions.links"
                 :key="link.label"
                 :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"
                 :class="{
                     'text-gray-700 dark:text-gray-400': true,
                     'cursor-not-allowed opacity-50': !link.url,
@@ -184,3 +189,4 @@ const deletepermission = (id) => {
         </div>
     </AppLayout>
 </template>
+

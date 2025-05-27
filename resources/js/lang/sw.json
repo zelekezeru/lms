@@ -1,4 +1,30 @@
 {
+  "role": {
+    "title": "Majukumu",
+    "add": "Ongeza Jukumu",
+    "role": "Jukumu",
+    "search": "Tafuta...",
+    "refresh": "Sasisha Data",
+    "no_roles": "Hakuna majukumu yaliyopatikana.",
+    "adjust_search": "Jaribu kubadilisha utafutaji wako au ongeza jukumu jipya.",
+    "manage_permissions": "Dhibiti Ruhusa",
+    "edit": "Hariri",
+    "delete": "Futa",
+    "view_permissions": "Ruhusa Zote kwa Jukumu Hili"
+  },
+  "tenant": {
+    "details": "Maelezo ya Mpangaji",
+    "code": "Nambari",
+    "name": "Jina la Taasisi",
+    "email": "Barua Pepe ya Taasisi",
+    "phone": "Simu ya Taasisi",
+    "rep_name": "Jina la Mwakilishi",
+    "rep_phone": "Simu ya Mwakilishi",
+    "status": "Hali",
+    "payment": "Malipo",
+    "default_password": "Nenosiri Chaguo-msingi",
+    "agreement": "Makubaliano"
+  },  
   "admin_dashboard": {
     "title": "Dashibodi ya Msimamizi",
     "subtitle": "Simamia LMS, fuatilia maendeleo, na uangalie vipimo muhimu.",

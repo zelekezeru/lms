@@ -45,20 +45,20 @@ const assignMode = () => {
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Study Modes This Program Is Offered In
+                {{ $t('programs.studymode.name') }}
             </h2>
             <button
                 @click="assignModeToProgram = !assignModeToProgram"
                 class="flex items-center text-indigo-600 hover:text-indigo-800"
             >
                 <PlusCircleIcon class="w-8 h-8" />
-                <span class="hidden sm:inline">Add Mode</span>
+                <span class="hidden sm:inline"> {{ $t('programs.studymode.add') }}</span>
             </button>
         </div>
         <!-- Program Study Modes List -->
         <div class="overflow-x-auto">
             <div
-                class="mt-8 border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="pt-4 pb-4 mt-8 border-b border-gray-300 dark:border-gray-600"
             >
                 <div class="overflow-x-auto">
                     <table
@@ -67,14 +67,14 @@ const assignMode = () => {
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
                                 <th
-                                    class="px-4 w-96 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    class="px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 w-96 dark:text-gray-200 dark:border-gray-600"
                                 >
-                                    Mode
+                                {{ $t('programs.studymode.title') }}
                                 </th>
                                 <th
-                                    class="w-30 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    class="px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 w-30 dark:text-gray-200 dark:border-gray-600"
                                 >
-                                    Duration (Years)
+                                {{ $t('programs.studymode.duration') }}
                                 </th>
                             </tr>
                         </thead>
@@ -90,12 +90,12 @@ const assignMode = () => {
                                 class="border-b border-gray-300 dark:border-gray-600"
                             >
                                 <td
-                                    class="w-96 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    class="px-4 py-2 text-sm text-gray-600 border-r border-gray-300 w-96 dark:text-gray-300 dark:border-gray-600"
                                 >
                                     {{ mode.name }}
                                 </td>
                                 <td
-                                    class="w-30 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    class="px-4 py-2 text-sm text-gray-600 border-r border-gray-300 w-30 dark:text-gray-300 dark:border-gray-600"
                                 >
                                     {{ mode.duration }}
                                 </td>
@@ -104,15 +104,15 @@ const assignMode = () => {
                             <!-- Create New Mode Row -->
                             <transition
                                 enter-active-class="transition duration-300 ease-out"
-                                enter-from-class="opacity-0 -translate-y-2"
-                                enter-to-class="opacity-100 translate-y-0"
+                                enter-from-class="-translate-y-2 opacity-0"
+                                enter-to-class="translate-y-0 opacity-100"
                                 leave-active-class="transition duration-200 ease-in"
-                                leave-from-class="opacity-100 translate-y-0"
-                                leave-to-class="opacity-0 -translate-y-2"
+                                leave-from-class="translate-y-0 opacity-100"
+                                leave-to-class="-translate-y-2 opacity-0"
                             >
                                 <tr
                                     v-if="assignModeToProgram"
-                                    class="bg-gray-50 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600"
+                                    class="border-b border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
                                 >
                                     <td class="px-4 py-2">
                                         <Select
@@ -125,7 +125,7 @@ const assignMode = () => {
                                             option-value="id"
                                             checkmark
                                             filter
-                                            placeholder="Select Study Mode"
+                                            :placeholder=" $t('programs.studymode.namePlaceholder') "
                                             class="w-full"
                                         />
                                     </td>
@@ -137,14 +137,14 @@ const assignMode = () => {
                                         <TextInput
                                             v-model="modeForm.duration"
                                             type="number"
-                                            placeholder="Duration (Years)"
-                                            class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                            :placeholder=" $t('programs.studymode.duration')"
+                                            class="w-full px-2 py-1 border rounded-md h-9 dark:bg-gray-800 dark:text-gray-100"
                                         />
                                         <PrimaryButton
-                                            class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                            class="px-4 py-1 text-white bg-green-500 rounded-md h-9 hover:bg-green-600"
                                             @click="assignMode"
                                         >
-                                            Save
+                                        {{ $t('programs.studymode.save') }}
                                         </PrimaryButton>
                                         </div>
                                     </td>

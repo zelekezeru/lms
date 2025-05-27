@@ -14,6 +14,7 @@ use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ImportController;
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -84,10 +85,13 @@ Route::middleware(['auth'])->group(function () {
     // Student Semester Registration
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
 
-    // Excel Export Routes
-    Route::get('/students/export', [ExportController::class, 'exportStudents'])->name('students.export');
+    // Excel Operation Routes
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
+    
+    Route::patch('/students/import', [StudentController::class, 'import'])->name('students.import');
+
+
 
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);

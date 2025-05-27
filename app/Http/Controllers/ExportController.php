@@ -21,7 +21,7 @@ class ExportController extends Controller
         // Get the student IDs from the section
         $section = Section::find($section_id);
 
-        $students = $section->students()->with('user', 'status', 'church')->get();
+        $students = $section->students()->with('user', 'status', 'church')->orderBy('first_name')->orderBy('middle_name')->get();
 
         return Excel::download(new StudentsExport($students), 'students list.xlsx');
     }

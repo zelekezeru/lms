@@ -44,20 +44,37 @@ const tabs = [
 const currentRoute = usePage().component;
 
 const selectedTab = ref(
-  tabs.find((tab) => currentRoute.toLowerCase().includes(tab.key))?.key ||
-  "student"
+    tabs.find((tab) => currentRoute.toLowerCase().includes(tab.key))?.key ||
+        "student"
 );
 
 function navigateTo(tab) {
     selectedTab.value = tab.key;
     router.visit(tab.route);
 }
-
 </script>
 
 <template>
     <InstructorLayout>
         <div class="max-w-6xl mx-auto p-6">
+            <h2
+                class="text-xl font-semibold text-gray-800 dark:text-white mb-4 text-center"
+            >
+                <template v-if="selectedTab === 'student'">
+                    Students enrolled in "{{ props.course.name }}" (Section: "{{
+                        props.section.name
+                    }})
+                </template>
+                <template v-else-if="selectedTab === 'assessments'">
+                    Assessments of students in "{{ props.course.name }}"
+                    (Section: "{{ props.section.name }})
+                </template>
+                <template v-else-if="selectedTab === 'attendance'">
+                    Attendance records for "{{ props.course.name }}" (Section:
+                    "{{ props.section.name }})
+                </template>
+            </h2>
+
             <nav
                 class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
             >

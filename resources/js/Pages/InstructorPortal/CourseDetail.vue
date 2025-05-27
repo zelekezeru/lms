@@ -10,6 +10,7 @@ import {
     MegaphoneIcon,
     AcademicCapIcon,
 } from "@heroicons/vue/24/outline";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     course: Object,
@@ -131,11 +132,20 @@ const getProgressColor = (mark) => {
                             </div>
 
                             <!-- View Details Button -->
-                            <button
+                            <Link
+                                :href="
+                                    route(
+                                        'instructor.sections.courses.students',
+                                        {
+                                            section: section.id,
+                                            course: course.id,
+                                        }
+                                    )
+                                "
                                 class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
                             >
                                 View Details
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -43,7 +43,9 @@ class StudentResource extends JsonResource
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'createdBy' => $this->whenLoaded('createdBy'),
-            'activeCurricula' => $this->section ? CurriculumResource::collection($this->section->getActiveCurricula()) : null,
+            'activeCurricula' => $this->whenLoaded('courses', function () {
+                return $this->courses->wherePivot('pivot.status', 'enrolled');
+            }),
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 
             'results' => $this->whenLoaded('results'),

@@ -54,10 +54,7 @@ class WeightController extends Controller
 
         $weight = Weight::create($fields);
 
-        // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
-        $redirectTo = $request->input('redirectTo', route('weights.show', $weight));
-
-        return redirect($redirectTo)->with('success', 'Weight created successfully.');
+        return redirect()->back()->with('success', 'Weight created successfully.');
     }
 
     public function show(Weight $weight)

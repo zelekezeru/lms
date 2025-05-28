@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { AcademicCapIcon } from "@heroicons/vue/24/solid";
-
+import {router} from '@inertiajs/vue3';
 import Overview from "./Tabs/Overview.vue";
 import Attendance from "./Tabs/Attendance.vue";
 import Assessments from "./Tabs/Assessments.vue";
@@ -30,6 +30,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    grades: {
+        type: Object,
+        required: true,
+    },
     students: {
         type: Array,
         required: true,
@@ -51,6 +55,12 @@ const rightMenu = [
     { name: "Attendance", icon: AcademicCapIcon },
     { name: "Announcements", icon: AcademicCapIcon },
 ];
+
+const changeTab = (tabName) => {
+    activeTab.value = tabName;
+    
+    router.visit(route(route().current(), { section: props.section.id, course: props.course.id, tab: tabName }))
+}
 </script>
 
 <template>
@@ -156,6 +166,7 @@ const rightMenu = [
                             v-if="activeTab === 'Assessments'"
                             :course="course"
                             :section="section"
+                            :grades="grades"
                             :weights="weights"
                             :instructor="instructor"
                             :semester="semester"
@@ -186,7 +197,7 @@ const rightMenu = [
                             <li
                                 v-for="item in rightMenu"
                                 :key="item.name"
-                                @click="activeTab = item.name"
+                                @click="changeTab(item.name)"
                                 class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-pointer transition duration-200"
                                 :class="{
                                     'bg-gray-100 dark:bg-gray-800 font-semibold':

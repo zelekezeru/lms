@@ -38,6 +38,7 @@ class Section extends Model
     {
         return Student::whereHas('courses', function ($query) use ($courseId) {
             $query->where('course_id', $courseId)
+                ->whereNot('course_student.status', 'Dropped')
                 ->where('section_id', $this->id);
         })->orderBy('first_name')
             ->orderBy('middle_name')

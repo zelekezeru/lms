@@ -10,6 +10,13 @@ import {
 import InstructorLayout from '@/Layouts/InstructorLayout.vue';
 import { Chart } from 'chart.js/auto';
 
+const props = defineProps({
+  instructor: {
+    type: Object,
+    required: true
+  }
+});
+
 let chart = null;
 const createChart = () => {
   const ctx = document.getElementById('performanceChart');
@@ -44,7 +51,7 @@ onMounted(createChart);
     <div class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8" style="background-image: url('https://www.pngall.com/wp-content/uploads/5/Teaching-PNG-Free-Image.png');">
       <div class="absolute inset-0 bg-black bg-opacity-25"></div>
       <div class="relative p-6 md:p-8 lg:p-10">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3">Welcome, Dr. Alex</h1>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3">Welcome, {{ instructor.user.name }}</h1>
         <p class="text-base md:text-lg text-gray-200 max-w-2xl">
           Manage your courses, track student performance, view feedback, and stay on top of your schedule.
         </p>
@@ -59,25 +66,25 @@ onMounted(createChart);
         <section>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Courses You’re Teaching</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="course in ['CS101', 'Math201', 'Physics303']" :key="course" class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
+            <div v-for="course in instructor.courses" :key="course" class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all">
               <AcademicCapIcon class="h-6 w-6 text-indigo-500 mb-2" />
-              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ course }}</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Enrolled Students: 35</p>
+              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ course.name}}</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Sections: </p>
               <p class="text-sm text-gray-600 dark:text-gray-400">Credits: 3</p>
             </div>
           </div>
         </section>
 
         <!-- Student Performance -->
-        <section>
+        <!-- <section>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Student Performance Overview</h2>
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <canvas id="performanceChart" class="w-full h-64"></canvas>
           </div>
-        </section>
+        </section> -->
 
         <!-- Feedback Summary -->
-        <section>
+        <!-- <section>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Recent Student Feedback</h2>
           <div class="space-y-4">
             <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
@@ -89,7 +96,7 @@ onMounted(createChart);
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">— Student B</p>
             </div>
           </div>
-        </section>
+        </section> -->
 
         <!-- Schedule Overview -->
         <section>
@@ -113,7 +120,7 @@ onMounted(createChart);
         </section>
 
         <!-- Payroll Info -->
-        <section>
+        <!-- <section>
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Payroll Information</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition">
@@ -140,7 +147,7 @@ onMounted(createChart);
               <p class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">April 1, 2025</p>
             </div>
           </div>
-        </section>
+        </section> -->
 
       </div>
     </div>

@@ -8,9 +8,9 @@ import {
     CheckBadgeIcon,
 } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
-import ShowResults from "./Tabs/ShowResults.vue";
-import ShowWeights from "./Tabs/ShowWeights.vue";
-import ShowGrades from "./Tabs/ShowGrades.vue";
+import ShowResults from "../InstructorPortal/Components/ShowResults.vue";
+import ShowWeights from "../InstructorPortal/Components/ShowWeights.vue";
+import ShowGrades from "../InstructorPortal/Components/ShowGrades.vue";
 
 import InstructorLayout from "@/Layouts/InstructorLayout.vue";
 import AppLayout from "@/Layouts/AppLayout.vue"; // default

@@ -28,19 +28,18 @@ class ResultController extends Controller
         // Validate the request data
         $fields = $request->validate([
             'results' => 'required|array',
+            'results.*.instructor_id' => 'required|exists:instructors,id',
             'results.*.student_id' => 'required|integer',
             'results.*.weight_id' => 'required|integer',
             'results.*.point' => 'required|numeric|min:0',
         ]);
-
-        $fields['instructor_id'] = Auth::id(); // Set the user_id to the authenticated user's ID
 
         foreach ($fields['results'] as $result) {
             Result::updateOrCreate(
                 [
                     'student_id' => $result['student_id'],
                     'weight_id' => $result['weight_id'],
-                    'instructor_id' => $fields['instructor_id'],
+                    'instructor_id' => $result['instructor_id'],
                 ],
                 [
                     'point' => $result['point'],

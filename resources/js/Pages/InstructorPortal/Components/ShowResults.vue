@@ -1,17 +1,12 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref, computed } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
-    PencilIcon, EyeIcon, XMarkIcon, CogIcon,
-    PlusCircleIcon, DocumentTextIcon, PresentationChartBarIcon,
-    CheckBadgeIcon, TrashIcon
-} from "@heroicons/vue/24/solid";
-import Modal from "@/Components/Modal.vue";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+    PencilIcon
+    
+    } from "@heroicons/vue/24/solid";
 
 // Props
 const props = defineProps({
@@ -179,6 +174,7 @@ const submitWeightResults = () => {
         }
 
         results.push({
+            instructor_id: props.instructor.id,
             weight_id: weightId,
             student_id: parseInt(student_id),
             point: numericPoint,

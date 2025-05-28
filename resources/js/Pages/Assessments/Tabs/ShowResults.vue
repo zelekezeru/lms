@@ -261,7 +261,7 @@ function getResultPoint(weight, studentId) {
                         {{ index + 1 }}
                     </td>
                     <td class="px-4 py-2">
-                        {{ student.first_name }} {{ student.middle_name }}
+                        {{ student.firstName }} {{ student.middleName }}
                     </td>
                     
                     <!-- Section Course Weights -->

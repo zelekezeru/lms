@@ -122,6 +122,33 @@ class InstructorPortalController extends Controller
         ]);
     }
 
+    public function sectionCourse(Section $section, Course $course)
+    {
+        $instructor = new InstructorResource(
+            request()->user()->instructor->load('user')
+        );
+        if (! CourseSectionAssignment::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
+            abort(500);
+        }
+
+        $course = new CourseResource($course);
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
+        $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
+        $grades = $section->grades()->where('course_id', $course->id)->get();
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
+        // This fetches all students that learn $course in $section which means
+        $students = StudentResource::collection($section->studentsByCourse($course->id));
+
+        return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
+            'section' => $section,
+            'course' => $course,
+            'students' => $students,
+            'semester' => $semester,
+            'grades' => $grades,
+            'weights' => $weights,
+            'instructor' => $instructor,
+        ]);
+    }
     public function sectionCourseStudents(Section $section, Course $course)
     {
         $instructor = new InstructorResource(
@@ -157,14 +184,14 @@ class InstructorPortalController extends Controller
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
         $students = $section->students()
-                            ->whereHas('courses', function ($query) use ($course) {
-                                $query->where('course_id', $course->id); 
-                            })
-                            ->orderBy('first_name')
-                            ->orderBy('middle_name')
-                            ->orderBy('last_name')
-                            ->get();
-                            
+            ->whereHas('courses', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })
+            ->orderBy('first_name')
+            ->orderBy('middle_name')
+            ->orderBy('last_name')
+            ->get();
+
         // Load the instructor details
         if ($instructor) {
             $instructor = Instructor::find($instructor)->load(['user']);

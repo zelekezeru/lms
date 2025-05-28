@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sections/{section}/courses/{course}/students', [InstructorPortalController::class, 'sectionCourseStudents'])->name('instructor.sections.courses.students');
         Route::get('sections/{section}/courses/{course}/assessments', [InstructorPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
         Route::get('sections/{section}/courses/{course}/attendance', [InstructorPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
+        Route::get('sections/{section}/courses/{course}', [InstructorPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
 
         Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
         Route::get('/schedules', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
@@ -111,10 +112,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
-    Route::post('/courses-student/{student}', [AssignmentController::class, 'assignCoursesToStudents'])->name('courses-student.assign');
     
-    Route::post('/course-student/{student}', [StudentController::class, 'addCourse'])->name('courses-student.add');
-    Route::post('/course-student/{student}', [StudentController::class, 'dropCourse'])->name('courses-student.drop');
+    Route::post('/course-student/{student}/add', [StudentController::class, 'addCourse'])->name('courses-student.add');
+    Route::post('/course-student/{student}/drop', [StudentController::class, 'dropCourse'])->name('courses-student.drop');
     
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');

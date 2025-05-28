@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StudentResource;
 use App\Models\Instructor;
 use App\Models\Section;
 use App\Models\Semester;
@@ -21,15 +22,8 @@ class AssessmentController extends Controller
         $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;
 
         $grades = $section->grades()->where('course_id', $course->id)->get();
+        $students = StudentResource::collection($section->studentsByCourse($course->id));
 
-        $students = $section->students()
-                            ->whereHas('courses', function ($query) use ($course) {
-                                $query->where('course_id', $course->id); 
-                            })
-                            ->orderBy('first_name')
-                            ->orderBy('middle_name')
-                            ->orderBy('last_name')
-                            ->get();
                             
         // Load the instructor details
         if ($instructor) {

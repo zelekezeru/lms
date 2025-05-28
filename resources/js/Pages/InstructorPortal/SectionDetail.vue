@@ -58,21 +58,21 @@ const props = defineProps({
               <UserIcon class="w-5 h-5 mr-2" />
               Instructor: {{ course.instructor?.name || "—" }}
             </div>
-            <div class="flex flex-col space-y-2">
+            <div class="(flex fle)x-col space-y-2">
               <Link
-                :href="route('instructor.sections.courses.students', { section: section.id, course: course.id })"
+                :href="route('instructor.sections.courses', { section: section.id, course: course.id, tab: 'Students' })"
                 class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
               >
                 <ClipboardIcon class="w-5 h-5 mr-2" /> Students
               </Link>
               <Link
-                :href="route('instructor.sections.courses.assessments', { section: section.id, course: course.id })"
+                :href="route('instructor.sections.courses', { section: section.id, course: course.id, tab: 'Assessments'  })"
                 class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition"
               >
                 <ClipboardIcon class="w-5 h-5 mr-2" /> Assessments
               </Link>
               <Link
-                :href="route('instructor.sections.courses.attendance', { section: section.id, course: course.id })"
+                :href="route('instructor.sections.courses', { section: section.id, course: course.id, tab: 'Students'  })"
                 class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition"
               >
                 <CalendarDaysIcon class="w-5 h-5 mr-2" /> Attendance

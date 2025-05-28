@@ -34,6 +34,17 @@ class Section extends Model
         return $this->belongsToMany(Course::class)->withPivot('instructor_id');
     }
 
+    public function studentsByCourse($courseId)
+    {
+        return Student::whereHas('courses', function ($query) use ($courseId) {
+            $query->where('course_id', $courseId)
+                ->where('section_id', $this->id);
+        })->orderBy('first_name')
+            ->orderBy('middle_name')
+            ->orderBy('last_name')
+            ->get();
+    }
+
     public function instructors(): BelongsToMany
     {
         return $this->belongsToMany(Instructor::class);

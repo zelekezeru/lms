@@ -44,8 +44,11 @@ class StudentResource extends JsonResource
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'createdBy' => $this->whenLoaded('createdBy'),
             'activeCurricula' => $this->whenLoaded('courses', function () {
-                return $this->courses->wherePivot('pivot.status', 'enrolled');
+                return $this->courses->filter(function ($course) {
+                    return $course->pivot->status === 'Enrolled';
+                });
             }),
+
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 
             'results' => $this->whenLoaded('results'),

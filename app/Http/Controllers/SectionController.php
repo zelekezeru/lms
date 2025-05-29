@@ -107,6 +107,7 @@ class SectionController extends Controller
             'isCompleted' => $section->is_completed,
             'currentYearLevel' => $currentYearLevel,
             'currentSemesterLevel' => $currentSemesterLevel,
+            'currentSemester' => new SemesterResource($section->semester),
         ]);
     }
 

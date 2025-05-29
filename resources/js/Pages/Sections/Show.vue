@@ -32,6 +32,11 @@ const props = defineProps({
         type: Number,
         required: false,
     },
+
+    currentSemester: {
+      type: Object,
+      requried: true,
+    }
 });
 
 const selectedTab = ref("details");
@@ -133,7 +138,7 @@ const deletesection = (id) => {
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
-                    />
+                  />
 
                     <!-- Students Panel -->
                     <ShowStudents
@@ -143,7 +148,18 @@ const deletesection = (id) => {
                         :instructors="instructors"
                     />
 
-                    <ShowClassSchedules v-else-if="selectedTab === 'schedules'" />
+                    <ShowClassSchedules
+                        v-else-if="selectedTab === 'schedules'"
+                        :section="section"
+                        :active-courses="
+                            courses.filter(
+                                (course) =>
+                                    course.yearLevel == currentYearLevel &&
+                                    course.semester == currentSemesterLevel
+                            )
+                        "
+                        :active-semester="currentSemester"
+                    />
                 </div>
             </transition>
         </div>

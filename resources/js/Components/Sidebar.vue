@@ -179,7 +179,7 @@ const afterLeave = (el) => {
                     </span>
                 </transition>
             </Link>
-            
+
             <div
                 class="h-[700px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
@@ -229,7 +229,7 @@ const afterLeave = (el) => {
 
                 <!-- Time Frame Structure Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Schedule Structure'"
+                    :label="'Calendar Structure'"
                     :icon="ClockIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -253,13 +253,12 @@ const afterLeave = (el) => {
 
                     <!-- Scheduling -->
                     <SidebarDrowpdownLink
-                        v-show="userCan('view-schedules')"
-                        :href="route('schedules.index')"
+                        v-show="userCan('view-calendars')"
+                        :href="route('calendars.index')"
                     >
                         <ClockIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Schedules</span>
+                        <span class="text-sm">Manage Calendars</span>
                     </SidebarDrowpdownLink>
-                    
                 </SidebarDropdownMenu>
 
                 <!-- Academic Structure Navigation -->
@@ -449,7 +448,6 @@ const afterLeave = (el) => {
                         <span class="text-sm">Inventory Categories</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
-                
 
                 <!-- Payment -->
 
@@ -493,7 +491,7 @@ const afterLeave = (el) => {
                         :href="route('paymentSchedules.index')"
                     >
                         <CalendarDateRangeIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Payment Schedules</span>
+                        <span class="text-sm">Payment Calendars</span>
                     </SidebarDrowpdownLink> -->
                 </SidebarDropdownMenu>
             </div>

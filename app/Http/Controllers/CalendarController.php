@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Schedule;
+use App\Models\Calendar;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Resources\SemesterResource;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Semester;
 
-class ScheduleController extends Controller
+class CalendarController extends Controller
 {
     /**
      * Display a listing of the semesters with optional search.
@@ -23,16 +23,16 @@ class ScheduleController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('status', 'LIKE', "%{$search}%");
+                ->orWhere('status', 'LIKE', "%{$search}%");
         }
 
         $semesters = $query->orderBy('status', 'asc')
-                            ->orderByDesc('start_date')
-                            ->with('year')
-                            ->paginate(15)
-                            ->appends($request->query());
+            ->orderByDesc('start_date')
+            ->with('year')
+            ->paginate(15)
+            ->appends($request->query());
 
-        return Inertia::render('Schedules/Index', [
+        return Inertia::render('Calendars/Index', [
             'semesters' => $semesters,
             'search' => $request->search,
         ]);
@@ -49,7 +49,7 @@ class ScheduleController extends Controller
             return redirect()->back()->with('error', 'No active semester found.');
         }
 
-        return Inertia::render('Schedules/ShowActive', [
+        return Inertia::render('Calendars/ShowActive', [
             'semester' => $activeSemester,
         ]);
     }
@@ -68,8 +68,8 @@ class ScheduleController extends Controller
         $semesters = SemesterResource::collection(
             Semester::where('status', 'Inactive')->with('year')->orderByDesc('name')->get()
         );
-        
-        return Inertia::render('Schedules/CloseForm', [
+
+        return Inertia::render('Calendars/CloseForm', [
             'semester' => $activeSemester,
             'semesters' => $semesters,
         ]);
@@ -80,33 +80,32 @@ class ScheduleController extends Controller
      */
     public function closeSemester(Request $request)
     {
-        
+
         $request->validate([
             'approval' => 'required|accepted',
             'new_semester_id' => 'required|numeric|exists:semesters,id',
             'new_semester_start_date' => 'required|',
             'new_semester_end_date' => 'required|date|after:new_semester_start_date',
         ]);
-        
+
         $activeSemester = Semester::where('status', 'Active')->first();
 
         $newSemester = Semester::find($request->new_semester_id);
 
         if (!$activeSemester || !$newSemester) {
             return redirect()->back()->with('error', 'No active semester to close.');
-        }
-        elseif ($newSemester->status == 'Active') {
+        } elseif ($newSemester->status == 'Active') {
             return redirect()->back()->with('error', 'The selected semester is already active.');
-        }
-        elseif ($newSemester->id == $activeSemester->id) {
+        } elseif ($newSemester->id == $activeSemester->id) {
             return redirect()->back()->with('error', 'The selected semester is the same as the current one.');
         }
-        
+
         DB::transaction(function () use ($request, $activeSemester, $newSemester) {
             // Close current semester
             $activeSemester->update(['status' => 'Inactive']);
 
-            $newSemester->update(['status' => 'Active',
+            $newSemester->update([
+                'status' => 'Active',
                 'start_date' => $request->new_semester_start_date,
                 'end_date' => $request->new_semester_end_date,
             ]);
@@ -123,7 +122,7 @@ class ScheduleController extends Controller
         $semester->created_at_formatted = $semester->created_at->format('F j, Y');
         $semester->updated_at_formatted = $semester->updated_at->format('F j, Y');
 
-        return Inertia::render('Schedules/Show', [
+        return Inertia::render('Calendars/Show', [
             'semester' => $semester,
         ]);
     }

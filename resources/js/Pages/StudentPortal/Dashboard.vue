@@ -91,31 +91,35 @@ onMounted(createChart);
                             v-for="curriculum in student.activeCurricula"
                             class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all"
                         >
-                         <Link
-                            :href="
-                                route(
-                                    'student.courses.show',
-                                    curriculum.course.id
-                                )
-                            "
-                        >
-                            <AcademicCapIcon
-                                class="h-6 w-6 text-blue-500 mb-2"
-                            />
-                            <h3
-                                class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                            <Link
+                                :href="
+                                    route(
+                                        'student.courses.show',
+                                        curriculum.course.id
+                                    )
+                                "
                             >
-                                {{ curriculum.course.name }} ({{
-                                    curriculum.course.code
-                                }})
-                            </h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: John Doe
-                            </p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Credits: {{ curriculum.course.creditHours }}
-                            </p>
-                        </Link>
+                                <AcademicCapIcon
+                                    class="h-6 w-6 text-blue-500 mb-2"
+                                />
+                                <h3
+                                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                                >
+                                    {{ curriculum.course.name }} ({{
+                                        curriculum.course.code
+                                    }})
+                                </h3>
+                                <p
+                                    class="text-sm text-gray-600 dark:text-gray-400"
+                                >
+                                    Instructor: John Doe
+                                </p>
+                                <p
+                                    class="text-sm text-gray-600 dark:text-gray-400"
+                                >
+                                    Credits: {{ curriculum.course.creditHours }}
+                                </p>
+                            </Link>
                         </div>
                     </div>
                 </section>

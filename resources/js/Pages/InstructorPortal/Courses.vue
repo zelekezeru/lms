@@ -59,7 +59,7 @@ const props = defineProps({
                         class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
                     >
                         <ClockIcon class="w-4 h-4 text-amber-500" />
-                        {{ course.schedule ?? "N/A" }}
+                        {{ course.calendar ?? "N/A" }}
                     </div>
                 </div>
 

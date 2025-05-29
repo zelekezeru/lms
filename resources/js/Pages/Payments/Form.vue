@@ -71,7 +71,6 @@ const statuses = [
     { id: 1, name: "Active" },
     { id: 2, name: "Inactive" },
 ];
-
 </script>
 
 <template>
@@ -84,14 +83,24 @@ const statuses = [
 
         <div>
             <InputLabel for="description" value="Description" />
-            <TextInput id="description" v-model="form.description" class="mt-1" />
+            <TextInput
+                id="description"
+                v-model="form.description"
+                class="mt-1"
+            />
             <InputError :message="form.errors.description" class="mt-2" />
         </div>
 
         <div class="grid grid-cols-2 gap-6">
             <div>
                 <InputLabel for="amount" value="Amount" />
-                <TextInput id="amount" type="number" v-model="form.amount" required class="mt-1" />
+                <TextInput
+                    id="amount"
+                    type="number"
+                    v-model="form.amount"
+                    required
+                    class="mt-1"
+                />
                 <InputError :message="form.errors.amount" class="mt-2" />
             </div>
             <div>
@@ -123,7 +132,10 @@ const statuses = [
                     required
                     class="mt-1"
                 />
-                <InputError :message="form.errors.payment_method" class="mt-2" />
+                <InputError
+                    :message="form.errors.payment_method"
+                    class="mt-2"
+                />
             </div>
             <div>
                 <InputLabel for="payment_status" value="Payment Status" />
@@ -137,71 +149,145 @@ const statuses = [
                     required
                     class="mt-1"
                 />
-                <InputError :message="form.errors.payment_status" class="mt-2" />
+                <InputError
+                    :message="form.errors.payment_status"
+                    class="mt-2"
+                />
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-6">
             <div>
                 <InputLabel for="installment_count" value="Installment Count" />
-                <TextInput id="installment_count" type="number" v-model="form.installment_count"  class="mt-1" />
-                <InputError :message="form.errors.installment_count" class="mt-2" />
+                <TextInput
+                    id="installment_count"
+                    type="number"
+                    v-model="form.installment_count"
+                    class="mt-1"
+                />
+                <InputError
+                    :message="form.errors.installment_count"
+                    class="mt-2"
+                />
             </div>
             <div>
-                <InputLabel for="installment_interval" value="Installment Interval (days)" />
-                <TextInput id="installment_interval" type="number" v-model="form.installment_interval"  class="mt-1" />
-                <InputError :message="form.errors.installment_interval" class="mt-2" />
+                <InputLabel
+                    for="installment_interval"
+                    value="Installment Interval (days)"
+                />
+                <TextInput
+                    id="installment_interval"
+                    type="number"
+                    v-model="form.installment_interval"
+                    class="mt-1"
+                />
+                <InputError
+                    :message="form.errors.installment_interval"
+                    class="mt-2"
+                />
             </div>
         </div>
 
         <div>
             <InputLabel for="grace_period" value="Grace Period (days)" />
-            <TextInput id="grace_period" type="number" v-model="form.grace_period"  class="mt-1" />
+            <TextInput
+                id="grace_period"
+                type="number"
+                v-model="form.grace_period"
+                class="mt-1"
+            />
             <InputError :message="form.errors.grace_period" class="mt-2" />
         </div>
 
         <div class="grid grid-cols-2 gap-6">
             <div>
                 <InputLabel for="late_fee" value="Late Fee (%)" />
-                <TextInput id="late_fee" type="number" v-model="form.late_fee"  class="mt-1" />
+                <TextInput
+                    id="late_fee"
+                    type="number"
+                    v-model="form.late_fee"
+                    class="mt-1"
+                />
                 <InputError :message="form.errors.late_fee" class="mt-2" />
             </div>
             <div>
                 <InputLabel for="late_fee_amount" value="Late Fee Amount" />
-                <TextInput id="late_fee_amount" type="number" v-model="form.late_fee_amount"  class="mt-1" />
-                <InputError :message="form.errors.late_fee_amount" class="mt-2" />
+                <TextInput
+                    id="late_fee_amount"
+                    type="number"
+                    v-model="form.late_fee_amount"
+                    class="mt-1"
+                />
+                <InputError
+                    :message="form.errors.late_fee_amount"
+                    class="mt-2"
+                />
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-6">
             <div>
                 <InputLabel for="discount" value="Discount (%)" />
-                <TextInput id="discount" type="number" v-model="form.discount"  class="mt-1" />
+                <TextInput
+                    id="discount"
+                    type="number"
+                    v-model="form.discount"
+                    class="mt-1"
+                />
                 <InputError :message="form.errors.discount" class="mt-2" />
             </div>
             <div>
                 <InputLabel for="discount_amount" value="Discount Amount" />
-                <TextInput id="discount_amount" type="number" v-model="form.discount_amount"  class="mt-1" />
-                <InputError :message="form.errors.discount_amount" class="mt-2" />
+                <TextInput
+                    id="discount_amount"
+                    type="number"
+                    v-model="form.discount_amount"
+                    class="mt-1"
+                />
+                <InputError
+                    :message="form.errors.discount_amount"
+                    class="mt-2"
+                />
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-6">
             <div>
                 <InputLabel for="penalty" value="Penalty (%)" />
-                <TextInput id="penalty" type="number" v-model="form.penalty"  class="mt-1" />
+                <TextInput
+                    id="penalty"
+                    type="number"
+                    v-model="form.penalty"
+                    class="mt-1"
+                />
                 <InputError :message="form.errors.penalty" class="mt-2" />
             </div>
             <div>
                 <InputLabel for="penalty_amount" value="Penalty Amount" />
-                <TextInput id="penalty_amount" type="number" v-model="form.penalty_amount"  class="mt-1" />
-                <InputError :message="form.errors.penalty_amount" class="mt-2" />
+                <TextInput
+                    id="penalty_amount"
+                    type="number"
+                    v-model="form.penalty_amount"
+                    class="mt-1"
+                />
+                <InputError
+                    :message="form.errors.penalty_amount"
+                    class="mt-2"
+                />
             </div>
         </div>
 
         <div>
             <InputLabel for="status" value="Status" />
-            <SelectInput id="status" v-model="form.status" :options="statuses"  labelKey="name" valueKey="id" required class="mt-1" />
+            <SelectInput
+                id="status"
+                v-model="form.status"
+                :options="statuses"
+                labelKey="name"
+                valueKey="id"
+                required
+                class="mt-1"
+            />
             <InputError :message="form.errors.status" class="mt-2" />
         </div>
 
@@ -211,10 +297,18 @@ const statuses = [
                 id="payment_schedule_id"
                 :modelValue="form.payment_schedule_id"
                 @update:modelValue="form.payment_schedule_id = $event"
-                :options="Object.entries(paymentSchedules).map(([key, value]) => ({ value: key, label: value }))"
+                :options="
+                    Object.entries(paymentSchedules).map(([key, value]) => ({
+                        value: key,
+                        label: value,
+                    }))
+                "
                 class="mt-1"
             />
-            <InputError :message="form.errors.payment_schedule_id" class="mt-2" />
+            <InputError
+                :message="form.errors.payment_schedule_id"
+                class="mt-2"
+            />
         </div>
 
         <div>
@@ -223,10 +317,18 @@ const statuses = [
                 id="payment_category_id"
                 :modelValue="form.payment_category_id"
                 @update:modelValue="form.payment_category_id = $event"
-                :options="Object.entries(paymentCategories).map(([key, value]) => ({ value: key, label: value }))"
+                :options="
+                    Object.entries(paymentCategories).map(([key, value]) => ({
+                        value: key,
+                        label: value,
+                    }))
+                "
                 class="mt-1"
             />
-            <InputError :message="form.errors.payment_category_id" class="mt-2" />
+            <InputError
+                :message="form.errors.payment_category_id"
+                class="mt-2"
+            />
         </div>
 
         <div>
@@ -235,7 +337,12 @@ const statuses = [
                 id="user_id"
                 :modelValue="form.user_id"
                 @update:modelValue="form.user_id = $event"
-                :options="Object.entries(users).map(([key, value]) => ({ value: key, label: value }))"
+                :options="
+                    Object.entries(users).map(([key, value]) => ({
+                        value: key,
+                        label: value,
+                    }))
+                "
                 required
                 class="mt-1"
             />
@@ -244,14 +351,23 @@ const statuses = [
 
         <div>
             <InputLabel for="total_amount" value="Total Amount" />
-            <TextInput id="total_amount" type="number" v-model="form.total_amount" required class="mt-1" />
+            <TextInput
+                id="total_amount"
+                type="number"
+                v-model="form.total_amount"
+                required
+                class="mt-1"
+            />
             <InputError :message="form.errors.total_amount" class="mt-2" />
         </div>
 
         <PrimaryButton :disabled="form.processing">
             Create Payment
         </PrimaryButton>
-        <Link :href="route('payments.index')" class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 ml-2">
+        <Link
+            :href="route('payments.index')"
+            class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 ml-2"
+        >
             Cancel
         </Link>
     </form>

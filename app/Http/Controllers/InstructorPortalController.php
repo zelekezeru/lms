@@ -20,12 +20,12 @@ class InstructorPortalController extends Controller
     {
         $instructor = new InstructorResource(
             request()->user()->instructor->load(
-                'user', 
-                'courses', 
-                'courseSectionAssignments.section.program', 
-                'courseSectionAssignments.section.track', 
+                'user',
+                'courses',
+                'courseSectionAssignments.section.program',
+                'courseSectionAssignments.section.track',
                 'courseSectionAssignments.course'
-                )
+            )
         );
 
         return inertia('InstructorPortal/Dashboard', [
@@ -182,18 +182,18 @@ class InstructorPortalController extends Controller
         ]);
     }
 
-    public function schedule()
+    public function calendar()
     {
         $instructor = new InstructorResource(
             request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
         );
 
-        // Example: fetch schedule info for instructor
-        $schedules = []; // You can populate this as needed
+        // Example: fetch calendar info for instructor
+        $calendars = []; // You can populate this as needed
 
-        return inertia('InstructorPortal/schedule', [
+        return inertia('InstructorPortal/calendar', [
             'instructor' => $instructor,
-            'schedules' => $schedules,
+            'calendars' => $calendars,
         ]);
     }
 }

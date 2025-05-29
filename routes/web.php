@@ -12,7 +12,7 @@ use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\SemesterController;
-use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
 
@@ -62,7 +62,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sections/{section}/courses/{course}', [InstructorPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
 
         Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
-        Route::get('/schedules', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
+        Route::get('/calendars', [InstructorPortalController::class, 'calendar'])->name('instructor.calendar');
         Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
     });
 
@@ -89,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
     // Excel Operation Routes
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
-    
+
     Route::patch('/students/import', [StudentController::class, 'import'])->name('students.import');
 
 
@@ -112,10 +112,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
-    
+
     Route::post('/course-student/{student}/add', [StudentController::class, 'addCourse'])->name('courses-student.add');
     Route::post('/course-student/{student}/drop', [StudentController::class, 'dropCourse'])->name('courses-student.drop');
-    
+
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
@@ -139,9 +139,9 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('Instructor/InstructorGrades');
     })->name('instructor.grades');
 
-    Route::get('/instructor/schedule', function () {
-        return Inertia::render('Instructor/Schedule');
-    })->name('instructor.schedule');
+    Route::get('/instructor/calendar', function () {
+        return Inertia::render('Instructor/Calendar');
+    })->name('instructor.calendar');
 
     // Resource Routes
     $resourceRoutes = [
@@ -160,7 +160,7 @@ Route::middleware(['auth'])->group(function () {
         'users' => 'user',
         'years' => 'year',
         'semesters' => 'semester',
-        'schedules' => 'schedule',
+        'calendars' => 'calendar',
         'sections' => 'section',
         'results' => 'result',
         'weights' => 'weight',

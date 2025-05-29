@@ -127,11 +127,11 @@ class RolePermissionSeeder extends Seeder
             'update-semesters',
             'delete-semesters',
 
-            // Schedule (CRUD)
-            'view-schedules',
-            'create-schedules',
-            'update-schedules',
-            'delete-schedules',
+            // Calendar (CRUD)
+            'view-calendars',
+            'create-calendars',
+            'update-calendars',
+            'delete-calendars',
 
             // Section (CRUD)
             'view-sections',
@@ -181,7 +181,7 @@ class RolePermissionSeeder extends Seeder
             'update-paymentItems',
             'delete-paymentItems',
 
-            // Payment Schedule (CRUD)
+            // Payment Calendar (CRUD)
             'view-paymentSchedules',
             'create-paymentSchedules',
             'update-paymentSchedules',
@@ -387,11 +387,11 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
-                    // Schedules (CRUD)
-                    'view-schedules',
-                    'create-schedules',
-                    'update-schedules',
-                    'delete-schedules',
+                    // Calendars (CRUD)
+                    'view-calendars',
+                    'create-calendars',
+                    'update-calendars',
+                    'delete-calendars',
 
                     // Sections (CRUD)
                     'view-sections',
@@ -441,7 +441,7 @@ class RolePermissionSeeder extends Seeder
                     'update-paymentItems',
                     'delete-paymentItems',
 
-                    // Payment Schedules (CRUD)
+                    // Payment Calendars (CRUD)
                     'view-paymentSchedules',
                     'create-paymentSchedules',
                     'update-paymentSchedules',
@@ -585,10 +585,10 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
-                    // Schedule (CRUD)
-                    'create-schedules',
-                    'update-schedules',
-                    'delete-schedules',
+                    // Calendar (CRUD)
+                    'create-calendars',
+                    'update-calendars',
+                    'delete-calendars',
 
                     // Section (CRUD)
                     'create-sections',
@@ -615,7 +615,7 @@ class RolePermissionSeeder extends Seeder
                     'update-paymentItems',
                     'delete-paymentItems',
 
-                    // Payment Schedule (CRUD)
+                    // Payment Calendar (CRUD)
                     'create-paymentSchedules',
                     'update-paymentSchedules',
                     'delete-paymentSchedules',
@@ -756,10 +756,10 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
-                    // Schedule (CRUD)
-                    'create-schedules',
-                    'update-schedules',
-                    'delete-schedules',
+                    // Calendar (CRUD)
+                    'create-calendars',
+                    'update-calendars',
+                    'delete-calendars',
 
                     // Section (CRUD)
                     'view-sections',
@@ -809,7 +809,7 @@ class RolePermissionSeeder extends Seeder
                     'update-paymentItems',
                     'delete-paymentItems',
 
-                    // Payment Schedule (CRUD)
+                    // Payment Calendar (CRUD)
                     'view-paymentSchedules',
                     'create-paymentSchedules',
                     'update-paymentSchedules',
@@ -962,10 +962,10 @@ class RolePermissionSeeder extends Seeder
                     'update-semesters',
                     'delete-semesters',
 
-                    // Schedule (CRUD)
-                    'create-schedules',
-                    'update-schedules',
-                    'delete-schedules',
+                    // Calendar (CRUD)
+                    'create-calendars',
+                    'update-calendars',
+                    'delete-calendars',
 
                     // Section (CRUD)
                     'view-sections',

@@ -23,7 +23,9 @@ const props = defineProps({
 
 <template>
     <div class="overflow-x-auto">
-        <div class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4" >
+        <div
+            class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+        >
             <div class="flex items-center justify-between mb-4">
                 <h2
                     class="text-xl font-semibold text-gray-900 dark:text-gray-100"
@@ -32,33 +34,47 @@ const props = defineProps({
                 </h2>
             </div>
             <!-- Export & Import Students List in one row -->
-            <div class="flex flex-col md:flex-row md:items-center mb-4 md:space-x-12 space-y-4 md:space-y-0">
+            <div
+                class="flex flex-col md:flex-row md:items-center mb-4 md:space-x-12 space-y-4 md:space-y-0"
+            >
                 <div class="relative">
                     <!-- Export list to Excel -->
-                    <a :href="route('sectionStudents.export', section.id)" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded block text-center">
+                    <a
+                        :href="route('sectionStudents.export', section.id)"
+                        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded block text-center"
+                    >
                         Export Students
                     </a>
                 </div>
-                
-                <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col md:flex-row items-stretch md:items-center space-y-3 md:space-y-0 md:space-x-4 border border-gray-200 dark:border-gray-700 w-full md:w-auto">
-                    <form 
-                        action="{{ route('students.import') }}" 
-                        method="POST" 
+
+                <div
+                    class="relative bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col md:flex-row items-stretch md:items-center space-y-3 md:space-y-0 md:space-x-4 border border-gray-200 dark:border-gray-700 w-full md:w-auto"
+                >
+                    <form
+                        action="{{ route('students.import') }}"
+                        method="POST"
                         enctype="multipart/form-data"
-                    class="flex flex-col md:flex-row items-stretch md:items-center space-y-3 md:space-y-0 md:space-x-3 w-full">
+                        class="flex flex-col md:flex-row items-stretch md:items-center space-y-3 md:space-y-0 md:space-x-3 w-full"
                     >
-                        @csrf
+                        
 
-                        <input type="hidden" name="section_id" value="{{ $section->id ?? '' }}">
+                        <input
+                            type="hidden"
+                            name="section_id"
+                            value="{{ $section->id ?? '' }}"
+                        />
 
-                        <input type="file" name="file" required class="your-input-classes" />
+                        <input
+                            type="file"
+                            name="file"
+                            required
+                            class="your-input-classes"
+                        />
 
                         <button type="submit" class="your-button-classes">
                             Import Students
                         </button>
                     </form>
-
-
                 </div>
             </div>
 
@@ -98,7 +114,11 @@ const props = defineProps({
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(student, index) in [...section.students].sort((a, b) => a.firstName.localeCompare(b.firstName))"
+                            v-for="(student, index) in [
+                                ...section.students,
+                            ].sort((a, b) =>
+                                a.firstName.localeCompare(b.firstName)
+                            )"
                             :key="student.id"
                             :class="
                                 index % 2 === 0
@@ -141,11 +161,17 @@ const props = defineProps({
                             <!-- Course Assessments -->
                             <td
                                 class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                            >   
-                                <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">
+                            >
+                                <Link
+                                    :href="
+                                        route('students.show', {
+                                            student: student.id,
+                                        })
+                                    "
+                                    class="text-blue-500 hover:text-blue-700"
+                                >
                                     <EyeIcon class="w-5 h-5" />
-                                </Link> 
-                                
+                                </Link>
                             </td>
                         </tr>
                     </tbody>

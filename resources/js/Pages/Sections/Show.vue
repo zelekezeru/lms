@@ -4,14 +4,12 @@ import { defineProps, ref } from "vue";
 import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    CogIcon,
-    AcademicCapIcon,
-    UsersIcon,
-} from "@heroicons/vue/24/solid";
+import { CogIcon, AcademicCapIcon, UsersIcon } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
+import ShowClassSchedules from "./Tabs/showClassSchedules.vue";
+import { ClockIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     section: {
@@ -42,7 +40,8 @@ const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
     { key: "courses", label: "Courses", icon: AcademicCapIcon },
     { key: "students", label: "Students", icon: UsersIcon },
-];  
+    { key: "schedules", label: "Schedules", icon: ClockIcon },
+];
 
 const students = ref({
     data: [],
@@ -105,7 +104,6 @@ const deletesection = (id) => {
                 </button>
             </nav>
 
-
             <!-- Details Panel -->
             <transition
                 mode="out-in"
@@ -116,34 +114,36 @@ const deletesection = (id) => {
                 leave-from-class="opacity-100 scale-100"
                 leave-to-class="opacity-0 scale-75"
             >
-            <div
-                :key="selectedTab"
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
-                <ShowDetails
-                    v-if="selectedTab === 'details'"
-                    :courses="courses"
-                    :section="section"
-                    :instructors="instructors"
-                />
-
-                <!-- Courses Panel -->
-                <ShowCourses
-                    v-else-if="selectedTab === 'courses'"
-                    :courses="courses"
-                    :section="section"
-                    :instructors="instructors"
-                    :currentYearLevel="currentYearLevel"
-                    :currentSemesterLevel="currentSemesterLevel"
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                >
+                    <ShowDetails
+                        v-if="selectedTab === 'details'"
+                        :courses="courses"
+                        :section="section"
+                        :instructors="instructors"
                     />
-                    
+
+                    <!-- Courses Panel -->
+                    <ShowCourses
+                        v-else-if="selectedTab === 'courses'"
+                        :courses="courses"
+                        :section="section"
+                        :instructors="instructors"
+                        :currentYearLevel="currentYearLevel"
+                        :currentSemesterLevel="currentSemesterLevel"
+                    />
+
                     <!-- Students Panel -->
                     <ShowStudents
-                    v-else-if="selectedTab === 'students'"
-                    :courses="courses"
-                    :section="section"
-                    :instructors="instructors"
+                        v-else-if="selectedTab === 'students'"
+                        :courses="courses"
+                        :section="section"
+                        :instructors="instructors"
                     />
+
+                    <ShowClassSchedules v-else-if="selectedTab === 'schedules'" />
                 </div>
             </transition>
         </div>

@@ -404,7 +404,7 @@ function submitMove() {
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ course.credit_hours }}
+                                        {{ course.creditHour }}
                                     </td>
 
                                     <td

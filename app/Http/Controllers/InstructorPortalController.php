@@ -19,7 +19,13 @@ class InstructorPortalController extends Controller
     public function index()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load(
+                'user', 
+                'courses', 
+                'courseSectionAssignments.section.program', 
+                'courseSectionAssignments.section.track', 
+                'courseSectionAssignments.course'
+                )
         );
 
         return inertia('InstructorPortal/Dashboard', [

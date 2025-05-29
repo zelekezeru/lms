@@ -134,16 +134,15 @@ const getProgressColor = (mark) => {
                             <!-- View Details Button -->
                             <Link
                                 :href="
-                                    route(
-                                        'instructor.sections.courses.students',
-                                        {
-                                            section: section.id,
-                                            course: course.id,
-                                        }
-                                    )
+                                    route('instructor.sections.detail', {
+                                        section: section.id,
+                                    })
                                 "
-                                class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
+                                class="group inline-flex items-center justify-center w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                             >
+                                <ArrowRightIcon
+                                    class="w-4 h-4 mr-2 text-white transition-transform duration-300 group-hover:translate-x-1"
+                                />
                                 View Details
                             </Link>
                         </div>

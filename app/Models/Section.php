@@ -46,6 +46,11 @@ class Section extends Model
             ->get();
     }
 
+    public function classSchedules() 
+    {
+        return $this->hasMany(ClassSchedule::class);
+    }
+
     public function instructors(): BelongsToMany
     {
         return $this->belongsToMany(Instructor::class);

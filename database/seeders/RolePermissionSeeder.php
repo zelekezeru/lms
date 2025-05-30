@@ -163,6 +163,12 @@ class RolePermissionSeeder extends Seeder
             'update-curriculums',
             'delete-curriculums',
 
+            // ClassSchedule (CRUD)
+            'view-classSchedules',
+            'create-classSchedules',
+            'update-classSchedules',
+            'delete-classSchedules',
+
             // Payment (CRUD)
             'view-payments',
             'create-payments',

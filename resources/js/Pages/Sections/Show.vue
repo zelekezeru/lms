@@ -152,7 +152,7 @@ const deletesection = (id) => {
                         v-else-if="selectedTab === 'schedules'"
                         :section="section"
                         :active-courses="
-                            courses.filter(
+                            section.courses.filter(
                                 (course) =>
                                     course.yearLevel == currentYearLevel &&
                                     course.semester == currentSemesterLevel

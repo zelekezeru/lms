@@ -87,7 +87,7 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'grades', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor']));
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'students', 'grades', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor', 'classSchedules.course', 'classSchedules.semester']));
 
         $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
             return $query->where('sections.id', $section->id);
@@ -95,7 +95,6 @@ class SectionController extends Controller
         
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $section->semester->level;
-
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
         return Inertia::render('Sections/Show', [
             'section' => $section,

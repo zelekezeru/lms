@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassSchedule extends Model
 {
+    protected $guarded = [];
     public function semester()
     {
         return $this->belongsTo(Semester::class);

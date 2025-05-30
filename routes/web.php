@@ -76,11 +76,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Semester Managment
     Route::prefix('semesters')->name('semesters.')->group(function () {
-        Route::get('/', [ScheduleController::class, 'index'])->name('index');
-        Route::get('/active', [ScheduleController::class, 'showActive'])->name('showActive');
-        Route::get('/close', [ScheduleController::class, 'closeSemesterForm'])->name('closeForm');
-        Route::post('/close', [ScheduleController::class, 'closeSemester'])->name('close');
-        Route::get('/{semester}', [ScheduleController::class, 'show'])->name('show');
+        Route::get('/', [CalendarController::class, 'index'])->name('index');
+        Route::get('/active', [CalendarController::class, 'showActive'])->name('showActive');
+        Route::get('/close', [CalendarController::class, 'closeSemesterForm'])->name('closeForm');
+        Route::post('/close', [CalendarController::class, 'closeSemester'])->name('close');
+        Route::get('/{semester}', [CalendarController::class, 'show'])->name('show');
     });
 
     // Student Semester Registration
@@ -161,6 +161,7 @@ Route::middleware(['auth'])->group(function () {
         'years' => 'year',
         'semesters' => 'semester',
         'calendars' => 'calendar',
+        'classSchedules' => 'classSchedule',
         'sections' => 'section',
         'results' => 'result',
         'weights' => 'weight',

@@ -83,7 +83,7 @@ const submit = () => {
               v-for="sem in semesters"
               :key="sem.id"
               :value="sem.id"
-              class="bg-white text-blue-500 dark:text-blue-400 bg-white dark:bg-gray-700"
+              class="bg-white text-blue-500 dark:text-blue-400 dark:bg-gray-700"
             >
               🔴 <span class="text-red-600 dark:text-red-400">{{ sem.name }} - Semester</span>
             </option>
@@ -95,7 +95,7 @@ const submit = () => {
               <input
                 v-model="form.new_semester_start_date"
                 type="date"
-                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
               <div class="text-sm text-red-500 dark:text-red-400" v-if="form.errors.new_semester_start_date">
                 {{ form.errors.new_semester_start_date }}

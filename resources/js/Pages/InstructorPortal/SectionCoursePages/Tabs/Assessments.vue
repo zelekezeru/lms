@@ -43,7 +43,6 @@ const props = defineProps({
 
 // Tabs
 const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
     { key: "results", label: "results", icon: DocumentTextIcon },
     { key: "weights", label: "weights", icon: PresentationChartBarIcon },
     { key: "grades", label: "Grades", icon: CheckBadgeIcon },

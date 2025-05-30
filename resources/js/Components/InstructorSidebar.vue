@@ -73,12 +73,12 @@ const wrapperClasses = computed(() => {
                     :href="route('instructor.grades')"
                     :isCollapsed="!isOpen"
                 />
-                <SidebarItem
+                <!-- <SidebarItem
                     :icon="CalendarIcon"
                     label="Schedule"
                     :href="route('instructor.schedule')"
                     :isCollapsed="!isOpen"
-                />
+                /> -->
             </nav>
 
             <div class="px-2 pb-4 mt-auto">

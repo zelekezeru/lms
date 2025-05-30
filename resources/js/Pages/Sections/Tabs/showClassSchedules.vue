@@ -38,6 +38,12 @@ const days = [
     "Sunday",
 ];
 
+const filteredClassSchedules = computed(() => {
+    return props.section.classSchedules.filter(
+        (classSchedule) => classSchedule.dayOfWeek == selectedDay.value
+    );
+});
+
 const minDate = computed(() => {
     return new Date(props.activeSemester.start_date);
 });
@@ -80,7 +86,6 @@ const addSchedule = () => {
         },
     });
 };
-
 </script>
 <template>
     <div class="grid grid-cols-2 gap-4">
@@ -175,7 +180,8 @@ const addSchedule = () => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(schedule, index) in section.classSchedules.filter(classSchedule => classSchedule.dayOfWeek == selectedDay)"
+                            v-if="filteredClassSchedules.length > 0"
+                            v-for="(schedule, index) in filteredClassSchedules"
                             :key="schedule.id"
                             :class="
                                 index % 2 === 0
@@ -205,6 +211,14 @@ const addSchedule = () => {
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                             >
                                 {{ schedule.room ?? "TBD" }}
+                            </td>
+                        </tr>
+                        <tr v-else>
+                            <td
+                                colspan="4"
+                                class="text-center text-sm text-gray-500 py-4 dark:text-gray-300 font-medium"
+                            >
+                                No schedules set for {{ selectedDay }}.
                             </td>
                         </tr>
 

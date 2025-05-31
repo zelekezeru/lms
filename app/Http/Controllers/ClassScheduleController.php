@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassScheduleStoreRequest;
 use App\Models\ClassSchedule;
+use App\Models\CourseSectionAssignment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,13 @@ class ClassScheduleController extends Controller
         $fields['start_time'] = Carbon::parse($fields['start_time'])->format('H:i:s');
         $fields['end_time'] = Carbon::parse($fields['end_time'])->format('H:i:s');
 
+        $courseSection = CourseSectionAssignment::where('course_id', $fields['course_id'])
+                                                ->where('section_id', $fields['section_id'])
+                                                ->with('instructor')
+                                                ->first();
+
+        $fields['instructor_id'] =  $courseSection->instructor ? $courseSection->instructor_id : null;
+        
         $classSchedule = ClassSchedule::create($fields);
 
         return redirect()->back();

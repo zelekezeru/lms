@@ -225,7 +225,7 @@ const addSchedule = () => {
 
                     <!-- No Schedules -->
                     <tr v-else>
-                        <td colspan="5" class="text-center px-4 py-6 text-sm text-gray-500 dark:text-gray-300">
+                        <td colspan="4" class="text-center px-4 py-6 text-sm text-gray-500 dark:text-gray-300">
                             No schedules set for {{ selectedDay }}.
                         </td>
                     </tr>

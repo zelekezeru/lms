@@ -146,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Resource Routes
     $resourceRoutes = [
+        'rooms' => 'room',
         'tracks' => 'track',
         'students' => 'student',
         'programs' => 'program',

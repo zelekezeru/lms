@@ -315,7 +315,8 @@
     "actions": "Gochaawwan"
   },
   "status": {
-    "active": "Hojirra jira"
+    "active": "Hojirra jira",
+    "inactive": "Hojirra hin jiru"
   },
   "actions": {
     "edit": "Fooyyessi",

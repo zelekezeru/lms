@@ -315,7 +315,8 @@
     "actions": "کارروائیاں"
   },
   "status": {
-    "active": "فعال"
+    "active": "فعال", 
+    "inactive": "غیر فعال"
   },
   "actions": {
     "edit": "ترمیم کریں",

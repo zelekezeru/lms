@@ -91,9 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
 
-    Route::patch('/students/import', [StudentController::class, 'import'])->name('students.import');
-
-
+    Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
 
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);

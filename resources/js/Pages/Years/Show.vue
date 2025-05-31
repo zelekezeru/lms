@@ -158,7 +158,12 @@ const deleteYear = (id) => {
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <span class="text-sm text-gray-500">{{ $t('year.status') }}</span>
                             <div :class="year.status === 'Active' ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
-                                {{ $t('status.' + year.status.toLowerCase(), year.status) }}
+                                <span v-if="year.status === 'Active'" class="text-green-600">
+                                    {{ $t('status.active') }}
+                                </span>
+                                <span v-else class="text-red-600">
+                                    {{ $t('status.inactive', 'Inactive') }}
+                                </span>
                             </div>
                         </div>
                     </div>

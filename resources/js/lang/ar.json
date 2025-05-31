@@ -315,7 +315,8 @@
     "actions": "الإجراءات"
   },
   "status": {
-    "active": "نشط"
+    "active": "نشط",
+    "inactive": "غير نشط"
   },
   "actions": {
     "edit": "تعديل",

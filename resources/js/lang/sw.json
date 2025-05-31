@@ -315,7 +315,8 @@
     "actions": "Vitendo"
   },
   "status": {
-    "active": "Inayotumika"
+    "active": "Inayotumika", 
+    "inactive": "Isiyotumika"
   },
   "actions": {
     "edit": "Hariri",

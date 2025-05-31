@@ -315,7 +315,8 @@
     "actions": "Acciones"
   },
   "status": {
-    "active": "Activo"
+    "active": "Activo", 
+    "inactive": "Inactivo"
   },
   "actions": {
     "edit": "Editar",

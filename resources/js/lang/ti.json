@@ -315,7 +315,8 @@
     "actions": "ተግባራት"
   },
   "status": {
-    "active": "ንቑሕ"
+    "active": "ንቑሕ",
+    "inactive": "ዘይነጥፍ"
   },
   "actions": {
     "edit": "ኣመሓይሹ",

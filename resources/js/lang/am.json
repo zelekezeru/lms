@@ -76,6 +76,7 @@
       "name": "ስም",
       "description": "መግለጫ",
       "duration_years": "የቆይታ ጊዜ (በዓመታት)",
+      "duration": "የቆይታ ጊዜ",
       "select_program": "ፕሮግራም ይምረጡ",
       "in_language": "በ {language} ቋንቋ",
       "curriculum": {
@@ -171,7 +172,7 @@
     "is_approved": "የጸደቀ",
     "is_completed": "የተጠናቀቀ",
     "active": "በሥራ ላይ ያለ",
-    "inactive": "የቦዘነ",
+    "inactive": "በሥራ ላይ ያልሆነ",
     "delete": "ያጥፉ",
     "title": "የትምህርት ዓመታት",
     "search": "የትምህርት ዓመታትን ይፈልጉ...",
@@ -315,7 +316,8 @@
     "actions": "ድርጊቶች"
   },
   "status": {
-    "active": "በሥራ ላይ ያለ"
+    "active": "በሥራ ላይ ያለ",
+    "inactive": "በሥራ ላይ ያልሆነ"
   },
   "actions": {
     "edit": "ያስተካክሉ",

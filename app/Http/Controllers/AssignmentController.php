@@ -55,11 +55,11 @@ class AssignmentController extends Controller
     {
         $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id)->with('instructor.classSchedules');
 
+        // Remove or comment out this block if 'instructor_id' does not exist in class_schedules table
         $classSchedules = $section->classSchedules()->where('course_id', $course->id)->update([
             'instructor_id' => $request->instructor_id
-        ]);
+        ]); 
         
-
         $courseSectionAssignment->update([
             'instructor_id' => $request->instructor_id,
         ]);

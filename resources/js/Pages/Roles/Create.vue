@@ -16,14 +16,14 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Register Role" />
+    <Head :title="$t('role.create_title')" />
     <AppLayout>
         <div class="flex justify-center">
             <div
                 class="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-md p-6 max-w-lg w-full"
             >
                 <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
-                    Role Creation Form
+                    {{ $t('role.create_form_title') }}
                 </h2>
                 
                 <Form :form="form" @submit="submit" />

@@ -29,20 +29,20 @@ const props = defineProps({
 // Delete function with SweetAlert confirmation
 const deleteTrack = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: $t("programs.tracks.delete_confirm_title"),
+        text: $t("programs.tracks.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: $t("common.yes"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The track has been deleted.",
+                        $t("programs.tracks.deleted_title"),
+                        $t("programs.tracks.deleted_text"),
                         "success"
                     );
                 },
@@ -60,7 +60,7 @@ const deleteTrack = (id) => {
             <!-- Track Code -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.code') }}</span
+                    >{{ $t('programs.tracks.code') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -68,11 +68,10 @@ const deleteTrack = (id) => {
                     {{ track.code }}
                 </span>
             </div>
-
             <!-- Track Program -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.program') }}</span
+                    >{{ $t('programs.tracks.program') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -85,11 +84,10 @@ const deleteTrack = (id) => {
                 </Link>
                 </span>
             </div>
-
             <!-- Description -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.description') }}</span
+                    >{{ $t('programs.tracks.description') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -97,20 +95,18 @@ const deleteTrack = (id) => {
                     {{ track.description }}
                 </span>
             </div>
-
             <!-- Duration -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.duration') }}</span
+                    >{{ $t('programs.tracks.duration') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.duration }} Years
+                    {{ track.duration }} {{ $t('programs.tracks.duration_years') }}
                 </span>
             </div>
         </div>
-
         <!-- Edit and Delete Buttons -->
         <div class="flex justify-end col-span-2 mt-4">
             <Link
@@ -127,7 +123,7 @@ const deleteTrack = (id) => {
             </Link>
             <button
                 v-if="userCan('delete-tracks')"
-                @click="deleteTrack(program.id)"
+                @click="deleteTrack(track.id)"
                 class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />

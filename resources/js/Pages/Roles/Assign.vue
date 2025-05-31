@@ -30,12 +30,12 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Assign Permissions" />
+    <Head :title="$t('role.assign_permissions_title')" />
     <AppLayout>
         <div>
             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                Assign Permissions to
-                <span class="text-info">{{ role.name }}</span> role
+                {{ $t('role.assign_permissions_to') }}
+                <span class="text-info">{{ role.name }}</span> {{ $t('role.role') }}
             </h2>
         </div>
 
@@ -44,9 +44,10 @@ const submit = () => {
             class="dark:bg-gray-800 p-4 shadow rounded"
         >
             <div class="w-full py-5">
-                <label class="block text-gray-100 dark:text-white mb-2"
-                    >Select Permissions For Role: <span class="text-info">"{{ role.name }}"</span></label
-                >
+                <label class="block text-gray-100 dark:text-white mb-2">
+                    {{ $t('role.select_permissions_for_role') }}
+                    <span class="text-info">"{{ role.name }}"</span>
+                </label>
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
                 >
@@ -75,7 +76,9 @@ const submit = () => {
                 </div>
             </div>
 
-            <button type="submit" class="px-6 py-2 text-white bg-blue-800 mt-4">Save</button>
+            <button type="submit" class="px-6 py-2 text-white bg-blue-800 mt-4">
+                {{ $t('common.save', 'Save') }}
+            </button>
         </form>
     </AppLayout>
 </template>

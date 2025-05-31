@@ -11,20 +11,20 @@ const props = defineProps({
 
 const deleteProgram = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "This action cannot be undone.",
+        title: $t("programs.delete_confirm_title"),
+        text: $t("programs.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: $t("common.yes"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("programs.destroy", { program: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "Program has been deleted.",
+                        $t("programs.deleted_title"),
+                        $t("programs.deleted_text"),
                         "success"
                     );
                 },

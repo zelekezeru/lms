@@ -86,6 +86,16 @@ const props = defineProps({
             </span>
         </div>
 
+        <!-- Section StudyMode -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400"
+                >Study Mode</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ section.studyMode.name }}
+            </span>
+        </div>
+
         <!-- Edit and Delete Buttons -->
 
         <div class="flex justify-end col-span-2 mt-4">

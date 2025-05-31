@@ -44,6 +44,7 @@ class SectionSeeder extends Seeder
                     'program_id' => $programId,
                     'track_id' => $trackId,
                     'semester_id' => $semesterId,
+                    'study_mode_id' => rand(1, 4),
                     'created_at' => $createdAt,
                     'updated_at' => $updatedAt,
                 ];

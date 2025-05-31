@@ -5,7 +5,9 @@ import {
   AcademicCapIcon,
   UserGroupIcon,
   ClipboardDocumentCheckIcon,
-  CurrencyDollarIcon
+  CurrencyDollarIcon,
+  PencilSquareIcon,
+  TrashIcon
 } from '@heroicons/vue/24/outline';
 import { Chart } from 'chart.js/auto';
 
@@ -177,8 +179,14 @@ onMounted(createCharts);
                   </span>
                 </td>
                 <td class="px-6 py-4 space-x-2">
-                  <button class="text-blue-600 hover:underline">{{ $t('actions.edit') }}</button>
-                  <button class="text-red-600 hover:underline">{{ $t('actions.delete') }}</button>
+                  <button class="inline-flex items-center text-blue-600 hover:underline">
+                    <PencilSquareIcon class="w-4 h-4 mr-1" />
+                    {{ $t('actions.edit') }}
+                  </button>
+                  <button class="inline-flex items-center text-red-600 hover:underline">
+                    <TrashIcon class="w-4 h-4 mr-1" />
+                    {{ $t('actions.delete') }}
+                  </button>
                 </td>
               </tr>
               <!-- Add more instructors here -->

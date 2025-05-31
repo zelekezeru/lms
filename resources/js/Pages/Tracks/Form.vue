@@ -22,7 +22,7 @@ const emits = defineEmits(["submit"]);
             <div v-if="showPrograms">
                 <InputLabel
                     for="program_id"
-                    value="Select Program"
+                    :value="$t('programs.tracks.select_program')"
                     class="block mb-1 text-gray-200"
                 />
                 <select
@@ -30,13 +30,13 @@ const emits = defineEmits(["submit"]);
                     v-model="form.program_id"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                    <option value="">Select Program</option>
+                    <option value="">{{ $t('programs.tracks.select_program') }}</option>
                     <option
                         v-for="program in programs"
                         :key="program.id"
                         :value="program.id"
                     >
-                        {{ program.name }} in {{ program.language }}
+                        {{ program.name }} {{ $t('programs.tracks.in_language') }} {{ program.language }}
                     </option>
                 </select>
                 <InputError
@@ -49,7 +49,7 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel
                     for="name"
-                    value="Track Name"
+                    :value="$t('programs.tracks.name')"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -70,7 +70,7 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel
                     for="description"
-                    value="Description"
+                    :value="$t('programs.tracks.description')"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -89,7 +89,7 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel
                     for="duration"
-                    value="Duration (Years)"
+                    :value="$t('programs.tracks.duration_years')"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -104,7 +104,6 @@ const emits = defineEmits(["submit"]);
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
-
         </div>
 
         <!-- Submit Button -->
@@ -114,8 +113,8 @@ const emits = defineEmits(["submit"]);
                 :disabled="form.processing"
                 class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-                <span v-if="!form.processing">Submit</span>
-                <span v-else>Submitting...</span>
+                <span v-if="!form.processing">{{ $t('common.save', 'Submit') }}</span>
+                <span v-else>{{ $t('common.loading', 'Submitting...') }}</span>
             </button>
         </div>
     </form>

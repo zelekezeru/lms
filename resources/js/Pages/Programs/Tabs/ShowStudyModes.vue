@@ -29,8 +29,8 @@ const assignMode = () => {
         {
             onSuccess: () => {
                 Swal.fire(
-                    "Added!",
-                    "Study Mode added successfully.",
+                    $t("programs.studymode.added_title"),
+                    $t("programs.studymode.added_text"),
                     "success"
                 );
                 assignModeToProgram.value = false;

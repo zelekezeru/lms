@@ -37,20 +37,20 @@ const refreshData = () => {
 // Delete function with SweetAlert confirmation
 const deletetenant = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: $t("tenant.delete_confirm_title"),
+        text: $t("tenant.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: $t("common.yes"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tenants.destroy", { tenant: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The tenant has been deleted.",
+                        $t("tenant.deleted_title"),
+                        $t("tenant.deleted_text"),
                         "success"
                     );
                 },
@@ -75,7 +75,7 @@ const searchTenants = () => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Tenants
+                {{ $t('tenant.title') }}
             </h1>
         </div>
 
@@ -102,7 +102,7 @@ const searchTenants = () => {
                 <input
                     type="text"
                     v-model="search"
-                    placeholder="Search..."
+                    :placeholder="$t('tenant.search')"
                     class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
                     @input="searchTenants"
                 />
@@ -113,19 +113,19 @@ const searchTenants = () => {
                     :href="route('tenants.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + Add Tenant
+                    + {{ $t('tenant.add') }}
                 </Link>
 
                 <button
                     @click="refreshData"
                     class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    title="Refresh Data"
+                    :title="$t('common.refresh')"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    Refresh Data
+                    {{ $t('common.refresh') }}
                 </button>
             </div>
         </div>
@@ -135,11 +135,11 @@ const searchTenants = () => {
             <Table>
                 <TableHeader>
                     <tr>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">Name</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">Code</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'email'">Email</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'phone'">Phone</Thead>
-                        <Thead>Action</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">{{ $t('tenant.name') }}</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">{{ $t('tenant.code') }}</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'email'">{{ $t('tenant.email') }}</Thead>
+                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'phone'">{{ $t('tenant.phone') }}</Thead>
+                        <Thead>{{ $t('common.actions') }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
@@ -167,7 +167,7 @@ const searchTenants = () => {
                             </Link>
                             <button @click="deletetenant(tenant.id)" class="text-red-500 hover:text-red-700">
                                 <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                                <span>{{ $t('common.delete') }}</span>
                             </button>
                         </td>
                     </tr>
@@ -177,7 +177,7 @@ const searchTenants = () => {
 
         <!-- No Search Results Message -->
         <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
-            <p>No search results found.</p>
+            <p>{{ $t('tenant.no_results') }}</p>
         </div>
 
         <!-- Pagination Links -->

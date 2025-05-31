@@ -32,7 +32,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="name"
-                    value="Program Name"
+                    :value="$t('programs.name')"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
                 <TextInput
@@ -53,7 +53,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="language"
-                    value="Program Language"
+                    :value="$t('programs.language')"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
                 <TextInput
@@ -73,7 +73,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="description"
-                    value="Description"
+                    :value="$t('programs.description')"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
                 <TextInput
@@ -93,7 +93,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="duration"
-                    value="Duration(In Years)"
+                    :value="$t('programs.duration_years')"
                     class="block mb-1 text-gray-200"
                 />
                 <TextInput
@@ -112,7 +112,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="user_id"
-                    value="Select Program Director"
+                    :value="$t('programs.program_director')"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
 
@@ -125,7 +125,7 @@ const emits = defineEmits(['submit'])
                     appendTo="self"
                     checkmark
                     filter
-                    placeholder="Select Program Director"
+                    :placeholder="$t('programs.select_program_director')"
                     :maxSelectevdLabels="3"
                     class="w-full"
                 />
@@ -138,7 +138,7 @@ const emits = defineEmits(['submit'])
             <div>
                 <InputLabel
                     for="user_id"
-                    value="Assign Common Courses to All Tracks"
+                    :value="$t('programs.assign_common_courses')"
                     class="block mb-1 text-gray-800 dark:text-gray-200"
                 />
                 <span
@@ -146,7 +146,7 @@ const emits = defineEmits(['submit'])
                     @click="assignCourses = true"
                     class="inline-flex cursor-pointer justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Assign Common Courses (Optional)
+                    {{ $t('programs.assign_common_courses_optional') }}
                 </span>
             </div>
         </div>
@@ -157,8 +157,8 @@ const emits = defineEmits(['submit'])
                 :disabled="form.processing"
                 class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-                <span v-if="!form.processing">Submit</span>
-                <span v-else>Submitting...</span>
+                <span v-if="!form.processing">{{ $t('common.save', 'Submit') }}</span>
+                <span v-else>{{ $t('common.loading', 'Submitting...') }}</span>
             </button>
         </div>
     </form>
@@ -171,7 +171,7 @@ const emits = defineEmits(['submit'])
     >
         <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">
-                Pick Common Courses You Would like To Assign To This Program
+                {{ $t('programs.pick_common_courses') }}
             </h1>
 
             <Listbox
@@ -185,7 +185,7 @@ const emits = defineEmits(['submit'])
                 checkmark
                 multiple
                 list-style="max-height: 500px"
-                placeholder="Select Courses"
+                :placeholder="$t('programs.select_courses')"
                 :maxSelectedLabels="3"
                 class="w-full"
             />
@@ -200,14 +200,14 @@ const emits = defineEmits(['submit'])
                     :disabled="form.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ form.processing ? "Assigning..." : "Assign" }}
+                    {{ form.processing ? $t('programs.assigning') : $t('programs.assign') }}
                 </button>
 
                 <button
                     @click="closeCourseAssignment"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
                 >
-                    Close
+                    {{ $t('common.close', 'Close') }}
                 </button>
             </div>
         </div>

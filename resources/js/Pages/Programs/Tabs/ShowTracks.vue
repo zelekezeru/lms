@@ -31,7 +31,11 @@ const addTrack = () => {
         }),
         {
             onSuccess: () => {
-                Swal.fire("Added!", "Track added successfully.", "success");
+                Swal.fire(
+                    $t("programs.tracks.added_title"),
+                    $t("programs.tracks.added_text"),
+                    "success"
+                );
                 createTrack.value = false;
                 trackForm.reset();
             },

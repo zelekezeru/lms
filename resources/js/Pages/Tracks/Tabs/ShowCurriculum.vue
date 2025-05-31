@@ -1,5 +1,6 @@
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { defineProps, ref, watch, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import Modal from "@/Components/Modal.vue";
@@ -45,18 +46,7 @@ const closeModal = () => {
     form.clearErrors();
 };
 
-const createCurricula = () => {
-    form.post(route("curricula.store"), {
-        onSuccess: () => {
-            Swal.fire(
-                "Assigned!",
-                "Curriculum updated successfully.",
-                "success"
-            );
-            closeModal();
-        },
-    });
-};
+const { t } = useI18n();
 
 // Group Curriculas to YearLevels and semeseters
 
@@ -190,8 +180,8 @@ const saveCurricula = () => {
     curriculaForm.post(route("curricula.store"), {
         onSuccess: () => {
             Swal.fire(
-                "Assigned!",
-                "Curriculum updated successfully.",
+                t("programs.tracks.curriculum.assigned_title"),
+                t("programs.tracks.curriculum.assigned_text"),
                 "success"
             );
         },
@@ -207,6 +197,10 @@ const allCoursesAreAssigned = ref(
             )
     )
 );
+
+const sortedCourses = computed(() => {
+    return [...props.track.courses].sort((a, b) => a.name.localeCompare(b.name));
+});
 </script>
 
 <template>
@@ -219,13 +213,13 @@ const allCoursesAreAssigned = ref(
                 <h2
                     class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.program.name }} in {{ track.name }} With
+                    {{ track.program.name }} {{ t('programs.tracks.in_language') }} {{ track.name }} {{ t('programs.tracks.curriculum.with') }}
                     {{
                         studyModes.find(
                             (studyMode) => studyMode.id == selectedStudyModeId
                         )?.name
                     }}
-                    Mode - Curriculum
+                    {{ t('programs.tracks.curriculum.mode') }}
                 </h2>
             </div>
             <div class="inline-flex items-center gap-2 px-4 py-2">
@@ -234,7 +228,7 @@ const allCoursesAreAssigned = ref(
                     class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                     <PlusIcon class="w-5 h-5" />
-                    Create Curriculum
+                    {{ t('programs.tracks.curriculum.create') }}
                 </button>
             </div>
 
@@ -247,7 +241,7 @@ const allCoursesAreAssigned = ref(
                         :options="studyModes"
                         option-label="name"
                         option-value="id"
-                        placeholder="Select Study Mode"
+                        :placeholder="t('programs.tracks.curriculum.select_study_mode')"
                         class="w-full"
                     />
                 </div>
@@ -263,14 +257,14 @@ const allCoursesAreAssigned = ref(
                             class="inline-flex items-center gap-2 mr-3 bg-gray-400 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-600 px-4 py-2 text-white rounded-lg shadow"
                         >
                             <PlusIcon class="w-5 h-5" />
-                            Expand All
+                            {{ t('programs.tracks.curriculum.expand_all') }}
                         </button>
                         <button
                             @click="collapseAll"
                             class="inline-flex items-center gap-2 bg-gray-400 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-600 px-4 py-2 text-white rounded-lg shadow"
                         >
                             <MinusIcon class="w-5 h-5" />
-                            Collapse All
+                            {{ t('programs.tracks.curriculum.collapse_all') }}
                         </button>
                     </div>
                     <Tree
@@ -320,24 +314,22 @@ const allCoursesAreAssigned = ref(
                                 class="flex flex-col h-full"
                             >
                                 <h1 class="text-xl font-extralight mb-4">
-                                    Edit
+                                    {{ t('programs.tracks.curriculum.edit') }}
                                     <span class="font-extrabold">
-                                        Year {{ curriculaForm.year_level }} –
-                                        Semester {{ curriculaForm.semester }}
+                                        {{ t('programs.tracks.curriculum.year') }} {{ curriculaForm.year_level }} –
+                                        {{ t('programs.tracks.curriculum.semester') }} {{ curriculaForm.semester }}
                                     </span>
-                                    Curricula
+                                    {{ t('programs.tracks.curriculum.curricula') }}
                                 </h1>
-                                <!-- Message if all courses has been assigned to a curricula for tommorow. -->
                                 <p
                                     class="text-red-600"
                                     v-if="allCoursesAreAssigned"
                                 >
-                                    It Appears All Courses Are Assigned To Their
-                                    Curricula.
+                                    {{ t('programs.tracks.curriculum.all_assigned') }}
                                 </p>
                                 <Listbox
                                     v-model="curriculaForm.courses"
-                                    :options="props.track.courses"
+                                    :options="sortedCourses"
                                     option-label="name"
                                     option-value="id"
                                     multiple
@@ -361,9 +353,7 @@ const allCoursesAreAssigned = ref(
                                 >
                                     <template #option="slotProps">
                                         <div class="flex flex-col">
-                                            <span>{{
-                                                slotProps.option.name
-                                            }}</span>
+                                            <span>{{ slotProps.option.name }}</span>
                                             <small
                                                 v-if="
                                                     props.track.curricula.some(
@@ -380,7 +370,8 @@ const allCoursesAreAssigned = ref(
                                                 "
                                                 class="text-xs text-gray-500 dark:text-gray-200"
                                             >
-                                                Already in: Year
+                                                {{ t('programs.tracks.curriculum.already_in') }}
+                                                {{ t('programs.tracks.curriculum.year') }}
                                                 {{
                                                     props.track.curricula.find(
                                                         (curriculum) =>
@@ -394,7 +385,7 @@ const allCoursesAreAssigned = ref(
                                                                     curriculum.semester)
                                                     ).yearLevel
                                                 }}
-                                                Semester
+                                                {{ t('programs.tracks.curriculum.semester') }}
                                                 {{
                                                     props.track.curricula.find(
                                                         (curriculum) =>
@@ -418,13 +409,13 @@ const allCoursesAreAssigned = ref(
                                         @click="cancelEdit"
                                         class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg shadow"
                                     >
-                                        Cancel
+                                        {{ t('common.cancel', 'Cancel') }}
                                     </button>
                                     <button
                                         @click="saveCurricula"
                                         class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-green-400"
                                     >
-                                        Save Curricula
+                                        {{ t('programs.tracks.curriculum.save') }}
                                     </button>
                                 </div>
                             </div>
@@ -434,7 +425,7 @@ const allCoursesAreAssigned = ref(
                                 v-else
                             >
                                 <h1 class="text-center">
-                                    Choose The Study Mode And Click On A Semester To Edit Its Curricula
+                                    {{ t('programs.tracks.curriculum.choose_study_mode') }}
                                 </h1>
                             </div>
                         </div>
@@ -453,7 +444,7 @@ const allCoursesAreAssigned = ref(
                 <h2
                     class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.name }} Curriculum Design
+                    {{ track.name }} {{ t('programs.tracks.curriculum.design') }}
                 </h2>
                 <button
                     type="button"
@@ -487,14 +478,14 @@ const allCoursesAreAssigned = ref(
                             for="yearLevelsList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            Year
+                            {{ t('programs.tracks.curriculum.year') }}
                         </label>
                         <Select
                             id="yearLevelsList"
                             v-model="form.year_level"
                             :options="yearLevels"
                             appendTo="self"
-                            placeholder="Select Year"
+                            :placeholder="t('programs.tracks.curriculum.select_year')"
                             class="w-full"
                         />
                         <InputError :message="form.errors.year" class="mt-2" />
@@ -506,14 +497,14 @@ const allCoursesAreAssigned = ref(
                             for="semestersList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            Semester
+                            {{ t('programs.tracks.curriculum.semester') }}
                         </label>
                         <Select
                             id="semestersList"
                             v-model="form.semester"
                             :options="[1, 2, 3]"
                             appendTo="self"
-                            placeholder="Select Semester"
+                            :placeholder="t('programs.tracks.curriculum.select_semester')"
                             class="w-full"
                         />
                         <InputError
@@ -528,7 +519,7 @@ const allCoursesAreAssigned = ref(
                             for="studyModesList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            Study Mode
+                            {{ t('programs.tracks.curriculum.study_mode') }}
                         </label>
                         <Select
                             id="studyModesList"
@@ -537,7 +528,7 @@ const allCoursesAreAssigned = ref(
                             option-value="id"
                             option-label="name"
                             appendTo="self"
-                            placeholder="Select Mode"
+                            :placeholder="t('programs.tracks.curriculum.select_mode')"
                             class="w-full"
                         />
                         <InputError
@@ -555,7 +546,7 @@ const allCoursesAreAssigned = ref(
                             for="description"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            Curriculum Description
+                            {{ t('programs.tracks.curriculum.description') }}
                         </label>
                         <input
                             id="description"
@@ -575,16 +566,16 @@ const allCoursesAreAssigned = ref(
                             for="status"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            Curriculum Status
+                            {{ t('programs.tracks.curriculum.status') }}
                         </label>
                         <select
                             id="status"
                             v-model="form.status"
                             class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
                         >
-                            <option value="" disabled>Select Status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
+                            <option value="" disabled>{{ t('programs.tracks.curriculum.select_status') }}</option>
+                            <option value="active">{{ t('programs.tracks.curriculum.active') }}</option>
+                            <option value="inactive">{{ t('programs.tracks.curriculum.inactive') }}</option>
                         </select>
                         <InputError
                             :message="form.errors.status"
@@ -598,18 +589,18 @@ const allCoursesAreAssigned = ref(
                     <label
                         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                     >
-                        Select Courses
+                        {{ t('programs.tracks.curriculum.select_courses') }}
                     </label>
                     <Listbox
                         v-model="form.courses"
-                        :options="track.courses"
+                        :options="sortedCourses"
                         option-label="name"
                         option-value="id"
                         appendTo="self"
                         filter
                         checkmark
                         multiple
-                        placeholder="Search and select courses"
+                        :placeholder="t('programs.tracks.curriculum.search_select_courses')"
                         class="w-full"
                         list-style="max-height: 400px"
                     />
@@ -626,14 +617,14 @@ const allCoursesAreAssigned = ref(
                     :disabled="form.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md focus:outline-none disabled:opacity-50"
                 >
-                    {{ form.processing ? "Assigning..." : "Assign" }}
+                    {{ form.processing ? t('programs.tracks.curriculum.assigning') : t('programs.tracks.curriculum.assign') }}
                 </button>
                 <button
                     type="button"
                     @click="closeModal"
                     class="ml-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-4 py-2 rounded-md focus:outline-none"
                 >
-                    Cancel
+                    {{ t('common.cancel', 'Cancel') }}
                 </button>
             </div>
         </form>

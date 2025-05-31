@@ -39,10 +39,10 @@ const submit = () => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Program Creation Form
+                    {{ $t('programs.create_title') }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to create a new program.
+                    {{ $t('programs.create_description') }}
                 </p>
             </div>
 

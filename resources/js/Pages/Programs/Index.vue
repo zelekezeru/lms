@@ -37,20 +37,20 @@ const refreshData = () => {
 
 const deleteProgram = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: $t("programs.delete_confirm_title"),
+        text: $t("programs.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: $t("common.yes"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("programs.destroy", { program: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The program has been deleted.",
+                        $t("programs.deleted_title"),
+                        $t("programs.deleted_text"),
                         "success"
                     );
                 },
@@ -115,7 +115,7 @@ const searchPrograms = () => {
                 <button
                     @click="refreshData"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-blue-800 rounded-md hover:bg-blue-700"
-                    title="Refresh Data"
+                    :title="$t('programs.refresh')"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
@@ -126,7 +126,7 @@ const searchPrograms = () => {
                 <button
                     @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
-                    title="Toggle View"
+                    :title="$t('programs.toggle_view')"
                 >
                     <component
                         :is="

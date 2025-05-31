@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/result', [InstructorPortalController::class, 'result'])->name('instructor.result');
         Route::get('/calendars', [InstructorPortalController::class, 'calendar'])->name('instructor.calendar');
         Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
+        Route::get('/schedule', [InstructorPortalController::class, 'schedule'])->name('instructor.schedule');
     });
 
     // Profiles related routes

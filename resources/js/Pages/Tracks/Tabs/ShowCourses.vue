@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -21,9 +21,13 @@ const props = defineProps({
     },
 });
 
+const sortedCourses = computed(() => {
+    return [...props.track.courses].sort((a, b) => a.name.localeCompare(b.name));
+});
+
 const assignCourses = ref(false);
 const courseAssignmentForm = useForm({
-    courses: props.track.courses.map(course => course.id),
+    courses: [...props.track.courses].sort((a, b) => a.name.localeCompare(b.name)).map(course => course.id),
 });
 
 const closeCourseAssignment = () => {
@@ -38,8 +42,8 @@ const submitCourseAssignment = () => {
         {
             onSuccess: () => {
                 Swal.fire(
-                    'Successful!',
-                    'Courses assigned successfully.',
+                    $t('tracks.courses.assigned_title'),
+                    $t('tracks.courses.assigned_text'),
                     'success'
                 );
                 assignCourses.value = false;
@@ -56,13 +60,13 @@ const submitCourseAssignment = () => {
     <div class="">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Courses
+                {{ $t('tracks.courses.title') }}
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
                 class="flex items-center text-indigo-600 hover:text-indigo-800"
             >
-                Assign Course
+                {{ $t('tracks.courses.assign') }}
             </button>
         </div>
 
@@ -74,7 +78,7 @@ const submitCourseAssignment = () => {
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                     >
-                        Courses
+                        {{ $t('tracks.courses.title') }}
                     </h2>
                 </div>
                 <!-- Track courses list -->
@@ -87,33 +91,33 @@ const submitCourseAssignment = () => {
                                 <th
                                     class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    No.
+                                    {{ $t('tracks.courses.no') }}
                                 </th>
                                 <th
                                     class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    Name
+                                    {{ $t('tracks.courses.name') }}
                                 </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    Course Code
+                                    {{ $t('tracks.courses.code') }}
                                 </th>
                                 <th
                                     class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    Credit Hours
+                                    {{ $t('tracks.courses.credit_hours') }}
                                 </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    Actions
+                                    {{ $t('tracks.courses.actions') }}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(course, index) in track.courses"
+                                v-for="(course, index) in sortedCourses"
                                 :key="course.id"
                                 :class="
                                     index % 2 === 0
@@ -180,9 +184,8 @@ const submitCourseAssignment = () => {
     >
         <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">
-                Pick Courses You Would like To Assign To This Track
+                {{ $t('tracks.courses.pick_courses') }}
             </h1>
-
             <Listbox
                 id="cousesList"
                 v-model="courseAssignmentForm.courses"
@@ -194,7 +197,7 @@ const submitCourseAssignment = () => {
                 checkmark
                 multiple
                 list-style="max-height: 500px"
-                placeholder="Select Courses"
+                :placeholder="$t('tracks.courses.select_courses')"
                 :maxSelectedLabels="3"
                 class="w-full"
             />
@@ -209,14 +212,14 @@ const submitCourseAssignment = () => {
                     :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ courseAssignmentForm.processing ? "Assigning..." : "Assign" }}
+                    {{ courseAssignmentForm.processing ? $t('tracks.courses.assigning') : $t('tracks.courses.assign') }}
                 </button>
 
                 <button
                     @click="closeCourseAssignment"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
                 >
-                    Close
+                    {{ $t('common.close', 'Close') }}
                 </button>
             </div>
         </div>

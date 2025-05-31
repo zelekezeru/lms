@@ -12,10 +12,10 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Edit Role" />
+    <Head :title="$t('role.edit_title')" />
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">Edit Role</h2>
+            <h2 class="text-xl font-semibold text-gray-800">{{ $t('role.edit_title') }}</h2>
         </template>
         <Form :form="form" @submit="submit" />
     </AppLayout>

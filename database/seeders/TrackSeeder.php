@@ -149,7 +149,7 @@ class TrackSeeder extends Seeder
         $isCommon = 0;
 
         for ($trackId = 1; $trackId <= 13; $trackId++) {
-            for ($courseId = 1; $courseId <= 30; $courseId++) {
+            for ($courseId = 1; $courseId <= 45; $courseId++) {
                 $data[] = [
                     'course_id' => $courseId,
                     'track_id' => $trackId,

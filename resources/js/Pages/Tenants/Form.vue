@@ -28,7 +28,7 @@ const handleFileChange = (e) => {
   <form @submit.prevent="submit" enctype="multipart/form-data">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Institution Name</label>
+        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.name') }}</label>
         <input
           id="name"
           type="text"
@@ -40,7 +40,7 @@ const handleFileChange = (e) => {
       </div>
 
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.email') }}</label>
         <input
           id="email"
           type="email"
@@ -54,7 +54,7 @@ const handleFileChange = (e) => {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Institution Phone</label>
+        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.phone') }}</label>
         <input
           id="phone"
           type="text"
@@ -67,10 +67,10 @@ const handleFileChange = (e) => {
 
       <!-- logo Upload & Preview -->
       <div>
-        <InputLabel for="profile_img" value="logo" />
+        <InputLabel for="profile_img" :value="$t('tenant.logo')" />
         <div class="flex items-center gap-4">
             <label for="profile_img" class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700">
-                <PhotoIcon class="w-5 h-5" /> Upload Logo
+                <PhotoIcon class="w-5 h-5" /> {{ $t('tenant.upload_logo') }}
             </label>
             <input id="profile_img" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
             <div v-if="props.form.imagePreview" class="w-16 h-16 rounded-full border shadow overflow-hidden">
@@ -83,7 +83,7 @@ const handleFileChange = (e) => {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Institution Address</label>
+        <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.address') }}</label>
         <input
           id="address"
           type="text"
@@ -95,7 +95,7 @@ const handleFileChange = (e) => {
       </div>
 
       <div>
-        <label for="contact_person" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Representative's Name</label>
+        <label for="contact_person" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.rep_name') }}</label>
         <input
           id="contact_person"
           type="text"
@@ -109,7 +109,7 @@ const handleFileChange = (e) => {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label for="contact_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Representative's Phone</label>
+        <label for="contact_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.rep_phone') }}</label>
         <input
           id="contact_phone"
           type="text"
@@ -121,7 +121,7 @@ const handleFileChange = (e) => {
       </div>
 
       <div>
-        <label for="contact_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Representative's Email</label>
+        <label for="contact_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.rep_email') }}</label>
         <input
           id="contact_email"
           type="text"
@@ -135,29 +135,29 @@ const handleFileChange = (e) => {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+        <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.status') }}</label>
         <select
           id="status"
           v-model="form.status"
           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          <option value="">Select Status(Default Inactive)</option>
-          <option value="0">Inactive</option>
-          <option value="1">Active</option>
+          <option value="">{{ $t('tenant.select_status') }}</option>
+          <option value="0">{{ $t('status.inactive', 'Inactive') }}</option>
+          <option value="1">{{ $t('status.active', 'Active') }}</option>
         </select>
         <div v-if="form.errors.status" class="text-red-500 text-sm">{{ form.errors.status }}</div>
       </div>
 
       <div>
-        <label for="paid" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Paid Status</label>
+        <label for="paid" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ $t('tenant.paid_status') }}</label>
         <select
           id="paid"
           v-model="form.paid"
           class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         >
-          <option value="">Select Paid(default Not Paid)</option>
-          <option value="0">Not Paid</option>
-          <option value="1">Paid</option>
+          <option value="">{{ $t('tenant.select_paid') }}</option>
+          <option value="0">{{ $t('tenant.not_paid') }}</option>
+          <option value="1">{{ $t('tenant.paid') }}</option>
         </select>
         <div v-if="form.errors.paid" class="text-red-500 text-sm">{{ form.errors.paid }}</div>
       </div>
@@ -169,8 +169,8 @@ const handleFileChange = (e) => {
         :disabled="form.processing"
         class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        <span v-if="!form.processing">Submit</span>
-        <span v-else>Submitting...</span>
+        <span v-if="!form.processing">{{ $t('common.save', 'Submit') }}</span>
+        <span v-else>{{ $t('common.loading', 'Submitting...') }}</span>
       </button>
     </div>
   </form>

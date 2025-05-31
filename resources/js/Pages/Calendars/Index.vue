@@ -109,10 +109,11 @@ const searchSemesters = () => {
                         </td>
                         <td class="p-3">
                             <span
+                                class="inline-block px-3 py-1 rounded-full text-xs font-semibold"
                                 :class="
                                     semester.status === 'Active'
-                                        ? 'text-green-600 dark:text-green-400'
-                                        : 'text-gray-500 dark:text-gray-400'
+                                        ? 'bg-green-100 text-green-600 dark:bg-green-600 dark:text-green-300'
+                                        : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                                 "
                             >
                                 {{

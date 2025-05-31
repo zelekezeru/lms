@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -16,10 +17,12 @@ const props = defineProps({
     users: { type: Array, required: false },
 });
 
+const { t } = useI18n();
+
 const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "tracks", label: "Tracks", icon: PencilIcon },
-    { key: "modes", label: "Study Modes", icon: EyeIcon },
+    { key: "details", label: t('programs.show.tabs.details'), icon: CogIcon },
+    { key: "tracks", label: t('programs.show.tabs.tracks'), icon: PencilIcon },
+    { key: "modes", label: t('programs.show.tabs.modes'), icon: EyeIcon },
 ];
 const selectedTab = ref("details");
 </script>
@@ -48,7 +51,7 @@ const selectedTab = ref("details");
                     ]"
                 >
                     <component :is="tab.icon" class="w-5 h-5" />
-                    <span>{{ $t(`programs.show.tabs.${tab.key}`) }}</span>
+                    <span>{{ tab.label }}</span>
                 </button>
             </nav>
 

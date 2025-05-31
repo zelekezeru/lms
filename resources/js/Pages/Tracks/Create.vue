@@ -22,10 +22,10 @@ const submit = () => form.post(route("tracks.store"));
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Track Creation Form
+                    {{ $t('programs.tracks.create_title') }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to create a new track.
+                    {{ $t('programs.tracks.create_description') }}
                 </p>
             </div>
 

@@ -40,9 +40,9 @@ const submit = (id) => {
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
           <div class="mb-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Tenant</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('tenant.edit_title') }}</h2>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              Modify the details of the tenant.
+              {{ $t('tenant.edit_description') }}
             </p>
           </div>
           <Form :form="form" @submit="submit(tenant.id)"/>

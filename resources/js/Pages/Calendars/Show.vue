@@ -9,15 +9,15 @@ const props = defineProps({
 <template>
     <AppLayout>
         <h2 class="text-2xl font-semibold mb-4 dark:text-white">
-            Semester Details
+            {{ $t('semester.details_title1') }}
         </h2>
         <div class="bg-white dark:bg-gray-800 p-6 rounded shadow">
-            <p><strong>Name:</strong> {{ semester.name }}</p>
-            <p><strong>Start Date:</strong> {{ semester.start_date }}</p>
-            <p><strong>End Date:</strong> {{ semester.end_date }}</p>
-            <p><strong>Status:</strong> {{ semester.status }}</p>
-            <p><strong>Created At:</strong> {{ semester.created_at_formatted }}</p>
-            <p><strong>Updated At:</strong> {{ semester.updated_at_formatted }}</p>
+            <p><strong>{{ $t('semester.name') }}:</strong> {{ semester.name }}</p>
+            <p><strong>{{ $t('semester.start_date') }}:</strong> {{ semester.start_date }}</p>
+            <p><strong>{{ $t('semester.end_date') }}:</strong> {{ semester.end_date }}</p>
+            <p><strong>{{ $t('semester.status') }}:</strong> {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}</p>
+            <p><strong>{{ $t('semester.created_at') }}:</strong> {{ semester.created_at_formatted }}</p>
+            <p><strong>{{ $t('semester.updated_at') }}:</strong> {{ semester.updated_at_formatted }}</p>
         </div>
     </AppLayout>
 </template>

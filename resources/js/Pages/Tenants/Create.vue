@@ -34,9 +34,9 @@ const submit = () => {
     <AppLayout>
         <div class="max-w-4xl mx-auto p-6">
           <div class="mb-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Register Tenant</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('tenant.register_title') }}</h2>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              Fill in the details of a new tenant.
+              {{ $t('tenant.register_description') }}
             </p>
           </div>
           <Form :form="form" @submit="submit" />

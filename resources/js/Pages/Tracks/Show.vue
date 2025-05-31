@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     CogIcon,
@@ -39,12 +40,14 @@ const props = defineProps({
 // Multi nav header options
 const selectedTab = ref("details");
 
+const { t } = useI18n();
+
 const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "curriculums", label: "Curriculums", icon: BookOpenIcon },
-    { key: "courses", label: "Courses", icon: AcademicCapIcon },
-    { key: "sections", label: "Sections", icon: UsersIcon },
-    { key: "students", label: "Students", icon: UsersIcon },
+    { key: "details", label: t('tracks.tabs.details'), icon: CogIcon },
+    { key: "curriculums", label: t('tracks.tabs.curriculums'), icon: BookOpenIcon },
+    { key: "courses", label: t('tracks.tabs.courses'), icon: AcademicCapIcon },
+    { key: "sections", label: t('tracks.tabs.sections'), icon: UsersIcon },
+    { key: "students", label: t('tracks.tabs.students'), icon: UsersIcon },
 ];
 </script>
 
@@ -54,9 +57,8 @@ const tabs = [
             <h1
                 class="mb-6 text-3xl font-bold text-center text-gray-900 sm:text-4xl dark:text-gray-100"
             >
-                {{ track.name }} {{ $t('tracks.track_title_suffix') }}
+                {{ track.name }} {{ t('tracks.track_title_suffix') }}
             </h1>
-
             <nav class="flex justify-center mb-6 space-x-4 border-b border-gray-200 dark:border-gray-700">
                 <button
                     v-for="tab in tabs"
@@ -70,7 +72,7 @@ const tabs = [
                     ]"
                 >
                     <component :is="tab.icon" class="w-5 h-5" />
-                    <span>{{ $t(`tracks.tabs.${tab.key}`) }}</span>
+                    <span>{{ tab.label }}</span>
                 </button>
             </nav>
 

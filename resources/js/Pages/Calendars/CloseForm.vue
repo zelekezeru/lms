@@ -54,17 +54,21 @@ const submit = () => {
 
 <template>
   <AppLayout>
-    <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Close Active Semester</h2>
+    <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
+      {{ $t('semester.close_active_title') }}
+    </h2>
 
     <div class="bg-white dark:bg-gray-800 p-6 rounded shadow space-y-4">
       <p class="text-gray-700 dark:text-gray-300 underline">
-        <strong class="text-gray-900 dark:text-white">Current Active Semester: </strong> 
-                        <span class="mb-1 text-lg font-bold text-green-500 dark:text-green-200"> {{ semester.name }} </span>
+        <strong class="text-gray-900 dark:text-white">{{ $t('semester.current_active') }}</strong>
+        <span class="mb-1 text-lg font-bold text-green-500 dark:text-green-200"> {{ semester.name }} </span>
       </p>
       
       <form @submit.prevent="submit" class="space-y-4">
         <div>
-          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">Select Next Opening Semester</label>
+          <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+            {{ $t('semester.select_next_opening') }}
+          </label>
           <select
             v-model="form.new_semester_id"
             class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -75,7 +79,7 @@ const submit = () => {
               disabled
               class="text-green-500 dark:text-green-400 bg-white dark:bg-gray-700"
             >
-              🟢  Current Active : {{ semester.name }}
+              🟢  {{ $t('semester.current_active_option') }} : {{ semester.name }}
             </option>
 
             <!-- Loop Through Inactive Semesters -->
@@ -85,13 +89,15 @@ const submit = () => {
               :value="sem.id"
               class="bg-white text-blue-500 dark:text-blue-400 dark:bg-gray-700"
             >
-              🔴 <span class="text-red-600 dark:text-red-400">{{ sem.name }} - Semester</span>
+              🔴 <span class="text-red-600 dark:text-red-400">{{ sem.name }} - {{ $t('semester.semester') }}</span>
             </option>
           </select>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">Start Date</label>
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                {{ $t('semester.start_date') }}
+              </label>
               <input
                 v-model="form.new_semester_start_date"
                 type="date"
@@ -103,7 +109,9 @@ const submit = () => {
             </div>
 
             <div>
-              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">End Date</label>
+              <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-gray-200">
+                {{ $t('semester.end_date') }}
+              </label>
               <input
                 v-model="form.new_semester_end_date"
                 type="date"
@@ -123,7 +131,7 @@ const submit = () => {
               v-model="form.approval"
               class="mr-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             />
-            I confirm to close the current semester and activate a new one.
+            {{ $t('semester.confirm_close_and_activate') }}
           </label>
           <div class="text-sm text-red-500 dark:text-red-400" v-if="form.errors.approval">
             {{ form.errors.approval }}
@@ -135,7 +143,7 @@ const submit = () => {
           class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white px-6 py-2 rounded"
           :disabled="form.processing"
         >
-          Close Semester
+          {{ $t('semester.close_semester') }}
         </button>
       </form>
     </div>

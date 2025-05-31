@@ -31,10 +31,10 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit "{{ track.name }}"
+                    {{ $t('tracks.edit_title', { name: track.name }) }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to Update the track.
+                    {{ $t('tracks.edit_description') }}
                 </p>
             </div>
 

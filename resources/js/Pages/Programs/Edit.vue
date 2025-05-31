@@ -48,10 +48,10 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit "{{ program.name }}"
+                    {{ $t('programs.edit_title', { name: program.name }) }}
                 </h2>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    Please fill out the form below to Update the program.
+                    {{ $t('programs.edit_description') }}
                 </p>
             </div>
 

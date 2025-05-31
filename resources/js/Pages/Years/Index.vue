@@ -66,7 +66,7 @@ const searchYears = () => {
 <template>
   <AppLayout>
     <div class="my-6 text-center">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Years</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('year.title') }}</h1>
     </div>
 
     <!-- Toolbar -->
@@ -78,7 +78,7 @@ const searchYears = () => {
         <input
           type="text"
           v-model="search"
-          placeholder="Search..."
+          :placeholder="$t('year.search')"
           class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
           @input="searchYears"
         />
@@ -89,7 +89,7 @@ const searchYears = () => {
           :href="route('years.create')"
           class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-green-700"
         >
-          + Add Year
+          {{ $t('year.add', '+ Add Year') }}
         </Link>
 
         <button
@@ -98,16 +98,15 @@ const searchYears = () => {
           title="Refresh Data"
         >
           <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
-          Refresh
+          {{ $t('common.refresh') }}
         </button>
 
         <button
           @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
           class="inline-flex items-center rounded-md bg-gray-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition hover:bg-gray-700"
-          title="Toggle View"
+          :title="$t('year.toggleView')"
         >
           <component :is="viewMode === 'table' ? Squares2X2Icon : TableCellsIcon" class="w-5 h-5" />
-          
         </button>
       </div>
     </div>
@@ -117,9 +116,9 @@ const searchYears = () => {
       <Table>
         <TableHeader>
           <tr>
-            <Thead>Year</Thead>
-            <Thead>Status</Thead>
-            <Thead>Action</Thead>
+            <Thead>{{ $t('year.year') }}</Thead>
+            <Thead>{{ $t('year.status') }}</Thead>
+            <Thead>{{ $t('year.action') }}</Thead>
           </tr>
         </TableHeader>
         <tbody>
@@ -137,7 +136,7 @@ const searchYears = () => {
               <span class="px-2 py-2 text-sm px-2 py-1 rounded"
               :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
             >
-              {{ year.status }}
+              {{ $t('status.' + year.status.toLowerCase(), year.status) }}
             </span>
             </td>
             <td class="flex items-center gap-3 px-6 py-4">
@@ -163,7 +162,6 @@ const searchYears = () => {
         :key="year.id"
         class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 border dark:border-gray-700"
       >
-      
       <Link
         v-if="userCan('view-years')"
         :href="route('years.show', { year: year.id })"
@@ -174,13 +172,11 @@ const searchYears = () => {
                 <CalendarIcon class="w-5  h-5 mr-2 text-red-500" />
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ year.name }}</h2>
             </div>
-
-             
             <span
               class="text-sm px-2 py-1 rounded"
               :class="year.status === 'Active' ? 'bg-green-400 text-green-800 dark:bg-green-200 dark:text-green-200' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
             >
-              {{ year.status }}
+              {{ $t('status.' + year.status.toLowerCase(), year.status) }}
             </span>
           </div>
           <div class="flex justify-start items-center space-x-4 mt-3">
@@ -190,16 +186,14 @@ const searchYears = () => {
             <Link :href="route('years.edit', { year: year.id })" class="text-green-500 hover:text-green-700">
               <PencilSquareIcon class="w-5 h-5" />
             </Link>
-
           </div>
         </Link>
-
       </div>
     </div>
 
     <!-- No data -->
     <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
-      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">No years found.</p>
+      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">{{ $t('year.noYears') }}</p>
     </div>
   </AppLayout>
 </template>

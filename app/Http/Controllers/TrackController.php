@@ -128,9 +128,13 @@ class TrackController extends Controller
     {
         $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode','curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
 
-        $courses = CourseResource::collection(Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
-            return $query->where('tracks.id', $track->id);
-        }])->orderByDesc('related_to_track', 'name')->get());
+        $courses = CourseResource::collection(
+            Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
+                $query->where('tracks.id', $track->id);
+            }])
+            ->orderBy('name')
+            ->get()
+        );
 
         $years = YearResource::collection(Year::with('semesters')->get());
 

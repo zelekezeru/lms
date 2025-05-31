@@ -21,12 +21,12 @@ class ClassScheduleResource extends JsonResource
             'course' => new CourseResource($this->whenLoaded('course')),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'instructor' => new InstructorResource($this->whenLoaded('instructor')),
+            'room' => new RoomResource($this->whenLoaded('room')),
             'dayOfWeek' => $this->day_of_week,
             'startDate' => $this->start_date ? Carbon::parse($this->start_date)->format('Y-m-d') : null,
             'endDate'   => $this->end_date ? Carbon::parse($this->end_date)->format('Y-m-d') : null,
             'startTime' => $this->start_time ? Carbon::parse($this->start_time)->format('g:i A') : null,
             'endTime'   => $this->end_time ? Carbon::parse($this->end_time)->format('g:i A') : null,
-            'room' => $this->room,
         ];
     }
 }

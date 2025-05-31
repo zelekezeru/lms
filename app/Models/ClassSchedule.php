@@ -24,4 +24,9 @@ class ClassSchedule extends Model
     {
         return $this->belongsTo(Instructor::class);
     }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 }

@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import { useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import { PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { DatePicker, Select } from "primevue";
 import TextInput from "@/Components/TextInput.vue";
@@ -26,6 +26,11 @@ const props = defineProps({
         type: Object,
         requried: true,
     },
+
+    rooms: {
+        type:Array,
+        required: true,
+    }
 });
 const selectedDay = ref("Monday");
 const days = [
@@ -63,7 +68,7 @@ const scheduleForm = useForm({
     end_date: "",
     start_time: "",
     end_time: "",
-    room: "",
+    room_id: "",
 });
 
 watch(
@@ -174,7 +179,12 @@ const addSchedule = () => {
                             <th
                                 class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
                             >
-                                Room
+                                Instructor
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
+                            >
+                                Room (Capacity)
                             </th>
                         </tr>
                     </thead>
@@ -210,7 +220,22 @@ const addSchedule = () => {
                             <td
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                             >
-                                {{ schedule.room ?? "TBD" }}
+                                <Link
+                                    v-if="schedule.instructor"
+                                    :href="
+                                        route('instructors.show', {
+                                            instructor: schedule.instructor.id,
+                                        })
+                                    "
+                                >
+                                    {{ schedule.instructor.name }}
+                                </Link>
+                                <span v-else> TBA </span>
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ schedule.room ? `${schedule.room.name} (${schedule.room.capacity})` : "TBD" }}
                             </td>
                         </tr>
                         <tr v-else>
@@ -292,11 +317,21 @@ const addSchedule = () => {
                                         />
                                     </div>
                                 </td>
+                                <td class="px-4 py-2">
+                                    {{ activeCourses.find(course => course.id == scheduleForm.course_id) ? activeCourses.find(course => course.id == scheduleForm.course_id).instructor ? activeCourses.find(course => course.id == scheduleForm.course_id).instructor.name : "TBA" : "Select Course" }}
+                                </td>
                                 <td class="flex justify-between px-4 py-2">
-                                    <TextInput
-                                        v-model="scheduleForm.room"
-                                        placeholder="Room"
-                                        class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
+                                    <Select
+                                        id="room"
+                                        v-model="scheduleForm.room_id"
+                                        :options="rooms"
+                                        option-value="id"
+                                        option-label="name"
+                                        checkmark
+                                        filter
+                                        placeholder="Select Room"
+                                        :maxSelectevdLabels="3"
+                                        class="w-full"
                                     />
                                     <PrimaryButton
                                         class="px-4 py-1 text-white bg-green-500 rounded-md h-9 hover:bg-green-600"

@@ -43,6 +43,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    rooms: {
+        type: Array,
+        required: true,
+    },
 });
 
 const showMobileNav = ref(false);
@@ -181,6 +185,7 @@ const changeTab = (tabName) => {
                             :course="course"
                             :section="section"
                             :class-schedules="classSchedules"
+                            :rooms="rooms"
                         />
                         <Assessments
                             v-if="activeTab === 'assessments'"

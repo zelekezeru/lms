@@ -16,7 +16,12 @@ const props = defineProps({
 
     classSchedules: {
         required: true,
-        type: Object,
+        type: Array,
+    },
+
+    rooms: {
+        required: true,
+        type: Array,
     },
 });
 const selectedDay = ref("Monday");

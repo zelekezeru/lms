@@ -34,9 +34,13 @@ const props = defineProps({
     },
 
     currentSemester: {
-      type: Object,
-      requried: true,
-    }
+        type: Object,
+        requried: true,
+    },
+    rooms: {
+        required: true,
+        type: Array,
+    },
 });
 
 const selectedTab = ref("details");
@@ -138,7 +142,7 @@ const deletesection = (id) => {
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
-                  />
+                    />
 
                     <!-- Students Panel -->
                     <ShowStudents
@@ -158,6 +162,7 @@ const deletesection = (id) => {
                                     course.semester == currentSemesterLevel
                             )
                         "
+                        :rooms="rooms"
                         :active-semester="currentSemester"
                     />
                 </div>

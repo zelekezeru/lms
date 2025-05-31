@@ -92,7 +92,7 @@ const props = defineProps({
                                     route('instructor.sections.courses', {
                                         section: section.id,
                                         course: course.id,
-                                        tab: 'Students',
+                                        tab: 'students',
                                     })
                                 "
                                 class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition"
@@ -105,7 +105,7 @@ const props = defineProps({
                                     route('instructor.sections.courses', {
                                         section: section.id,
                                         course: course.id,
-                                        tab: 'Assessments',
+                                        tab: 'assessments',
                                     })
                                 "
                                 class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition"
@@ -119,7 +119,7 @@ const props = defineProps({
                                     route('instructor.sections.courses', {
                                         section: section.id,
                                         course: course.id,
-                                        tab: 'Attendance',
+                                        tab: 'attendance',
                                     })
                                 "
                                 class="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition"

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { AcademicCapIcon } from "@heroicons/vue/24/solid";
-import {router} from '@inertiajs/vue3';
+import { router } from "@inertiajs/vue3";
 import Overview from "./Tabs/Overview.vue";
 import Attendance from "./Tabs/Attendance.vue";
 import Assessments from "./Tabs/Assessments.vue";
@@ -49,18 +49,25 @@ const announcements = [
 ];
 
 const rightMenu = [
-    { name: "Overview", icon: AcademicCapIcon },
-    { name: "Students", icon: AcademicCapIcon },
-    { name: "Assessments", icon: AcademicCapIcon },
-    { name: "Attendance", icon: AcademicCapIcon },
-    { name: "Announcements", icon: AcademicCapIcon },
+    { name: "Overview", key: "overview", icon: AcademicCapIcon },
+    { name: "Students", key: "students", icon: AcademicCapIcon },
+    { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
+    { name: "Assessments", key: "assessments", icon: AcademicCapIcon },
+    { name: "Attendance", key: "attendance", icon: AcademicCapIcon },
+    { name: "Announcements", key: "announcements", icon: AcademicCapIcon },
 ];
 
 const changeTab = (tabName) => {
     activeTab.value = tabName;
-    
-    router.visit(route(route().current(), { section: props.section.id, course: props.course.id, tab: tabName }))
-}
+
+    router.visit(
+        route(route().current(), {
+            section: props.section.id,
+            course: props.course.id,
+            tab: tabName,
+        })
+    );
+};
 </script>
 
 <template>
@@ -109,15 +116,17 @@ const changeTab = (tabName) => {
                         <ul class="space-y-2 flex flex-col">
                             <li
                                 v-for="item in rightMenu"
-                                :key="item.name"
+                                :key="item.key"
                                 @click="
-                                    activeTab = item.name;
-                                    showMobileNav = false;
+                                    () => {
+                                        changeTab(tab.key);
+                                        showMobileNav = false;
+                                    }
                                 "
                                 class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-pointer transition duration-200"
                                 :class="{
                                     'bg-gray-100 dark:bg-gray-800 font-semibold':
-                                        activeTab === item.name,
+                                        activeTab === item.key,
                                 }"
                             >
                                 <component
@@ -131,7 +140,7 @@ const changeTab = (tabName) => {
                 </div>
             </Transition>
 
-            <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex flex-col lg:flex-row">
                 <!-- Main Content -->
                 <div class="flex-1">
                     <div
@@ -153,17 +162,17 @@ const changeTab = (tabName) => {
                     <!-- Tab Contents -->
                     <div class="mt-6">
                         <Overview
-                            v-if="activeTab === 'Overview'"
+                            v-if="activeTab === 'overview'"
                             :course="course"
                         />
                         <Students
-                            v-if="activeTab === 'Students'"
+                            v-if="activeTab === 'students'"
                             :course="course"
                             :section="section"
                             :students="students"
                         />
                         <Assessments
-                            v-if="activeTab === 'Assessments'"
+                            v-if="activeTab === 'assessments'"
                             :course="course"
                             :section="section"
                             :grades="grades"
@@ -173,11 +182,11 @@ const changeTab = (tabName) => {
                             :students="students"
                         />
                         <Attendance
-                            v-if="activeTab === 'Attendance'"
+                            v-if="activeTab === 'attendance'"
                             :attendanceRecords="attendanceRecords"
                         />
                         <Announcements
-                            v-if="activeTab === 'Announcements'"
+                            v-if="activeTab === 'announcements'"
                             :announcements="announcements"
                         />
                     </div>
@@ -196,12 +205,12 @@ const changeTab = (tabName) => {
                         <ul class="space-y-2 flex flex-col">
                             <li
                                 v-for="item in rightMenu"
-                                :key="item.name"
-                                @click="changeTab(item.name)"
+                                :key="item.key"
+                                @click="changeTab(item.key)"
                                 class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-pointer transition duration-200"
                                 :class="{
                                     'bg-gray-100 dark:bg-gray-800 font-semibold':
-                                        activeTab === item.name,
+                                        activeTab === item.key,
                                 }"
                             >
                                 <component

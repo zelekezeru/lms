@@ -89,7 +89,7 @@ const logout = () => {
                             >
                                 <div class="avatar-sm">                                    
                                     <img
-                                        src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+                                        src=""
                                         alt="Instructor Profile"
                                         class="h-10 w-10 rounded-full object-cover"
                                     />
@@ -115,7 +115,6 @@ const logout = () => {
                                         <div class="avatar-lg">
                                             
                                             <img
-                                                src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
                                                 alt="Instructor Profile"
                                                 class="h-10 w-10 rounded-full object-cover"
                                             />

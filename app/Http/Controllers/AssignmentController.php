@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassSchedule;
 use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -49,10 +50,15 @@ class AssignmentController extends Controller
         return redirect()->route('courses.show', $course->id)->with('success', 'Instructors Assigned successfully.');
     }
 
-    // this method is used to assign courses to a program
+    // this method is used to assign courses to a courseSection
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
-        $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id);
+        $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id)->with('instructor.classSchedules');
+
+        $classSchedules = $section->classSchedules()->where('course_id', $course->id)->update([
+            'instructor_id' => $request->instructor_id
+        ]);
+        
 
         $courseSectionAssignment->update([
             'instructor_id' => $request->instructor_id,

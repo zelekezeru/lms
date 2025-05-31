@@ -68,4 +68,9 @@ class Instructor extends Model
     {
         return $this->hasMany(CourseSectionAssignment::class);
     }
+
+    public function classSchedules()
+    {
+        return $this->hasMany(ClassSchedule::class);
+    }
 }

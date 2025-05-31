@@ -100,6 +100,8 @@ class SectionController extends Controller
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
+
+        $currentSemester = new SemesterResource($section->semester()->with('year')->first());
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,
@@ -111,7 +113,7 @@ class SectionController extends Controller
             'isCompleted' => $section->is_completed,
             'currentYearLevel' => $currentYearLevel,
             'currentSemesterLevel' => $currentSemesterLevel,
-            'currentSemester' => new SemesterResource($section->semester),
+            'currentSemester' => $currentSemester,
         ]);
     }
 

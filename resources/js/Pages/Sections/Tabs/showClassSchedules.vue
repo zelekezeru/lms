@@ -64,8 +64,6 @@ const scheduleForm = useForm({
     semester_id: props.activeSemester.id,
     day_of_week: selectedDay.value,
     course_id: "",
-    start_date: "",
-    end_date: "",
     start_time: "",
     end_time: "",
     room_id: "",
@@ -183,9 +181,6 @@ const addSchedule = () => {
                             Time
                         </th>
                         <th class="text-left px-4 py-3 font-medium text-sm text-gray-800 dark:text-gray-200">
-                            Date Range
-                        </th>
-                        <th class="text-left px-4 py-3 font-medium text-sm text-gray-800 dark:text-gray-200">
                             Instructor
                         </th>
                         <th class="text-left px-4 py-3 font-medium text-sm text-gray-800 dark:text-gray-200">
@@ -209,9 +204,6 @@ const addSchedule = () => {
                         </td>
                         <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                             {{ schedule.startTime }} - {{ schedule.endTime }}
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                            {{ schedule.startDate }} - {{ schedule.endDate }}
                         </td>
                         <td class="px-4 py-3 text-sm text-blue-700 dark:text-blue-400">
                             <Link
@@ -274,23 +266,6 @@ const addSchedule = () => {
                                         timeOnly
                                         placeholder="End"
                                         hour-format="12"
-                                    />
-                                </div>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex gap-2 items-center">
-                                    <DatePicker
-                                        v-model="scheduleForm.start_date"
-                                        :min-date="minDate"
-                                        :max-date="maxDate"
-                                        placeholder="Start"
-                                    />
-                                    <span>-</span>
-                                    <DatePicker
-                                        v-model="scheduleForm.end_date"
-                                        :min-date="minDate"
-                                        :max-date="maxDate"
-                                        placeholder="End"
                                     />
                                 </div>
                             </td>

@@ -320,7 +320,41 @@
   "actions": {
     "edit": "ያስተካክሉ",
     "delete": "ያጥፉ"
-  },
+  },"sidebar": {
+    "dashboard": "ዳሽቦርድ",
+    "menu": "ምናሌ",
+    "tenants": "ተቋማት",
+    "manage_tenant": "ተቋም አስተዳደር",
+    "roles_permissions": "ሚናዎች እና ፈቃዶች",
+    "manage_roles": "ሚናዎችን አስተዳድር",
+    "manage_permissions": "ፈቃዶችን አስተዳድር",
+    "calendar_structure": "የቀን መቁጠሪያ አወቃቀር",
+    "manage_years": "ዓመታትን አስተዳድር",
+    "manage_semesters": "ሴሚስተሮችን አስተዳድር",
+    "manage_calendars": "የቀን መቁጠሪያዎችን አስተዳድር",
+    "academic_structure": "የትምህርት አወቃቀር",
+    "manage_program": "ፕሮግራሞችን አስተዳድር",
+    "manage_track": "መስመሮችን አስተዳድር",
+    "manage_study_modes": "የትምህርት ዘዴዎችን አስተዳድር",
+    "manage_course": "ኮርሶችን አስተዳድር",
+    "section_classes": "ክፍሎች",
+    "manage_sections": "ክፍሎችን አስተዳድር",
+    "manage_weight": "ክብደት አስተዳድር",
+    "user_management": "የተጠቃሚ አስተዳድር",
+    "manage_instructors": "አስተማሪዎችን አስተዳድር",
+    "manage_employee": "ሰራተኞችን አስተዳድር",
+    "manage_user": "ተጠቃሚዎችን አስተዳድር",
+    "students_management": "የተማሪዎች አስተዳድር",
+    "manage_student": "ተማሪዎችን አስተዳድር",
+    "register_student": "ተማሪ መመዝገብ",
+    "manage_user_document": "የተጠቃሚ ሰነዶችን አስተዳድር",
+    "inventory": "እቃ መዝገብ",
+    "all_inventories": "ሁሉንም እቃዎች",
+    "inventory_suppliers": "የእቃ አቅራቢዎች",
+    "inventory_categories": "የእቃ ምድቦች",
+    "payment": "ክፍያ",
+    "all_payments": "ሁሉንም ክፍያዎች"
+},
   "login": "ይግቡ",
   "email": "ኢሜል",
   "password": "የይለፍ ቃል",
@@ -332,4 +366,4 @@
   "forgot_password_title": "የይለፍ ቃልዎን ረሱ?",
   "forgot_password_info": "የይለፍ ቃልዎን ረሱ? ምንም አይደለም። የኢሜል አድራሻዎን ከዚህ በታች ያስገቡና አዲስ የይለፍ ቃል እንዲመርጡ የሚያስችልዎትን የይለፍ ቃል ዳግም ማስጀመሪያ አገናኝ በኢሜል እንልክልዎታለን።",
   "email_password_reset_link": "የይለፍ ቃል ዳግም ማስጀመሪያ አገናኝ በኢሜል ላኩልኝ"
-}
+  }

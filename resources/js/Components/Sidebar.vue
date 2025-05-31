@@ -145,7 +145,6 @@ const afterLeave = (el) => {
                         class="w-[48px] rounded-full"
                         alt="Logo"
                     />
-
                     <transition name="fade">
                         <h1
                             v-if="sidebarVisible || sidebarHovered"
@@ -175,7 +174,7 @@ const afterLeave = (el) => {
                         v-if="sidebarVisible || sidebarHovered"
                         class="transition-all duration-300 truncate"
                     >
-                        Dashboard
+                        {{ $t('sidebar.dashboard') }}
                     </span>
                 </transition>
             </Link>
@@ -183,11 +182,11 @@ const afterLeave = (el) => {
             <div
                 class="h-[700px] overflow-y-auto py-2 scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
             >
-                <h2 class="font-bold px-4 text-sm">Menu</h2>
+                <h2 class="font-bold px-4 text-sm">{{ $t('sidebar.menu') }}</h2>
 
                 <!-- Tenant Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Tenants'"
+                    :label="$t('sidebar.tenants')"
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -198,13 +197,13 @@ const afterLeave = (el) => {
                         :href="route('tenants.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Tenant</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_tenant') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Permission Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Roles And Permissions'"
+                    :label="$t('sidebar.roles_permissions')"
                     class="text-nowrap"
                     :icon="KeyIcon"
                     :sidebar-hovered="sidebarHovered"
@@ -216,20 +215,20 @@ const afterLeave = (el) => {
                         :href="route('roles.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Roles</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_roles') }}</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
                         v-show="userCan('view-permissions')"
                         :href="route('permissions.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Permissions</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_permissions') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Time Frame Structure Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Calendar Structure'"
+                    :label="$t('sidebar.calendar_structure')"
                     :icon="ClockIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -240,7 +239,7 @@ const afterLeave = (el) => {
                         :href="route('years.index')"
                     >
                         <CalendarIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Years</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_years') }}</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
@@ -248,23 +247,21 @@ const afterLeave = (el) => {
                         :href="route('semesters.index')"
                     >
                         <ChartPieIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Semesters</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_semesters') }}</span>
                     </SidebarDrowpdownLink>
 
-                    <!-- Scheduling -->
                     <SidebarDrowpdownLink
                         v-show="userCan('view-calendars')"
                         :href="route('calendars.index')"
                     >
                         <ClockIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Calendars</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_calendars') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Academic Structure Navigation -->
-                <!-- Academic Structure Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Academic Structure'"
+                    :label="$t('sidebar.academic_structure')"
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -283,7 +280,7 @@ const afterLeave = (el) => {
                         :href="route('programs.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Program</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_program') }}</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
@@ -293,7 +290,7 @@ const afterLeave = (el) => {
                         <BuildingOffice2Icon
                             class="w-4 h-5 mr-2 text-gray-200"
                         />
-                        <span class="text-sm">Manage Track</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_track') }}</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
@@ -301,7 +298,7 @@ const afterLeave = (el) => {
                         :href="route('studyModes.index')"
                     >
                         <ClockIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Study Modes</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_study_modes') }}</span>
                     </SidebarDrowpdownLink>
 
                     <SidebarDrowpdownLink
@@ -309,13 +306,13 @@ const afterLeave = (el) => {
                         :href="route('courses.index')"
                     >
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Course</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_course') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Sections Navigation -->
                 <SidebarDropdownMenu
-                    :label="'Section Classes'"
+                    :label="$t('sidebar.section_classes')"
                     :icon="AcademicCapIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -326,30 +323,20 @@ const afterLeave = (el) => {
                         :href="route('sections.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Sections</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_sections') }}</span>
                     </SidebarDrowpdownLink>
-
-                    <!-- <SidebarDrowpdownLink
-                        v-show="userCan('view-results')"
-                        :href="route('results.index')"
-                    >
-                        <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Results</span>
-                    </SidebarDrowpdownLink> -->
-
                     <SidebarDrowpdownLink
                         v-show="userCan('view-weights')"
                         :href="route('weights.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Weight</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_weight') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- User Managment-->
-
                 <SidebarDropdownMenu
-                    :label="'User Management'"
+                    :label="$t('sidebar.user_management')"
                     :icon="UserIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -360,27 +347,27 @@ const afterLeave = (el) => {
                         :href="route('instructors.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Instructors</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_instructors') }}</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
                         v-show="userCan('view-employees')"
                         :href="route('employees.index')"
                     >
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Employee</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_employee') }}</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
                         v-show="userCan('view-users')"
                         :href="route('users.index')"
                     >
                         <BriefcaseIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage User</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_user') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Students Managmant -->
                 <SidebarDropdownMenu
-                    :label="'Students Management'"
+                    :label="$t('sidebar.students_management')"
                     :icon="UsersIcon"
                     class="text-nowrap"
                     :sidebar-hovered="sidebarHovered"
@@ -392,30 +379,27 @@ const afterLeave = (el) => {
                         :href="route('students.index')"
                     >
                         <UsersIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage Student</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_student') }}</span>
                     </SidebarDrowpdownLink>
-
                     <SidebarDrowpdownLink
                         v-show="userCan('create-students')"
                         :href="route('students.create')"
                     >
                         <PlusIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Register Student</span>
+                        <span class="text-sm">{{ $t('sidebar.register_student') }}</span>
                     </SidebarDrowpdownLink>
-
                     <SidebarDrowpdownLink
                         v-show="userCan('view-userDocuments')"
                         :href="route('userDocuments.index')"
                     >
                         <CogIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Manage User Document</span>
+                        <span class="text-sm">{{ $t('sidebar.manage_user_document') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Inventory -->
-
                 <SidebarDropdownMenu
-                    :label="'Inventory'"
+                    :label="$t('sidebar.inventory')"
                     :icon="ArchiveBoxArrowDownIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -431,28 +415,27 @@ const afterLeave = (el) => {
                         :href="route('inventories.index')"
                     >
                         <HandRaisedIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">All Inventories</span>
+                        <span class="text-sm">{{ $t('sidebar.all_inventories') }}</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
                         v-show="userCan('view-inventory-suppliers')"
                         :href="route('inventorySuppliers.index')"
                     >
                         <HandRaisedIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Inventory Suppliers</span>
+                        <span class="text-sm">{{ $t('sidebar.inventory_suppliers') }}</span>
                     </SidebarDrowpdownLink>
                     <SidebarDrowpdownLink
                         v-show="userCan('view-inventory-categories')"
                         :href="route('inventoryCategories.index')"
                     >
                         <FolderIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Inventory Categories</span>
+                        <span class="text-sm">{{ $t('sidebar.inventory_categories') }}</span>
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
                 <!-- Payment -->
-
                 <SidebarDropdownMenu
-                    :label="'Payment'"
+                    :label="$t('sidebar.payment')"
                     :icon="CurrencyDollarIcon"
                     :sidebar-hovered="sidebarHovered"
                     :sidebar-visible="sidebarVisible"
@@ -470,29 +453,8 @@ const afterLeave = (el) => {
                         :href="route('payments.index')"
                     >
                         <BanknotesIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">All Payments</span>
+                        <span class="text-sm">{{ $t('sidebar.all_payments') }}</span>
                     </SidebarDrowpdownLink>
-                    <!-- <SidebarDrowpdownLink
-                        v-show="userCan('view-paymentItems')"
-                        :href="route('paymentItems.index')"
-                    >
-                        <CreditCardIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Payment Items</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-paymentCategories')"
-                        :href="route('paymentCategories.index')"
-                    >
-                        <DocumentCurrencyDollarIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Payment Categories</span>
-                    </SidebarDrowpdownLink>
-                    <SidebarDrowpdownLink
-                        v-show="userCan('view-paymentSchedules')"
-                        :href="route('paymentSchedules.index')"
-                    >
-                        <CalendarDateRangeIcon class="w-4 h-5 mr-2 text-gray-200" />
-                        <span class="text-sm">Payment Calendars</span>
-                    </SidebarDrowpdownLink> -->
                 </SidebarDropdownMenu>
             </div>
         </nav>

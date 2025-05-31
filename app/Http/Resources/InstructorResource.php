@@ -36,6 +36,7 @@ class InstructorResource extends JsonResource
             'userRole' => $this->user && $this->user->roles()->first() ? $this->user->roles()->first()->name : null,
 
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
+            'classSchedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
             'sections' => $this->whenLoaded('courseSectionAssignments', function () {
                 return $this->courseSectionAssignments->map(function ($courseSectionAssignment) {
                     return new SectionResource($courseSectionAssignment->section);

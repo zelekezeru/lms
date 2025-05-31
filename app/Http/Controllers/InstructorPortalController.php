@@ -6,6 +6,7 @@ use App\Http\Resources\ClassScheduleResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\SectionResource;
+use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
 use App\Models\ClassSchedule;
 use App\Models\CourseSectionAssignment;
@@ -103,6 +104,24 @@ class InstructorPortalController extends Controller
 
         return inertia('InstructorPortal/Sections', [
             'instructor' => $instructor,
+        ]);
+    }
+
+    public function classSchedules()
+    {
+        $instructor = request()->user()->instructor;
+
+        $instructor->load([
+            'classSchedules.room',    
+            'classSchedules.course',    
+        ]);
+
+        $activeSemester = new SemesterResource(Semester::getActiveSemester());
+        $instructor = new InstructorResource($instructor);
+
+        return inertia('InstructorPortal/ClassSchedules', [
+            'instructor' => $instructor,
+            'activeSemester' => $activeSemester,
         ]);
     }
 

@@ -40,7 +40,7 @@ class Semester extends Model
 
     public static function getActiveSemester()
     {
-        $activeSemester = Semester::where('status', 'active')->first();
+        $activeSemester = Semester::where('status', 'active')->with('year')->first();
 
         return $activeSemester;
     }

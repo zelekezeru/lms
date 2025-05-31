@@ -29,7 +29,7 @@ class SemesterResource extends JsonResource
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'grades' => GradeResource::collection($this->whenLoaded('grades')),
-            'year' => YearResource::collection($this->whenLoaded('years')),
+            'year' => new YearResource($this->whenLoaded('year')),
 
         ];
     }

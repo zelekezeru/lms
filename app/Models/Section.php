@@ -48,7 +48,7 @@ class Section extends Model
 
     public function classSchedules() 
     {
-        return $this->hasMany(ClassSchedule::class);
+        return $this->hasMany(ClassSchedule::class)->where('semester_id', Semester::getActiveSemester()->id);
     }
 
     public function instructors(): BelongsToMany

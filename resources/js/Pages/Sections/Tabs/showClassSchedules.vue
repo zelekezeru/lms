@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import { Link, useForm } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import { PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { DatePicker, Select } from "primevue";
 import TextInput from "@/Components/TextInput.vue";
@@ -174,11 +174,6 @@ const addSchedule = () => {
                             <th
                                 class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
                             >
-                                Instructor
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
-                            >
                                 Room
                             </th>
                         </tr>
@@ -211,21 +206,6 @@ const addSchedule = () => {
                             >
                                 {{ schedule.startDate }} -
                                 {{ schedule.endDate }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                <Link
-                                    v-if="schedule.instructor"
-                                    :href="
-                                        route('instructors.show', {
-                                            instructor: schedule.instructor.id,
-                                        })
-                                    "
-                                >
-                                    {{ schedule.instructor.name }}
-                                </Link>
-                                <span v-else> TBA </span>
                             </td>
                             <td
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
@@ -311,9 +291,6 @@ const addSchedule = () => {
                                             hour-format="12"
                                         />
                                     </div>
-                                </td>
-                                <td class="px-4 py-2">
-                                    {{ activeCourses.find(course => course.id == scheduleForm.course_id) ? activeCourses.find(course => course.id == scheduleForm.course_id).instructor ? activeCourses.find(course => course.id == scheduleForm.course_id).instructor.name : "TBA" : "Select Course" }}
                                 </td>
                                 <td class="flex justify-between px-4 py-2">
                                     <TextInput

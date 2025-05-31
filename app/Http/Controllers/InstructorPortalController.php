@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassScheduleResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\StudentResource;
+use App\Models\ClassSchedule;
 use App\Models\CourseSectionAssignment;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -13,6 +15,7 @@ use Inertia\Inertia;
 use App\Models\Instructor;
 use App\Models\Section;
 use App\Models\Semester;
+use PhpParser\Builder\Class_;
 
 class InstructorPortalController extends Controller
 {
@@ -144,6 +147,8 @@ class InstructorPortalController extends Controller
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         // This fetches all students that learn $course in $section which means
         $students = StudentResource::collection($section->studentsByCourse($course->id));
+        $activeSemester = Semester::getActiveSemester();
+        $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->get());
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,
@@ -151,6 +156,7 @@ class InstructorPortalController extends Controller
             'students' => $students,
             'semester' => $semester,
             'grades' => $grades,
+            'classSchedules' => $classSchedules,
             'weights' => $weights,
             'instructor' => $instructor,
         ]);

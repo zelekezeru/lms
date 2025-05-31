@@ -8,6 +8,7 @@ import Assessments from "./Tabs/Assessments.vue";
 import Students from "./Tabs/Students.vue";
 import Announcements from "./Tabs/Announcments.vue";
 import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import ClassSchedules from "./Tabs/ClassSchedules.vue";
 
 const props = defineProps({
     course: {
@@ -25,6 +26,10 @@ const props = defineProps({
     instructor: {
         type: Object,
         required: true,
+    },
+    classSchedules: {
+        type: Array,
+        required: false,
     },
     weights: {
         type: Object,
@@ -170,6 +175,12 @@ const changeTab = (tabName) => {
                             :course="course"
                             :section="section"
                             :students="students"
+                        />
+                        <ClassSchedules
+                            v-if="activeTab === 'classSchedules'"
+                            :course="course"
+                            :section="section"
+                            :class-schedules="classSchedules"
                         />
                         <Assessments
                             v-if="activeTab === 'assessments'"

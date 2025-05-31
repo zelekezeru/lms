@@ -34,6 +34,11 @@ class Course extends Model
         return $this->hasMany(CourseSectionAssignment::class);
     }
 
+    public function classSchedules()
+    {
+        return $this->hasMany(ClassSchedule::class)->where('semester_id', Semester::getActiveSemester()->id);
+    }
+
     public function trackS(): BelongsToMany
     {
         return $this->belongsToMany(Track::class);

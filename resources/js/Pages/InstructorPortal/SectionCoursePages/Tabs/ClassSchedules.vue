@@ -14,6 +14,11 @@ const props = defineProps({
         type: Object,
     },
 
+    activeSemester: {
+        required: true,
+        type: Object,
+    },
+
     classSchedules: {
         required: true,
         type: Array,
@@ -50,14 +55,23 @@ const maxDate = computed(() => {
 });
 </script>
 <template>
-    <div class="grid grid-cols-1 gap-4">
-        <h1
-            class="text-3xl font-bold mb-6 text-gray-900 dark:text-white flex items-center"
-        >
-            {{ course.code }}- {{ section.name }} Class Schedules
+<div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+            Your Class Schedules for
+            {{ activeSemester.year.name }} Semester -
+            {{ activeSemester.level }}
         </h1>
-        <!-- Day Selector -->
-        <div class="col-span-2">
+    </div>
+
+    <!-- Day Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="text-gray-700 dark:text-gray-300 font-semibold">
+                Select a Day
+            </div>
+
             <!-- Buttons on large screens -->
             <div class="hidden sm:flex flex-wrap gap-2">
                 <Button
@@ -86,77 +100,80 @@ const maxDate = computed(() => {
                 />
             </div>
         </div>
-
-        <!-- Optional: Displaying selected day -->
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-            {{
-                selectedDay ? `${selectedDay} Class Schedule` : "Class Schedule"
-            }}
-        </h2>
-
-        <!-- Table Container -->
-        <transition
-            mode="out-in"
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="opacity-0 scale-75"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-75"
-        >
-            <div :key="selectedDay" class="overflow-x-auto w-full col-span-2">
-                <table
-                    class="w-full min-w-[800px] table-fixed border border-gray-300 dark:border-gray-600"
-                >
-                    <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700">
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r w-1/4"
-                            >
-                                Time
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
-                            >
-                                Room (Capacity)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-if="filteredClassSchedules.length > 0"
-                            v-for="(schedule, index) in filteredClassSchedules"
-                            :key="schedule.id"
-                            :class="
-                                index % 2 === 0
-                                    ? 'bg-white dark:bg-gray-800'
-                                    : 'bg-gray-50 dark:bg-gray-700'
-                            "
-                            class="border-b border-gray-300 dark:border-gray-600"
-                        >
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r"
-                            >
-                                {{ schedule.startTime }} -
-                                {{ schedule.endTime }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ schedule.room ? `${schedule.room.name} (${schedule.room.capacity})` : "TBD" }}
-                            </td>
-                        </tr>
-                        <tr v-else>
-                            <td
-                                colspan="4"
-                                class="text-center text-sm text-gray-500 py-4 dark:text-gray-300 font-medium"
-                            >
-                                No schedules set for {{ selectedDay }}.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </transition>
     </div>
+
+    <!-- Selected Day Title -->
+    <h2 class="text-lg font-bold text-gray-700 dark:text-gray-200 mt-4">
+        {{ selectedDay ? `${selectedDay} Class Schedule` : "Class Schedule" }}
+    </h2>
+
+    <!-- Schedule Table -->
+    <transition
+        mode="out-in"
+        enter-active-class="transition duration-300 ease-out"
+        enter-from-class="opacity-0 scale-75"
+        enter-to-class="opacity-100 scale-100"
+        leave-active-class="transition duration-200 ease-in"
+        leave-from-class="opacity-100 scale-100"
+        leave-to-class="opacity-0 scale-75"
+    >
+        <div
+            :key="selectedDay"
+            class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300 dark:border-gray-600"
+        >
+            <table class="w-full min-w-[800px] table-fixed">
+                <thead class="bg-gray-100 dark:bg-gray-700">
+                    <tr>
+                        <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">
+                            Time
+                        </th>
+                        <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">
+                            Room (Capacity)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Schedule Rows -->
+                    <tr
+                        v-if="filteredClassSchedules.length > 0"
+                        v-for="(schedule, index) in filteredClassSchedules"
+                        :key="schedule.id"
+                        :class="[
+                            index % 2 === 0
+                                ? 'bg-white dark:bg-gray-800'
+                                : 'bg-gray-50 dark:bg-gray-700',
+                            'border-b border-gray-300 dark:border-gray-600',
+                        ]"
+                    >
+                        <!-- Time -->
+                        <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                            {{ schedule.startTime }} - {{ schedule.endTime }}
+                        </td>
+
+                        <!-- Room -->
+                        <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                            <span v-if="schedule.room">
+                                {{ schedule.room.name }} ({{ schedule.room.capacity }})
+                            </span>
+                            <span v-else class="text-gray-500 dark:text-gray-400">
+                                TBD
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- No Schedules -->
+                    <tr v-else>
+                        <td
+                            colspan="2"
+                            class="text-center px-4 py-6 text-sm text-gray-500 dark:text-gray-300"
+                        >
+                            No schedules set for {{ selectedDay }}.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </transition>
+</div>
+
 </template>

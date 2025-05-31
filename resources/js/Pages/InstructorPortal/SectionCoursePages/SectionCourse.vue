@@ -186,6 +186,7 @@ const changeTab = (tabName) => {
                             :section="section"
                             :class-schedules="classSchedules"
                             :rooms="rooms"
+                            :active-semester="semester"
                         />
                         <Assessments
                             v-if="activeTab === 'assessments'"

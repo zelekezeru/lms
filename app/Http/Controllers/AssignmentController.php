@@ -54,7 +54,7 @@ class AssignmentController extends Controller
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
         $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id)->with('instructor.classSchedules');
-dd($section->classSchedules()->where('course_id', $course->id)->get());
+
         $classSchedules = $section->classSchedules()->where('course_id', $course->id)->update([
             'instructor_id' => $request->instructor_id
         ]);

@@ -148,7 +148,7 @@ class InstructorPortalController extends Controller
         // This fetches all students that learn $course in $section which means
         $students = StudentResource::collection($section->studentsByCourse($course->id));
         $activeSemester = Semester::getActiveSemester();
-        $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->get());
+        $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,

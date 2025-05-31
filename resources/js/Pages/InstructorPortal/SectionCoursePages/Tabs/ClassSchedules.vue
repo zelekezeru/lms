@@ -118,7 +118,7 @@ const maxDate = computed(() => {
                             <th
                                 class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 w-1/4"
                             >
-                                Room
+                                Room (Capacity)
                             </th>
                         </tr>
                     </thead>
@@ -143,7 +143,7 @@ const maxDate = computed(() => {
                             <td
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                             >
-                                {{ schedule.room ?? "TBD" }}
+                                {{ schedule.room ? `${schedule.room.name} (${schedule.room.capacity})` : "TBD" }}
                             </td>
                         </tr>
                         <tr v-else>

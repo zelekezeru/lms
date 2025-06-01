@@ -27,8 +27,6 @@ class ClassScheduleStoreRequest extends FormRequest
             'course_id'    => 'required|exists:courses,id',
             'room_id'    => 'required|exists:rooms,id',
             'day_of_week' => 'required|string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-            'start_date'   => 'required|date|before_or_equal:end_date',
-            'end_date'     => 'required|date|after_or_equal:start_date',
             'start_time'   => 'required|date|before:end_time',
             'end_time'     => 'required|date|after:start_time',
         ];

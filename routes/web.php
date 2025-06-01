@@ -48,6 +48,29 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
     });
 
+    // Registrar Portal
+    Route::prefix('reg-portal')->group(function () {
+        Route::get('/', function () {
+            return Inertia::render('Registrar/RegistrarDashboard');
+        })->name('registrar.dashboard');
+    
+        Route::get('/students', function () {
+            return Inertia::render('Registrar/RegistrarStudents');
+        })->name('registrar.students');
+    
+        Route::get('/grades', function () {
+            return Inertia::render('Registrar/RegistrarGrades');
+        })->name('registrar.grades');
+    
+        Route::get('/profile', function () {
+            return Inertia::render('Registrar/RegistrarProfile');
+        })->name('registrar.profile');
+    
+        Route::get('/settings', function () {
+            return Inertia::render('Registrar/RegistrarSettings');
+        })->name('registrar.settings');
+    });;
+
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
         Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');

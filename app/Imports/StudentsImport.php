@@ -5,12 +5,15 @@ namespace App\Imports;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Section;
+use App\Models\Status;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\SectionResource; // Add this import if SectionResource exists in this namespace
 
 class StudentsImport implements ToCollection, WithHeadingRow
 {
@@ -23,46 +26,59 @@ class StudentsImport implements ToCollection, WithHeadingRow
     protected $tenant_id;
     protected $user_id;
 
-    public function __construct($meta = [])
+    public function __construct($section_id)
     {
-        $this->section_id = $meta['section_id'] ?? null;
-        $this->program_id = $meta['program_id'] ?? null;
-        $this->track_id = $meta['track_id'] ?? null;
-        $this->study_mode_id = $meta['study_mode_id'] ?? null;
-        $this->year_id = $meta['year_id'] ?? null;
-        $this->semester_id = $meta['semester_id'] ?? null;
-        $this->tenant_id = $meta['tenant_id'] ?? null;
-        $this->user_id = $meta['user_id'] ?? null;
+        $this->section_id = $section_id;
     }
 
     public function collection(Collection $rows)
     {
-        $section = Section::find($this->section_id);
+        $section = Section::findOrFail($this->section_id);
 
-        dd($section);
+        $section = new SectionResource($section->load([
+            'user', 'program', 'track', 'year', 'semester', 'studyMode',
+        ]));
+
+        $this->program_id = $section->program->id;
+        $this->track_id = $section->track->id;
+        $this->study_mode_id = $section->studyMode->id;
+        $this->year_id = $section->year->id;
+        $this->semester_id = $section->semester->id;
+        $this->tenant_id = $section->user->tenant_id; // assuming user relation carries tenant
+        $this->user_id = $section->user->id;
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
-                // Skip empty rows
-                if (!$row['id_number'] || !$row['full_name']) {
-                    continue;
-                }
+                if (!$row['id_number'] || !$row['full_name']) continue;
 
                 $fullNameParts = explode(' ', $row['full_name']);
                 $firstName = $fullNameParts[0] ?? '';
                 $middleName = $fullNameParts[1] ?? '';
                 $lastName = $fullNameParts[2] ?? '';
 
-                // Create a user if necessary (you can adjust this)
-                $user = User::firstOrCreate([
-                    'email' => strtolower(Str::slug($firstName . $row['id_number'], '.')) . '@example.com',
-                ], [
+                $email = strtolower(Str::slug($firstName . '.' . $middleName)) . '@sits.edu.et';
+
+                // 👤 Generate custom user_uuid
+                $studentCount = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+                
+                // This year last two digits
+                $academicYear = substr(date('Y'), -2); // Get last two digits of the current year
+                
+                $userUuid = 'SITS-' . str_pad($studentCount, 4, '0', STR_PAD_LEFT) . '-' . $academicYear;
+                
+                $default_password = strtolower($firstName) . '@' . substr($row['phone'], -4) ; // Default password for new users
+                
+                $user = User::firstOrCreate(['email' => $email], [
+                    'user_uuid' => $userUuid,
                     'name' => $firstName . ' ' . $middleName,
-                    'password' => Hash::make('password'),
+                    'email' => $email,
+                    'password' => Hash::make($default_password),
+                    'default_password' => $default_password,
                 ]);
 
-                Student::updateOrCreate([
-                    'id_no' => $row['id_number'],
+                // 👨‍🎓 Create Student
+                $student = Student::updateOrCreate([
+                    'id_no' => $userUuid,
                 ], [
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
@@ -80,7 +96,40 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     'tenant_id' => $this->tenant_id,
                     'user_id' => $user->id,
                 ]);
+
+                // ✅ Register Student Status
+                $this->createStudentStatus($student);
+
+                // ⛪️ Add Church Info (if data exists)
+                if (!empty($row['pastor_name']) || !empty($row['church_name'])) {
+                    $this->createStudentChurch($student, $row->toArray());
+                }
             }
         });
+    }
+
+    private function createStudentStatus(Student $student): void
+    {
+        $status = new Status;
+        $status->student_id = $student->id;
+        $status->user_id = $student->user->id;
+        $status->is_active = true;
+        $status->created_by_name = Auth::user()?->name ?? 'System';
+        $status->created_at = now();
+        $status->save();
+    }
+
+    private function createStudentChurch(Student $student, array $fields): void
+    {
+        $church_data = [
+            'student_id' => $student->id,
+            'pastor_name' => $fields['pastor_name'] ?? null,
+            'pastor_phone' => $fields['pastor_phone'] ?? null,
+            'position_denomination' => $fields['position_denomination'] ?? null,
+            'church_name' => $fields['church_name'] ?? null,
+            'church_address' => $fields['church_address'] ?? null,
+        ];
+
+        $student->church()->create($church_data);
     }
 }

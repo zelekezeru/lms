@@ -404,6 +404,23 @@ const afterLeave = (el) => {
                     </SidebarDrowpdownLink>
                 </SidebarDropdownMenu>
 
+                <!-- Centers -->
+                <SidebarDropdownMenu
+                    :label="$t('sidebar.centers')"
+                    :icon="BuildingOffice2Icon"
+                    :sidebar-hovered="sidebarHovered"
+                    :sidebar-visible="sidebarVisible"
+                    v-show="userCanAny(['view-centers'])"
+                >
+                    <SidebarDrowpdownLink
+                        v-show="userCan('view-centers')"
+                        :href="route('centers.index')"
+                    >
+                        <BuildingOffice2Icon class="w-4 h-5 mr-2 text-gray-200" />
+                        <span class="text-sm">{{ $t('sidebar.manage_centers') }}</span>
+                    </SidebarDrowpdownLink>
+                </SidebarDropdownMenu>  
+
                 <!-- Inventory -->
                 <SidebarDropdownMenu
                     :label="$t('sidebar.inventory')"

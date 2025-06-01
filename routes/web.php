@@ -172,6 +172,8 @@ Route::middleware(['auth'])->group(function () {
         'paymentSchedules' => 'paymentSchedule',
         'paymentTypes' => 'paymentType',
         'paymentMethods' => 'paymentMethod',
+        'centers' => 'center',
+        'coordinators' => 'coordinator',
     ];
 
     foreach ($resourceRoutes as $route => $singular) {

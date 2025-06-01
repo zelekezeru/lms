@@ -18,6 +18,24 @@
       "courses": "ኮርሶች",
       "sections": "ክፍሎች",
       "students": "ተማሪዎች"
+    },
+    "sections": {
+      "no": "ቁጥር",
+      "title": "ክፍሎች",
+      "add": "ክፍል ይጨምሩ",
+      "name": "ስም",
+      "study_mode": "የትምህርት ዘዴ",
+      "year": "ዓመት",
+      "semester": "ሴሚስተር",
+      "na": "አይገኝም",
+      "actions": "ድርጊቶች",
+      "description": "መግለጫ",
+      "duration": "የቆይታ ጊዜ (በሰአት)",
+      "instructors": "አስተማሪዎች",
+      "select_instructors": "አስተማሪዎችን ይምረጡ",
+      "assign_instructors": "አስተማሪዎችን ይመድቡ",
+      "assigning": "በማመደብ ላይ...",
+      "assign": "ይምደቡ"
     }
   },
   "programs": {
@@ -158,6 +176,56 @@
       "entries": "ግቤቶች"
     },
     "actions": "ድርጊቶች"
+  },
+  "centers": {
+    "no": "ቁጥር",
+    "title": "ማዕከሎች",
+    "search_placeholder": "ማዕከሎችን ይፈልጉ...",
+    "add_center": "ማዕከል ይጨምሩ",
+    "name": "የማዕከል ስም",
+    "location": "ቦታ",
+    "description": "መግለጫ",
+    "status": "ሁኔታ",
+    "select_status": "ሁኔታ ይምረጡ (ነባሪ፦ ገቢር)",
+    "active": "ገቢር",
+    "inactive": "ገቢር ያልሆነ",
+    "refresh": "ያድሱ",
+    "action": "ድርጊት",
+    "view": "ይመልከቱ",
+    "edit": "ያስተካክሉ",
+    "delete": "ያጥፉ",
+    "details_title": "{name} መረጃ",
+    "create_title": "አዲስ ማዕከል ይፍጠሩ",
+    "create_description": "ከዚህ በታች የማዕከሉን መረጃ ይሙሉ",
+    "add": "ማዕከል አክል",
+    "search": "ማዕከላትን ፈልግ...",
+    "address": "አድራሻ",
+    "phone": "ስልክ",
+    "email": "ኢሜል",
+    "no_centers_found": "ምንም ማዕከላት አልተገኙም።",
+    "noCenters": "ምንም ማዕከላት አልተገኙም።",
+    "edit_title": "ማዕከል አርትዕ",
+    "edit_description": "የማዕከሉን መረጃ ያርትዑ።"
+  },
+  "coordinators": {
+    "title": "አስተባባሪዎች",
+    "search_placeholder": "አስተባባሪዎች ይፈልጉ...",
+    "add_coordinator": "አስተባባሪ ይጨምሩ",
+    "name": "ስም",
+    "email": "ኢሜል",
+    "phone": "ስልክ",
+    "status": "ሁኔታ",
+    "select_status": "ሁኔታ ይምረጡ (ነባሪው 'በሥራ ላይ' ነው)",
+    "active": "በሥራ ላይ ያለ",
+    "inactive": "በሥራ ላይ ያልሆነ",
+    "refresh": "ያድሱ",
+    "action": "ድርጊት",
+    "view": "ይመልከቱ",
+    "edit": "ያስተካክሉ",
+    "delete": "ያጥፉ",
+    "details_title": "{name} መረጃ",
+    "create_title": "አዲስ አስተባባሪ ይፍጠሩ",
+    "create_description": "ከዚህ በታች የአስተባባሪውን መረጃ ይሙሉ"
   },
   "year": {
     "details_title": "የ {year} ዓ.ም. ዝርዝር መረጃ",
@@ -322,7 +390,8 @@
   "actions": {
     "edit": "ያስተካክሉ",
     "delete": "ያጥፉ"
-  },"sidebar": {
+  },
+  "sidebar": {
     "dashboard": "ዳሽቦርድ",
     "menu": "ምናሌ",
     "tenants": "ተቋማት",
@@ -350,13 +419,15 @@
     "manage_student": "ተማሪዎችን አስተዳድር",
     "register_student": "ተማሪ መመዝገብ",
     "manage_user_document": "የተጠቃሚ ሰነዶችን አስተዳድር",
+    "centers": "ማዕከሎች",
+    "manage_centers": "ማዕከሎችን አስተዳድር",
     "inventory": "እቃ መዝገብ",
     "all_inventories": "ሁሉንም እቃዎች",
     "inventory_suppliers": "የእቃ አቅራቢዎች",
     "inventory_categories": "የእቃ ምድቦች",
     "payment": "ክፍያ",
     "all_payments": "ሁሉንም ክፍያዎች"
-},
+  },
   "login": "ይግቡ",
   "email": "ኢሜል",
   "password": "የይለፍ ቃል",

@@ -131,20 +131,6 @@ class StudentController extends Controller
 
         $user = new UserResource($student->user->load('userDocuments'));
 
-        // For Transcript
-        // $student->load([
-        //     'user',
-        //     'program',
-        //     'track',
-        //     'studyMode',
-        //     'year',
-        //     'courses' => function ($q) {
-        //         $q->withPivot('status');
-        //     },
-        //     'semester',
-        //     'section',
-        // ]);
-
         $semesters = $student->semesters()
             ->with(['year', 'grades' => fn($q) => $q
                 ->with(['course', 'section', 'semester']),])->get();

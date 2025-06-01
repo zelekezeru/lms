@@ -175,6 +175,18 @@ class RolePermissionSeeder extends Seeder
             'update-rooms',
             'delete-rooms',
 
+            // Center (CRUD)
+            'view-centers',
+            'create-centers',
+            'update-centers',
+            'delete-centers',
+
+            // Coordinator (CRUD)
+            'view-coordinators',
+            'create-coordinators',
+            'update-coordinators',
+            'delete-coordinators',
+
             // Payment (CRUD)
             'view-payments',
             'create-payments',
@@ -435,6 +447,18 @@ class RolePermissionSeeder extends Seeder
                     'update-curriculums',
                     'delete-curriculums',
 
+                    // Centers (CRUD)
+                    'view-centers',
+                    'create-centers',
+                    'update-centers',
+                    'delete-centers',
+
+                    // Coordinators (CRUD)
+                    'view-coordinators',
+                    'create-coordinators',
+                    'update-coordinators',
+                    'delete-coordinators',
+
                     // Payments (CRUD)
                     'view-payments',
                     'create-payments',
@@ -611,6 +635,18 @@ class RolePermissionSeeder extends Seeder
                     'create-curriculums',
                     'update-curriculums',
                     'delete-curriculums',
+
+                    // Centers (CRUD)
+                    'view-centers',
+                    'create-centers',
+                    'update-centers',
+                    'delete-centers',
+
+                    // Coordinators (CRUD)
+                    'view-coordinators',
+                    'create-coordinators',
+                    'update-coordinators',
+                    'delete-coordinators',
 
                     // Payment (CRUD)
                     'create-payments',
@@ -802,6 +838,18 @@ class RolePermissionSeeder extends Seeder
                     'create-curriculums',
                     'update-curriculums',
                     'delete-curriculums',
+
+                    // Centers (CRUD)
+                    'view-centers',
+                    'create-centers',
+                    'update-centers',
+                    'delete-centers',
+
+                    // Coordinators (CRUD)
+                    'view-coordinators',
+                    'create-coordinators',
+                    'update-coordinators',
+                    'delete-coordinators',
 
                     // Payment (CRUD)
                     'view-payments',
@@ -1007,6 +1055,18 @@ class RolePermissionSeeder extends Seeder
                     'create-curriculums',
                     'update-curriculums',
                     'delete-curriculums',
+
+                    // Centers (CRUD)
+                    'view-centers',
+                    'create-centers',
+                    'update-centers',
+                    'delete-centers',
+
+                    // Coordinators (CRUD)
+                    'view-coordinators',
+                    'create-coordinators',
+                    'update-coordinators',
+                    'delete-coordinators',
 
                     // Assigning Relationships
                     'section-courses',

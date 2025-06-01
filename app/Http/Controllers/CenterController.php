@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\CenterStoreRequest;
+use App\Http\Requests\CenterUpdateRequest;
+use App\Http\Resources\CenterResource;
+use App\Http\Resources\UserResource;
+use App\Models\Center;
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class CenterController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Center::with('coordinator');
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhereHas('coordinator', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        $centers = CenterResource::collection($query->paginate(15));
+        
+        return inertia('Centers/Index', [
+            'centers' => $centers,
+        ]);
+    }
+
+    public function show(Center $center)
+    {
+        return inertia('Centers/Show', [
+            'center' => new CenterResource($center->load('coordinator')),
+        ]);
+    }
+
+    public function create()
+    {
+        return inertia('Centers/Create', [
+            'users' => UserResource::collection(User::all()),
+        ]);
+    }
+
+    public function store(CenterStoreRequest $request)
+    {
+        $fields = $request->validated();
+
+        // Generate Center Code
+        $counCenters = Center::count();
+
+        $fields['code'] = 'SITS-C-' . str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
+        
+        $center = Center::create($fields);
+
+        // Create Coordinator record
+        if($request['user_id']) {
+            $user = User::find($fields['user_id']);
+        
+            $user->assignRole('CENTER-COORDINATOR');
+
+            $user->update(['center_id' => $center->id]);
+        }
+
+        return redirect()->route('centers.show', $center)->with('success', 'Center created successfully.');
+    }
+
+    public function edit(Center $center)
+    {
+        return inertia('Centers/Edit', [
+            'center' => new CenterResource($center),
+            'users' => UserResource::collection(User::all()),
+        ]);
+    }
+
+    public function update(CenterUpdateRequest $request, Center $center)
+    {
+        $fields = $request->validated();
+
+        $center->update($fields);
+
+        $user = User::find($fields['user_id']);
+        if ($user && !$user->hasRole('CENTER-COORDINATOR')) {
+            $user->assignRole('CENTER-COORDINATOR');
+        }
+
+        return redirect()->route('centers.show', $center)->with('success', 'Center updated successfully.');
+    }
+
+    public function destroy(Center $center)
+    {
+        $center->delete();
+
+        return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
+    }
+}

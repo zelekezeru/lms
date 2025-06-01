@@ -10,16 +10,14 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
-use App\Models\ClassSchedule;
-use App\Models\CourseSectionAssignment;
 use App\Models\Course;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Models\CourseSectionAssignment;
 use App\Models\Instructor;
 use App\Models\Room;
 use App\Models\Section;
 use App\Models\Semester;
-use PhpParser\Builder\Class_;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InstructorPortalController extends Controller
 {
@@ -50,13 +48,12 @@ class InstructorPortalController extends Controller
                 $query->withCount([
                     'courseSectionAssignments as sectionsCount' => function ($q) use ($instructor) {
                         $q->where('instructor_id', $instructor->id);
-                    }
+                    },
                 ]);
             },
         ]);
 
         $instructor = new InstructorResource($instructor);
-
 
         return inertia('InstructorPortal/Courses', [
             'instructor' => $instructor,
@@ -65,8 +62,8 @@ class InstructorPortalController extends Controller
 
     public function courseDetail(Course $course)
     {
-        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later 
-        if (!$course->instructors->contains(request()->user()->instructor->id)) {
+        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later
+        if (! $course->instructors->contains(request()->user()->instructor->id)) {
             abort(403);
         }
 
@@ -75,11 +72,11 @@ class InstructorPortalController extends Controller
         );
 
         $course = new CourseResource($course->load([
-            'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseSectionAssignments' => fn ($q) => $q->where('instructor_id', $instructor->id),
             'courseSectionAssignments.section',
             'courseSectionAssignments.section.program',
             'courseSectionAssignments.section.track',
-            'courseSectionAssignments.section.studyMode'
+            'courseSectionAssignments.section.studyMode',
         ]));
 
         return Inertia::render('InstructorPortal/CourseDetail', [
@@ -130,7 +127,7 @@ class InstructorPortalController extends Controller
 
     public function sectionDetail(Section $section)
     {
-        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later 
+        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later
         // if (!$course->instructors->contains(request()->user()->instructor->id)) {
         //     abort(403);
         // }
@@ -140,11 +137,11 @@ class InstructorPortalController extends Controller
         );
 
         $section = new SectionResource($section->load([
-            'courseSectionAssignments' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseSectionAssignments' => fn ($q) => $q->where('instructor_id', $instructor->id),
             'courseSectionAssignments.course',
             'program',
             'track',
-            'studyMode'
+            'studyMode',
         ]));
 
         return Inertia::render('InstructorPortal/SectionDetail', [
@@ -173,7 +170,6 @@ class InstructorPortalController extends Controller
         $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
         $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with(['room', 'attendances.student'])->get());
         $rooms = RoomResource::collection(Room::all());
-
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,

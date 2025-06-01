@@ -22,24 +22,25 @@ class CourseResource extends JsonResource
             'tracks' => $this->whenLoaded('tracks'),
             'instructors' => InstructorResource::collection($this->whenLoaded('instructors')),
             'sections' => SectionResource::collection($this->whenLoaded('courseSectionAssignments', function () {
-                return $this->courseSectionAssignments->map(fn($assignment) => $assignment->section);
+                return $this->courseSectionAssignments->map(fn ($assignment) => $assignment->section);
             })),
             'sectionsCount' => $this->sectionsCount ?? null,
             'instructor' => $this->whenLoaded('courseSectionAssignments', function () {
                 $assignment = $this->courseSectionAssignments->first();
+
                 return $assignment && $assignment->instructor
                     ? new InstructorResource($assignment->instructor)
                     : null;
             }),
             'isCommon' => $this->when(
                 $this->pivot?->is_common !== null,
-                fn() => $this->pivot->is_common
+                fn () => $this->pivot->is_common
             ),
 
-            'studentStatus' => $this->whenPivotLoaded('course_student', function()  {
+            'studentStatus' => $this->whenPivotLoaded('course_student', function () {
                 return $this->pivot->status;
             }),
-            
+
             'credit_hours' => $this->credit_hours,
             'duration' => $this->duration,
             'description' => $this->description,

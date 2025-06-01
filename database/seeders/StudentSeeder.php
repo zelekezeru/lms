@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Faker\Factory as Faker;
 
 class StudentSeeder extends Seeder
 {
@@ -112,7 +112,7 @@ class StudentSeeder extends Seeder
                 'created_at' => '2025-05-11 18:28:40',
                 'updated_at' => '2025-05-11 18:28:40',
             ],
-        ]);        
+        ]);
 
         // Assign the SUPER-ADMIN role to the user
         DB::table('model_has_roles')->insert([
@@ -126,11 +126,11 @@ class StudentSeeder extends Seeder
         // Generate 19 more random students
         $faker = Faker::create();
         for ($i = 2; $i <= 20; $i++) { // Changed loop to start from 2
-            $user_uuid = 'SITS-' . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT) . '-' . mt_rand(20, 30);
+            $user_uuid = 'SITS-'.str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT).'-'.mt_rand(20, 30);
             $firstName = $faker->firstName;
             $middleName = $faker->firstName;
             $lastName = $faker->lastName;
-            $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
+            $email = strtolower($firstName).'.'.strtolower($lastName).'@sits.edu.et';
             $phone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
             $officePhone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
             $dateOfBirth = $faker->date('Y-m-d', '2005-12-31'); // Set an upper limit
@@ -139,13 +139,13 @@ class StudentSeeder extends Seeder
                 [
                     'id' => $i + 2, // Ensure unique user IDs, offset from the initial user
                     'user_uuid' => $user_uuid,
-                    'name' => $firstName . ' ' . $middleName . ' ' . $lastName,
+                    'name' => $firstName.' '.$middleName.' '.$lastName,
                     'email' => $email,
                     'phone' => $phone,
                     'profile_img' => null,
                     'email_verified_at' => null,
-                    'password' => Hash::make($firstName . '@' . substr($phone, -4)), // Default password
-                    'default_password' => $firstName . '@' . substr($phone, -4), // Example: Abel@8855
+                    'password' => Hash::make($firstName.'@'.substr($phone, -4)), // Default password
+                    'default_password' => $firstName.'@'.substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
                     'created_at' => now(),
@@ -214,7 +214,7 @@ class StudentSeeder extends Seeder
                     'scholarship_approved_at' => null,
                     'scholarship_verified_at' => null,
                     'student_id' => $i,
-                    'user_id' => $i+2,
+                    'user_id' => $i + 2,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
@@ -233,7 +233,7 @@ class StudentSeeder extends Seeder
                     'updated_at' => now(),
                 ],
             ]);
-            
+
             // Assign the SUPER-ADMIN role to the user
             DB::table('model_has_roles')->insert([
                 [

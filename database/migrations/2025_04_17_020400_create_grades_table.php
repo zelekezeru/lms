@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('changed_grade')->nullable();
             $table->string('grade_status')->default('Pending');
             $table->string('changed_by')->nullable();
-            
+
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('year_id')->constrained()->onDelete('cascade');

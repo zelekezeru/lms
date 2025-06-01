@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ResultUpdateRequest;
 use App\Models\Result;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ResultController extends Controller
 {

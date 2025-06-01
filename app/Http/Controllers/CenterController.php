@@ -29,7 +29,7 @@ class CenterController extends Controller
         }
 
         $centers = CenterResource::collection($query->paginate(15));
-        
+
         return inertia('Centers/Index', [
             'centers' => $centers,
         ]);
@@ -57,14 +57,14 @@ class CenterController extends Controller
         // Generate Center Code
         $counCenters = Center::count();
 
-        $fields['code'] = 'SITS-C-' . str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
-        
+        $fields['code'] = 'SITS-C-'.str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
+
         $center = Center::create($fields);
 
         // Create Coordinator record
-        if($request['user_id']) {
+        if ($request['user_id']) {
             $user = User::find($fields['user_id']);
-        
+
             $user->assignRole('CENTER-COORDINATOR');
 
             $user->update(['center_id' => $center->id]);
@@ -88,7 +88,7 @@ class CenterController extends Controller
         $center->update($fields);
 
         $user = User::find($fields['user_id']);
-        if ($user && !$user->hasRole('CENTER-COORDINATOR')) {
+        if ($user && ! $user->hasRole('CENTER-COORDINATOR')) {
             $user->assignRole('CENTER-COORDINATOR');
         }
 

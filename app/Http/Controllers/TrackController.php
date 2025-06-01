@@ -22,8 +22,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use function PHPSTORM_META\map;
-
 class TrackController extends Controller
 {
     /**
@@ -91,7 +89,7 @@ class TrackController extends Controller
 
         $track = Track::create($fields);
         $studyModes = $track->program->studyModes->pluck('id');
-        
+
         $year = substr(Carbon::now()->year, -2);
         // Create Section-1 by default for each study modes the program that the created track belongs to has.
         $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
@@ -106,7 +104,6 @@ class TrackController extends Controller
             ]);
         });
 
-        
         $commonCourses = $track->program->courses()->wherePivot('is_common', true)->pluck('courses.id');
 
         $track->courses()->syncWithoutDetaching($commonCourses);
@@ -126,14 +123,14 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode','curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
+        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode', 'curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
 
         $courses = CourseResource::collection(
             Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
                 $query->where('tracks.id', $track->id);
             }])
-            ->orderBy('name')
-            ->get()
+                ->orderBy('name')
+                ->get()
         );
 
         $years = YearResource::collection(Year::with('semesters')->get());

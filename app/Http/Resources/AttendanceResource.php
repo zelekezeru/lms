@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ClassSession;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,8 +18,8 @@ class AttendanceResource extends JsonResource
             'classSession' => new ClassSessionResource($this->whenLoaded('classSession')),
             'records' => [
                 'student' => $this->student_id,
-                'status' => $this->status
-            ]
+                'status' => $this->status,
+            ],
         ];
     }
 }

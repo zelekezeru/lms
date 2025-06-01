@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('attendances', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('class_session_id')->constrained();
-                $table->foreignId('student_id')->constrained();
-                $table->enum('status', ['permission', 'present', 'absent']);
-                $table->timestamps();
-            });
-        }
+        Schema::create('attendances', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('class_session_id')->constrained();
+            $table->foreignId('student_id')->constrained();
+            $table->enum('status', ['permission', 'present', 'absent']);
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

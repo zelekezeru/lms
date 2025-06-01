@@ -22,7 +22,7 @@ class CenterUpdateRequest extends FormRequest
                 'max:100',
                 Rule::unique('centers', 'code')->ignore($this->center->id),
             ],
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
         ];
     }
 }

@@ -106,7 +106,7 @@ class EmployeeController extends Controller
         $user = new UserResource($employee->user->load('userDocuments'));
 
         $documents = $user->userDocuments;
-        
+
         return inertia('Employees/Show', [
             'employee' => new EmployeeResource($employee->load('user')),
             'user' => $user,

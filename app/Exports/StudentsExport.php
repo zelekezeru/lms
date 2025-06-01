@@ -11,7 +11,6 @@ class StudentsExport implements FromCollection, WithHeadings
 
     /**
      * StudentsExport constructor.
-     * @param $students
      */
     public function __construct($students)
     {
@@ -19,14 +18,15 @@ class StudentsExport implements FromCollection, WithHeadings
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $i = 1;
+
         return $this->students->map(function ($student) use (&$i) {
             return [
-                "No" => $i++,
+                'No' => $i++,
                 'ID_Number' => $student->id_no,
                 'Full Name' => trim("{$student->first_name} {$student->middle_name} {$student->last_name}"),
                 'Sex' => $student->sex,
@@ -48,8 +48,6 @@ class StudentsExport implements FromCollection, WithHeadings
 
     /**
      * Define the column headings for your Excel file.
-     *
-     * @return array
      */
     public function headings(): array
     {

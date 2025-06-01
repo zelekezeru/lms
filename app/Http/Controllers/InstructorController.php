@@ -100,7 +100,7 @@ class InstructorController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = 'instructor@' . $user_phone;
+        $user_password = 'instructor@'.$user_phone;
 
         // Merge the default password into the request
         $request->merge([

@@ -22,8 +22,8 @@ class SemesterController extends Controller
 
         // Paginate the results
         $semesters = $query->orderBy('status', 'asc')
-                        ->orderByDesc('start_date')
-                        ->with('year')->paginate(15)->appends($request->query());
+            ->orderByDesc('start_date')
+            ->with('year')->paginate(15)->appends($request->query());
 
         // Return inertia view with data
         return inertia('Semesters/Index', [
@@ -117,8 +117,5 @@ class SemesterController extends Controller
     }
 
     // Close Semester
-    public function close(Semester $semester)
-    {
-        
-    }
+    public function close(Semester $semester) {}
 }

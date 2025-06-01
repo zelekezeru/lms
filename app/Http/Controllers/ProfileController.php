@@ -3,12 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Http\Resources\ProgramResource;
-use App\Http\Resources\SectionResource;
-use App\Http\Resources\StudentResource;
-use App\Http\Resources\TrackResource;
-use App\Http\Resources\UserResource;
-use App\Models\Section;
 use App\Models\Student;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -17,14 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Str;
-
 
 class ProfileController extends Controller
 {
     // Student Verification
-
 
     /**
      * Display the user's profile form.

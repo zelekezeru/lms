@@ -102,7 +102,6 @@ class ProgramSeeder extends Seeder
                 'updated_at' => '2025-04-11 07:21:25',
             ],
         ]);
-        
 
         // Insert data into program_study_mode table
 
@@ -115,8 +114,8 @@ class ProgramSeeder extends Seeder
             $duration = ($programId >= 1 && $programId <= 4) || ($programId >= 7 && $programId <= 8) ? 4 : 3;
 
             // Loop through study mode ids
-            foreach($studyModeIds as $studyModeId){
-                 $data[] = [
+            foreach ($studyModeIds as $studyModeId) {
+                $data[] = [
                     'program_id' => $programId,
                     'study_mode_id' => $studyModeId,
                     'duration' => $duration,

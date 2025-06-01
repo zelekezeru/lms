@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\GradeStoreRequest;
 use App\Http\Requests\GradeUpdateRequest;
 use App\Models\Grade;
-use Illuminate\Http\Request;
 use App\Models\Student;
+use Illuminate\Http\Request;
 
 class GradeController extends Controller
 {
@@ -43,7 +42,7 @@ class GradeController extends Controller
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
-        
+
         foreach ($data['grades'] as $gradeData) {
             // Update existing or create new based on unique keys (e.g. student, course, section, year, semester)
             Grade::updateOrCreate(
@@ -53,16 +52,16 @@ class GradeController extends Controller
                     'section_id' => $gradeData['section_id'],
                     'year_id' => $gradeData['year_id'],
                     'semester_id' => $gradeData['semester_id'],
-                    
+
                 ],
                 $gradeData,
 
             );
 
             $student = Student::find($gradeData['student_id']); // Corrected method
-            
+
             $student->courses()->updateExistingPivot($gradeData['course_id'], [
-                'status' => 'Completed'
+                'status' => 'Completed',
             ]);
         }
 

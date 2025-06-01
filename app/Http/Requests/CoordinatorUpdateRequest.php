@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CoordinatorUpdateRequest extends FormRequest
 {
@@ -15,7 +14,7 @@ class CoordinatorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
+
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'center_id' => 'required|exists:centers,id',

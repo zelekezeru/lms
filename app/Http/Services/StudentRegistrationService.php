@@ -26,7 +26,7 @@ class StudentRegistrationService extends Controller
         $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
         $student_email = $this->student_email($fields);
 
-        //Date of Birth
+        // Date of Birth
         $dateOfBirth = $request->input('date_of_birth');
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
 
@@ -223,7 +223,7 @@ class StudentRegistrationService extends Controller
         do {
             $initialCount = $count ?? Student::max('id');
             $count = $initialCount + 1; // safer than count()
-            $studentUuid = 'SITS-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
+            $studentUuid = 'SITS-'.str_pad($count, 4, '0', STR_PAD_LEFT).'-'.$year;
         } while (User::where('user_uuid', $studentUuid)->exists());
 
         return $studentUuid;

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\CourseStudent;
 
 class SemesterStudent extends Model
 {
@@ -20,14 +19,17 @@ class SemesterStudent extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
     public function courses()
     {
         return $this->hasMany(CourseStudent::class);
     }
+
     public function promotionStatus()
     {
         return $this->hasOne(PromotionStatus::class);
     }
+
     public function grades()
     {
         return $this->hasMany(Grade::class);

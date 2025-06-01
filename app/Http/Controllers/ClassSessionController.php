@@ -34,7 +34,6 @@ class ClassSessionController extends Controller
 
         $fields['date_time'] = Carbon::parse($fields['date_time'])->toDateTimeString();
 
-
         $classSession = ClassSession::create($fields);
     }
 

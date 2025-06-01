@@ -38,7 +38,7 @@ class Course extends Model
     {
         return $this->hasMany(ClassSchedule::class)->where('semester_id', Semester::getActiveSemester()->id);
     }
-    
+
     public function classSessions()
     {
         return $this->hasMany(ClassSession::class)->where('semester_id', Semester::getActiveSemester()->id);

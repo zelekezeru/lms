@@ -25,7 +25,7 @@ class GradeResource extends JsonResource
             'changed_grade' => $this->changed_grade,
             'grade_status' => $this->grade_status,
             'changed_by' => $this->changed_by,
-            
+
             'user_id' => $this->user_id,
             'course_id' => $this->course_id,
             'created_at' => $this->created_at,

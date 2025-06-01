@@ -11,7 +11,7 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $section = Section::find($section)->load(['user', 'program', 'track', 'students', 'grades',]);
+        $section = Section::find($section)->load(['user', 'program', 'track', 'students', 'grades']);
 
         $course = $section->courses()->find($course)->load(['instructors', 'students']);
 
@@ -24,7 +24,6 @@ class AssessmentController extends Controller
         $grades = $section->grades()->where('course_id', $course->id)->get();
         $students = StudentResource::collection($section->studentsByCourse($course->id));
 
-                            
         // Load the instructor details
         if ($instructor) {
             $instructor = $section->courses()->where('course_id', $course->id)->first()->pivot->instructor_id;

@@ -2,28 +2,35 @@
 
 namespace App\Imports;
 
-use App\Models\Student;
-use App\Models\User;
+use App\Http\Resources\SectionResource;
 use App\Models\Section;
 use App\Models\Status;
+use App\Models\Student;
+use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\SectionResource; // Add this import if SectionResource exists in this namespace
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow; // Add this import if SectionResource exists in this namespace
 
 class StudentsImport implements ToCollection, WithHeadingRow
 {
     protected $section_id;
+
     protected $program_id;
+
     protected $track_id;
+
     protected $study_mode_id;
+
     protected $year_id;
+
     protected $semester_id;
+
     protected $tenant_id;
+
     protected $user_id;
 
     public function __construct($section_id)
@@ -49,28 +56,30 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
-                if (!$row['id_number'] || !$row['full_name']) continue;
+                if (! $row['id_number'] || ! $row['full_name']) {
+                    continue;
+                }
 
                 $fullNameParts = explode(' ', $row['full_name']);
                 $firstName = $fullNameParts[0] ?? '';
                 $middleName = $fullNameParts[1] ?? '';
                 $lastName = $fullNameParts[2] ?? '';
 
-                $email = strtolower(Str::slug($firstName) . '.' .  Str::slug($middleName)) . '@sits.edu.et';
+                $email = strtolower(Str::slug($firstName).'.'.Str::slug($middleName)).'@sits.edu.et';
 
                 // 👤 Generate custom user_uuid
                 $studentCount = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-                
+
                 // This year last two digits
                 $academicYear = substr(date('Y'), -2); // Get last two digits of the current year
-                
-                $userUuid = 'SITS-' . str_pad($studentCount, 4, '0', STR_PAD_LEFT) . '-' . $academicYear;
-                
-                $default_password = strtolower($firstName) . '@' . substr($row['phone'], -4) ; // Default password for new users
-                
+
+                $userUuid = 'SITS-'.str_pad($studentCount, 4, '0', STR_PAD_LEFT).'-'.$academicYear;
+
+                $default_password = strtolower($firstName).'@'.substr($row['phone'], -4); // Default password for new users
+
                 $user = User::firstOrCreate(['email' => $email], [
                     'user_uuid' => $userUuid,
-                    'name' => $firstName . ' ' . $middleName,
+                    'name' => $firstName.' '.$middleName,
                     'email' => $email,
                     'password' => Hash::make($default_password),
                     'default_password' => $default_password,
@@ -101,7 +110,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 $this->createStudentStatus($student);
 
                 // ⛪️ Add Church Info (if data exists)
-                if (!empty($row['pastor_name']) || !empty($row['church_name'])) {
+                if (! empty($row['pastor_name']) || ! empty($row['church_name'])) {
                     $this->createStudentChurch($student, $row->toArray());
                 }
             }

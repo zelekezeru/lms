@@ -13,18 +13,20 @@ class UsersExport implements FromCollection, WithHeadings
     {
         $this->users = $users;
     }
+
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $i = 1;
+
         return $this->users->map(function ($user) use (&$i) {
             // Check if the user has the 'INSTRUCTOR' role
             if ($user->hasRole('INSTRUCTOR')) {
-                $data =  [
-                    "No" => $i++,
-                    'ID_Number' => $user->user_uuid  ?? '',
+                $data = [
+                    'No' => $i++,
+                    'ID_Number' => $user->user_uuid ?? '',
                     'Full Name' => $user->name,
                     'Phone' => $user->phone ?? '',
                     'Email Address' => $user->email,
@@ -36,8 +38,8 @@ class UsersExport implements FromCollection, WithHeadings
             // Check if the user has the 'EMPLOYEE' role
             elseif ($user->hasRole('EMPLOYEE')) {
                 $data = [
-                    "No" => $i++,
-                    'ID_Number' => $user->user_uuid  ?? '',
+                    'No' => $i++,
+                    'ID_Number' => $user->user_uuid ?? '',
                     'Full Name' => $user->name,
                     'Phone' => $user->phone ?? '',
                     'Email Address' => $user->email,
@@ -45,7 +47,8 @@ class UsersExport implements FromCollection, WithHeadings
                     'Status' => $user->employee->status ?? '',
                 ];
             }
-            return $data;   
+
+            return $data;
         });
     }
 

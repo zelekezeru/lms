@@ -22,13 +22,13 @@ class ClassScheduleStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'section_id'   => 'required|exists:sections,id',
-            'semester_id'  => 'required|exists:semesters,id',
-            'course_id'    => 'required|exists:courses,id',
-            'room_id'    => 'required|exists:rooms,id',
+            'section_id' => 'required|exists:sections,id',
+            'semester_id' => 'required|exists:semesters,id',
+            'course_id' => 'required|exists:courses,id',
+            'room_id' => 'required|exists:rooms,id',
             'day_of_week' => 'required|string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-            'start_time'   => 'required|date|before:end_time',
-            'end_time'     => 'required|date|after:start_time',
+            'start_time' => 'required|date|before:end_time',
+            'end_time' => 'required|date|after:start_time',
         ];
     }
 }

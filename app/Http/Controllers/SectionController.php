@@ -10,7 +10,6 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
-use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
@@ -18,7 +17,6 @@ use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Room;
 use App\Models\Section;
-use App\Models\Semester;
 use App\Models\Track;
 use App\Models\User;
 use App\Models\Year;
@@ -59,7 +57,7 @@ class SectionController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
         $track = Track::find($fields['track_id']);
@@ -70,11 +68,12 @@ class SectionController extends Controller
 
         $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
             $curriculum = $trackCourse->curricula->first();
+
             return [
                 $trackCourse->id => [
                     'year_level' => $curriculum->year_level ?? null,
                     'semester' => $curriculum->semester ?? null,
-                ]
+                ],
             ];
         });
 
@@ -102,6 +101,7 @@ class SectionController extends Controller
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
 
         $currentSemester = new SemesterResource($section->semester()->with('year')->first());
+
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,
@@ -129,11 +129,12 @@ class SectionController extends Controller
 
         $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
             $curriculum = $trackCourse->curricula->first();
+
             return [
                 $trackCourse->id => [
                     'year_level' => $curriculum->year_level ?? null,
                     'semester' => $curriculum->semester ?? null,
-                ]
+                ],
             ];
         });
 

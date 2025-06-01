@@ -2,20 +2,18 @@
 
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CurriculumController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
-use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\UserDocumentController;
-use App\Http\Controllers\SemesterController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ExportController;
-use App\Http\Controllers\ImportController;
-
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -53,23 +51,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', function () {
             return Inertia::render('Registrar/RegistrarDashboard');
         })->name('registrar.dashboard');
-    
+
         Route::get('/students', function () {
             return Inertia::render('Registrar/Students/Index');
         })->name('registrar.students');
-    
+
         Route::get('/grades', function () {
             return Inertia::render('Registrar/RegistrarGrades');
         })->name('registrar.grades');
-    
+
         Route::get('/profile', function () {
             return Inertia::render('Registrar/RegistrarProfile');
         })->name('registrar.profile');
-    
+
         Route::get('/settings', function () {
             return Inertia::render('Registrar/RegistrarSettings');
         })->name('registrar.settings');
-    });;
+    });
 
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
@@ -222,4 +220,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

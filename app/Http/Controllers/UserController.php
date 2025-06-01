@@ -11,8 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -54,13 +54,13 @@ class UserController extends Controller
         $image = $request->file('profile_img');
 
         if ($image) {
-            $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
-            $path = storage_path('app/public/profile-images/' . $imageName);
-    
+            $imageName = Str::uuid().'.'.$image->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/'.$imageName);
+
             Image::make($image)->resize(300, 300)->save($path);
-    
+
             $user->update([
-                'profile_img' => 'profile-images/' . $imageName,
+                'profile_img' => 'profile-images/'.$imageName,
             ]);
         }
 
@@ -107,14 +107,14 @@ class UserController extends Controller
             if ($user->profile_img) {
                 Storage::disk('public')->delete($user->profile_img);
             }
-    
-            $imageName = Str::uuid() . '.' . $profileImg->getClientOriginalExtension();
-            $path = storage_path('app/public/profile-images/' . $imageName);
-    
+
+            $imageName = Str::uuid().'.'.$profileImg->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/'.$imageName);
+
             Image::make($profileImg)->resize(300, 300)->save($path);
-    
-            $user->profile_img = 'profile-images/' . $imageName;
-        }    
+
+            $user->profile_img = 'profile-images/'.$imageName;
+        }
 
         // Update user details
         $user->update([

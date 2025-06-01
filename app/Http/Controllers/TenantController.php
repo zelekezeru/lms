@@ -9,12 +9,12 @@ use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
 use App\Models\Tenant;
 use App\Models\User;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class TenantController extends Controller
 {
@@ -99,19 +99,19 @@ class TenantController extends Controller
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $image = $request->file('logo');
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-        
+            $filename = time().'.'.$image->getClientOriginalExtension();
+
             // Resize the image
             $resizedImage = Image::make($image)->resize(300, 300)->encode();
-        
+
             // Save to public disk
-            Storage::disk('public')->put('tenants-logo/' . $filename, $resizedImage);
-        
-            $fields['logo'] = '/storage/tenants-logo/' . $filename;
+            Storage::disk('public')->put('tenants-logo/'.$filename, $resizedImage);
+
+            $fields['logo'] = '/storage/tenants-logo/'.$filename;
         } else {
             unset($fields['logo']);
         }
-        
+
         // Creating Tenant Code
         $year = substr(Carbon::now()->year, -2);
 
@@ -180,18 +180,17 @@ class TenantController extends Controller
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $image = $request->file('logo');
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-        
+            $filename = time().'.'.$image->getClientOriginalExtension();
+
             // Resize and save using Intervention
             $resizedImage = Image::make($image)->resize(300, 300)->encode();
-        
-            Storage::disk('public')->put('tenants-logo/' . $filename, $resizedImage);
-        
-            $fields['logo'] = '/storage/tenants-logo/' . $filename;
+
+            Storage::disk('public')->put('tenants-logo/'.$filename, $resizedImage);
+
+            $fields['logo'] = '/storage/tenants-logo/'.$filename;
         } else {
             unset($fields['logo']);
         }
-        
 
         // Update the tenant
         $tenant->update($fields);

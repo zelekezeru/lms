@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('study_mode_id')->nullable()->constrained();
 
             // these stands for batch so if a section is at year level 1 at 2025 then the batch(year_id) will be a link to 2025 on years table
-            $table->foreignId('year_id')->nullable()->constrained(); 
+            $table->foreignId('year_id')->nullable()->constrained();
             // these stands for the current status of the section so if the section is 2 years in to the program they are called 2nd years(just 2)
             $table->foreignId('semester_id')->nullable()->constrained();
             $table->timestamps();

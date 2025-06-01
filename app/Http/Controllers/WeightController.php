@@ -45,11 +45,11 @@ class WeightController extends Controller
     public function store(WeightStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $instructorId = CourseSectionAssignment::where('course_id', $fields['course_id'])
-                                    ->where('section_id', $fields['section_id'])
-                                    ->first()
-                                    ->instructor_id;
+            ->where('section_id', $fields['section_id'])
+            ->first()
+            ->instructor_id;
         $fields['instructor_id'] = $instructorId ?? Auth::id(); // Set the instructor_id to the authenticated user's ID if there is no instructor
 
         $weight = Weight::create($fields);

@@ -9,11 +9,10 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StudentResource;
-use App\Http\Resources\TrackResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\YearResource;
 use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\UserDocumentResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\YearResource;
 use App\Http\Services\StudentRegistrationService;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
@@ -24,18 +23,14 @@ use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\StudyMode;
-use App\Models\Track;
 use App\Models\User;
 use App\Models\Year;
-use App\Models\SemesterStudent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
-
-use function PHPSTORM_META\map;
 
 class StudentController extends Controller
 {
@@ -66,7 +61,7 @@ class StudentController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        // Paginate and transform 
+        // Paginate and transform
         $paginatedStudents = $query->paginate(30)->withQueryString();
 
         $students = StudentResource::collection($paginatedStudents);
@@ -92,7 +87,7 @@ class StudentController extends Controller
             $status->save();
         }
 
-        $student = new StudentResource($student->load(['user', 'courses' => fn($q) => $q->withPivot('status'), 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
+        $student = new StudentResource($student->load(['user', 'courses' => fn ($q) => $q->withPivot('status'), 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
 
         $yearLevel = $student->section->yearLevel();
         $semester = $student->section->semester->level;
@@ -132,8 +127,8 @@ class StudentController extends Controller
         $user = new UserResource($student->user->load('userDocuments'));
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q
-                ->with(['course', 'section', 'semester']),])->get();
+            ->with(['year', 'grades' => fn ($q) => $q
+                ->with(['course', 'section', 'semester']), ])->get();
 
         $activeSemester = Semester::where('status', 'Active')->with('year')->get();
 
@@ -168,7 +163,6 @@ class StudentController extends Controller
 
         $studyModes = StudyModeResource::collection(StudyMode::all());
 
-
         return inertia('Students/Create', [
             'programs' => $programs,
             'years' => $years,
@@ -194,6 +188,7 @@ class StudentController extends Controller
 
         $years = YearResource::collection(Year::with('semesters')->get());
         $student = new StudentResource($student->load('user', 'program', 'track', 'year', 'semester', 'section', 'studyMode', 'status'));
+
         return Inertia::render('Students/Edit', [
             'student' => $student,
             'programs' => $programs,
@@ -268,17 +263,17 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_' . $statusField)) {
+                if ($request->has('is_'.$statusField)) {
                     // Check if the status field is already set to 1
-                    if ($status->{'is_' . $statusField} == 1) {
+                    if ($status->{'is_'.$statusField} == 1) {
                         // If it's already 1, set it to 0
-                        $status->{'is_' . $statusField} = 0;
+                        $status->{'is_'.$statusField} = 0;
                     } else {
                         // If it's not set, set it to 1
-                        $status->{'is_' . $statusField} = 1;
+                        $status->{'is_'.$statusField} = 1;
                     }
-                    $status->{$statusField . '_by_name'} = Auth::user()->name;
-                    $status->{$statusField . '_at'} = now();
+                    $status->{$statusField.'_by_name'} = Auth::user()->name;
+                    $status->{$statusField.'_at'} = now();
                 }
             }
         }
@@ -316,7 +311,7 @@ class StudentController extends Controller
         $semesters = $student->semesters()
             ->with([
                 'year',
-                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
+                'grades' => fn ($q) => $q->with(['course', 'section', 'semester']),
             ])
             ->get();
 
@@ -348,7 +343,7 @@ class StudentController extends Controller
 
         /**
          * Arrange the courses so that it is suitable to sync the student to the courses with section_id pivot column
-         * eg: 
+         * eg:
          * [
          *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
          * ]
@@ -356,7 +351,7 @@ class StudentController extends Controller
         $organizedCourses = [];
         foreach ($sectionCourseIds as $courseId) {
             $organizedCourses[$courseId] = [
-                'section_id' => $section->id
+                'section_id' => $section->id,
             ];
         }
 
@@ -368,7 +363,6 @@ class StudentController extends Controller
             ->where('student_id', $student->id)
             ->whereIn('status', ['Active', 'Enrolled'])
             ->update(['status' => 'Completed']);
-
 
         // Upsert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(

@@ -9,11 +9,9 @@ use App\Http\Resources\UserResource;
 use App\Models\Coordinator;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use Carbon\Carbon;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class CoordinatorController extends Controller
 {
@@ -57,24 +55,24 @@ class CoordinatorController extends Controller
     public function store(CoordinatorStoreRequest $request)
     {
         $fields = $request->validated();
-        
+
         $fullNameParts = explode(' ', $fields['name']);
         $firstName = $fullNameParts[0] ?? '';
         $middleName = $fullNameParts[1] ?? '';
         $lastName = $fullNameParts[2] ?? '';
 
-        $email = strtolower(Str::slug($firstName) . '.' .  Str::slug($middleName)) . '@sits.edu.et';
+        $email = strtolower(Str::slug($firstName).'.'.Str::slug($middleName)).'@sits.edu.et';
 
         // 👤 Generate custom user_uuid
         $coordinatorsCount = str_pad(Coordinator::count() + 1, 4, '0', STR_PAD_LEFT);
-        
+
         // This year last two digits
         $academicYear = substr(date('Y'), -2); // Get last two digits of the current year
-        
-        $userUuid = 'SITS-CO-' . str_pad($coordinatorsCount, 4, '0', STR_PAD_LEFT);
-        
-        $default_password = strtolower($firstName) . '@' . substr($fields['phone'], -4) ; // Default password for new users
-        
+
+        $userUuid = 'SITS-CO-'.str_pad($coordinatorsCount, 4, '0', STR_PAD_LEFT);
+
+        $default_password = strtolower($firstName).'@'.substr($fields['phone'], -4); // Default password for new users
+
         $data = [
             'name' => $fields['name'],
             'tenant_id' => 1, // Assuming tenant_id is static for now
@@ -87,7 +85,7 @@ class CoordinatorController extends Controller
             'password' => Hash::make($default_password),
             'default_password' => $default_password,
         ];
-        
+
         $user = User::create($data);
 
         $coordinator = Coordinator::create([
@@ -117,7 +115,7 @@ class CoordinatorController extends Controller
         $coordinator->update($fields);
 
         $user = User::find($fields['user_id']);
-        if ($user && !$user->hasRole('COORDINATOR')) {
+        if ($user && ! $user->hasRole('COORDINATOR')) {
             $user->assignRole('COORDINATOR');
         }
 

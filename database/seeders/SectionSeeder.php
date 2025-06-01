@@ -38,7 +38,7 @@ class SectionSeeder extends Seeder
                 $data[] = [
                     'id' => $i,
                     'name' => 'Section 1',
-                    'code' => 'SC-25-' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'code' => 'SC-25-'.str_pad($i, 2, '0', STR_PAD_LEFT),
                     'year_id' => $yearId,
                     'user_id' => $userId,
                     'program_id' => $programId,
@@ -51,7 +51,7 @@ class SectionSeeder extends Seeder
             }
         }
 
-        DB::table('sections')->insert($data);   
+        DB::table('sections')->insert($data);
 
         $data = [];
         $isCommon = 0;

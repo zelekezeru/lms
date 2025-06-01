@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\StudentResource;
-use App\Models\CourseSectionAssignment;
 use App\Models\Course;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Instructor;
+use Inertia\Inertia;
 
 class StudentPortalController extends Controller
 {
     public function index()
     {
         $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
-        
+
         return inertia('StudentPortal/Dashboard', [
             'student' => $student,
         ]);
@@ -28,7 +26,6 @@ class StudentPortalController extends Controller
             $query->where('sections.id', $student->section_id);
         })->with('user')->get();
 
-
         return inertia('StudentPortal/Courses', [
             'student' => $student,
             'instructor' => $instructors,
@@ -41,7 +38,7 @@ class StudentPortalController extends Controller
 
         return Inertia::render('StudentPortal/CourseDetail', [
             'course' => $course,
-            'student' => $student
+            'student' => $student,
         ]);
     }
 
@@ -74,5 +71,4 @@ class StudentPortalController extends Controller
             'student' => $student,
         ]);
     }
-
 }

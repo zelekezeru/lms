@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Calendar;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use App\Http\Resources\SemesterResource;
+use App\Models\Semester;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use App\Models\Semester;
 
 class CalendarController extends Controller
 {
@@ -45,7 +43,7 @@ class CalendarController extends Controller
     {
         $activeSemester = Semester::where('status', 'Active')->first();
 
-        if (!$activeSemester) {
+        if (! $activeSemester) {
             return redirect()->back()->with('error', 'No active semester found.');
         }
 
@@ -61,7 +59,7 @@ class CalendarController extends Controller
     {
         $activeSemester = Semester::where('status', 'Active')->with('year')->first();
 
-        if (!$activeSemester) {
+        if (! $activeSemester) {
             return redirect()->back()->with('error', 'No active semester to close.');
         }
 
@@ -92,7 +90,7 @@ class CalendarController extends Controller
 
         $newSemester = Semester::find($request->new_semester_id);
 
-        if (!$activeSemester || !$newSemester) {
+        if (! $activeSemester || ! $newSemester) {
             return redirect()->back()->with('error', 'No active semester to close.');
         } elseif ($newSemester->status == 'Active') {
             return redirect()->back()->with('error', 'The selected semester is already active.');

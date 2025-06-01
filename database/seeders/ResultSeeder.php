@@ -14,7 +14,7 @@ class ResultSeeder extends Seeder
     {
         DB::table('results')->insert([
             ['id' => 1, 'point' => 12, 'weight_id' => 1, 'student_id' => 1, 'instructor_id' => 1],
-            
+
         ]);
     }
 }

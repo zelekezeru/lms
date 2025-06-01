@@ -97,7 +97,7 @@ class ProgramController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $program_id = 'PR' . '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
+        $program_id = 'PR'.'-'.str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT).'-'.$year;
 
         $fields['code'] = $program_id;
 
@@ -120,7 +120,6 @@ class ProgramController extends Controller
         $program->studyModes()->attach([
             1 => ['duration' => $program->duration],
         ]);
-
 
         return redirect()->route('programs.show', $program)->with('success', 'Program created successfully.');
     }

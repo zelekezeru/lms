@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ClassSchedule;
 use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\Program;
@@ -28,7 +27,7 @@ class AssignmentController extends Controller
     // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {
-        
+
         $section->courses()->sync($request['courses']);
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
@@ -57,9 +56,9 @@ class AssignmentController extends Controller
 
         // Remove or comment out this block if 'instructor_id' does not exist in class_schedules table
         $classSchedules = $section->classSchedules()->where('course_id', $course->id)->update([
-            'instructor_id' => $request->instructor_id
-        ]); 
-        
+            'instructor_id' => $request->instructor_id,
+        ]);
+
         $courseSectionAssignment->update([
             'instructor_id' => $request->instructor_id,
         ]);
@@ -95,7 +94,6 @@ class AssignmentController extends Controller
             ->route('students.show', $student->id)
             ->with('success', 'Courses assigned successfully.');
     }
-
 
     // this method is used to assign student to a section
     public function assignStudentsToSection(Request $request)
@@ -147,7 +145,6 @@ class AssignmentController extends Controller
             ]);
         }
 
-
         $program->studyModes()->syncWithoutDetaching([
             $fields['study_mode_id'] => ['duration' => $fields['duration']],
         ]);
@@ -156,7 +153,6 @@ class AssignmentController extends Controller
             ->route('programs.show', $program->id)
             ->with('success', 'Study Mode assigned successfully.');
     }
-
 
     public function updateSectionCourse(Request $request, Section $section)
     {
@@ -168,7 +164,7 @@ class AssignmentController extends Controller
 
         $course = $section->courses()->where('courses.id', $validated['course_id'])->first();
 
-        if (!$course) {
+        if (! $course) {
             return back()->withErrors(['course_id' => 'Course not found in this section.']);
         }
 

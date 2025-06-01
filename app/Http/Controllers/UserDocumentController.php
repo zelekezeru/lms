@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserDocumentStoreRequest;
 use App\Http\Requests\UserDocumentUpdateRequest;
 use App\Http\Resources\UserDocumentResource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\UserResource;
 use Intervention\Image\Facades\Image;
 
 class UserDocumentController extends Controller
@@ -60,26 +60,25 @@ class UserDocumentController extends Controller
                     'userDocument' => new UserDocumentResource($userDocument),
                 ]);
             }
-        }
-        else {
+        } else {
             return redirect()->back()->with('error', 'User ID is required to create a user document.');
         }
-        
+
         // fetch a userDocument resource instance
-        $userDocument = new UserDocumentResource(new UserDocument());
+        $userDocument = new UserDocumentResource(new UserDocument);
 
         return inertia('UserDocuments/Create');
     }
+
     /**
      * Add new document.
      */
     public function newDocument($user_id = null)
     {
         $user = User::find($user_id);
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()->with('error', 'User not found.');
-        }
-        else {
+        } else {
             $user = new UserResource($user);
         }
 
@@ -98,22 +97,22 @@ class UserDocumentController extends Controller
 
         // Handle image upload with Intervention Image
         if ($image = $request->file('image')) {
-            $filename = 'image_' . time() . '.' . $image->getClientOriginalExtension();
-            $path = public_path('images/' . $filename);
+            $filename = 'image_'.time().'.'.$image->getClientOriginalExtension();
+            $path = public_path('images/'.$filename);
 
             // Ensure the directory exists and save resized image
-            if (!file_exists(dirname($path))) {
+            if (! file_exists(dirname($path))) {
                 mkdir(dirname($path), 0755, true);
             }
 
             Image::make($image)->resize(800, 400)->save($path);
-            $fields['image'] = '/images/' . $filename;
+            $fields['image'] = '/images/'.$filename;
         }
 
         // Handle file upload
         if ($file = $request->file('file')) {
             $storedPath = $file->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/' . $storedPath;
+            $fields['file'] = '/storage/'.$storedPath;
         }
 
         // Save to database
@@ -128,7 +127,7 @@ class UserDocumentController extends Controller
      */
     public function show(UserDocument $userDocument)
     {
-        $user =  User::find($userDocument->user_id);
+        $user = User::find($userDocument->user_id);
 
         return inertia('UserDocuments/Show', [
             'userDocument' => new UserDocumentResource($userDocument),
@@ -163,16 +162,16 @@ class UserDocumentController extends Controller
                 }
             }
 
-            $filename = 'image_' . time() . '.' . $image->getClientOriginalExtension();
-            $path = public_path('images/' . $filename);
+            $filename = 'image_'.time().'.'.$image->getClientOriginalExtension();
+            $path = public_path('images/'.$filename);
 
             // Ensure the directory exists and save resized image
-            if (!file_exists(dirname($path))) {
+            if (! file_exists(dirname($path))) {
                 mkdir(dirname($path), 0755, true);
             }
 
             Image::make($image)->resize(800, 400)->save($path);
-            $fields['image'] = '/images/' . $filename;
+            $fields['image'] = '/images/'.$filename;
         }
 
         // Handle file upload
@@ -183,7 +182,7 @@ class UserDocumentController extends Controller
             }
 
             $storedPath = $file->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/' . $storedPath;
+            $fields['file'] = '/storage/'.$storedPath;
         }
 
         // Update the user document record

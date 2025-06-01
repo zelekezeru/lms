@@ -43,7 +43,7 @@ class SemesterSeeder extends Seeder
                 'is_approved' => 1,
                 'is_completed' => 0,
             ],
-            
+
         ]);
     }
 }

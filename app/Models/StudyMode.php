@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-class StudyMode extends Model
 
+class StudyMode extends Model
 {
     protected $guarded = [];
 
@@ -13,7 +13,7 @@ class StudyMode extends Model
     {
         return $this->belongsToMany(Program::class)->withPivot('duration');
     }
-    
+
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);
@@ -28,5 +28,4 @@ class StudyMode extends Model
     {
         return $this->hasMany(PaymentType::class);
     }
-
 }

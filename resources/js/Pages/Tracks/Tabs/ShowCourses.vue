@@ -42,8 +42,8 @@ const submitCourseAssignment = () => {
         {
             onSuccess: () => {
                 Swal.fire(
-                    $t('tracks.courses.assigned_title'),
-                    $t('tracks.courses.assigned_text'),
+                    $t('courses.assigned_title'),
+                    $t('courses.assigned_text'),
                     'success'
                 );
                 assignCourses.value = false;
@@ -60,13 +60,13 @@ const submitCourseAssignment = () => {
     <div class="">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t('tracks.courses.title') }}
+                {{ $t('courses.title') }}
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
                 class="flex items-center text-indigo-600 hover:text-indigo-800"
             >
-                {{ $t('tracks.courses.assign') }}
+                {{ $t('courses.assign') }}
             </button>
         </div>
 
@@ -78,7 +78,7 @@ const submitCourseAssignment = () => {
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                     >
-                        {{ $t('tracks.courses.title') }}
+                        {{ $t('courses.title') }}
                     </h2>
                 </div>
                 <!-- Track courses list -->
@@ -91,27 +91,27 @@ const submitCourseAssignment = () => {
                                 <th
                                     class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ $t('tracks.courses.no') }}
+                                    {{ $t('courses.no') }}
                                 </th>
                                 <th
                                     class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ $t('tracks.courses.name') }}
+                                    {{ $t('courses.name') }}
                                 </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ $t('tracks.courses.code') }}
+                                    {{ $t('courses.code') }}
                                 </th>
                                 <th
                                     class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    {{ $t('tracks.courses.credit_hours') }}
+                                    {{ $t('courses.credit_hours') }}
                                 </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                                 >
-                                    {{ $t('tracks.courses.actions') }}
+                                    {{ $t('courses.actions') }}
                                 </th>
                             </tr>
                         </thead>
@@ -184,7 +184,7 @@ const submitCourseAssignment = () => {
     >
         <div class="w-full px-16 py-8">
             <h1 class="text-lg mb-5">
-                {{ $t('tracks.courses.pick_courses') }}
+                {{ $t('courses.pick_courses') }}
             </h1>
             <Listbox
                 id="cousesList"
@@ -197,7 +197,7 @@ const submitCourseAssignment = () => {
                 checkmark
                 multiple
                 list-style="max-height: 500px"
-                :placeholder="$t('tracks.courses.select_courses')"
+                :placeholder="$t('courses.select_courses')"
                 :maxSelectedLabels="3"
                 class="w-full"
             />
@@ -212,7 +212,7 @@ const submitCourseAssignment = () => {
                     :disabled="courseAssignmentForm.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
                 >
-                    {{ courseAssignmentForm.processing ? $t('tracks.courses.assigning') : $t('tracks.courses.assign') }}
+                    {{ courseAssignmentForm.processing ? $t('courses.assigning') : $t('courses.assign') }}
                 </button>
 
                 <button

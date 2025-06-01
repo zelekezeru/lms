@@ -71,14 +71,14 @@ const addSection = () => {
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t('tracks.sections.title') }}
+                {{ $t('sections.title') }}
             </h2>
             <button
                 @click="createSection = !createSection"
                 class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
             >
                 <PlusCircleIcon class="w-8 h-8" />
-                <span class="hidden sm:inline">{{ $t('tracks.sections.add') }}</span>
+                <span class="hidden sm:inline">{{ $t('sections.add') }}</span>
             </button>
         </div>
         <div class="overflow-x-auto">
@@ -88,22 +88,22 @@ const addSection = () => {
                 <thead>
                     <tr class="bg-gray-50 dark:bg-gray-700">
                         <th class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('tracks.sections.no') }}
+                            {{ $t('sections.no') }}
                         </th>
                         <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('tracks.sections.name') }}
+                            {{ $t('sections.name') }}
                         </th>
                         <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('tracks.sections.study_mode') }}
+                            {{ $t('sections.study_mode') }}
                         </th>
                         <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('tracks.sections.year') }}
+                            {{ $t('sections.year') }}
                         </th>
                         <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('tracks.sections.semester') }}
+                            {{ $t('sections.semester') }}
                         </th>
                         <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('tracks.sections.actions') }}
+                            {{ $t('sections.actions') }}
                         </th>
                     </tr>
                 </thead>
@@ -127,7 +127,7 @@ const addSection = () => {
                             </Link>
                         </td>
                         <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            {{ section.studyMode ? section.studyMode.id : $t('tracks.sections.na') }}
+                            {{ section.studyMode ? section.studyMode.id : $t('sections.na') }}
                         </td>
                         <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                             {{ section.year.id }}
@@ -163,7 +163,7 @@ const addSection = () => {
                                 <TextInput
                                     v-model="sectionForm.name"
                                     type="text"
-                                    :placeholder="$t('tracks.sections.name')"
+                                    :placeholder="$t('sections.name')"
                                     class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                 />
                             </td>
@@ -176,7 +176,7 @@ const addSection = () => {
                                     option-label="name"
                                     checkmark
                                     filter
-                                    :placeholder="$t('tracks.sections.select_study_mode')"
+                                    :placeholder="$t('sections.select_study_mode')"
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />
@@ -190,7 +190,7 @@ const addSection = () => {
                                     option-label="name"
                                     checkmark
                                     filter
-                                    :placeholder="$t('tracks.sections.select_year')"
+                                    :placeholder="$t('sections.select_year')"
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />
@@ -204,7 +204,7 @@ const addSection = () => {
                                     option-label="name"
                                     checkmark
                                     filter
-                                    :placeholder="$t('tracks.sections.select_semester')"
+                                    :placeholder="$t('sections.select_semester')"
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />

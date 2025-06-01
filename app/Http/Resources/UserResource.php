@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'phone' => $this->phone,
             'profileImg' => Storage::url($this->profile_img),
             'user_uuid' => $this->user_uuid,
             'tenant_id' => $this->tenant_id,

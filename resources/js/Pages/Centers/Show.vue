@@ -30,7 +30,10 @@ defineProps({
         type: Object,
         required: true,
     },
-    
+    coordinator: {
+        type: Object,
+        required: false,
+    },    
 });
 
 const selectedCenter = ref(null);
@@ -145,7 +148,7 @@ const searchCoordinators = () => {
 
               <!-- Coordinators Panel -->
               <ShowCoordinators v-else-if="selectedTab == 'coordinators'" 
-                  :coordinator="center.coordinator"
+                  :coordinator="coordinator"
                   :center="center"
               />
               

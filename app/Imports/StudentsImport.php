@@ -56,7 +56,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 $middleName = $fullNameParts[1] ?? '';
                 $lastName = $fullNameParts[2] ?? '';
 
-                $email = strtolower(Str::slug($firstName . '.' . $middleName)) . '@sits.edu.et';
+                $email = strtolower(Str::slug($firstName) . '.' .  Str::slug($middleName)) . '@sits.edu.et';
 
                 // 👤 Generate custom user_uuid
                 $studentCount = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);

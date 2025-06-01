@@ -39,6 +39,7 @@ class CenterController extends Controller
     {
         return inertia('Centers/Show', [
             'center' => new CenterResource($center->load('coordinator')),
+            'coordinator' => $center->coordinator ? new UserResource($center->coordinator->user) : null,
         ]);
     }
 

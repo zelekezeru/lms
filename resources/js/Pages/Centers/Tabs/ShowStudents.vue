@@ -9,6 +9,7 @@ import { ArrowPathIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     center: Object,
 });
+
 const emit = defineEmits(["close"]);
 
 const visible = ref(true);

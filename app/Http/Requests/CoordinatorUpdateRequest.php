@@ -15,14 +15,11 @@ class CoordinatorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($this->coordinator->id),
-            ],
-            'password' => 'nullable|string|min:8|confirmed',
+            'phone' => 'required|string|max:15',
             'center_id' => 'required|exists:centers,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5000',
         ];
     }
 }

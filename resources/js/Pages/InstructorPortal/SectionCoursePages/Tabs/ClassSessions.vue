@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Dropdown from "primevue/dropdown";
 import Calendar from "primevue/calendar";
 import InputText from "primevue/inputtext";
@@ -69,9 +69,29 @@ function addClassSession() {
     });
 }
 
-// Track attendance per student (student.id => status)
+// Initialize empty attendance ref
 const attendance = ref({});
 
+// Watch for changes to selectedSession
+watch(selectedSession, (newSession) => {
+    if (newSession?.attendances?.length > 0) {
+        // Populate attendance from session
+        attendance.value = {};
+
+        newSession.attendances.forEach((att) => {
+            const record = att.records;
+            if (record?.student && record?.status) {
+                attendance.value[record.student] = record.status;
+            }
+        });
+    } else {
+        // Initialize with empty values for each student
+        attendance.value = {};
+        props.students.forEach((student) => {
+            attendance.value[student.id] = "";
+        });
+    }
+});
 // Submit attendance data
 function submitAttendance() {
     const payload = {
@@ -83,7 +103,7 @@ function submitAttendance() {
             })
         ),
     };
-    
+
     useForm(payload).post(route("attendances.store"), {
         onSuccess: () => {
             backToList();
@@ -294,7 +314,9 @@ onMounted(() => {
                 </div>
 
                 <div class="mt-4 flex gap-2">
-                    <PrimaryButton @click="submitAttendance">Submit</PrimaryButton>
+                    <PrimaryButton @click="submitAttendance"
+                        >Submit</PrimaryButton
+                    >
                     <PrimaryButton
                         @click="backToList"
                         class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white"
@@ -377,7 +399,11 @@ onMounted(() => {
                                                 d="M5 13l4 4L19 7"
                                             />
                                         </svg>
-                                        Take Attendance
+                                        {{
+                                            classSession.attendances?.length > 0
+                                                ? "Update Attendance"
+                                                : "Take Attendance"
+                                        }}
                                     </button>
 
                                     <button

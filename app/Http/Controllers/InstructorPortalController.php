@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ClassScheduleResource;
+use App\Http\Resources\ClassSessionResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
+use App\Http\Resources\RoomResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
@@ -14,6 +16,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Instructor;
+use App\Models\Room;
 use App\Models\Section;
 use App\Models\Semester;
 use PhpParser\Builder\Class_;
@@ -112,8 +115,8 @@ class InstructorPortalController extends Controller
         $instructor = request()->user()->instructor;
 
         $instructor->load([
-            'classSchedules.room',    
-            'classSchedules.course',    
+            'classSchedules.room',
+            'classSchedules.course',
         ]);
 
         $activeSemester = new SemesterResource(Semester::getActiveSemester());
@@ -168,6 +171,8 @@ class InstructorPortalController extends Controller
         $students = StudentResource::collection($section->studentsByCourse($course->id));
         $activeSemester = Semester::getActiveSemester();
         $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
+        $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
+        $rooms = RoomResource::collection(Room::all());
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,
@@ -176,6 +181,8 @@ class InstructorPortalController extends Controller
             'semester' => $semester,
             'grades' => $grades,
             'classSchedules' => $classSchedules,
+            'classSessions' => $classSessions,
+            'rooms' => $rooms,
             'weights' => $weights,
             'instructor' => $instructor,
         ]);

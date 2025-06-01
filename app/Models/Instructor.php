@@ -76,6 +76,6 @@ class Instructor extends Model
 
     public function classSessions()
     {
-        return $this->hasMany(ClassSession::class)->where('semester_id', Semester::getActiveSemester());
+        return $this->hasMany(ClassSession::class)->where('semester_id', Semester::getActiveSemester()->id);
     }
 }

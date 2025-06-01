@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassSession extends Model
 {
+    protected $guarded = [];
+
+    protected $casts = [
+        'date_time' => 'datetime',
+    ];
+
     public function instructor()
     {
         return $this->belongsTo(Instructor::class);

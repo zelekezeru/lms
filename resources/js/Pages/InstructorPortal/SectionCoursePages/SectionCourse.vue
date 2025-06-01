@@ -9,6 +9,7 @@ import Students from "./Tabs/Students.vue";
 import Announcements from "./Tabs/Announcments.vue";
 import InstructorLayout from "@/Layouts/InstructorLayout.vue";
 import ClassSchedules from "./Tabs/ClassSchedules.vue";
+import ClassSessions from "./Tabs/ClassSessions.vue";
 
 const props = defineProps({
     course: {
@@ -28,6 +29,10 @@ const props = defineProps({
         required: true,
     },
     classSchedules: {
+        type: Array,
+        required: false,
+    },
+    classSessions: {
         type: Array,
         required: false,
     },
@@ -61,6 +66,7 @@ const rightMenu = [
     { name: "Overview", key: "overview", icon: AcademicCapIcon },
     { name: "Students", key: "students", icon: AcademicCapIcon },
     { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
+    { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
     { name: "Assessments", key: "assessments", icon: AcademicCapIcon },
     { name: "Attendance", key: "attendance", icon: AcademicCapIcon },
     { name: "Announcements", key: "announcements", icon: AcademicCapIcon },
@@ -185,6 +191,16 @@ const changeTab = (tabName) => {
                             :course="course"
                             :section="section"
                             :class-schedules="classSchedules"
+                            :rooms="rooms"
+                            :active-semester="semester"
+                        />
+                        <ClassSessions
+                            v-if="activeTab === 'classSessions'"
+                            :course="course"
+                            :section="section"
+                            :students="students"
+                            :instructor="instructor"
+                            :class-sessions="classSessions"
                             :rooms="rooms"
                             :active-semester="semester"
                         />

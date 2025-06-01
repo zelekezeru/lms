@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClassSessionStoreRequest;
 use App\Models\ClassSession;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ClassSessionController extends Controller
@@ -26,9 +28,14 @@ class ClassSessionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ClassSessionStoreRequest $request)
     {
-        //
+        $fields = $request->validated();
+
+        $fields['date_time'] = Carbon::parse($fields['date_time'])->toDateTimeString();
+
+
+        $classSession = ClassSession::create($fields);
     }
 
     /**

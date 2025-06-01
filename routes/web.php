@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('registrar.dashboard');
     
         Route::get('/students', function () {
-            return Inertia::render('Registrar/RegistrarStudents');
+            return Inertia::render('Registrar/Students/Index');
         })->name('registrar.students');
     
         Route::get('/grades', function () {

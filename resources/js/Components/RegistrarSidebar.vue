@@ -51,13 +51,13 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="AcademicCapIcon"
                     label="Dashboard"
-                    href="/dashboard"
+                    :href="route('registrar.dashboard')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="UsersIcon"
                     label="Students"
-                    href="/students"
+                    :href="route('registrar.students')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

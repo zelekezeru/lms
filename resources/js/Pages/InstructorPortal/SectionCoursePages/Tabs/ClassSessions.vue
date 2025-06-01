@@ -39,7 +39,7 @@ function markAttendance(session) {
     // Initialize attendance for each student if not already done
     props.students.forEach((student) => {
         if (!(student.id in attendance.value)) {
-            attendance.value[student.id] = '';
+            attendance.value[student.id] = "";
         }
     });
 }
@@ -75,14 +75,15 @@ const attendance = ref({});
 // Submit attendance data
 function submitAttendance() {
     const payload = {
-        session_id: selectedSession.value.id,
-        records: Object.entries(attendance.value).map(([student_id, status]) => ({
-            student_id: parseInt(student_id),
-            status,
-        })),
+        class_session_id: selectedSession.value.id,
+        records: Object.entries(attendance.value).map(
+            ([student_id, status]) => ({
+                student_id: parseInt(student_id),
+                status,
+            })
+        ),
     };
-
-    // Submit using Inertia (adjust route as needed)
+    
     useForm(payload).post(route("attendances.store"), {
         onSuccess: () => {
             backToList();
@@ -94,12 +95,11 @@ function submitAttendance() {
 onMounted(() => {
     props.students.forEach((student) => {
         if (!(student.id in attendance.value)) {
-            attendance.value[student.id] = '';
+            attendance.value[student.id] = "";
         }
     });
 });
 </script>
-
 
 <template>
     <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
@@ -159,89 +159,142 @@ onMounted(() => {
                     Take Attendance
                 </h2>
                 <div class="overflow-x-auto">
-    <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded">
-        <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
-                <th class="px-4 py-2 min-w-[120px]">Student</th>
-                <th class="px-2 py-2 text-center min-w-[100px]">Present</th>
-                <th class="px-2 py-2 text-center min-w-[100px]">Permission</th>
-                <th class="px-2 py-2 text-center min-w-[100px]">Absent</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                v-for="student in students"
-                :key="student.id"
-                class="border-t border-gray-200 dark:border-gray-700"
-            >
-                <td class="px-4 py-2">
-                    {{ student.firstName }} {{ student.lastName }}
-                </td>
+                    <table
+                        class="w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded"
+                    >
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2 min-w-[120px]">Student</th>
+                                <th class="px-2 py-2 text-center min-w-[100px]">
+                                    Present
+                                </th>
+                                <th class="px-2 py-2 text-center min-w-[100px]">
+                                    Permission
+                                </th>
+                                <th class="px-2 py-2 text-center min-w-[100px]">
+                                    Absent
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="student in students"
+                                :key="student.id"
+                                class="border-t border-gray-200 dark:border-gray-700"
+                            >
+                                <td class="px-4 py-2">
+                                    {{ student.firstName }}
+                                    {{ student.lastName }}
+                                </td>
 
-                <!-- Present -->
-                <td class="px-2 py-2 text-center cursor-pointer">
-                    <label class="inline-flex items-center justify-center w-full h-full cursor-pointer">
-                        <input
-                            type="radio"
-                            class="sr-only"
-                            :name="`attendance_${student.id}`"
-                            value="present"
-                            v-model="attendance[student.id]"
-                        />
-                        <div
-                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                            :class="attendance[student.id] === 'present' ? 'bg-green-500' : 'bg-white'"
-                        >
-                            <div class="w-2 h-2 bg-white rounded-full" v-if="attendance[student.id] === 'present'"></div>
-                        </div>
-                    </label>
-                </td>
+                                <!-- Present -->
+                                <td
+                                    class="px-2 py-2 text-center cursor-pointer"
+                                >
+                                    <label
+                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                    >
+                                        <input
+                                            type="radio"
+                                            class="sr-only"
+                                            :name="`attendance_${student.id}`"
+                                            value="present"
+                                            v-model="attendance[student.id]"
+                                        />
+                                        <div
+                                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                            :class="
+                                                attendance[student.id] ===
+                                                'present'
+                                                    ? 'bg-green-500'
+                                                    : 'bg-white'
+                                            "
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-white rounded-full"
+                                                v-if="
+                                                    attendance[student.id] ===
+                                                    'present'
+                                                "
+                                            ></div>
+                                        </div>
+                                    </label>
+                                </td>
 
-                <!-- Permission -->
-                <td class="px-2 py-2 text-center cursor-pointer">
-                    <label class="inline-flex items-center justify-center w-full h-full cursor-pointer">
-                        <input
-                            type="radio"
-                            class="sr-only"
-                            :name="`attendance_${student.id}`"
-                            value="permission"
-                            v-model="attendance[student.id]"
-                        />
-                        <div
-                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                            :class="attendance[student.id] === 'permission' ? 'bg-yellow-500' : 'bg-white'"
-                        >
-                            <div class="w-2 h-2 bg-white rounded-full" v-if="attendance[student.id] === 'permission'"></div>
-                        </div>
-                    </label>
-                </td>
+                                <!-- Permission -->
+                                <td
+                                    class="px-2 py-2 text-center cursor-pointer"
+                                >
+                                    <label
+                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                    >
+                                        <input
+                                            type="radio"
+                                            class="sr-only"
+                                            :name="`attendance_${student.id}`"
+                                            value="permission"
+                                            v-model="attendance[student.id]"
+                                        />
+                                        <div
+                                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                            :class="
+                                                attendance[student.id] ===
+                                                'permission'
+                                                    ? 'bg-yellow-500'
+                                                    : 'bg-white'
+                                            "
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-white rounded-full"
+                                                v-if="
+                                                    attendance[student.id] ===
+                                                    'permission'
+                                                "
+                                            ></div>
+                                        </div>
+                                    </label>
+                                </td>
 
-                <!-- Absent -->
-                <td class="px-2 py-2 text-center cursor-pointer">
-                    <label class="inline-flex items-center justify-center w-full h-full cursor-pointer">
-                        <input
-                            type="radio"
-                            class="sr-only"
-                            :name="`attendance_${student.id}`"
-                            value="absent"
-                            v-model="attendance[student.id]"
-                        />
-                        <div
-                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                            :class="attendance[student.id] === 'absent' ? 'bg-red-500' : 'bg-white'"
-                        >
-                            <div class="w-2 h-2 bg-white rounded-full" v-if="attendance[student.id] === 'absent'"></div>
-                        </div>
-                    </label>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
+                                <!-- Absent -->
+                                <td
+                                    class="px-2 py-2 text-center cursor-pointer"
+                                >
+                                    <label
+                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                    >
+                                        <input
+                                            type="radio"
+                                            class="sr-only"
+                                            :name="`attendance_${student.id}`"
+                                            value="absent"
+                                            v-model="attendance[student.id]"
+                                        />
+                                        <div
+                                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                            :class="
+                                                attendance[student.id] ===
+                                                'absent'
+                                                    ? 'bg-red-500'
+                                                    : 'bg-white'
+                                            "
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-white rounded-full"
+                                                v-if="
+                                                    attendance[student.id] ===
+                                                    'absent'
+                                                "
+                                            ></div>
+                                        </div>
+                                    </label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="mt-4 flex gap-2">
-                    <PrimaryButton>Submit</PrimaryButton>
+                    <PrimaryButton @click="submitAttendance">Submit</PrimaryButton>
                     <PrimaryButton
                         @click="backToList"
                         class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white"

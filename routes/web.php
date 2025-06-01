@@ -186,6 +186,7 @@ Route::middleware(['auth'])->group(function () {
         'calendars' => 'calendar',
         'classSchedules' => 'classSchedule',
         'classSessions' => 'classSession',
+        'attendances' => 'attendance',
         'sections' => 'section',
         'results' => 'result',
         'weights' => 'weight',

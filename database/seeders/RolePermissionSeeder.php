@@ -175,6 +175,12 @@ class RolePermissionSeeder extends Seeder
             'update-classSessions',
             'delete-classSessions',
 
+            // ClassSession (CRUD)
+            'view-attendances',
+            'create-attendances',
+            'update-attendances',
+            'delete-attendances',
+
             // Room (CRUD)
             'view-rooms',
             'create-rooms',

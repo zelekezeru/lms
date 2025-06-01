@@ -22,6 +22,7 @@ class ClassSessionResource extends JsonResource
             'section' => new SectionResource($this->whenLoaded('section')),
             'course' => new CourseResource($this->whenLoaded('course')),
             'room' => new RoomResource($this->whenLoaded('room')),
+            'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
             'instructor' => new InstructorResource($this->whenLoaded('instructor')),
         ];
     }

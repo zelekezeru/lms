@@ -171,7 +171,7 @@ class InstructorPortalController extends Controller
         $students = StudentResource::collection($section->studentsByCourse($course->id));
         $activeSemester = Semester::getActiveSemester();
         $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
-        $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
+        $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with(['room', 'attendances'])->get());
         $rooms = RoomResource::collection(Room::all());
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [

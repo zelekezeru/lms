@@ -87,7 +87,7 @@ const changeTab = (tabName) => {
 
 <template>
     <InstructorLayout>
-        <div class="max-w-7xl mx-auto py-10 px-4">
+        <div class="max-w-7xl mx-auto py-10 px-4" :class="{'!px-1': activeTab == 'classSessions'}">
             <!-- Course Header -->
             <h1
                 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white flex items-center"
@@ -134,7 +134,7 @@ const changeTab = (tabName) => {
                                 :key="item.key"
                                 @click="
                                     () => {
-                                        changeTab(tab.key);
+                                        changeTab(item.key);
                                         showMobileNav = false;
                                     }
                                 "
@@ -159,7 +159,7 @@ const changeTab = (tabName) => {
                 <!-- Main Content -->
                 <div class="flex-1">
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-4"
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow py-6 px-0 sm:px-1 sm:py-2 space-y-4"
                     >
                         <p>
                             <strong>Description:</strong>

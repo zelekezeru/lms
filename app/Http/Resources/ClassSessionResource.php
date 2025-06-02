@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,8 +17,11 @@ class ClassSessionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'date' => optional($this->date_time)->format('Y-m-d'),
-            'time' => optional($this->date_time)->format('H:i:s'),
+            'date' => Carbon::parse($this->date)->format('Y-m-d'),
+            'startTime' => $this->start_time ? Carbon::parse($this->start_time)->format('H:i:s') : null,
+            'endTime'   => $this->end_time ? Carbon::parse($this->end_time)->format('H:i:s') : null,
+            'status' => $this->is_completed ? "Completed!" : "Not Complete!",
+            'type' => $this->type,
             'classAbout' => $this->class_about,
             'section' => new SectionResource($this->whenLoaded('section')),
             'course' => new CourseResource($this->whenLoaded('course')),

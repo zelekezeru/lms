@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ClassSessionStoreRequest extends FormRequest
 {
@@ -26,9 +27,11 @@ class ClassSessionStoreRequest extends FormRequest
             'course_id' => 'required|exists:courses,id',
             'instructor_id' => 'required|exists:instructors,id',
             'semester_id' => 'required|exists:semesters,id',
-            'room_id' => 'required|exists:rooms,id',
-            'date_time' => 'required|date',
-            'class_about' => 'nullable|string|max:255',
+            'room_id' => 'nullable|exists:rooms,id',
+            'start_date_time' => ['required', 'date'],
+            'end_time' => ['required', 'date', 'after:start_date_time'],
+            'type' => ['required', Rule::in(['in-person', 'online'])],
+            'class_about' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -30,12 +30,22 @@ class ClassSessionController extends Controller
      */
     public function store(ClassSessionStoreRequest $request)
     {
-        $fields = $request->validated();
+        $validated = $request->validated();
 
-        $fields['date_time'] = Carbon::parse($fields['date_time'])->toDateTimeString();
+        $start = Carbon::parse($validated['start_date_time']);
+        $end = Carbon::parse($validated['end_time']);
+        // Replace fields
+        $validated['date'] = $start->toDateString();         // YYYY-MM-DD
+        $validated['start_time'] = $start->toDateTimeString(); // full datetime
+        $validated['end_time'] = $end->toDateTimeString();     // full datetime
 
-        $classSession = ClassSession::create($fields);
+        unset($validated['start_date_time']); // Remove the original datetime input
+
+        ClassSession::create($validated);
+
+        return redirect()->back()->with('success', 'Class session created successfully.');
     }
+
 
     /**
      * Display the specified resource.

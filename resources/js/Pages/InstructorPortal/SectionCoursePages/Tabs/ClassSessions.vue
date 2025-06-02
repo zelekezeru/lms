@@ -1,10 +1,16 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed, nextTick } from "vue";
 import Dropdown from "primevue/dropdown";
 import Calendar from "primevue/calendar";
 import InputText from "primevue/inputtext";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { DatePicker, Select } from "primevue";
+
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+
+// Register necessary Chart.js components
+Chart.register(ArcElement, Tooltip, Legend);
 
 const props = defineProps({
     section: { required: true, type: Object },
@@ -56,9 +62,25 @@ const form = useForm({
     course_id: props.course.id,
     instructor_id: props.instructor.id,
     semester_id: props.activeSemester.id,
-    room_id: null,
-    date_time: null,
+
+    start_date_time: null,
+    end_time: null,
+    type: null,
     class_about: "",
+});
+
+const startDateOnlyMin = computed(() => {
+    if (!form.start_date_time) return null;
+    const min = new Date(form.start_date_time);
+    min.setHours(0, 0, 0, 0); // Start of day
+    return min;
+});
+
+const startDateOnlyMax = computed(() => {
+    if (!form.start_date_time) return null;
+    const max = new Date(form.start_date_time);
+    max.setHours(23, 59, 59, 999); // End of day
+    return max;
 });
 
 function addClassSession() {
@@ -73,17 +95,14 @@ function addClassSession() {
 // Initialize empty attendance ref
 const attendance = ref({});
 
-// Watch for changes to selectedSession
+// Watch for changes to selectedSession to sync attendance object
 watch(selectedSession, (newSession) => {
     if (newSession?.attendances?.length > 0) {
-        // Populate attendance from session
         attendance.value = {};
-
         newSession.attendances.forEach((att) => {
             attendance.value[att.studentId] = att.status;
         });
     } else {
-        // Initialize with empty values for each student
         attendance.value = {};
         props.students.forEach((student) => {
             attendance.value[student.id] = "";
@@ -91,12 +110,96 @@ watch(selectedSession, (newSession) => {
     }
 });
 
-watch(markAllAS, (newVal) => {
-    props.students.forEach((student) => {
-        attendance.value[student.id] = newVal;
-    });
+const attendanceChart = ref(null);
+let attendanceChartInstance = null;
+
+watch(selectedSession, async (session) => {
+  console.log("Selected session changed:", session);
+  if (!session?.attendances?.length) {
+    console.log("No attendances, destroying chart if exists");
+    if (attendanceChartInstance) {
+      attendanceChartInstance.destroy();
+      attendanceChartInstance = null;
+    }
+    return;
+  }
+
+  await nextTick();
+
+  if (!attendanceChart.value) {
+    console.log("Canvas ref not ready");
+    await nextTick();
+    if (!attendanceChart.value) {
+      console.log("Canvas still not ready, abort chart creation");
+      return;
+    }
+  }
+
+  const ctx = attendanceChart.value.getContext("2d");
+  if (!ctx) {
+    console.log("Failed to get canvas context");
+    return;
+  }
+  console.log("Canvas context obtained", ctx);
+
+  // Count attendance statuses
+  const counts = { Present: 0, Absent: 0, Late: 0, Excused: 0 };
+  session.attendances.forEach((att) => {
+    const status = (att.status || "Absent").toLowerCase();
+    switch (status) {
+      case "present":
+        counts.Present++;
+        break;
+      case "absent":
+        counts.Absent++;
+        break;
+      case "late":
+        counts.Late++;
+        break;
+      case "excused":
+        counts.Excused++;
+        break;
+      default:
+        counts.Absent++;
+    }
+  });
+
+  console.log("Attendance counts:", counts);
+
+  if (attendanceChartInstance) attendanceChartInstance.destroy();
+
+  attendanceChartInstance = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: Object.keys(counts),
+      datasets: [
+        {
+          label: "Attendance",
+          data: Object.values(counts),
+          backgroundColor: [
+            "rgba(16, 185, 129, 0.7)", // green for Present
+            "rgba(239, 68, 68, 0.7)",  // red for Absent
+            "rgba(245, 158, 11, 0.7)",  // amber for Late
+            "rgba(59, 130, 246, 0.7)",  // blue for Excused
+          ],
+          borderWidth: 0,
+          hoverOffset: 30,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: { color: "#374151" }, // dark gray
+        },
+      },
+    },
+  });
+  console.log("Chart created");
 });
-// Submit attendance data
+
 function submitAttendance() {
     const payload = {
         class_session_id: selectedSession.value.id,
@@ -115,7 +218,7 @@ function submitAttendance() {
     });
 }
 
-// Optional: ensure attendance is always initialized on first mount
+// Ensure attendance is initialized on mount
 onMounted(() => {
     props.students.forEach((student) => {
         if (!(student.id in attendance.value)) {
@@ -126,7 +229,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
+    <div class="max-w-9xl mx-auto py-10 px-0 space-y-8">
         <!-- Header -->
         <div class="text-center">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
@@ -155,18 +258,51 @@ onMounted(() => {
                 <h2
                     class="text-lg font-semibold text-gray-800 dark:text-white mb-4"
                 >
-                    Class Details
+                    Class Session Overview
                 </h2>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
-                    Date: {{ selectedSession.date }}
-                </p>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
-                    Room: {{ selectedSession.room?.name || "N/A" }}
-                </p>
-                <p class="text-sm text-gray-600 dark:text-gray-300">
-                    About: {{ selectedSession.class_about || "N/A" }}
-                </p>
-                <div class="mt-4">
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 text-sm text-gray-600 dark:text-gray-300"
+                >
+                    <p><strong>Date:</strong> {{ selectedSession.date }}</p>
+                    <p>
+                        <strong>Start Time:</strong>
+                        {{ selectedSession.startTime }}
+                    </p>
+                    <p>
+                        <strong>End Time:</strong> {{ selectedSession.endTime }}
+                    </p>
+                    <p><strong>Type:</strong> {{ selectedSession.type }}</p>
+                    <p><strong>Status:</strong> {{ selectedSession.status }}</p>
+                    <p>
+                        <strong>Room:</strong>
+                        {{ selectedSession.room?.name || "N/A" }}
+                    </p>
+                    <p>
+                        <strong>About:</strong>
+                        {{ selectedSession.classAbout || "N/A" }}
+                    </p>
+                </div>
+
+                <!-- Attendance Summary Chart -->
+                <section
+                    v-if="
+                        showDetail &&
+                        selectedSession &&
+                        selectedSession.attendances?.length > 0
+                    "
+                    class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg"
+                >
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">
+                        Attendance Summary
+                    </h3>
+                    <canvas
+                        ref="attendanceChart"
+                        style="width: 100%; height: 300px"
+                    ></canvas>
+                </section>
+
+                <div class="mt-6">
                     <PrimaryButton @click="backToList">Back</PrimaryButton>
                 </div>
             </div>
@@ -175,110 +311,112 @@ onMounted(() => {
             <div
                 v-else-if="takeAttendance"
                 key="attendance"
-                class="bg-white dark:bg-gray-800 p-6 rounded shadow"
+                class="bg-white dark:bg-gray-800 rounded shadow"
             >
-                <h2
-                    class="text-lg font-semibold text-gray-800 dark:text-white mb-4"
-                >
-                    Take Attendance
-                </h2>
-                <div class="mb-4">
-                    <h3
-                        class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                <div class="p-2">
+                    <h2
+                        class="text-lg font-semibold text-gray-800 dark:text-white mb-4"
                     >
-                        Mark All Students As: {{ markAllAS }}
-                    </h3>
-                    <div class="flex flex-wrap gap-2 sm:gap-4">
-                        <label
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-green-800 dark:text-green-100 rounded cursor-pointer"
-                            :class="{
-                                '!bg-green-500 !text-white':
-                                    markAllAS === 'present',
-                            }"
+                        Take Attendance For {{ selectedSession.date }} Session
+                    </h2>
+                    <div class="mb-4">
+                        <h3
+                            class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2"
                         >
-                            <input
-                                type="radio"
-                                class="sr-only"
-                                name="markAllAs"
-                                value="present"
-                                v-model="markAllAS"
-                            />
-                            <div
-                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                                :class="
-                                    markAllAS === 'present'
-                                        ? 'bg-green-500'
-                                        : 'bg-white'
-                                "
+                            Mark All Students As: {{ markAllAS }}
+                        </h3>
+                        <div class="flex flex-wrap gap-2 sm:gap-4">
+                            <label
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-green-800 dark:text-green-100 rounded cursor-pointer"
+                                :class="{
+                                    '!bg-green-500 !text-white':
+                                        markAllAS === 'present',
+                                }"
                             >
+                                <input
+                                    type="radio"
+                                    class="sr-only"
+                                    name="markAllAs"
+                                    value="present"
+                                    v-model="markAllAS"
+                                />
                                 <div
-                                    class="w-2 h-2 bg-white rounded-full"
-                                    v-if="markAllAS === 'present'"
-                                ></div>
-                            </div>
+                                    class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                    :class="
+                                        markAllAS === 'present'
+                                            ? 'bg-green-500'
+                                            : 'bg-white'
+                                    "
+                                >
+                                    <div
+                                        class="w-2 h-2 bg-white rounded-full"
+                                        v-if="markAllAS === 'present'"
+                                    ></div>
+                                </div>
 
-                            Present
-                        </label>
+                                Present
+                            </label>
 
-                        <label
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-yellow-800 dark:text-yellow-100 rounded cursor-pointer"
-                            :class="{
-                                '!bg-yellow-500 !text-white':
-                                    markAllAS === 'permission',
-                            }"
-                        >
-                            <input
-                                type="radio"
-                                class="sr-only"
-                                name="markAllAs"
-                                value="permission"
-                                v-model="markAllAS"
-                            />
-                            <div
-                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                                :class="
-                                    markAllAS === 'permission'
-                                        ? 'bg-yellow-500'
-                                        : 'bg-white'
-                                "
+                            <label
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-yellow-800 dark:text-yellow-100 rounded cursor-pointer"
+                                :class="{
+                                    '!bg-yellow-500 !text-white':
+                                        markAllAS === 'permission',
+                                }"
                             >
+                                <input
+                                    type="radio"
+                                    class="sr-only"
+                                    name="markAllAs"
+                                    value="permission"
+                                    v-model="markAllAS"
+                                />
                                 <div
-                                    class="w-2 h-2 bg-white rounded-full"
-                                    v-if="markAllAS === 'permission'"
-                                ></div>
-                            </div>
-                            Permission
-                        </label>
+                                    class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                    :class="
+                                        markAllAS === 'permission'
+                                            ? 'bg-yellow-500'
+                                            : 'bg-white'
+                                    "
+                                >
+                                    <div
+                                        class="w-2 h-2 bg-white rounded-full"
+                                        v-if="markAllAS === 'permission'"
+                                    ></div>
+                                </div>
+                                Permission
+                            </label>
 
-                        <label
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-red-800 dark:text-red-100 rounded cursor-pointer"
-                            :class="{
-                                '!bg-red-500 !text-white':
-                                    markAllAS === 'absent',
-                            }"
-                        >
-                            <input
-                                type="radio"
-                                class="sr-only"
-                                name="markAllAs"
-                                value="absent"
-                                v-model="markAllAS"
-                            />
-                            <div
-                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                                :class="
-                                    markAllAS === 'absent'
-                                        ? 'bg-red-500'
-                                        : 'bg-white'
-                                "
+                            <label
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-red-800 dark:text-red-100 rounded cursor-pointer"
+                                :class="{
+                                    '!bg-red-500 !text-white':
+                                        markAllAS === 'absent',
+                                }"
                             >
+                                <input
+                                    type="radio"
+                                    class="sr-only"
+                                    name="markAllAs"
+                                    value="absent"
+                                    v-model="markAllAS"
+                                />
                                 <div
-                                    class="w-2 h-2 bg-white rounded-full"
-                                    v-if="markAllAS === 'absent'"
-                                ></div>
-                            </div>
-                            Absent
-                        </label>
+                                    class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                    :class="
+                                        markAllAS === 'absent'
+                                            ? 'bg-red-500'
+                                            : 'bg-white'
+                                    "
+                                >
+                                    <div
+                                        class="w-2 h-2 bg-white rounded-full"
+                                        v-if="markAllAS === 'absent'"
+                                    ></div>
+                                </div>
+                                Absent
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -289,14 +427,25 @@ onMounted(() => {
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
                                 <th class="px-4 py-2 min-w-[120px]">Student</th>
-                                <th class="px-2 py-2 text-center min-w-[100px]">
-                                    Present
+                                <th
+                                    class="px-2 py-2 text-center min-w-[35px] sm:min-w-[35px]"
+                                >
+                                    <span class="block sm:hidden">P</span>
+                                    <span class="hidden sm:block">Present</span>
                                 </th>
-                                <th class="px-2 py-2 text-center min-w-[100px]">
-                                    Permission
+                                <th
+                                    class="px-2 py-2 text-center min-w-[35px] sm:min-w-[35px]"
+                                >
+                                    <span class="block sm:hidden">A</span>
+                                    <span class="hidden sm:block">Absent</span>
                                 </th>
-                                <th class="px-2 py-2 text-center min-w-[100px]">
-                                    Absent
+                                <th
+                                    class="px-2 py-2 text-center min-w-[60px] sm:min-w-[35px]"
+                                >
+                                    <span class="block sm:hidden">Per</span>
+                                    <span class="hidden sm:block"
+                                        >Permission</span
+                                    >
                                 </th>
                             </tr>
                         </thead>
@@ -308,12 +457,14 @@ onMounted(() => {
                             >
                                 <td class="px-4 py-2">
                                     {{ student.firstName }}
+                                    {{ student.middleName }}
                                     {{ student.lastName }}
                                 </td>
 
                                 <!-- Present -->
-<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
-
+                                <td
+                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                >
                                     <label
                                         class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
                                         :class="{
@@ -349,47 +500,10 @@ onMounted(() => {
                                     </label>
                                 </td>
 
-                                <!-- Permission -->
-<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
-
-                                    <label
-                                        class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
-                                        :class="{
-                                            '!bg-yellow-500':
-                                                attendance[student.id] ===
-                                                'permission',
-                                        }"
-                                    >
-                                        <input
-                                            type="radio"
-                                            class="sr-only"
-                                            :name="`attendance_${student.id}`"
-                                            value="permission"
-                                            v-model="attendance[student.id]"
-                                        />
-                                        <div
-                                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                                            :class="
-                                                attendance[student.id] ===
-                                                'permission'
-                                                    ? 'bg-yellow-500'
-                                                    : 'bg-white'
-                                            "
-                                        >
-                                            <div
-                                                class="w-2 h-2 bg-white rounded-full"
-                                                v-if="
-                                                    attendance[student.id] ===
-                                                    'permission'
-                                                "
-                                            ></div>
-                                        </div>
-                                    </label>
-                                </td>
-
                                 <!-- Absent -->
-<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
-
+                                <td
+                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                >
                                     <label
                                         class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
                                         :class="{
@@ -424,6 +538,45 @@ onMounted(() => {
                                         </div>
                                     </label>
                                 </td>
+
+                                <!-- Permission -->
+                                <td
+                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                >
+                                    <label
+                                        class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
+                                        :class="{
+                                            '!bg-yellow-500':
+                                                attendance[student.id] ===
+                                                'permission',
+                                        }"
+                                    >
+                                        <input
+                                            type="radio"
+                                            class="sr-only"
+                                            :name="`attendance_${student.id}`"
+                                            value="permission"
+                                            v-model="attendance[student.id]"
+                                        />
+                                        <div
+                                            class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                            :class="
+                                                attendance[student.id] ===
+                                                'permission'
+                                                    ? 'bg-yellow-500'
+                                                    : 'bg-white'
+                                            "
+                                        >
+                                            <div
+                                                class="w-2 h-2 bg-white rounded-full"
+                                                v-if="
+                                                    attendance[student.id] ===
+                                                    'permission'
+                                                "
+                                            ></div>
+                                        </div>
+                                    </label>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -452,19 +605,25 @@ onMounted(() => {
                 <div
                     class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300 dark:border-gray-600"
                 >
-                    <table class="w-full min-w-[800px] table-fixed">
+                    <table class="w-full min-w-[500px] table-fixed">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
                                 <th
                                     class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
                                 >
-                                    Date
+                                    Date @Start Time
                                 </th>
                                 <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
+                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200 w-24"
                                 >
-                                    Room
+                                    Type
                                 </th>
+                                <th
+                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200 w-36"
+                                >
+                                    Status
+                                </th>
+
                                 <th
                                     class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
                                 >
@@ -487,12 +646,21 @@ onMounted(() => {
                                 <td
                                     class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
                                 >
-                                    {{ classSession.date }}
+                                    {{ classSession.date }} @{{
+                                        classSession.startTime
+                                    }}
                                 </td>
                                 <td
                                     class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
                                 >
-                                    {{ classSession.room?.name || "N/A" }}
+                                    {{ classSession.type }}
+                                </td>
+                                <td
+                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                                >
+                                    <span class="rounded-xl p-2 bg-yellow-400">
+                                        {{ classSession.status }}
+                                    </span>
                                 </td>
                                 <td
                                     class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 flex gap-2"
@@ -572,13 +740,25 @@ onMounted(() => {
                                     v-if="showForm"
                                     class="bg-gray-100 dark:bg-gray-700 border-t border-gray-300 dark:border-gray-600"
                                 >
-                                    <td class="px-4 py-2">
+                                    <td class="px-1 py-2">
+                                        <div>Start date and time</div>
                                         <Calendar
-                                            v-model="form.date_time"
+                                            v-model="form.start_date_time"
                                             showTime
-                                            placeholder="Select Date & Time"
+                                            placeholder="Select Start Date & Time"
                                             class="w-full"
                                         />
+                                        -
+                                        <div>End time</div>
+                                        <Calendar
+                                            v-model="form.end_time"
+                                            showTime
+                                            :minDate="startDateOnlyMin"
+                                            :maxDate="startDateOnlyMax"
+                                            placeholder="Select End Time"
+                                            class="w-full"
+                                        />
+
                                         <div
                                             v-if="form.errors.date_time"
                                             class="text-red-500 text-xs mt-1"
@@ -588,37 +768,48 @@ onMounted(() => {
                                     </td>
 
                                     <td class="px-4 py-2">
-                                        <Dropdown
-                                            v-model="form.room_id"
-                                            :options="rooms"
-                                            option-label="name"
-                                            option-value="id"
-                                            placeholder="Select Room"
+                                        <Select
+                                            v-model="form.type"
+                                            :options="[
+                                                {
+                                                    label: 'In-person',
+                                                    value: 'in-person',
+                                                },
+                                                {
+                                                    label: 'Online',
+                                                    value: 'online',
+                                                },
+                                            ]"
+                                            option-label="label"
+                                            option-value="value"
+                                            placeholder="Select Type"
                                             class="w-full"
                                         />
+
                                         <div
-                                            v-if="form.errors.room_id"
+                                            v-if="form.errors.type"
                                             class="text-red-500 text-xs mt-1"
                                         >
-                                            {{ form.errors.room_id }}
+                                            {{ form.errors.type }}
                                         </div>
                                     </td>
 
-                                    <td
-                                        class="px-4 py-2 flex flex-col sm:flex-row sm:items-center gap-2"
-                                    >
-                                        <InputText
-                                            v-model="form.class_about"
-                                            placeholder="Class description"
-                                            class="w-full"
+                                    <td class="px-4 py-2">
+                                        <input
+                                            v-model="form.is_complete"
+                                            type="checkbox"
                                         />
+                                        <label for="isCompleted"
+                                            >Is Completed</label
+                                        >
                                         <div
-                                            v-if="form.errors.class_about"
+                                            v-if="form.errors.is_complete"
                                             class="text-red-500 text-xs mt-1"
                                         >
-                                            {{ form.errors.class_about }}
+                                            {{ form.errors.is_complete }}
                                         </div>
-
+                                    </td>
+                                    <td class="px-4 py-2 sm:items-center gap-2">
                                         <PrimaryButton
                                             class="mt-2 sm:mt-0"
                                             :disabled="form.processing"

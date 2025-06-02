@@ -20,7 +20,11 @@ return new class extends Migration
             $table->foreignId('room_id')->nullable()->constrained();
 
             $table->string('class_about')->nullable(); // What the class was about
-            $table->timestamp('date_time');
+            $table->enum('type', ['in-person', 'online']);
+            $table->boolean('isCompleted')->default(false);
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
+            $table->date('date');
             $table->timestamps();
         });
     }

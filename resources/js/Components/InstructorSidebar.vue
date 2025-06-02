@@ -36,8 +36,13 @@ const wrapperClasses = computed(() => {
     <aside :class="wrapperClasses">
         <div class="flex flex-col h-full ml-2">
             <div class="flex items-center justify-center h-16 px-2">
-                <AcademicCapIcon class="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
-                <span v-if="isOpen" class="ml-2 text-xl font-bold text-gray-800 dark:text-white">
+                <AcademicCapIcon
+                    class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                />
+                <span
+                    v-if="isOpen"
+                    class="ml-2 text-xl font-bold text-gray-800 dark:text-white"
+                >
                     Instructor Portal
                 </span>
             </div>
@@ -62,6 +67,12 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
+                    :icon="CalendarIcon"
+                    label="Class Schedules"
+                    :href="route('instructor.classSchedules')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
                     :icon="ClipboardDocumentListIcon"
                     label="Attendance"
                     href="/instructor/attendance"
@@ -73,12 +84,6 @@ const wrapperClasses = computed(() => {
                     :href="route('instructor.grades')"
                     :isCollapsed="!isOpen"
                 />
-                <!-- <SidebarItem
-                    :icon="CalendarIcon"
-                    label="Schedule"
-                    :href="route('instructor.schedule')"
-                    :isCollapsed="!isOpen"
-                /> -->
             </nav>
 
             <div class="px-2 pb-4 mt-auto">

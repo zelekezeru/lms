@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\StudentsExport;
 use App\Exports\UsersExport;
+use App\Models\Center;
 use App\Models\Section; // Import the StudentsExport class
 use App\Models\Student;
 use App\Models\User;
@@ -14,7 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController extends Controller
 {
-    // Export StudentsExcel with a parameter list
+    // Export Section StudentsExcel with a parameter list
     public function exportSectionstudents($section_id)
     {
         // Get the student IDs from the section
@@ -22,7 +23,22 @@ class ExportController extends Controller
 
         $students = $section->students()->with('user', 'status', 'church')->orderBy('first_name')->orderBy('middle_name')->get();
 
-        return Excel::download(new StudentsExport($students), 'students list.xlsx');
+        return Excel::download(new StudentsExport($students), $section->name . 'students list.xlsx');
+    }
+    
+
+    // Export Center StudentsExcel with a parameter list
+    public function exportCenterStudents($center_id)
+    {
+        $center = Center::findOrFail($center_id);
+
+        $students = $center->students()
+            ->with('user', 'status', 'church')
+            ->orderBy('first_name')
+            ->orderBy('middle_name')
+            ->get();
+        
+        return Excel::download(new StudentsExport($students), $center->name . 'students.xlsx');
     }
 
     // Export UsersExcel with a parameter list

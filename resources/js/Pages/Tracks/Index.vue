@@ -34,8 +34,6 @@ const viewMode = ref("table"); // Default to table view
 // Refresh function
 const refreshData = () => {
     refreshing.value = true;
-    router.flush("/tracks", { method: "get" });
-
     router.visit(route("tracks.index"), {
         only: ["tracks"],
         onFinish: () => {

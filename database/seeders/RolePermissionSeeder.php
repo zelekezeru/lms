@@ -261,6 +261,7 @@ class RolePermissionSeeder extends Seeder
             'update-user-document-image',
 
             // Password Related
+            'view-password',
             'default-password',
             'change-password',
             'reset-password',
@@ -532,6 +533,7 @@ class RolePermissionSeeder extends Seeder
                     'update-user-document-image',
 
                     // Password/Account
+                    'view-password',
                     'default-password',
                     'reset-password',
                     'update-profile',
@@ -707,6 +709,7 @@ class RolePermissionSeeder extends Seeder
                     'detach-course-students',
 
                     // Password Related
+                    'view-password',
                     'default-password',
                     'reset-password',
 
@@ -925,6 +928,7 @@ class RolePermissionSeeder extends Seeder
                     'update-user-document-image',
 
                     // Password Related
+                    'view-password',
                     'default-password',
                     'reset-password',
                     'update-password',
@@ -1106,6 +1110,7 @@ class RolePermissionSeeder extends Seeder
                     'update-user-document-image',
 
                     // Password Related
+                    'view-password',
                     'default-password',
                     'reset-password',
                     'update-password',

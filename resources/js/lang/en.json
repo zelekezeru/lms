@@ -58,6 +58,7 @@
       "duration": "Duration",
       "select_program": "Select Program",
       "in_language": "in {language}",
+      
       "curriculum": {
         "with": "with",
         "mode": "Mode - Curriculum",

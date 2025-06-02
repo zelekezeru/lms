@@ -24,8 +24,8 @@ class InstructorSeeder extends Seeder
             'phone' => '0911000000',
             'profile_img' => null,
             'email_verified_at' => null,
-            'password' => Hash::make('123456789'), // default password
-            'default_password' => '123456789',
+            'password' => Hash::make('instructor@0000'), // default password
+            'default_password' => 'instructor@0000',
             'password_changed' => false,
             'tenant_id' => 1,
             'created_at' => now(),
@@ -62,7 +62,7 @@ class InstructorSeeder extends Seeder
             $firstName = explode(' ', $name)[0]; // Extract the first name
             $lastName = explode(' ', $name)[1] ?? ''; // Extract the last name (if available)
             $email = strtolower($firstName).'.'.strtolower($lastName).'@sits.edu.et';
-            $phone = fake()->phoneNumber;
+            $phone = '0911'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); 
             $specialization = $specializations[array_rand($specializations)];
 
             $user = User::create([
@@ -72,8 +72,8 @@ class InstructorSeeder extends Seeder
                 'phone' => $phone,
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => Hash::make($firstName.'@'.substr($phone, -4)), // default password
-                'default_password' => $firstName.'@'.substr($phone, -4),
+                'password' => Hash::make(strToLower($firstName).'@'.substr($phone, -4)), // default password
+                'default_password' => strToLower($firstName).'@'.substr($phone, -4),
                 'password_changed' => false,
                 'tenant_id' => 1,
                 'created_at' => now(),
@@ -83,9 +83,9 @@ class InstructorSeeder extends Seeder
             Instructor::create([
                 'user_id' => $user->id,
                 'specialization' => $specialization,
-                'employment_type' => fake()->randomElement(['FULL-TIME', 'PART-TIME', 'CONTRACT', 'Visitor']),
+                'employment_type' => fake()->randomElement(['FULL-TIME', 'PART-TIME', 'CONTRACT', 'VISITOR']),
                 'hire_date' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
-                'status' => fake()->randomElement(['Active', 'Inactive']),
+                'status' => 'Active',
                 'bio' => fake()->sentence(),
                 'created_at' => now(),
                 'updated_at' => now(),

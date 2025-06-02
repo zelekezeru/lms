@@ -4,12 +4,14 @@ import { defineProps, ref } from "vue";
 import { router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { CogIcon, AcademicCapIcon, UsersIcon } from "@heroicons/vue/24/solid";
+import { CogIcon, AcademicCapIcon, UsersIcon, ClockIcon } from "@heroicons/vue/24/solid";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowClassSchedules from "./Tabs/showClassSchedules.vue";
-import { ClockIcon } from "@heroicons/vue/24/outline";
+import ShowExcels from "./Tabs/showExcels.vue";
+import { list } from "postcss";
+import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     section: {
@@ -50,6 +52,7 @@ const tabs = [
     { key: "courses", label: "Courses", icon: AcademicCapIcon },
     { key: "students", label: "Students", icon: UsersIcon },
     { key: "schedules", label: "Schedules", icon: ClockIcon },
+    { key: "excels", label: "Excel Managment", icon: ClipboardDocumentListIcon },
 ];
 
 const students = ref({
@@ -164,6 +167,12 @@ const deletesection = (id) => {
                         "
                         :rooms="rooms"
                         :active-semester="currentSemester"
+                    />
+
+                    <ShowExcels
+                        v-else-if="selectedTab === 'excels'"
+                        :section="section"
+                        :courses="courses"
                     />
                 </div>
             </transition>

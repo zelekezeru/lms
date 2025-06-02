@@ -24,8 +24,8 @@ class StudentSeeder extends Seeder
                 'phone' => '0975000000',
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => Hash::make('123456789'),
-                'default_password' => '123456789',
+                'password' => Hash::make('student@0000'),
+                'default_password' => 'student@0000',
                 'password_changed' => 0,
                 'remember_token' => null,
                 'created_at' => '2025-05-11 18:28:40',
@@ -38,12 +38,12 @@ class StudentSeeder extends Seeder
             [
                 'id' => 1,
                 'user_id' => 3,
-                'id_no' => 'SITS-0019-25',
+                'id_no' => 'SITS-0001-25',
                 'first_name' => 'Student',
                 'middle_name' => 'User',
                 'last_name' => 'Test',
                 'mobile_phone' => '0975000000',
-                'office_phone' => '0954756431',
+                'office_phone' => '0462216431',
                 'date_of_birth' => '2000-02-02',
                 'marital_status' => 'Single',
                 'sex' => 'M',
@@ -51,6 +51,7 @@ class StudentSeeder extends Seeder
                 'tenant_id' => 1,
                 'program_id' => 1,
                 'track_id' => 1,
+                'study_mode_id' => 1,
                 'year_id' => 1,
                 'semester_id' => 1,
                 'section_id' => 1,
@@ -131,8 +132,8 @@ class StudentSeeder extends Seeder
             $middleName = $faker->firstName;
             $lastName = $faker->lastName;
             $email = strtolower($firstName).'.'.strtolower($lastName).'@sits.edu.et';
-            $phone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
-            $officePhone = substr($faker->phoneNumber, 0, 13); // Truncate to 13 characters
+            $phone = '0916'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); // Generate a random phone number
+            $officePhone = '0462'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $dateOfBirth = $faker->date('Y-m-d', '2005-12-31'); // Set an upper limit
 
             DB::table('users')->insert([
@@ -144,7 +145,7 @@ class StudentSeeder extends Seeder
                     'phone' => $phone,
                     'profile_img' => null,
                     'email_verified_at' => null,
-                    'password' => Hash::make($firstName.'@'.substr($phone, -4)), // Default password
+                    'password' => Hash::make(strtolower($firstName).'@'.substr($phone, -4)), // Default password
                     'default_password' => $firstName.'@'.substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
@@ -171,7 +172,7 @@ class StudentSeeder extends Seeder
                     'tenant_id' => 1,
                     'program_id' => $faker->numberBetween(1, 5), // Adjust based on your program IDs
                     'track_id' => $faker->numberBetween(1, 3),   // Adjust based on your track IDs
-                    'study_mode_id' => $faker->numberBetween(1, 4), // Adjust based on your study mode IDs
+                    'study_mode_id' => 1, // Adjust based on your study mode IDs
                     'year_id' => 1,    // Adjust based on your year IDs
                     'semester_id' => $faker->numberBetween(1, 2), // Adjust based on your semester IDs
                     'section_id' => 1,  //  Adjust

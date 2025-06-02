@@ -90,7 +90,7 @@ const searchSemesters = () => {
           class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-blue-800 rounded-md hover:bg-blue-700"
           :title="$t('semester.refresh')"
         >
-          <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }" />
+          <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing.value }" />
           {{ $t('semester.refresh') }}
         </button>
 

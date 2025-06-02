@@ -30,7 +30,9 @@ const search = ref(usePage().props.search || "");
 const refreshData = () => {
     refreshing.value = true;
     router.visit(route("programs.index"), {
+        data: { search: search.value },
         only: ["programs"],
+        preserveState: true,
         onFinish: () => (refreshing.value = false),
     });
 };

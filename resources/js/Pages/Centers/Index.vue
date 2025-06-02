@@ -149,15 +149,14 @@ const searchCenters = () => {
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
                 {{ center.address }}
                 </td>
-
                 <!-- Coordinator -->
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
-                {{ center.coordinator ? center.coordinator.name : $t("centers.noCoordinator") }}
+                  {{ center.coordinator && center.coordinator.user ? center.coordinator.user.name : $t("centers.noCoordinator") }}
                 </td>
 
                 <!-- Student Count -->
                 <td class="px-6 py-4 text-gray-800 dark:text-gray-100">
-                {{ center.students_count }}
+                {{ center.students ? center.students.length : 0 }}
                 </td>
 
                 <!-- Status -->

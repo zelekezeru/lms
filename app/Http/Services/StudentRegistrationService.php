@@ -52,9 +52,11 @@ class StudentRegistrationService extends Controller
      */
     private function createStudentUser(array $fields, string $student_email): User
     {
+        // user default password
         $user_phone = substr($fields['mobile_phone'], -4);
-        $default_password = $fields['first_name'].'@'.$user_phone;
 
+        $default_password = strtolower($fields['first_name']).'@'.$user_phone; // Default password for new users
+        
         $user_data = [
             'name' => $fields['first_name'].' '.$fields['middle_name'].' '.$fields['last_name'],
             'email' => $student_email,

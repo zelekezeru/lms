@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -17,8 +18,6 @@ class SectionSeeder extends Seeder
         $yearId = 1;
         $userId = 2;
         $semesterId = 1;
-        $createdAt = '2025-04-15 14:56:25';
-        $updatedAt = '2025-04-15 14:56:25';
 
         for ($i = 1; $i <= 13; $i++) {
             $programId = $i;
@@ -44,9 +43,9 @@ class SectionSeeder extends Seeder
                     'program_id' => $programId,
                     'track_id' => $trackId,
                     'semester_id' => $semesterId,
-                    'study_mode_id' => rand(1, 4),
-                    'created_at' => $createdAt,
-                    'updated_at' => $updatedAt,
+                    'study_mode_id' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ];
             }
         }
@@ -60,6 +59,7 @@ class SectionSeeder extends Seeder
         $validSectionIds = DB::table('sections')->pluck('id')->toArray();
         $instructor = 1;
 
+        // Section Courses
         foreach ($validSectionIds as $sectionId) {
             for ($courseId = 1; $courseId <= 30; $courseId++) {
                 $data[] = [
@@ -70,5 +70,20 @@ class SectionSeeder extends Seeder
         }
 
         DB::table('course_section')->insert($data);
+
+        // Section Instructors
+        // $data = [];
+        // foreach ($validSectionIds as $sectionId) {
+        //     for ($i = 1; $i <= 3; $i++) { // Assuming each section has 3 instructors
+        //         $data[] = [
+        //             'section_id' => $sectionId,
+        //             'instructor_id' => $instructor,
+        //             'created_at' => Carbon::now(),
+        //             'updated_at' => Carbon::now(),
+        //         ];
+        //         $instructor++;
+        //     }
+        // }
+        // DB::table('section_instructors')->insert($data);
     }
 }

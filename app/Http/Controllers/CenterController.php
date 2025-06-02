@@ -28,8 +28,10 @@ class CenterController extends Controller
             });
         }
 
-        $centers = CenterResource::collection($query->paginate(15));
-
+        $centers = CenterResource::collection(
+            $query->with(['coordinator.user', 'students'])->paginate(15)->withQueryString()
+        );
+        
         return inertia('Centers/Index', [
             'centers' => $centers,
         ]);
@@ -37,10 +39,11 @@ class CenterController extends Controller
 
     public function show(Center $center)
     {
+        $center = new CenterResource($center->load('coordinator', 'coordinator.user', 'students', 'students.user'));
+        
         return inertia('Centers/Show', [
-            'center' => new CenterResource($center->load('coordinator')),
-            'coordinator' => $center->coordinator ? new UserResource($center->coordinator->user) : null,
-        ]);
+            'center' => $center,
+            ]);
     }
 
     public function create()

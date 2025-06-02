@@ -15,6 +15,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    coordinator: {
+        type: Object,
+        required: false,
+    },
 });
 
 // Delete function for Center
@@ -84,7 +88,7 @@ const deleteCenter = (id) => {
                     {{ $t('centers.coordinator') }}
                 </span>
                 <span class="block text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ center.coordinator ? center.coordinator.name : $t('centers.noCoordinator') }}
+                    {{ coordinator ? coordinator.name : $t('centers.noCoordinator') }}
                 </span>
             </div>
 

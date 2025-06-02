@@ -39,7 +39,7 @@ const submitForm = () => {
 
 <template>
   <div class="p-8 max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Coordinator Management</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center">Coordinator Management</h1>
     
     <div class="max-w-5xl mx-auto p-6">
     
@@ -90,6 +90,13 @@ const submitForm = () => {
                     Coordinator
                 </div>
             </div>
+
+            <div v-if="userCan('view-password') && coordinator.default_password">
+              <span class="text-sm text-gray-500 dark:text-gray-400">Default Password</span>
+              <div class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ coordinator.default_password }}
+              </div>
+            </div>
         </div>
 
         <div class="flex justify-end mt-6 space-x-4">
@@ -113,15 +120,21 @@ const submitForm = () => {
         </div>
     </div>
 
-    <div v-else class="text-center p-6 text-gray-500">
+    <div v-else class="flex flex-col items-center justify-center p-10 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+      <PlusCircleIcon class="w-16 h-16 text-green-400 mb-4 animate-bounce" />
+      <div class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">
         {{ $t('coordinators.no_coordinators_found') }}
-        <!-- Open Modal Button -->
-        <button
+      </div>
+      <div class="text-gray-500 dark:text-gray-400 mb-6">
+        Add coordinator to this center.
+      </div>
+      <button
         @click="showModal = true"
-            class="flex text-green-600 hover:text-green-800">
-        
-        <PlusCircleIcon class="mx-2 w-8 h-8" /> Add Coordinator
-        </button>
+        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-full shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+      >
+        <PlusCircleIcon class="w-6 h-6 mr-2" />
+        Add Coordinator
+      </button>
     </div>
 
     <!-- Modal -->

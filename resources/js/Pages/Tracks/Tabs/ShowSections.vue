@@ -127,13 +127,13 @@ const addSection = () => {
                             </Link>
                         </td>
                         <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            {{ section.studyMode ? section.studyMode.id : $t('sections.na') }}
+                            {{ section.studyMode ? section.studyMode.name : $t('sections.na') }}
                         </td>
                         <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            {{ section.year.id }}
+                            {{ section.year.name }}
                         </td>
                         <td class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            {{ section.semester.id }}
+                            {{ section.semester.name }}
                         </td>
                         <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
                             <div class="flex items-center justify-center h-full">

@@ -18,6 +18,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'Bachelors of Art in Theology',
                 'language' => 'English',
                 'code' => 'PR/01/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Bachelors of Art in Theology in English',
                 'user_id' => 2,
@@ -29,6 +30,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'Advance Diploma in Theology',
                 'language' => 'English',
                 'code' => 'PR/02/25',
+                'status' => 'Active',
                 'duration' => 3,
                 'description' => 'Advance Diploma in Theology in English',
                 'user_id' => 2,
@@ -40,6 +42,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'MABTS (Masters of Art in Biblical Study)',
                 'language' => 'English',
                 'code' => 'PR/03/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Masters of Art in Biblical Study in English',
                 'user_id' => 2,
@@ -51,6 +54,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'MTH (Masters of Arts in Theology)',
                 'language' => 'English',
                 'code' => 'PR/04/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Masters of Arts in Theology in English',
                 'user_id' => 2,
@@ -62,6 +66,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'MDIV (Masters of Divinity)',
                 'language' => 'English',
                 'code' => 'PR/05/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Masters of Divinity in English',
                 'user_id' => 2,
@@ -73,6 +78,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'Post Graduate Diploma',
                 'language' => 'English',
                 'code' => 'PR/06/25',
+                'status' => 'Active',
                 'duration' => 3,
                 'description' => 'Post Graduate Diploma in English',
                 'user_id' => 2,
@@ -84,6 +90,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'Advance Diploma in Theology',
                 'language' => 'Amharic',
                 'code' => 'PR/07/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Advance Diploma in Theology in Amharic',
                 'user_id' => 2,
@@ -95,6 +102,7 @@ class ProgramSeeder extends Seeder
                 'name' => 'Bachelors of Art in Theology',
                 'language' => 'Amharic',
                 'code' => 'PR/08/25',
+                'status' => 'Active',
                 'duration' => 4,
                 'description' => 'Bachelors of Art in Theology in Amharic',
                 'user_id' => 2,
@@ -112,7 +120,7 @@ class ProgramSeeder extends Seeder
             // Define study mode IDs.
             $studyModeIds = [1, 2, 3, 4];
             $duration = ($programId >= 1 && $programId <= 4) || ($programId >= 7 && $programId <= 8) ? 4 : 3;
-
+            
             // Loop through study mode ids
             foreach ($studyModeIds as $studyModeId) {
                 $data[] = [

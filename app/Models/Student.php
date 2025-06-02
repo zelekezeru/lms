@@ -85,9 +85,9 @@ class Student extends Model
     {
         return $this->belongsToMany(Semester::class)->withPivot('status');
     }
-
-    public function center()
+    
+    public function centers()
     {
-        return $this->belongsTo(Center::class);
+        return $this->belongsToMany(Center::class, 'center_student');
     }
 }

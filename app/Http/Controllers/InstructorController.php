@@ -95,17 +95,18 @@ class InstructorController extends Controller
         } else {
             $profile_path = null;
         }
-
-        // Create a new Instructor User in User table
-
+        
+        // user default password
+        $firstName = explode(' ', $fields['name'])[0]; // Get the first name from the full name
+        
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $user_password = 'instructor@'.$user_phone;
-
+        $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users
+        
         // Merge the default password into the request
         $request->merge([
-            'password' => $user_password,
-            'default_password' => $user_password, // needed for 'confirmed' rule
+            'password' => $default_password,
+            'default_password' => $default_password, // needed for 'confirmed' rule
             'profile_img' => $profile_path,
         ]);
 

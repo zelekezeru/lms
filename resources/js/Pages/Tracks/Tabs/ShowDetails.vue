@@ -29,8 +29,8 @@ const props = defineProps({
 // Delete function with SweetAlert confirmation
 const deleteTrack = (id) => {
     Swal.fire({
-        title: $t("programs.tracks.delete_confirm_title"),
-        text: $t("programs.tracks.delete_confirm_text"),
+        title: $t("tracks.delete_confirm_title"),
+        text: $t("tracks.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -41,8 +41,8 @@ const deleteTrack = (id) => {
             router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("programs.tracks.deleted_title"),
-                        $t("programs.tracks.deleted_text"),
+                        $t("tracks.deleted_title"),
+                        $t("tracks.deleted_text"),
                         "success"
                     );
                 },
@@ -60,7 +60,7 @@ const deleteTrack = (id) => {
             <!-- Track Code -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('programs.tracks.code') }}</span
+                    >{{ $t('tracks.code') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -71,7 +71,7 @@ const deleteTrack = (id) => {
             <!-- Track Program -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('programs.tracks.program') }}</span
+                    >{{ $t('tracks.program') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -87,7 +87,7 @@ const deleteTrack = (id) => {
             <!-- Description -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('programs.tracks.description') }}</span
+                    >{{ $t('tracks.description') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
@@ -98,12 +98,12 @@ const deleteTrack = (id) => {
             <!-- Duration -->
             <div>
                 <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('programs.tracks.duration') }}</span
+                    >{{ $t('tracks.duration') }}</span
                 >
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.duration }} {{ $t('programs.tracks.duration_years') }}
+                    {{ track.duration }} {{ $t('tracks.duration_years') }}
                 </span>
             </div>
         </div>

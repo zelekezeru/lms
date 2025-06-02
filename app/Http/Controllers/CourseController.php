@@ -21,10 +21,20 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = CourseResource::collection(Course::with('track')->paginate(15));
+        $search = request()->input('search');
+
+        $coursesQuery = Course::with('track')
+            ->when($search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('code', 'like', "%{$search}%");
+            })
+            ->latest();
+
+        $courses = $coursesQuery->paginate(15)->appends(['search' => $search]);
 
         return inertia('Courses/Index', [
-            'courses' => $courses,
+            'courses' => CourseResource::collection($courses),
+            'search' => $search,
         ]);
     }
 

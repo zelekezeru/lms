@@ -14,6 +14,7 @@ import {
   UserGroupIcon,
   UsersIcon,
   CogIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
@@ -24,16 +25,13 @@ import Modal from "@/Components/Modal.vue";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCoordinators from "./Tabs/ShowCoordinators.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
+import ShowExcels from "./Tabs/ShowExcels.vue";
 
 defineProps({
     center: {
         type: Object,
         required: true,
-    },
-    coordinator: {
-        type: Object,
-        required: false,
-    },    
+    },  
 });
 
 const selectedCenter = ref(null);
@@ -53,6 +51,7 @@ const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
     { key: 'coordinators', label: 'Coordinators', icon: UserGroupIcon },
     { key: 'students', label: 'Students', icon: UsersIcon },
+    { key: "excels", label: "Excel Managment", icon: ClipboardDocumentListIcon },
     
 ];
 
@@ -107,58 +106,68 @@ const searchCoordinators = () => {
               {{ center.code }}
           </p>
         </div>
+        
+        <nav
+            class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
+        >
+            <button
+                v-for="tab in tabs"
+                :key="tab.key"
+                @click="selectedTab = tab.key"
+                :class="[
+                    'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
+                    selectedTab === tab.key
+                        ? 'border-b-2 border-indigo-500 text-indigo-600'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
+                ]"
+            >
+                <component :is="tab.icon" class="w-5 h-5" />
+                <span>{{ tab.label }}</span>
+            </button>
+        </nav>
+        
+        <transition
+            mode="out-in"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-75"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-75"
+        >
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <!-- Details Panel -->
+                <ShowDetails
+                    v-if="selectedTab == 'details'"
+                    :center="center"
+                    :coordinator="center.coordinator.user"
+                />
 
-      <nav
-          class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
-      >
-          <button
-              v-for="tab in tabs"
-              :key="tab.key"
-              @click="selectedTab = tab.key"
-              :class="[
-                  'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
-                  selectedTab === tab.key
-                      ? 'border-b-2 border-indigo-500 text-indigo-600'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
-              ]"
-          >
-              <component :is="tab.icon" class="w-5 h-5" />
-              <span>{{ tab.label }}</span>
-          </button>
-      </nav>
-      
-      <transition
-          mode="out-in"
-          enter-active-class="transition duration-300 ease-out"
-          enter-from-class="opacity-0 scale-75"
-          enter-to-class="opacity-100 scale-100"
-          leave-active-class="transition duration-200 ease-in"
-          leave-from-class="opacity-100 scale-100"
-          leave-to-class="opacity-0 scale-75"
-      >
-          <div
-              :key="selectedTab"
-              class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-          >
-              <!-- Details Panel -->
-              <ShowDetails
-                  v-if="selectedTab == 'details'"
-                  :center="center"
-              />
+                <!-- Coordinators Panel -->
+                <ShowCoordinators v-else-if="selectedTab == 'coordinators'" 
+                    :coordinator="center.coordinator.user"
+                    :center="center"
+                />
+                
+                <!-- Students Panel -->              
+                <ShowStudents
+                    v-else-if="selectedTab == 'students'"
+                    :center="center"
+                    :students="center.students"
+                    :coordinator="center.coordinator.user"
+                    @close="showStudentsModal = false"
+                />
 
-              <!-- Coordinators Panel -->
-              <ShowCoordinators v-else-if="selectedTab == 'coordinators'" 
-                  :coordinator="coordinator"
-                  :center="center"
-              />
-              
-              <!-- Students Panel -->              
-              <ShowStudents
-                  v-else-if="selectedTab == 'students'"
-                  :students="center"
-                  @close="showStudentsModal = false"
-              />
-          </div>
-      </transition>
+                <!-- Excel Management Panel -->
+                <ShowExcels
+                    v-else-if="selectedTab == 'excels'"
+                    :center="center"
+                    :coordinator="center.coordinator.user"
+                />
+            </div>
+        </transition>
   </AppLayout>
 </template>

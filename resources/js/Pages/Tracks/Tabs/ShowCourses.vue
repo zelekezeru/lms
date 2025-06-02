@@ -9,7 +9,7 @@ import {
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, PlusCircleIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     track: {
         type: Object,
@@ -55,7 +55,6 @@ const submitCourseAssignment = () => {
 };
 </script>
 
-
 <template>
     <div class="">
         <div class="flex items-center justify-between mb-4">
@@ -66,7 +65,9 @@ const submitCourseAssignment = () => {
                 @click="assignCourses = !assignCourses"
                 class="flex items-center text-indigo-600 hover:text-indigo-800"
             >
-                {{ $t('courses.assign') }}
+                <PlusCircleIcon class="w-8 h-8" />
+                    <span class="hidden sm:inline">{{ $t('courses.assign') }}</span>
+                
             </button>
         </div>
 

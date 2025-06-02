@@ -29,7 +29,9 @@ const viewMode = ref("card"); // 'table' or 'card'
 const refreshData = () => {
   refreshing.value = true;
   router.visit(route("years.index"), {
+    data: { search: search.value },
     only: ["years"],
+    preserveState: true,
     onFinish: () => {
       refreshing.value = false;
     },

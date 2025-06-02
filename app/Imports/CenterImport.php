@@ -2,64 +2,60 @@
 
 namespace App\Imports;
 
-use App\Http\Resources\SectionResource;
-use App\Models\Section;
-use App\Models\Status;
-use App\Models\Student;
-use App\Models\User;
-use App\Models\Year;
-use App\Models\Semester;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use App\Models\Center;
+use App\Http\Resources\CenterResource;
+use App\Models\User;
+use App\Models\Student;
+use App\Models\Status;
+use App\Models\Semester;
+use App\Models\Year;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow; // Add this import if SectionResource exists in this namespace
+use Illuminate\Support\Facades\Session;
 
-class StudentsImport implements ToCollection, WithHeadingRow
+class CenterImport implements ToCollection
 {
-    protected $section_id;
-
+    /**
+    * @param Collection $collection
+    */
+    protected $center_id;
     protected $program_id;
-
     protected $track_id;
-
     protected $study_mode_id;
-
     protected $year_id;
-
     protected $semester_id;
-
     protected $tenant_id;
-
     protected $user_id;
 
-    public function __construct($section_id)
+    public function __construct($center_id, $study_mode_id)
     {
-        $this->section_id = $section_id;
+        $this->center_id = $center_id;
+        $this->study_mode_id = $study_mode_id;
     }
 
     public function collection(Collection $rows)
     {
-        $section = Section::findOrFail($this->section_id);
+        $center = Center::findOrFail($this->center_id);
 
-        $section = new SectionResource($section->load([
+        $center = new CenterResource($center->load([
             'user', 'program', 'track', 'year', 'semester', 'studyMode',
         ]));
 
-        $this->program_id = $section->program->id;
-        $this->track_id = $section->track->id;
-        $this->study_mode_id = $section->studyMode->id;
-        $this->tenant_id = $section->user->tenant_id; // assuming user relation carries tenant
-        $this->user_id = $section->user->id;
+        $this->program_id = $center->program->id;
+        $this->track_id = $center->track->id;
+        $this->study_mode_id = $center->studyMode->id;
+        $this->tenant_id = $center->user->tenant_id;
+        $this->user_id = $center->user->id;
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
 
-                // Validate row data
                 if (! isset($row['full_name']) || ! isset($row['phone']) || ! isset($row['sex'])) {
-                    session()->flash('sweet_alert', [
+                    Session::flash('sweet_alert', [
                         'type' => 'error',
                         'title' => 'Missing Required Fields',
                         'text' => 'Some required fields are missing in this row. Skipping this entry.',
@@ -74,36 +70,27 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                 $email = strtolower(Str::slug($firstName).'.'.Str::slug($middleName)).'@sits.edu.et';
 
-                // Check if the email already exists
                 if (User::where('email', $email)->exists()) {
-                    // If email exists, skip this row
-                    
-                    session()->flash('sweet_alert', [
+                    Session::flash('sweet_alert', [
                         'type' => 'error',
                         'title' => 'Duplicate User & Email',
                         'text' => 'User with email '.$email.' & Name already exists. Skipping this entry.',
                     ]);
                     continue;
                 }
-                // Fetch the Id of Year from the list of Academic years that matches the imported entry_year and fetch the id
-                $year = DB::table('years')->where('name', $row['entry_year'])->first();
-                
-                // If year is not found, Create a new year entry
-                if ($year) {
 
-                    // Assuming there is a relationship, but since $year is a stdClass, use query
-                    $semester = $year->semesters()->first();
-                    
-                    $academicYear = substr($year->name, -2); // Get last two digits of the current year
+                $year = DB::table('years')->where('name', $row['entry_year'])->first();
+
+                if ($year) {
+                    $semester = Semester::where('year_id', $year->id)->first();
+                    $academicYear = substr($year->name, -2);
                 } else {
-                    // Create a new year entry if it doesn't exist
                     $year = Year::firstOrCreate([
                         'name' => $row['entry_year'],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
-                    
-                    // Create a semester for the year if it doesn't exist
+
                     $semester = Semester::firstOrCreate([
                         'name' => '1st - ' . $year->name,
                         'year_id' => $year->id,
@@ -114,16 +101,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'updated_at' => now(),
                     ]);
 
-                    $academicYear = substr($row['entry_year'], -2); // Get last two digits of the entry year
+                    $academicYear = substr($row['entry_year'], -2);
                 }
-                
-                // 👤 Generate custom user_uuid
+
                 $studentCount = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-
                 $userUuid = 'SITS-'.str_pad($studentCount, 4, '0', STR_PAD_LEFT).'-'.$academicYear;
-
-                $default_password = strtolower($firstName).'@'.substr($row['phone'], -4); // Default password for new users
-
+                $default_password = strtolower($firstName).'@'.substr($row['phone'], -4);
 
                 $user = User::firstOrCreate(
                     ['email' => $email],
@@ -135,8 +118,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'default_password' => $default_password,
                     ]
                 );
-                
-                // 👨‍🎓 Create Student
+
                 $student = Student::updateOrCreate([
                     'id_no' => $userUuid,
                 ], [
@@ -150,17 +132,15 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     'program_id' => $this->program_id,
                     'track_id' => $this->track_id,
                     'study_mode_id' => $this->study_mode_id,
-                    'section_id' => $this->section_id,
+                    'center_id' => $this->center_id,
                     'year_id' => $year->id,
                     'semester_id' => $semester->id,
                     'tenant_id' => $this->tenant_id,
                     'user_id' => $user->id,
                 ]);
 
-                // ✅ Register Student Status
                 $this->createStudentStatus($student);
 
-                // ⛪️ Add Church Info (if data exists)
                 if (! empty($row['pastor_name']) || ! empty($row['church_name'])) {
                     $this->createStudentChurch($student, $row->toArray());
                 }

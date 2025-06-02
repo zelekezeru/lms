@@ -23,6 +23,15 @@ class YearSeeder extends Seeder
                 'created_at' => '2025-04-15 05:49:22',
                 'updated_at' => '2025-04-15 05:49:22',
             ],
+            [
+                'id' => 2,
+                'name' => '2026',
+                'status' => 'Inactive',
+                'is_approved' => 0,
+                'is_completed' => 0,
+                'created_at' => '2025-04-15 05:49:22',
+                'updated_at' => '2025-04-15 05:49:22',
+            ],
         ]);
     }
 }

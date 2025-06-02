@@ -43,6 +43,36 @@ class SemesterSeeder extends Seeder
                 'is_approved' => 1,
                 'is_completed' => 0,
             ],
+            [
+                'name' => '1st - 2026',
+                'year_id' => 2,
+                'level' => 1,
+                'start_date' => '2026-01-10',
+                'end_date' => '2026-04-10',
+                'status' => 'Inactive',
+                'is_approved' => 0,
+                'is_completed' => 0,
+            ],
+            [
+                'name' => '2nd - 2026',
+                'year_id' => 2,
+                'level' => 2,
+                'start_date' => '2026-04-15',
+                'end_date' => '2026-07-15',
+                'status' => 'Inactive',
+                'is_approved' => 0,
+                'is_completed' => 0,
+            ],
+            [
+                'name' => 'Rainy Season - 2026',
+                'year_id' => 2,
+                'level' => 3,
+                'start_date' => '2026-08-01',
+                'end_date' => '2026-10-31',
+                'status' => 'Inactive',
+                'is_approved' => 0,
+                'is_completed' => 0,
+            ],
 
         ]);
     }

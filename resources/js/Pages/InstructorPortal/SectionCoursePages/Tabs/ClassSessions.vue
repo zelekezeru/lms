@@ -20,6 +20,7 @@ const showForm = ref(false);
 const showDetail = ref(false);
 const takeAttendance = ref(false);
 const selectedSession = ref(null);
+const markAllAS = ref("");
 
 function toggleForm() {
     showForm.value = !showForm.value;
@@ -79,10 +80,7 @@ watch(selectedSession, (newSession) => {
         attendance.value = {};
 
         newSession.attendances.forEach((att) => {
-            const record = att.records;
-            if (record?.student && record?.status) {
-                attendance.value[record.student] = record.status;
-            }
+            attendance.value[att.studentId] = att.status;
         });
     } else {
         // Initialize with empty values for each student
@@ -91,6 +89,12 @@ watch(selectedSession, (newSession) => {
             attendance.value[student.id] = "";
         });
     }
+});
+
+watch(markAllAS, (newVal) => {
+    props.students.forEach((student) => {
+        attendance.value[student.id] = newVal;
+    });
 });
 // Submit attendance data
 function submitAttendance() {
@@ -178,6 +182,106 @@ onMounted(() => {
                 >
                     Take Attendance
                 </h2>
+                <div class="mb-4">
+                    <h3
+                        class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
+                        Mark All Students As: {{ markAllAS }}
+                    </h3>
+                    <div class="flex flex-wrap gap-2 sm:gap-4">
+                        <label
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-green-800 dark:text-green-100 rounded cursor-pointer"
+                            :class="{
+                                '!bg-green-500 !text-white':
+                                    markAllAS === 'present',
+                            }"
+                        >
+                            <input
+                                type="radio"
+                                class="sr-only"
+                                name="markAllAs"
+                                value="present"
+                                v-model="markAllAS"
+                            />
+                            <div
+                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                :class="
+                                    markAllAS === 'present'
+                                        ? 'bg-green-500'
+                                        : 'bg-white'
+                                "
+                            >
+                                <div
+                                    class="w-2 h-2 bg-white rounded-full"
+                                    v-if="markAllAS === 'present'"
+                                ></div>
+                            </div>
+
+                            Present
+                        </label>
+
+                        <label
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-yellow-800 dark:text-yellow-100 rounded cursor-pointer"
+                            :class="{
+                                '!bg-yellow-500 !text-white':
+                                    markAllAS === 'permission',
+                            }"
+                        >
+                            <input
+                                type="radio"
+                                class="sr-only"
+                                name="markAllAs"
+                                value="permission"
+                                v-model="markAllAS"
+                            />
+                            <div
+                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                :class="
+                                    markAllAS === 'permission'
+                                        ? 'bg-yellow-500'
+                                        : 'bg-white'
+                                "
+                            >
+                                <div
+                                    class="w-2 h-2 bg-white rounded-full"
+                                    v-if="markAllAS === 'permission'"
+                                ></div>
+                            </div>
+                            Permission
+                        </label>
+
+                        <label
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-red-800 dark:text-red-100 rounded cursor-pointer"
+                            :class="{
+                                '!bg-red-500 !text-white':
+                                    markAllAS === 'absent',
+                            }"
+                        >
+                            <input
+                                type="radio"
+                                class="sr-only"
+                                name="markAllAs"
+                                value="absent"
+                                v-model="markAllAS"
+                            />
+                            <div
+                                class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                :class="
+                                    markAllAS === 'absent'
+                                        ? 'bg-red-500'
+                                        : 'bg-white'
+                                "
+                            >
+                                <div
+                                    class="w-2 h-2 bg-white rounded-full"
+                                    v-if="markAllAS === 'absent'"
+                                ></div>
+                            </div>
+                            Absent
+                        </label>
+                    </div>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table
                         class="w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded"
@@ -208,11 +312,15 @@ onMounted(() => {
                                 </td>
 
                                 <!-- Present -->
-                                <td
-                                    class="px-2 py-2 text-center cursor-pointer"
-                                >
+<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
+
                                     <label
-                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                        class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
+                                        :class="{
+                                            '!bg-green-500':
+                                                attendance[student.id] ===
+                                                'present',
+                                        }"
                                     >
                                         <input
                                             type="radio"
@@ -242,11 +350,15 @@ onMounted(() => {
                                 </td>
 
                                 <!-- Permission -->
-                                <td
-                                    class="px-2 py-2 text-center cursor-pointer"
-                                >
+<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
+
                                     <label
-                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                        class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
+                                        :class="{
+                                            '!bg-yellow-500':
+                                                attendance[student.id] ===
+                                                'permission',
+                                        }"
                                     >
                                         <input
                                             type="radio"
@@ -276,11 +388,15 @@ onMounted(() => {
                                 </td>
 
                                 <!-- Absent -->
-                                <td
-                                    class="px-2 py-2 text-center cursor-pointer"
-                                >
+<td class="px-1 py-2 text-center cursor-pointer min-w-[90px] sm:min-w-[100px]">
+
                                     <label
-                                        class="inline-flex items-center justify-center w-full h-full cursor-pointer"
+                                        class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
+                                        :class="{
+                                            '!bg-red-500':
+                                                attendance[student.id] ===
+                                                'absent',
+                                        }"
                                     >
                                         <input
                                             type="radio"
@@ -327,7 +443,7 @@ onMounted(() => {
 
             <!-- Default View (Session List & Form) -->
             <div v-else key="list">
-                <div class="flex justify-end">
+                <div class="flex justify-end mb-4">
                     <PrimaryButton @click="toggleForm">
                         {{ showForm ? "Cancel" : "Add Class Session" }}
                     </PrimaryButton>
@@ -384,6 +500,11 @@ onMounted(() => {
                                     <button
                                         @click="markAttendance(classSession)"
                                         class="flex items-center justify-center px-3 py-1 text-xs font-medium text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500"
+                                        :class="{
+                                            'bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700':
+                                                classSession.attendances
+                                                    .length == 0,
+                                        }"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -439,7 +560,14 @@ onMounted(() => {
                             </tr>
 
                             <!-- The Form Row -->
-                            <transition name="fade">
+                            <transition
+                                enter-active-class="transition duration-300 ease-out"
+                                enter-from-class="-translate-y-2 opacity-0"
+                                enter-to-class="translate-y-0 opacity-100"
+                                leave-active-class="transition duration-200 ease-in"
+                                leave-from-class="translate-y-0 opacity-100"
+                                leave-to-class="-translate-y-2 opacity-0"
+                            >
                                 <tr
                                     v-if="showForm"
                                     class="bg-gray-100 dark:bg-gray-700 border-t border-gray-300 dark:border-gray-600"

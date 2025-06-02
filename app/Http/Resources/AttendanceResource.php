@@ -16,10 +16,8 @@ class AttendanceResource extends JsonResource
     {
         return [
             'classSession' => new ClassSessionResource($this->whenLoaded('classSession')),
-            'records' => [
-                'student' => $this->student_id,
-                'status' => $this->status,
-            ],
+            'studentId' => $this->student_id,
+            'status' => $this->status,
         ];
     }
 }

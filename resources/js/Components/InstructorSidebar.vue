@@ -72,7 +72,7 @@ const wrapperClasses = computed(() => {
                     :href="route('instructor.classSchedules')"
                     :isCollapsed="!isOpen"
                 />
-                <SidebarItem
+                <!-- <SidebarItem
                     :icon="ClipboardDocumentListIcon"
                     label="Attendance"
                     href="/instructor/attendance"
@@ -83,7 +83,7 @@ const wrapperClasses = computed(() => {
                     label="Grades"
                     :href="route('instructor.grades')"
                     :isCollapsed="!isOpen"
-                />
+                /> -->
             </nav>
 
             <div class="px-2 pb-4 mt-auto">

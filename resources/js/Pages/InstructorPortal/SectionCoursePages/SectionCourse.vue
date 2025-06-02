@@ -67,9 +67,6 @@ const rightMenu = [
     { name: "Students", key: "students", icon: AcademicCapIcon },
     { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
     { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
-    { name: "Assessments", key: "assessments", icon: AcademicCapIcon },
-    { name: "Attendance", key: "attendance", icon: AcademicCapIcon },
-    { name: "Announcements", key: "announcements", icon: AcademicCapIcon },
 ];
 
 const changeTab = (tabName) => {
@@ -217,10 +214,6 @@ const changeTab = (tabName) => {
                         <Attendance
                             v-if="activeTab === 'attendance'"
                             :attendanceRecords="attendanceRecords"
-                        />
-                        <Announcements
-                            v-if="activeTab === 'announcements'"
-                            :announcements="announcements"
                         />
                     </div>
                 </div>

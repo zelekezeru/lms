@@ -1,16 +1,9 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { ref, onMounted, watch, computed, nextTick } from "vue";
-import Dropdown from "primevue/dropdown";
+import { ref, onMounted, watch, computed } from "vue";
 import Calendar from "primevue/calendar";
-import InputText from "primevue/inputtext";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { DatePicker, Select } from "primevue";
-
-import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-
-// Register necessary Chart.js components
-Chart.register(ArcElement, Tooltip, Legend);
+import { Select } from "primevue";
 
 const props = defineProps({
     section: { required: true, type: Object },
@@ -26,7 +19,7 @@ const showForm = ref(false);
 const showDetail = ref(false);
 const takeAttendance = ref(false);
 const selectedSession = ref(null);
-const markAllAS = ref("");
+const markAllAs = ref("");
 
 function toggleForm() {
     showForm.value = !showForm.value;
@@ -43,7 +36,6 @@ function markAttendance(session) {
     takeAttendance.value = true;
     showDetail.value = false;
 
-    // Initialize attendance for each student if not already done
     props.students.forEach((student) => {
         if (!(student.id in attendance.value)) {
             attendance.value[student.id] = "";
@@ -72,14 +64,14 @@ const form = useForm({
 const startDateOnlyMin = computed(() => {
     if (!form.start_date_time) return null;
     const min = new Date(form.start_date_time);
-    min.setHours(0, 0, 0, 0); // Start of day
+    min.setHours(0, 0, 0, 0);
     return min;
 });
 
 const startDateOnlyMax = computed(() => {
     if (!form.start_date_time) return null;
     const max = new Date(form.start_date_time);
-    max.setHours(23, 59, 59, 999); // End of day
+    max.setHours(23, 59, 59, 999);
     return max;
 });
 
@@ -92,10 +84,8 @@ function addClassSession() {
     });
 }
 
-// Initialize empty attendance ref
 const attendance = ref({});
 
-// Watch for changes to selectedSession to sync attendance object
 watch(selectedSession, (newSession) => {
     if (newSession?.attendances?.length > 0) {
         attendance.value = {};
@@ -108,96 +98,6 @@ watch(selectedSession, (newSession) => {
             attendance.value[student.id] = "";
         });
     }
-});
-
-const attendanceChart = ref(null);
-let attendanceChartInstance = null;
-
-watch(selectedSession, async (session) => {
-  console.log("Selected session changed:", session);
-  if (!session?.attendances?.length) {
-    console.log("No attendances, destroying chart if exists");
-    if (attendanceChartInstance) {
-      attendanceChartInstance.destroy();
-      attendanceChartInstance = null;
-    }
-    return;
-  }
-
-  await nextTick();
-
-  if (!attendanceChart.value) {
-    console.log("Canvas ref not ready");
-    await nextTick();
-    if (!attendanceChart.value) {
-      console.log("Canvas still not ready, abort chart creation");
-      return;
-    }
-  }
-
-  const ctx = attendanceChart.value.getContext("2d");
-  if (!ctx) {
-    console.log("Failed to get canvas context");
-    return;
-  }
-  console.log("Canvas context obtained", ctx);
-
-  // Count attendance statuses
-  const counts = { Present: 0, Absent: 0, Late: 0, Excused: 0 };
-  session.attendances.forEach((att) => {
-    const status = (att.status || "Absent").toLowerCase();
-    switch (status) {
-      case "present":
-        counts.Present++;
-        break;
-      case "absent":
-        counts.Absent++;
-        break;
-      case "late":
-        counts.Late++;
-        break;
-      case "excused":
-        counts.Excused++;
-        break;
-      default:
-        counts.Absent++;
-    }
-  });
-
-  console.log("Attendance counts:", counts);
-
-  if (attendanceChartInstance) attendanceChartInstance.destroy();
-
-  attendanceChartInstance = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: Object.keys(counts),
-      datasets: [
-        {
-          label: "Attendance",
-          data: Object.values(counts),
-          backgroundColor: [
-            "rgba(16, 185, 129, 0.7)", // green for Present
-            "rgba(239, 68, 68, 0.7)",  // red for Absent
-            "rgba(245, 158, 11, 0.7)",  // amber for Late
-            "rgba(59, 130, 246, 0.7)",  // blue for Excused
-          ],
-          borderWidth: 0,
-          hoverOffset: 30,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "bottom",
-          labels: { color: "#374151" }, // dark gray
-        },
-      },
-    },
-  });
-  console.log("Chart created");
 });
 
 function submitAttendance() {
@@ -218,7 +118,13 @@ function submitAttendance() {
     });
 }
 
-// Ensure attendance is initialized on mount
+watch(markAllAs, (newVal) => {
+    props.students.forEach((student) => {
+            attendance.value[student.id] = newVal;
+        }
+    );
+});
+
 onMounted(() => {
     props.students.forEach((student) => {
         if (!(student.id in attendance.value)) {
@@ -227,6 +133,7 @@ onMounted(() => {
     });
 });
 </script>
+
 
 <template>
     <div class="max-w-9xl mx-auto py-10 px-0 space-y-8">
@@ -285,7 +192,7 @@ onMounted(() => {
                 </div>
 
                 <!-- Attendance Summary Chart -->
-                <section
+                <!-- <section
                     v-if="
                         showDetail &&
                         selectedSession &&
@@ -300,7 +207,7 @@ onMounted(() => {
                         ref="attendanceChart"
                         style="width: 100%; height: 300px"
                     ></canvas>
-                </section>
+                </section> -->
 
                 <div class="mt-6">
                     <PrimaryButton @click="backToList">Back</PrimaryButton>
@@ -323,14 +230,14 @@ onMounted(() => {
                         <h3
                             class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2"
                         >
-                            Mark All Students As: {{ markAllAS }}
+                            Mark All Students As: {{ markAllAs }}
                         </h3>
                         <div class="flex flex-wrap gap-2 sm:gap-4">
                             <label
                                 class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-green-800 dark:text-green-100 rounded cursor-pointer"
                                 :class="{
                                     '!bg-green-500 !text-white':
-                                        markAllAS === 'present',
+                                        markAllAs === 'present',
                                 }"
                             >
                                 <input
@@ -338,60 +245,30 @@ onMounted(() => {
                                     class="sr-only"
                                     name="markAllAs"
                                     value="present"
-                                    v-model="markAllAS"
+                                    v-model="markAllAs"
                                 />
                                 <div
                                     class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
                                     :class="
-                                        markAllAS === 'present'
+                                        markAllAs === 'present'
                                             ? 'bg-green-500'
                                             : 'bg-white'
                                     "
                                 >
                                     <div
                                         class="w-2 h-2 bg-white rounded-full"
-                                        v-if="markAllAS === 'present'"
+                                        v-if="markAllAs === 'present'"
                                     ></div>
                                 </div>
 
                                 Present
                             </label>
 
-                            <label
-                                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-yellow-800 dark:text-yellow-100 rounded cursor-pointer"
-                                :class="{
-                                    '!bg-yellow-500 !text-white':
-                                        markAllAS === 'permission',
-                                }"
-                            >
-                                <input
-                                    type="radio"
-                                    class="sr-only"
-                                    name="markAllAs"
-                                    value="permission"
-                                    v-model="markAllAS"
-                                />
-                                <div
-                                    class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
-                                    :class="
-                                        markAllAS === 'permission'
-                                            ? 'bg-yellow-500'
-                                            : 'bg-white'
-                                    "
-                                >
-                                    <div
-                                        class="w-2 h-2 bg-white rounded-full"
-                                        v-if="markAllAS === 'permission'"
-                                    ></div>
-                                </div>
-                                Permission
-                            </label>
-
-                            <label
+                                                        <label
                                 class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-red-800 dark:text-red-100 rounded cursor-pointer"
                                 :class="{
                                     '!bg-red-500 !text-white':
-                                        markAllAS === 'absent',
+                                        markAllAs === 'absent',
                                 }"
                             >
                                 <input
@@ -399,22 +276,52 @@ onMounted(() => {
                                     class="sr-only"
                                     name="markAllAs"
                                     value="absent"
-                                    v-model="markAllAS"
+                                    v-model="markAllAs"
                                 />
                                 <div
                                     class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
                                     :class="
-                                        markAllAS === 'absent'
+                                        markAllAs === 'absent'
                                             ? 'bg-red-500'
                                             : 'bg-white'
                                     "
                                 >
                                     <div
                                         class="w-2 h-2 bg-white rounded-full"
-                                        v-if="markAllAS === 'absent'"
+                                        v-if="markAllAs === 'absent'"
                                     ></div>
                                 </div>
                                 Absent
+                            </label>
+
+                            <label
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-yellow-800 dark:text-yellow-100 rounded cursor-pointer"
+                                :class="{
+                                    '!bg-yellow-500 !text-white':
+                                        markAllAs === 'permission',
+                                }"
+                            >
+                                <input
+                                    type="radio"
+                                    class="sr-only"
+                                    name="markAllAs"
+                                    value="permission"
+                                    v-model="markAllAs"
+                                />
+                                <div
+                                    class="w-5 h-5 border-2 border-gray-500 rounded-full flex items-center justify-center"
+                                    :class="
+                                        markAllAs === 'permission'
+                                            ? 'bg-yellow-500'
+                                            : 'bg-white'
+                                    "
+                                >
+                                    <div
+                                        class="w-2 h-2 bg-white rounded-full"
+                                        v-if="markAllAs === 'permission'"
+                                    ></div>
+                                </div>
+                                Permission
                             </label>
                         </div>
                     </div>
@@ -440,7 +347,7 @@ onMounted(() => {
                                     <span class="hidden sm:block">Absent</span>
                                 </th>
                                 <th
-                                    class="px-2 py-2 text-center min-w-[60px] sm:min-w-[35px]"
+                                    class="px-2 py-2 text-center min-w-[35px] sm:min-w-[35px]"
                                 >
                                     <span class="block sm:hidden">Per</span>
                                     <span class="hidden sm:block"
@@ -463,7 +370,7 @@ onMounted(() => {
 
                                 <!-- Present -->
                                 <td
-                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                    class="px-1 py-2 text-center cursor-pointer w-[60px] sm:min-w-[35px]"
                                 >
                                     <label
                                         class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
@@ -502,7 +409,7 @@ onMounted(() => {
 
                                 <!-- Absent -->
                                 <td
-                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                    class="px-1 py-2 text-center cursor-pointer w-[60px] sm:min-w-[35px]"
                                 >
                                     <label
                                         class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"
@@ -541,7 +448,7 @@ onMounted(() => {
 
                                 <!-- Permission -->
                                 <td
-                                    class="px-1 py-2 text-center cursor-pointer min-w-[60px] sm:min-w-[35px]"
+                                    class="px-1 py-2 text-center cursor-pointer w-[60px] sm:min-w-[35px]"
                                 >
                                     <label
                                         class="inline-flex items-center justify-center w-full bg-gray-200 dark:bg-gray-700 py-4 rounded-lg cursor-pointer"

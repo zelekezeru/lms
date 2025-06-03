@@ -9,8 +9,7 @@ import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowClassSchedules from "./Tabs/showClassSchedules.vue";
-import ShowExcels from "./Tabs/showExcels.vue";
-import { list } from "postcss";
+import ShowExcels from "./Tabs/ShowExcels.vue";
 import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({

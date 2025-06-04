@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassScheduleResource;
+use App\Http\Resources\ClassSessionResource;
 use App\Http\Resources\EnrollmentResource;
+use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\WeightResource;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Instructor;
+use App\Models\Semester;
 use App\Models\Weight;
 use Inertia\Inertia;
 
@@ -44,12 +48,17 @@ class StudentPortalController extends Controller
             $q->where('student_id', $student->id);
         })->get());
 
-        $classSchedules = $enrollment->courseOffering->classSchedules;
+        $classSchedules = ClassScheduleResource::collection($enrollment->courseOffering->classSchedules);
+        $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions);
 
+        $activeSemester = new SemesterResource(Semester::getActiveSemester());
         return Inertia::render('StudentPortal/Enrollments/Show', [
             'enrollment' => new EnrollmentResource($enrollment),
             'student' => $student,
-            'weights' => $weights
+            'weights' => $weights,
+            'classSchedules' => $classSchedules,
+            'classSessions' => $classSessions,
+            'activeSemester' => $activeSemester
         ]);
     }
 

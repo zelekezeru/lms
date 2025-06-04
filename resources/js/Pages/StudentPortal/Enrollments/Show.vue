@@ -19,9 +19,21 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    activeSemester: {
+        type: Object,
+        required: false,
+    },
     weights: {
         type: Array,
         required: false,
+    },
+    classSchedules: {
+        type: Array,
+        required: true,
+    },
+    classSessions: {
+        type: Array,
+        required: true,
     },
 });
 
@@ -159,10 +171,27 @@ const changeTab = (tabName) => {
                             :course="course"
                         />
                         <Results
-                            v-if="activeTab === 'results'"
+                            v-else-if="activeTab === 'results'"
                             :enrollment="enrollment"
                             :student="student"
                             :weights="weights"
+                        />
+                        <ClassSchedules
+                            v-else-if="activeTab === 'classSchedules'"
+                            :enrollment="enrollment"
+                            :student="student"
+                            :active-semester="activeSemester"
+                            :classSchedules="classSchedules"
+                        />
+                        <ClassSessions
+                            v-else-if="
+                                activeTab === 'classSessionsClassSessions'
+                            "
+                            :enrollment="enrollment"
+                            :student="student"
+                            :classSessionsClassSessions="
+                                classSessionsClassSessions
+                            "
                         />
                     </div>
                 </div>

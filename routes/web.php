@@ -56,18 +56,6 @@ Route::middleware(['auth'])->group(function () {
             return Inertia::render('Registrar/Students/Index');
         })->name('registrar.students');
 
-        Route::get('/grades', function () {
-            return Inertia::render('Registrar/RegistrarGrades');
-        })->name('registrar.grades');
-
-        Route::get('/profile', function () {
-            return Inertia::render('Registrar/RegistrarProfile');
-        })->name('registrar.profile');
-
-        Route::get('/settings', function () {
-            return Inertia::render('Registrar/RegistrarSettings');
-        })->name('registrar.settings');
-    });
 
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
@@ -112,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
-    
+
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
 
@@ -148,23 +136,6 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
-
-    // INstructor related routes
-    Route::get('/instructor/course', function () {
-        return Inertia::render('Instructor/InstructorCourses');
-    })->name('instructor.course');
-
-    Route::get('/instructor/attendance', function () {
-        return Inertia::render('Instructor/InstructorAttendance');
-    })->name('instructor.attendance');
-
-    Route::get('/instructor/grades', function () {
-        return Inertia::render('Instructor/InstructorGrades');
-    })->name('instructor.grades');
-
-    Route::get('/instructor/calendar', function () {
-        return Inertia::render('Instructor/Calendar');
-    })->name('instructor.calendar');
 
     // Resource Routes
     $resourceRoutes = [
@@ -223,4 +194,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

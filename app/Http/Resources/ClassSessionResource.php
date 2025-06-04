@@ -23,11 +23,17 @@ class ClassSessionResource extends JsonResource
             'status' => $this->is_completed ? "Completed!" : "Upcoming!",
             'type' => $this->type,
             'classAbout' => $this->class_about,
-            'section' => new SectionResource($this->whenLoaded('section')),
-            'course' => new CourseResource($this->whenLoaded('course')),
             'room' => new RoomResource($this->whenLoaded('room')),
             'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
-            'instructor' => new InstructorResource($this->whenLoaded('instructor')),
+            'section' => new SectionResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->section;
+            })),
+            'course' => new CourseResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->course;
+            })),
+            'instructor' => new InstructorResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->instructor;
+            })),
         ];
     }
 }

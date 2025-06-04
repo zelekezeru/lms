@@ -11,6 +11,8 @@ import {
     CogIcon,
     QuestionMarkCircleIcon,
     ClockIcon,
+    PlayCircleIcon,
+    CalendarDaysIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 
@@ -66,9 +68,15 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
-                    :icon="ClockIcon"
+                    :icon="CalendarDaysIcon"
                     label="All Class Schedules"
                     :href="route('student.classSchedules')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
+                    :icon="PlayCircleIcon"
+                    label="All Class Sessions"
+                    :href="route('student.classSessions')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

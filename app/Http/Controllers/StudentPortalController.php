@@ -93,6 +93,28 @@ class StudentPortalController extends Controller
             'activeSemester' => $activeSemester,
         ]);
     }
+
+    public function classSessions()
+    {
+        $studentModel = request()->user()->student->load([
+            'program',
+            'track',
+            'section',
+            'enrollments.courseOffering.classSessions'
+        ]);
+
+        $student = new StudentResource($studentModel);
+
+        $classSessions = ClassSessionResource::collection($studentModel->classSessions());
+
+        $activeSemester = new SemesterResource(Semester::getActiveSemester());
+
+        return inertia('StudentPortal/ClassSessions', [
+            'student' => $student,
+            'classSessions' => $classSessions,
+            'activeSemester' => $activeSemester,
+        ]);
+    }
     public function profile()
     {
 

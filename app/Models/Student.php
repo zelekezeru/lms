@@ -60,6 +60,20 @@ class Student extends Model
             ->flatten();
     }
 
+    public function classSessions()
+    {
+        return $this->enrollments()
+            ->with(
+                'courseOffering.classSessions.courseOffering.course',
+                'courseOffering.classSessions.courseOffering.instructor',
+                'courseOffering.classSessions.courseOffering.section.track',
+                'courseOffering.classSessions.courseOffering.section.studyMode'
+            )
+            ->get()
+            ->pluck('courseOffering.classSessions')
+            ->flatten();
+    }
+
     public function section()
     {
         return $this->belongsTo(Section::class);

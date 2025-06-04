@@ -25,7 +25,6 @@ class ClassSessionStoreRequest extends FormRequest
         return [
             'section_id' => 'required|exists:sections,id',
             'course_id' => 'required|exists:courses,id',
-            'instructor_id' => 'required|exists:instructors,id',
             'semester_id' => 'required|exists:semesters,id',
             'room_id' => 'nullable|exists:rooms,id',
             'start_date_time' => ['required', 'date'],

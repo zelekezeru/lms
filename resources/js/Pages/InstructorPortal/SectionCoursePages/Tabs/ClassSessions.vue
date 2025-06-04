@@ -52,7 +52,6 @@ function backToList() {
 const form = useForm({
     section_id: props.section.id,
     course_id: props.course.id,
-    instructor_id: props.instructor.id,
     semester_id: props.activeSemester.id,
 
     start_date_time: null,
@@ -120,9 +119,8 @@ function submitAttendance() {
 
 watch(markAllAs, (newVal) => {
     props.students.forEach((student) => {
-            attendance.value[student.id] = newVal;
-        }
-    );
+        attendance.value[student.id] = newVal;
+    });
 });
 
 onMounted(() => {
@@ -133,7 +131,6 @@ onMounted(() => {
     });
 });
 </script>
-
 
 <template>
     <div class="max-w-9xl mx-auto py-10 px-0 space-y-8">
@@ -264,7 +261,7 @@ onMounted(() => {
                                 Present
                             </label>
 
-                                                        <label
+                            <label
                                 class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-red-800 dark:text-red-100 rounded cursor-pointer"
                                 :class="{
                                     '!bg-red-500 !text-white':

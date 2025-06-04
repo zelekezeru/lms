@@ -159,8 +159,8 @@ class InstructorPortalController extends Controller
             abort(500);
         }
 
-        $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student');
-        
+        $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student', 'classSchedules.room', 'classSessions.room', 'classSessions.attendances.student');
+
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
@@ -169,8 +169,8 @@ class InstructorPortalController extends Controller
         // This fetches all students that learn $course in $section which means
         $students = StudentResource::collection($courseOffering->enrollments->pluck('student'));
         $activeSemester = Semester::getActiveSemester();
-        $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
-        $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with(['room', 'attendances.student'])->get());
+        $classSchedules = ClassScheduleResource::collection($courseOffering->classSchedules);
+        $classSessions = ClassSessionResource::collection($courseOffering->classSessions);
         $rooms = RoomResource::collection(Room::all());
 
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [

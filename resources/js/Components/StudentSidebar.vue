@@ -79,30 +79,6 @@ const wrapperClasses = computed(() => {
                     :href="route('student.classSessions')"
                     :isCollapsed="!isOpen"
                 />
-                <SidebarItem
-                    :icon="ChartBarIcon"
-                    label="Result"
-                    :href="route('student.result')"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="CurrencyDollarIcon"
-                    label="Payment Info"
-                    :href="route('student.payment')"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="ClipboardDocumentListIcon"
-                    label="Registration"
-                    href="/student/registration"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="ArrowPathIcon"
-                    label="Drop Semester"
-                    href="#"
-                    :isCollapsed="!isOpen"
-                />
             </nav>
 
             <!-- Bottom links -->
@@ -110,7 +86,7 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="CogIcon"
                     label="Settings"
-                    href="#"
+                    :href="route('profile.edit')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

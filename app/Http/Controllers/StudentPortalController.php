@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\EnrollmentResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\WeightResource;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Instructor;
+use App\Models\Weight;
 use Inertia\Inertia;
 
 class StudentPortalController extends Controller
@@ -32,11 +34,20 @@ class StudentPortalController extends Controller
 
     public function enrollmentDetail(Enrollment $enrollment)
     {
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section.track', 'section.program'));
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section.track', 'section.program', 'results'));
+        $enrollment->load('student', 'courseOffering.course', 'courseOffering.section.track.program', 'courseOffering.section.studyMode');
+
+        $course = $enrollment->courseOffering->course;
+        $section = $enrollment->courseOffering->section;
+
+        $weights = WeightResource::collection(Weight::where('section_id', $section->id)->where('course_id', $course->id)->with('results', function ($q) use ($student) {
+            $q->where('student_id', $student->id);
+        })->get());
 
         return Inertia::render('StudentPortal/Enrollments/Show', [
-            'enrollment' => new EnrollmentResource($enrollment->load('student', 'courseOffering.section.track.program', 'courseOffering.section.studyMode')),
+            'enrollment' => new EnrollmentResource($enrollment),
             'student' => $student,
+            'weights' => $weights
         ]);
     }
 

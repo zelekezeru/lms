@@ -1,73 +1,58 @@
 <script setup>
+import { ref } from "vue";
+import { AcademicCapIcon } from "@heroicons/vue/24/solid";
+import { router } from "@inertiajs/vue3";
+import Overview from "./Tabs/Overview.vue";
+import Attendance from "./Tabs/Attendance.vue";
+import Assessments from "./Tabs/Results.vue";
+import ClassSchedules from "./Tabs/ClassSchedules.vue";
+import ClassSessions from "./Tabs/ClassSessions.vue";
 import StudentLayout from "@/Layouts/StudentLayout.vue";
-import {
-    BookOpenIcon,
-    DocumentIcon,
-    ClipboardIcon,
-    PencilSquareIcon,
-    ChatBubbleBottomCenterTextIcon,
-    MegaphoneIcon,
-    AcademicCapIcon,
-} from "@heroicons/vue/24/outline";
+import Results from "./Tabs/Results.vue";
 
 const props = defineProps({
-    enrollment: Object,
+    enrollment: {
+        type: Object,
+        required: true,
+    },
     student: {
         type: Object,
         required: false,
     },
+    weights: {
+        type: Array,
+        required: false,
+    },
 });
 
-// Right menu navigation items
+const showMobileNav = ref(false);
+const activeTab = ref(route().params.tab ?? "Overview");
+
 const rightMenu = [
-    { name: "Outline", icon: BookOpenIcon },
-    { name: "Materials", icon: DocumentIcon },
-    { name: "Assessments", icon: ClipboardIcon },
-    { name: "Assignments", icon: PencilSquareIcon },
-    { name: "Forum", icon: ChatBubbleBottomCenterTextIcon },
-    { name: "Announcements", icon: MegaphoneIcon },
+    { name: "Overview", key: "overview", icon: AcademicCapIcon },
+    { name: "Results", key: "results", icon: AcademicCapIcon },
+    { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
+    { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
 ];
 
-// Sample assessments data with marks
-const assessments = [
-    {
-        id: 1,
-        title: "Midterm Exam",
-        date: "2025-05-15",
-        description: "The midterm exam covering all topics so far.",
-        due_date: "2025-05-14",
-        mark: 85, // Mark out of 100
-    },
-    {
-        id: 2,
-        title: "Final Project",
-        date: "2025-06-01",
-        description:
-            "A final project that includes a detailed report and presentation.",
-        due_date: "2025-05-30",
-        mark: 92, // Mark out of 100
-    },
-    {
-        id: 3,
-        title: "Quiz 1",
-        date: "2025-05-10",
-        description: "A short quiz on the first 5 lectures.",
-        due_date: "2025-05-09",
-        mark: 75, // Mark out of 100
-    },
-];
+const changeTab = (tabName) => {
+    activeTab.value = tabName;
 
-// Function to determine progress bar color based on marks
-const getProgressColor = (mark) => {
-    if (mark >= 90) return "bg-green-500";
-    if (mark >= 75) return "bg-yellow-500";
-    return "bg-red-500";
+    router.visit(
+        route(route().current(), {
+            enrollment: props.enrollment.id,
+            tab: tabName,
+        })
+    );
 };
 </script>
 
 <template>
     <StudentLayout>
-        <div class="max-w-7xl mx-auto py-10 px-4 flex flex-col lg:flex-row">
+        <div
+            class="max-w-7xl mx-auto py-10 px-4"
+            :class="{ '!px-1': activeTab == 'classSessions' }"
+        >
             <!-- Course Info -->
             <div class="flex-1">
                 <div class="flex justify-between items-center">
@@ -87,126 +72,130 @@ const getProgressColor = (mark) => {
                         >{{ enrollment.status }}</span
                     >
                 </div>
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-4"
+            </div>
+            <!-- Toggle Button (mobile only) -->
+            <div class="lg:hidden mb-4 flex justify-end">
+                <button
+                    @click="showMobileNav = !showMobileNav"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
                 >
-                    <p>
-                        <strong>Description:</strong>
-                        {{
-                            enrollment.course.description ||
-                            "No description available."
-                        }}
-                    </p>
-                    <p>
-                        <strong>Instructor:</strong>
-                        {{
-                            enrollment.instructor
-                                ? enrollment.instructor.name
-                                : "TBA"
-                        }}
-                    </p>
-                    <p>
-                        <strong>You Take This Course In:</strong>
-                        {{
-                            enrollment.section.id == student.section.id
-                                ? `Your Own Section ${enrollment.section.name}`
-                                : `${enrollment.section.name}(${enrollment.section.track.name}) Track ${enrollment.section.studyMode.name}`
-                        }}
-                    </p>
-                    <p>
-                        <strong>Credits:</strong>
-                        {{ enrollment.course.credit_hours }}
-                    </p>
-                </div>
-
-                <!-- Assessments Section -->
-                <div class="mt-4">
-                    <h2
-                        class="text-2xl font-semibold text-gray-900 dark:text-white mb-6"
-                    >
-                        Assessments
-                    </h2>
-
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                    >
-                        <div
-                            v-for="assessment in assessments"
-                            :key="assessment.id"
-                            class="transition duration-300 transform hover:-translate-y-1 hover:shadow-xl bg-gray-200 dark:bg-gray-800 rounded-xl p-6 space-y-4"
-                        >
-                            <!-- Title -->
-                            <h3
-                                class="text-xl font-semibold text-gray-900 dark:text-white"
-                            >
-                                {{ assessment.title }}
-                            </h3>
-
-                            <!-- Mark and Progress Bar -->
-                            <div>
-                                <div
-                                    class="flex items-center justify-between mb-2"
-                                >
-                                    <span
-                                        class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                                    >
-                                        Score:
-                                    </span>
-                                    <span
-                                        class="font-semibold text-gray-800 dark:text-white"
-                                    >
-                                        {{ assessment.mark }} / 100
-                                    </span>
-                                </div>
-                                <div
-                                    class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2"
-                                >
-                                    <div
-                                        :style="{
-                                            width: assessment.mark + '%',
-                                        }"
-                                        class="h-2 rounded-full transition-all duration-300"
-                                        :class="
-                                            getProgressColor(assessment.mark)
-                                        "
-                                    ></div>
-                                </div>
-                            </div>
-
-                            <!-- Button -->
-                            <button
-                                class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
-                            >
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    {{ showMobileNav ? "Close" : "Course Navigation" }}
+                </button>
             </div>
 
-            <!-- Course Navigation -->
-            <div class="w-full lg:w-1/3 mt-8 lg:mt-0 lg:relative z-50">
+            <!-- Slide-in Navigation -->
+            <Transition
+                enter-active-class="transition ease-out duration-300"
+                enter-from-class="translate-x-full opacity-0"
+                enter-to-class="translate-x-0 opacity-100"
+                leave-active-class="transition ease-in duration-200"
+                leave-from-class="translate-x-0 opacity-100"
+                leave-to-class="translate-x-full opacity-0"
+            >
                 <div
-                    class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4 max-h-[70vh] lg:fixed lg:top-32 lg:right-12 lg:w-64 overflow-y-auto"
+                    v-if="showMobileNav"
+                    class="fixed inset-0 bg-black bg-opacity-40 z-40 flex justify-end lg:hidden"
+                    @click.self="showMobileNav = false"
                 >
-                    <h2
-                        class="text-lg font-bold text-gray-800 dark:text-white mb-4 lg:mb-4"
+                    <div
+                        class="w-64 bg-white dark:bg-gray-900 shadow-lg p-4 z-50"
                     >
-                        Course Navigation
-                    </h2>
-
-                    <ul
-                        class="space-y-2 lg:space-y-2 flex flex-col lg:flex-col"
-                    >
-                        <li
-                            v-for="item in rightMenu"
-                            :key="item.name"
-                            class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition duration-200 cursor-pointer"
+                        <h2
+                            class="text-lg font-bold text-gray-800 dark:text-white mb-4"
                         >
-                            <component :is="item.icon" class="w-5 h-5 mr-3" />
-                            <span>{{ item.name }}</span>
-                        </li>
-                    </ul>
+                            Course Navigation
+                        </h2>
+                        <ul class="space-y-2 flex flex-col">
+                            <li
+                                v-for="item in rightMenu"
+                                :key="item.key"
+                                @click="
+                                    () => {
+                                        changeTab(item.key);
+                                        showMobileNav = false;
+                                    }
+                                "
+                                class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-pointer transition duration-200"
+                                :class="{
+                                    'bg-gray-100 dark:bg-gray-800 font-semibold':
+                                        activeTab === item.key,
+                                }"
+                            >
+                                <component
+                                    :is="item.icon"
+                                    class="w-5 h-5 mr-3"
+                                />
+                                <span>{{ item.name }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </Transition>
+
+            <div class="flex flex-col lg:flex-row">
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow py-6 px-0 sm:px-1 sm:py-2 space-y-4"
+                    >
+                        <p>
+                            <strong>Description:</strong>
+                            {{
+                                enrollment.course.description ||
+                                "No description available."
+                            }}
+                        </p>
+                        <p><strong>Instructor:</strong> Dr. Jane Doe</p>
+                        <p>
+                            <strong>Credits:</strong>
+                            {{ enrollment.course.credit_hours }}
+                        </p>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div class="mt-6">
+                        <Overview
+                            v-if="activeTab === 'overview'"
+                            :course="course"
+                        />
+                        <Results
+                            v-if="activeTab === 'results'"
+                            :enrollment="enrollment"
+                            :student="student"
+                            :weights="weights"
+                        />
+                    </div>
+                </div>
+
+                <!-- Sidebar Navigation (large screens only) -->
+                <div class="hidden lg:block lg:w-1/3">
+                    <div
+                        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-4 max-h-[70vh] lg:fixed lg:top-32 lg:right-12 lg:w-64 overflow-y-auto"
+                    >
+                        <h2
+                            class="text-lg font-bold text-gray-800 dark:text-white mb-4"
+                        >
+                            Course Navigation
+                        </h2>
+                        <ul class="space-y-2 flex flex-col">
+                            <li
+                                v-for="item in rightMenu"
+                                :key="item.key"
+                                @click="changeTab(item.key)"
+                                class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 cursor-pointer transition duration-200"
+                                :class="{
+                                    'bg-gray-100 dark:bg-gray-800 font-semibold':
+                                        activeTab === item.key,
+                                }"
+                            >
+                                <component
+                                    :is="item.icon"
+                                    class="w-5 h-5 mr-3"
+                                />
+                                <span>{{ item.name }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

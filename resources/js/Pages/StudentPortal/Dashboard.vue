@@ -96,7 +96,7 @@ onMounted(createChart);
                                 :href="
                                     route(
                                         'student.enrollments.show',
-                                        enrollment.course.id
+                                        enrollment.id
                                     )
                                 "
                                 class="block"

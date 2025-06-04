@@ -71,7 +71,7 @@ class EmployeeController extends Controller
 
         // user default password
         $firstName = explode(' ', $fields['name'])[0]; // Get the first name from the full name
-        
+
         $user_phone = substr($fields['contact_phone'], -4);
 
         $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users

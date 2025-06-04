@@ -129,8 +129,8 @@ class StudentController extends Controller
         $user = new UserResource($student->user->load('userDocuments'));
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q
-                ->with(['course', 'section', 'semester']),])->get();
+            ->with(['year', 'grades' => fn ($q) => $q
+                ->with(['course', 'section', 'semester']), ])->get();
 
         $activeSemester = Semester::where('status', 'Active')->with('year')->get();
 
@@ -265,17 +265,17 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_' . $statusField)) {
+                if ($request->has('is_'.$statusField)) {
                     // Check if the status field is already set to 1
-                    if ($status->{'is_' . $statusField} == 1) {
+                    if ($status->{'is_'.$statusField} == 1) {
                         // If it's already 1, set it to 0
-                        $status->{'is_' . $statusField} = 0;
+                        $status->{'is_'.$statusField} = 0;
                     } else {
                         // If it's not set, set it to 1
-                        $status->{'is_' . $statusField} = 1;
+                        $status->{'is_'.$statusField} = 1;
                     }
-                    $status->{$statusField . '_by_name'} = Auth::user()->name;
-                    $status->{$statusField . '_at'} = now();
+                    $status->{$statusField.'_by_name'} = Auth::user()->name;
+                    $status->{$statusField.'_at'} = now();
                 }
             }
         }
@@ -313,7 +313,7 @@ class StudentController extends Controller
         $semesters = $student->semesters()
             ->with([
                 'year',
-                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
+                'grades' => fn ($q) => $q->with(['course', 'section', 'semester']),
             ])
             ->get();
 
@@ -353,10 +353,9 @@ class StudentController extends Controller
         foreach ($courseOfferings as $courseOffering) {
             Enrollment::updateOrCreate([
                 'student_id' => $student->id,
-                'course_offering_id' => $courseOffering->id
+                'course_offering_id' => $courseOffering->id,
             ]);
         }
-
 
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
@@ -397,7 +396,7 @@ class StudentController extends Controller
         // Prevent duplicate entries
         Enrollment::updateOrCreate([
             'student_id' => $student->id,
-            'course_offering_id' => $courseOffering->id
+            'course_offering_id' => $courseOffering->id,
         ]);
 
         return back()->with('success', 'Course added successfully.');
@@ -411,7 +410,7 @@ class StudentController extends Controller
         $enrollment = Enrollment::findOrFail($fields['enrollment_id']);
         // Instead of detaching, update the pivot status to "Dropped"
         $enrollment->update([
-            'status' => 'Dropped'
+            'status' => 'Dropped',
         ]);
 
         return back()->with('success', 'Course marked as dropped successfully.');

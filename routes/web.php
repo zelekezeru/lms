@@ -106,7 +106,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
 
-
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);
     Route::middleware(['can:view-permissions'])->resource('permissions', PermissionController::class);
@@ -196,4 +195,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

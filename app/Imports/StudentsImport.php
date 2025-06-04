@@ -4,11 +4,11 @@ namespace App\Imports;
 
 use App\Http\Resources\SectionResource;
 use App\Models\Section;
+use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Year;
-use App\Models\Semester;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +64,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'title' => 'Missing Required Fields',
                         'text' => 'Some required fields are missing in this row. Skipping this entry.',
                     ]);
+
                     continue;
                 }
 
@@ -77,23 +78,24 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 // Check if the email already exists
                 if (User::where('email', $email)->exists()) {
                     // If email exists, skip this row
-                    
+
                     session()->flash('sweet_alert', [
                         'type' => 'error',
                         'title' => 'Duplicate User & Email',
                         'text' => 'User with email '.$email.' & Name already exists. Skipping this entry.',
                     ]);
+
                     continue;
                 }
                 // Fetch the Id of Year from the list of Academic years that matches the imported entry_year and fetch the id
                 $year = DB::table('years')->where('name', $row['entry_year'])->first();
-                
+
                 // If year is not found, Create a new year entry
                 if ($year) {
 
                     // Assuming there is a relationship, but since $year is a stdClass, use query
                     $semester = $year->semesters()->first();
-                    
+
                     $academicYear = substr($year->name, -2); // Get last two digits of the current year
                 } else {
                     // Create a new year entry if it doesn't exist
@@ -102,10 +104,10 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
-                    
+
                     // Create a semester for the year if it doesn't exist
                     $semester = Semester::firstOrCreate([
-                        'name' => '1st - ' . $year->name,
+                        'name' => '1st - '.$year->name,
                         'year_id' => $year->id,
                         'level' => 1,
                         'start_date' => now()->startOfYear(),
@@ -116,14 +118,13 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                     $academicYear = substr($row['entry_year'], -2); // Get last two digits of the entry year
                 }
-                
+
                 // 👤 Generate custom user_uuid
                 $studentCount = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
 
                 $userUuid = 'SITS-'.str_pad($studentCount, 4, '0', STR_PAD_LEFT).'-'.$academicYear;
 
                 $default_password = strtolower($firstName).'@'.substr($row['phone'], -4); // Default password for new users
-
 
                 $user = User::firstOrCreate(
                     ['email' => $email],
@@ -135,7 +136,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'default_password' => $default_password,
                     ]
                 );
-                
+
                 // 👨‍🎓 Create Student
                 $student = Student::updateOrCreate([
                     'id_no' => $userUuid,

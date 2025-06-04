@@ -120,7 +120,7 @@ class ProgramSeeder extends Seeder
             // Define study mode IDs.
             $studyModeIds = [1, 2, 3, 4];
             $duration = ($programId >= 1 && $programId <= 4) || ($programId >= 7 && $programId <= 8) ? 4 : 3;
-            
+
             // Loop through study mode ids
             foreach ($studyModeIds as $studyModeId) {
                 $data[] = [

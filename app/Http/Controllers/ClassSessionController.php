@@ -51,7 +51,6 @@ class ClassSessionController extends Controller
         return redirect()->back()->with('success', 'Class session created successfully.');
     }
 
-
     /**
      * Display the specified resource.
      */

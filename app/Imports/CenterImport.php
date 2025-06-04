@@ -2,33 +2,40 @@
 
 namespace App\Imports;
 
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use App\Models\Center;
 use App\Http\Resources\CenterResource;
-use App\Models\User;
-use App\Models\Student;
-use App\Models\Status;
+use App\Models\Center;
 use App\Models\Semester;
+use App\Models\Status;
+use App\Models\Student;
+use App\Models\User;
 use App\Models\Year;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
 class CenterImport implements ToCollection
 {
     /**
-    * @param Collection $collection
-    */
+     * @param  Collection  $collection
+     */
     protected $center_id;
+
     protected $program_id;
+
     protected $track_id;
+
     protected $study_mode_id;
+
     protected $year_id;
+
     protected $semester_id;
+
     protected $tenant_id;
+
     protected $user_id;
 
     public function __construct($center_id, $study_mode_id)
@@ -60,6 +67,7 @@ class CenterImport implements ToCollection
                         'title' => 'Missing Required Fields',
                         'text' => 'Some required fields are missing in this row. Skipping this entry.',
                     ]);
+
                     continue;
                 }
 
@@ -76,6 +84,7 @@ class CenterImport implements ToCollection
                         'title' => 'Duplicate User & Email',
                         'text' => 'User with email '.$email.' & Name already exists. Skipping this entry.',
                     ]);
+
                     continue;
                 }
 
@@ -92,7 +101,7 @@ class CenterImport implements ToCollection
                     ]);
 
                     $semester = Semester::firstOrCreate([
-                        'name' => '1st - ' . $year->name,
+                        'name' => '1st - '.$year->name,
                         'year_id' => $year->id,
                         'level' => 1,
                         'start_date' => now()->startOfYear(),

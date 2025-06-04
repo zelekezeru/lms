@@ -52,10 +52,10 @@ class GradeController extends Controller
                     ->where('section_id', $gradeData['section_id'])
                     ->get();
 
-                $sum = $weights->sum(fn($w) => (int) $w->point);
+                $sum = $weights->sum(fn ($w) => (int) $w->point);
 
                 if ($sum !== 100) {
-                    throw new \Exception("The sum of the weights must be 100.");
+                    throw new \Exception('The sum of the weights must be 100.');
                 }
 
                 Grade::updateOrCreate(
@@ -74,8 +74,7 @@ class GradeController extends Controller
                 $enrollment = $student->enrollments()
                     ->whereHas(
                         'courseOffering',
-                        fn($q) =>
-                        $q->where('course_id', $gradeData['course_id'])
+                        fn ($q) => $q->where('course_id', $gradeData['course_id'])
                     )
                     ->first();
 
@@ -87,12 +86,13 @@ class GradeController extends Controller
             }
 
             DB::commit();
+
             return back()->with('success', 'Grades saved successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors(['weights' => $e->getMessage()]);
         }
-
 
         return redirect()->back()->with('success', 'Grade created successfully.');
     }

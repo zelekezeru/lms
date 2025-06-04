@@ -62,7 +62,7 @@ class CourseController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'CR' . '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $course_id = 'CR'.'/'.str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
 
         $fields['code'] = $course_id;
 
@@ -121,7 +121,7 @@ class CourseController extends Controller
         // Optionally regenerate the course code if needed
         if (! $course->code) {
             $year = substr(Carbon::now()->year, -2);
-            $course_id = 'CR' . '/' . str_pad(Course::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $course_id = 'CR'.'/'.str_pad(Course::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
             $fields['code'] = $course_id;
         }
 

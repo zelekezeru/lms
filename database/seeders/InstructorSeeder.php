@@ -62,7 +62,7 @@ class InstructorSeeder extends Seeder
             $firstName = explode(' ', $name)[0]; // Extract the first name
             $lastName = explode(' ', $name)[1] ?? ''; // Extract the last name (if available)
             $email = strtolower($firstName).'.'.strtolower($lastName).'@sits.edu.et';
-            $phone = '0911'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); 
+            $phone = '0911'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $specialization = $specializations[array_rand($specializations)];
 
             $user = User::create([
@@ -72,8 +72,8 @@ class InstructorSeeder extends Seeder
                 'phone' => $phone,
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => Hash::make(strToLower($firstName).'@'.substr($phone, -4)), // default password
-                'default_password' => strToLower($firstName).'@'.substr($phone, -4),
+                'password' => Hash::make(strtolower($firstName).'@'.substr($phone, -4)), // default password
+                'default_password' => strtolower($firstName).'@'.substr($phone, -4),
                 'password_changed' => false,
                 'tenant_id' => 1,
                 'created_at' => now(),

@@ -72,7 +72,7 @@ class InstructorPortalController extends Controller
         );
 
         $course = new CourseResource($course->load([
-            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings' => fn ($q) => $q->where('instructor_id', $instructor->id),
             'courseOfferings.section',
             'courseOfferings.section.program',
             'courseOfferings.section.track',
@@ -137,7 +137,7 @@ class InstructorPortalController extends Controller
         );
 
         $section = new SectionResource($section->load([
-            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings' => fn ($q) => $q->where('instructor_id', $instructor->id),
             'courseOfferings.course',
             'program',
             'track',

@@ -22,7 +22,7 @@ class CourseResource extends JsonResource
             'tracks' => $this->whenLoaded('tracks'),
             'instructors' => InstructorResource::collection($this->whenLoaded('instructors')),
             'sections' => SectionResource::collection($this->whenLoaded('courseOfferings', function () {
-                return $this->courseOfferings->map(fn($assignment) => $assignment->section);
+                return $this->courseOfferings->map(fn ($assignment) => $assignment->section);
             })),
             'sectionsCount' => $this->sectionsCount ?? null,
             'instructor' => $this->whenLoaded('courseOfferings', function () {
@@ -34,7 +34,7 @@ class CourseResource extends JsonResource
             }),
             'isCommon' => $this->when(
                 $this->pivot?->is_common !== null,
-                fn() => $this->pivot->is_common
+                fn () => $this->pivot->is_common
             ),
 
             'studentStatus' => $this->whenPivotLoaded('course_student', function () {

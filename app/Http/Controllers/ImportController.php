@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\StudentsImport;
 use App\Imports\CenterImport;
+use App\Imports\StudentsImport;
 use App\Models\Section;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
@@ -32,9 +32,9 @@ class ImportController extends Controller
             'center_id' => 'required|exists:centers,id',
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
-        
+
         $study_mode_id = StudyMode::where('name', 'DISTANCE')->first()->id; // Assuming you want to use a default study mode
-        
+
         // Assuming you have a similar import class for center students
         Excel::import(new CenterImport($request->center_id, $study_mode_id), $request->file);
 

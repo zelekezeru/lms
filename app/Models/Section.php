@@ -109,7 +109,7 @@ class Section extends Model
             ->where('semester', Semester::getActiveSemester()->level)
             ->where('track_id', $this->track_id)
             ->with(['course' => function ($q) {
-                $q->with(['courseOfferings' => fn($q) => $q->where('section_id', $this->id)->with('instructor')]);
+                $q->with(['courseOfferings' => fn ($q) => $q->where('section_id', $this->id)->with('instructor')]);
             }])->get();
 
         return $curricula;

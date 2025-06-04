@@ -101,7 +101,7 @@ class InstructorController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $default_password = strtolower($firstName) . '@' . $user_phone; // Default password for new users
+        $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users
 
         // Merge the default password into the request
         $request->merge([

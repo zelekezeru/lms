@@ -23,9 +23,8 @@ class ExportController extends Controller
 
         $students = $section->students()->with('user', 'status', 'church')->orderBy('first_name')->orderBy('middle_name')->get();
 
-        return Excel::download(new StudentsExport($students), $section->name . 'students list.xlsx');
+        return Excel::download(new StudentsExport($students), $section->name.'students list.xlsx');
     }
-    
 
     // Export Center StudentsExcel with a parameter list
     public function exportCenterStudents($center_id)
@@ -37,8 +36,8 @@ class ExportController extends Controller
             ->orderBy('first_name')
             ->orderBy('middle_name')
             ->get();
-        
-        return Excel::download(new StudentsExport($students), $center->name . 'students.xlsx');
+
+        return Excel::download(new StudentsExport($students), $center->name.'students.xlsx');
     }
 
     // Export UsersExcel with a parameter list

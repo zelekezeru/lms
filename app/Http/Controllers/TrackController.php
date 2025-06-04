@@ -85,7 +85,7 @@ class TrackController extends Controller
         $fields = $request->validated();
         $year = substr(Carbon::now()->year, -2);
 
-        $track_id = 'DP' . '/' . str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $track_id = 'DP'.'/'.str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
 
         $fields['code'] = $track_id;
         DB::beginTransaction();
@@ -98,7 +98,7 @@ class TrackController extends Controller
             $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
                 return Section::create([
                     'name' => 'Section-1',
-                    'code' => 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                    'code' => 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $fields['program_id'],
                     'track_id' => $track->id,
                     'study_mode_id' => $studyModeId,
@@ -115,14 +115,15 @@ class TrackController extends Controller
                 foreach ($commonCourses as $commonCourse) {
                     CourseOffering::updateOrCreate([
                         'section_id' => $section->id,
-                        'course_id' => $commonCourse
+                        'course_id' => $commonCourse,
                     ]);
-                };
+                }
             }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors('error', 'something went wrong');
         }
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
@@ -183,7 +184,7 @@ class TrackController extends Controller
         // Optionally regenerate the track code if needed
         if (! $track->code) {
             $year = substr(Carbon::now()->year, -2);
-            $track_id = 'DP' . '/' . str_pad(Track::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
+            $track_id = 'DP'.'/'.str_pad(Track::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
             $fields['code'] = $track_id;
         }
 

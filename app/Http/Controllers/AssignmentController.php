@@ -34,6 +34,7 @@ class AssignmentController extends Controller
                 'section_id' => $section->id,
             ]);
         }
+
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
     }
 

@@ -8,10 +8,7 @@ use App\Http\Resources\EnrollmentResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\WeightResource;
-use App\Models\ClassSchedule;
-use App\Models\Course;
 use App\Models\Enrollment;
-use App\Models\Instructor;
 use App\Models\Semester;
 use App\Models\Weight;
 use Inertia\Inertia;
@@ -39,8 +36,9 @@ class StudentPortalController extends Controller
         $student = new StudentResource(request()->user()->student->load([
             'enrollments',
             'enrollments.courseOffering',
-            'grades'
+            'grades',
         ]));
+
         return inertia('StudentPortal/Enrollments/Index', [
             'student' => $student,
         ]);
@@ -62,13 +60,14 @@ class StudentPortalController extends Controller
         $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions);
 
         $activeSemester = new SemesterResource(Semester::getActiveSemester());
+
         return Inertia::render('StudentPortal/Enrollments/Show', [
             'enrollment' => new EnrollmentResource($enrollment),
             'student' => $student,
             'weights' => $weights,
             'classSchedules' => $classSchedules,
             'classSessions' => $classSessions,
-            'activeSemester' => $activeSemester
+            'activeSemester' => $activeSemester,
         ]);
     }
 
@@ -78,7 +77,7 @@ class StudentPortalController extends Controller
             'program',
             'track',
             'section',
-            'enrollments.courseOffering.classSchedules'
+            'enrollments.courseOffering.classSchedules',
         ]);
 
         $student = new StudentResource($studentModel);
@@ -100,7 +99,7 @@ class StudentPortalController extends Controller
             'program',
             'track',
             'section',
-            'enrollments.courseOffering.classSessions'
+            'enrollments.courseOffering.classSessions',
         ]);
 
         $student = new StudentResource($studentModel);
@@ -115,6 +114,7 @@ class StudentPortalController extends Controller
             'activeSemester' => $activeSemester,
         ]);
     }
+
     public function profile()
     {
 

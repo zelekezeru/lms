@@ -204,7 +204,21 @@ function submitMove() {
     <div class="">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Hi
+                <span v-if="!showUnassignedOnly">
+                    Courses Of Year {{ selectedYearLevel }}
+                    <span class="text-indigo-600"
+                        >Semester {{ selectedSemester }}</span
+                    >
+                    {{
+                        selectedYearLevel == currentYearLevel &&
+                        selectedSemester == currentSemesterLevel
+                            ? "(Current)"
+                            : ""
+                    }}
+                </span>
+                <span v-else>
+                    Courses That Are Not Assigned To A Year and Semester
+                </span>
             </h2>
             <button
                 @click="assignCourses = !assignCourses"
@@ -525,7 +539,7 @@ function submitMove() {
                     class="mt-1 block w-full border rounded"
                 >
                     <option
-                        v-for="y in section.track.duration"
+                        v-for="y in parseInt(section.track.duration)"
                         :key="y"
                         :value="y"
                     >

@@ -204,21 +204,7 @@ function submitMove() {
     <div class="">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                <span v-if="!showUnassignedOnly">
-                    Courses Of Year {{ selectedYearLevel }}
-                    <span class="text-indigo-600"
-                        >Semester {{ selectedSemester }}</span
-                    >
-                    {{
-                        selectedYearLevel == currentYearLevel &&
-                        selectedSemester == currentSemesterLevel
-                            ? "(Current)"
-                            : ""
-                    }}
-                </span>
-                <span v-else>
-                    Courses That Are Not Assigned To A Year and Semester
-                </span>
+                Hi
             </h2>
             <button
                 @click="assignCourses = !assignCourses"

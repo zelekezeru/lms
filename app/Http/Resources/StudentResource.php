@@ -42,6 +42,7 @@ class StudentResource extends JsonResource
             'year' => new YearResource($this->whenLoaded('year')),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
+            'grades' => GradeResource::collection($this->whenLoaded('grades')),
             'createdBy' => $this->whenLoaded('createdBy'),
             'activeCurricula' => $this->whenLoaded('courses', function () {
                 return $this->courses->filter(function ($course) {

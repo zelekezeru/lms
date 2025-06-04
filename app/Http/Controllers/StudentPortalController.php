@@ -28,9 +28,7 @@ class StudentPortalController extends Controller
 
     public function enrollments()
     {
-        $student = new StudentResource(request()->user()->student->load(['enrollments' => function ($q) {
-            $q->where('status', 'Enrolled');
-        }, 'enrollments.courseOffering']));
+        $student = new StudentResource(request()->user()->student->load(['enrollments', 'enrollments.courseOffering', 'grades']));
         return inertia('StudentPortal/Enrollments/Index', [
             'student' => $student,
         ]);

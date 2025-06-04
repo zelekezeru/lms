@@ -1,19 +1,20 @@
 <script setup>
+import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
-import { ref, onMounted, watch, computed } from "vue";
 import Calendar from "primevue/calendar";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Select } from "primevue";
+import { ListBulletIcon, ViewColumnsIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
-    enrollment: { required: true, type: Object },
-    activeSemester: { required: true, type: Object },
-    classSessions: { required: true, type: Array },
+    enrollment: Object,
+    activeSemester: Object,
+    classSessions: Array,
 });
 
 const showForm = ref(false);
 const showDetail = ref(false);
 const selectedSession = ref(null);
+const viewMode = ref("card"); // ✅ Default to 'card'
 
 function toggleForm() {
     showForm.value = !showForm.value;
@@ -28,20 +29,46 @@ function backToList() {
     selectedSession.value = null;
     showDetail.value = false;
 }
+
+// ✅ Ensure view mode toggling resets detail view
+function toggleViewMode() {
+    showDetail.value = false;
+    viewMode.value = viewMode.value === "card" ? "table" : "card";
+}
 </script>
 
 <template>
-    <div class="max-w-9xl mx-auto py-10 px-0 space-y-8">
-        <!-- Header -->
-        <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
-                Your Class Session for
-                {{ activeSemester.year.name }} Semester -
-                {{ activeSemester.level }} In This Section
+    <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
+        <!-- Header and View Mode Toggle -->
+        <div
+            class="flex flex-col sm:flex-row justify-between items-center gap-4"
+        >
+            <h1
+                class="text-2xl font-bold text-gray-800 dark:text-white text-center"
+            >
+                Your Class Sessions for {{ activeSemester.year.name }} Semester
+                - {{ activeSemester.level }}
             </h1>
+            <div class="flex gap-2">
+                <!-- View Mode Toggle Button -->
+                <button
+                    @click="toggleViewMode"
+                    class="inline-flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm text-gray-800 dark:text-white rounded-lg transition"
+                >
+                    <component
+                        :is="
+                            viewMode === 'card'
+                                ? ListBulletIcon
+                                : ViewColumnsIcon
+                        "
+                        class="w-5 h-5 mr-2"
+                    />
+                    {{ viewMode === "card" ? "List View" : "Card View" }}
+                </button>
+            </div>
         </div>
 
-        <!-- Transition for detail/attendance/list views -->
+        <!-- Transition: Details View or List -->
         <transition
             mode="out-in"
             enter-active-class="transition duration-300 ease-out"
@@ -51,239 +78,179 @@ function backToList() {
             leave-from-class="opacity-100 scale-100"
             leave-to-class="opacity-0 scale-75"
         >
-            <!-- Details View -->
-            <div
-                v-if="showDetail"
-                key="details"
-                class="bg-white dark:bg-gray-800 p-6 rounded shadow"
-            >
-                <h2
-                    class="text-lg font-semibold text-gray-800 dark:text-white mb-4"
-                >
-                    Class Session Overview
-                </h2>
-
+            <div :key="`${viewMode}-${showDetail}`">
+                <!-- Details View -->
                 <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6 text-sm text-gray-600 dark:text-gray-300"
+                    v-if="showDetail"
+                    key="details"
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow"
                 >
-                    <p><strong>Date:</strong> {{ selectedSession.date }}</p>
-                    <p>
-                        <strong>Start Time:</strong>
-                        {{ selectedSession.startTime }}
-                    </p>
-                    <p>
-                        <strong>End Time:</strong> {{ selectedSession.endTime }}
-                    </p>
-                    <p><strong>Type:</strong> {{ selectedSession.type }}</p>
-                    <p><strong>Status:</strong> {{ selectedSession.status }}</p>
-                    <p>
-                        <strong>Room:</strong>
-                        {{ selectedSession.room?.name || "N/A" }}
-                    </p>
-                    <p>
-                        <strong>About:</strong>
-                        {{ selectedSession.classAbout || "N/A" }}
-                    </p>
+                    <h2
+                        class="text-lg font-semibold text-gray-800 dark:text-white mb-4"
+                    >
+                        Class Session Overview
+                    </h2>
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300"
+                    >
+                        <p><strong>Date:</strong> {{ selectedSession.date }}</p>
+                        <p>
+                            <strong>Start Time:</strong>
+                            {{ selectedSession.startTime }}
+                        </p>
+                        <p>
+                            <strong>End Time:</strong>
+                            {{ selectedSession.endTime }}
+                        </p>
+                        <p><strong>Type:</strong> {{ selectedSession.type }}</p>
+                        <p>
+                            <strong>Status:</strong>
+                            {{ selectedSession.status }}
+                        </p>
+                        <p>
+                            <strong>Room:</strong>
+                            {{ selectedSession.room?.name || "N/A" }}
+                        </p>
+                        <p>
+                            <strong>About:</strong>
+                            {{ selectedSession.classAbout || "N/A" }}
+                        </p>
+                    </div>
+                    <div class="mt-6">
+                        <PrimaryButton @click="backToList">Back</PrimaryButton>
+                    </div>
                 </div>
 
-                <!-- Attendance Summary Chart -->
-                <!-- <section
-                    v-if="
-                        showDetail &&
-                        selectedSession &&
-                        selectedSession.attendances?.length > 0
-                    "
-                    class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg"
-                >
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">
-                        Attendance Summary
-                    </h3>
-                    <canvas
-                        ref="attendanceChart"
-                        style="width: 100%; height: 300px"
-                    ></canvas>
-                </section> -->
-
-                <div class="mt-6">
-                    <PrimaryButton @click="backToList">Back</PrimaryButton>
-                </div>
-            </div>
-
-            <!-- Default View (Session List & Form) -->
-            <div v-else key="list">
-                <div
-                    class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300 dark:border-gray-600"
-                >
-                    <table class="w-full min-w-[500px] table-fixed">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Date @Start Time
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200 w-24"
-                                >
-                                    Type
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200 w-36"
-                                >
-                                    Status
-                                </th>
-
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-if="classSessions.length > 0"
-                                v-for="(classSession, index) in classSessions"
-                                :key="classSession.id"
-                                :class="[
-                                    index % 2 === 0
-                                        ? 'bg-white dark:bg-gray-800'
-                                        : 'bg-gray-50 dark:bg-gray-700',
-                                    'border-b border-gray-300 dark:border-gray-600',
-                                ]"
-                            >
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{ classSession.date }} @{{
-                                        classSession.startTime
-                                    }}
-                                </td>
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{ classSession.type }}
-                                </td>
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    <span class="rounded-xl p-2 bg-yellow-400">
-                                        {{ classSession.status }}
-                                    </span>
-                                </td>
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 flex gap-2"
-                                ></td>
-                            </tr>
-
-                            <tr v-else>
-                                <td
-                                    colspan="3"
-                                    class="text-center px-4 py-6 text-sm text-gray-500 dark:text-gray-300"
-                                >
-                                    No sessions set.
-                                </td>
-                            </tr>
-
-                            <!-- The Form Row -->
-                            <transition
-                                enter-active-class="transition duration-300 ease-out"
-                                enter-from-class="-translate-y-2 opacity-0"
-                                enter-to-class="translate-y-0 opacity-100"
-                                leave-active-class="transition duration-200 ease-in"
-                                leave-from-class="translate-y-0 opacity-100"
-                                leave-to-class="-translate-y-2 opacity-0"
-                            >
-                                <tr
-                                    v-if="showForm"
-                                    class="bg-gray-100 dark:bg-gray-700 border-t border-gray-300 dark:border-gray-600"
-                                >
-                                    <td class="px-1 py-2">
-                                        <div>Start date and time</div>
-                                        <Calendar
-                                            v-model="form.start_date_time"
-                                            showTime
-                                            placeholder="Select Start Date & Time"
-                                            class="w-full"
-                                        />
-                                        -
-                                        <div>End time</div>
-                                        <Calendar
-                                            v-model="form.end_time"
-                                            showTime
-                                            :minDate="startDateOnlyMin"
-                                            :maxDate="startDateOnlyMax"
-                                            placeholder="Select End Time"
-                                            class="w-full"
-                                        />
-
-                                        <div
-                                            v-if="form.errors.date_time"
-                                            class="text-red-500 text-xs mt-1"
+                <!-- List Views (Table or Cards) -->
+                <div v-else key="list">
+                    <!-- Table View -->
+                    <div v-if="viewMode === 'table'">
+                        <div
+                            class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300 dark:border-gray-600"
+                        >
+                            <table class="w-full min-w-[500px] table-auto">
+                                <thead class="bg-gray-100 dark:bg-gray-700">
+                                    <tr>
+                                        <th
+                                            class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200"
                                         >
-                                            {{ form.errors.date_time }}
-                                        </div>
-                                    </td>
-
-                                    <td class="px-4 py-2">
-                                        <Select
-                                            v-model="form.type"
-                                            :options="[
-                                                {
-                                                    label: 'In-person',
-                                                    value: 'in-person',
-                                                },
-                                                {
-                                                    label: 'Online',
-                                                    value: 'online',
-                                                },
-                                            ]"
-                                            option-label="label"
-                                            option-value="value"
-                                            placeholder="Select Type"
-                                            class="w-full"
-                                        />
-
-                                        <div
-                                            v-if="form.errors.type"
-                                            class="text-red-500 text-xs mt-1"
+                                            Date @Start
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200"
                                         >
-                                            {{ form.errors.type }}
-                                        </div>
-                                    </td>
-
-                                    <td class="px-4 py-2">
-                                        <input
-                                            v-model="form.is_complete"
-                                            type="checkbox"
-                                        />
-                                        <label for="isCompleted"
-                                            >Is Completed</label
+                                            Type
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200"
                                         >
-                                        <div
-                                            v-if="form.errors.is_complete"
-                                            class="text-red-500 text-xs mt-1"
+                                            Status
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200"
                                         >
-                                            {{ form.errors.is_complete }}
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-2 sm:items-center gap-2">
-                                        <PrimaryButton
-                                            class="mt-2 sm:mt-0"
-                                            :disabled="form.processing"
-                                            @click="addClassSession"
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(
+                                            session, index
+                                        ) in classSessions"
+                                        :key="session.id"
+                                        :class="
+                                            index % 2 === 0
+                                                ? 'bg-white dark:bg-gray-800'
+                                                : 'bg-gray-50 dark:bg-gray-700'
+                                        "
+                                    >
+                                        <td
+                                            class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
                                         >
-                                            {{
-                                                form.processing
-                                                    ? "Saving..."
-                                                    : "Save"
+                                            {{ session.date }} @{{
+                                                session.startTime
                                             }}
-                                        </PrimaryButton>
-                                    </td>
-                                </tr>
-                            </transition>
-                        </tbody>
-                    </table>
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                                        >
+                                            {{ session.type }}
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                                        >
+                                            <span
+                                                class="px-2 py-1 rounded-full bg-yellow-400 text-xs font-medium"
+                                            >
+                                                {{ session.status }}
+                                            </span>
+                                        </td>
+                                        <td
+                                            class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+                                        >
+                                            <PrimaryButton
+                                                @click="viewDetails(session)"
+                                                >Details</PrimaryButton
+                                            >
+                                        </td>
+                                    </tr>
+                                    <tr v-if="classSessions.length === 0">
+                                        <td
+                                            colspan="4"
+                                            class="text-center py-6 text-sm text-gray-500 dark:text-gray-300"
+                                        >
+                                            No sessions set.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Card View -->
+                    <div
+                        v-if="viewMode === 'card'"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        <div
+                            v-for="session in classSessions"
+                            :key="session.id"
+                            class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-600"
+                        >
+                            <h3
+                                class="text-lg font-semibold text-gray-800 dark:text-white mb-2"
+                            >
+                                {{ session.date }} @{{ session.startTime }}
+                            </h3>
+                            <p
+                                class="text-sm text-gray-600 dark:text-gray-300 mb-1"
+                            >
+                                <strong>Type:</strong> {{ session.type }}
+                            </p>
+                            <p
+                                class="text-sm text-gray-600 dark:text-gray-300 mb-1"
+                            >
+                                <strong>Status:</strong>
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded-full bg-yellow-400 text-xs font-semibold"
+                                >
+                                    {{ session.status }}
+                                </span>
+                            </p>
+                            <p
+                                class="text-sm text-gray-600 dark:text-gray-300 mb-3"
+                            >
+                                <strong>Room:</strong>
+                                {{ session.room?.name || "N/A" }}
+                            </p>
+                            <PrimaryButton
+                                class="w-full"
+                                @click="viewDetails(session)"
+                                >View Details</PrimaryButton
+                            >
+                        </div>
+                    </div>
                 </div>
             </div>
         </transition>

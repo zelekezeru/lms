@@ -1,15 +1,11 @@
 <script setup>
 import { computed, ref } from "vue";
 import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { Select } from "primevue";
 
 const props = defineProps({
-    section: {
-        required: true,
-        type: Object,
-    },
-    course: {
+    enrollment: {
         required: true,
         type: Object,
     },
@@ -48,7 +44,7 @@ const filteredClassSchedules = computed(() => {
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
                 Your Class Schedules for
                 {{ activeSemester.year.name }} Semester -
-                {{ activeSemester.level }}
+                {{ activeSemester.level }} For This Course
             </h1>
         </div>
 
@@ -81,7 +77,7 @@ const filteredClassSchedules = computed(() => {
 
                 <!-- Dropdown on small screens -->
                 <div class="sm:hidden">
-                    <Dropdown
+                    <Select
                         v-model="selectedDay"
                         :options="days"
                         placeholder="Select a day"

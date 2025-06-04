@@ -143,12 +143,12 @@ const searchCoordinators = () => {
                 <ShowDetails
                     v-if="selectedTab == 'details'"
                     :center="center"
-                    :coordinator="center.coordinator.user"
+                    :coordinator="center.coordinator?.user"
                 />
 
                 <!-- Coordinators Panel -->
                 <ShowCoordinators v-else-if="selectedTab == 'coordinators'" 
-                    :coordinator="center.coordinator.user"
+                    :coordinator="center.coordinator?.user"
                     :center="center"
                 />
                 
@@ -157,7 +157,7 @@ const searchCoordinators = () => {
                     v-else-if="selectedTab == 'students'"
                     :center="center"
                     :students="center.students"
-                    :coordinator="center.coordinator.user"
+                    :coordinator="center.coordinator?.user"
                     @close="showStudentsModal = false"
                 />
 
@@ -165,7 +165,7 @@ const searchCoordinators = () => {
                 <ShowExcels
                     v-else-if="selectedTab == 'excels'"
                     :center="center"
-                    :coordinator="center.coordinator.user"
+                    :coordinator="center.coordinator?.user"
                 />
             </div>
         </transition>

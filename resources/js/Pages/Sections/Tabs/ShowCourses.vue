@@ -171,7 +171,6 @@ const form = useForm({
     semester: null,
 });
 
-
 function submitMove() {
     if (!selectedCourse.value) return;
 
@@ -185,7 +184,7 @@ function submitMove() {
             popOverRef.value.hide();
             selectedCourse.value = null;
             showUnassignedOnly.value = false;
-            
+
             selectedYearLevel.value = form.year;
             selectedSemester.value = form.semester;
             form.reset();
@@ -216,8 +215,7 @@ function submitMove() {
                             ? "(Current)"
                             : ""
                     }}
-
-                </span> 
+                </span>
                 <span v-else>
                     Courses That Are Not Assigned To A Year and Semester
                 </span>
@@ -236,71 +234,70 @@ function submitMove() {
             </button>
         </div>
 
-<!-- Filters -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-    <!-- Year Level -->
-    <div>
-        <label
-            for="year-select"
-            class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-            Year Level
-        </label>
-        <select
-            id="year-select"
-            v-model="selectedYearLevel"
-            class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-            <option
-                v-for="i in section.track.duration"
-                :key="i"
-                :value="i"
-            >
-                Year {{ i }}
-            </option>
-        </select>
-    </div>
+        <!-- Filters -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <!-- Year Level -->
+            <div>
+                <label
+                    for="year-select"
+                    class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Year Level
+                </label>
+                <select
+                    id="year-select"
+                    v-model="selectedYearLevel"
+                    class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    <option
+                        v-for="i in section.track.duration"
+                        :key="i"
+                        :value="i"
+                    >
+                        Year {{ i }}
+                    </option>
+                </select>
+            </div>
 
-    <!-- Semester -->
-    <div>
-        <label
-            for="semester-select"
-            class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-            Semester
-        </label>
-        <select
-            id="semester-select"
-            v-model="selectedSemester"
-            class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-            <option
-                v-for="i in section.track.duration"
-                :key="i"
-                :value="i"
-            >
-                Semester {{ i }}
-            </option>
-        </select>
-    </div>
+            <!-- Semester -->
+            <div>
+                <label
+                    for="semester-select"
+                    class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Semester
+                </label>
+                <select
+                    id="semester-select"
+                    v-model="selectedSemester"
+                    class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    <option
+                        v-for="i in section.track.duration"
+                        :key="i"
+                        :value="i"
+                    >
+                        Semester {{ i }}
+                    </option>
+                </select>
+            </div>
 
-    <!-- Unassigned Only Checkbox -->
-    <div class="flex items-center mt-6">
-        <input
-            type="checkbox"
-            id="unassignedOnly"
-            v-model="showUnassignedOnly"
-            class="w-5 h-5 text-indigo-600 border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600"
-        />
-        <label
-            for="unassignedOnly"
-            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-            Show Only Courses Not Assigned to Any Curricula
-        </label>
-    </div>
-</div>
-
+            <!-- Unassigned Only Checkbox -->
+            <div class="flex items-center mt-6">
+                <input
+                    type="checkbox"
+                    id="unassignedOnly"
+                    v-model="showUnassignedOnly"
+                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600"
+                />
+                <label
+                    for="unassignedOnly"
+                    class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                    Show Only Courses Not Assigned to Any Curricula
+                </label>
+            </div>
+        </div>
 
         <div class="overflow-x-auto">
             <div
@@ -556,11 +553,7 @@ function submitMove() {
                     v-model="targetSemester"
                     class="mt-1 block w-full border rounded"
                 >
-                    <option
-                        v-for="s in section.track.duration"
-                        :key="s"
-                        :value="s"
-                    >
+                    <option v-for="s in 3" :key="s" :value="s">
                         Semester {{ s }}
                     </option>
                 </select>

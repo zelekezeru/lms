@@ -22,7 +22,7 @@ const props = defineProps({
     studyModes: { type: Array, required: false, default: () => [] },
 });
 
-const unAddableCourses = computed(() => props.student.courses.filter(course => course.studentStatus == "Enrolled" || course.studentStatus == "Completed").map(c => c.id));
+const unAddableCourses = computed(() => props.student.enrollments.filter(enrollment => enrollment.status == "Enrolled" || enrollment.status == "Completed").map(e => e.course.id));
 const filteredCoursesList = computed(() => props.courses.filter(course => ! unAddableCourses.value.includes(course.id)));
 
 
@@ -33,7 +33,7 @@ const addForm = useForm({ course_id: "", section_id: "" });
 const dropForm = useForm({});
 
 const enrolledIds = computed(
-    () => new Set(props.student.courses.filter((c) => c.studenStatus == "enrolled").map(c => c.id))
+    () => new Set(props.student.enrollments.filter((e) => e.status == "Enrolled").map(e => e.course.id))
 );
 const availableCourses = computed(() =>
     props.courses
@@ -66,7 +66,7 @@ const resetDrop = () => {
 };
 
 const submitAdd = () => {
-    addForm.post(route("courses-student.add", { student: props.student.id }), {
+    addForm.post(route("enrollments-student.add", { student: props.student.id }), {
         onSuccess: () => {
             Swal.fire("Added!", "Course added successfully.", "success");
             showAddModal.value = false;
@@ -75,7 +75,7 @@ const submitAdd = () => {
     });
 };
 
-const dropCourse = (courseId) => {
+const dropEnrollment = (enrollmentId) => {
     Swal.fire({
         title: "Are you sure?",
         text: "This action will drop the course from the student!",
@@ -87,8 +87,8 @@ const dropCourse = (courseId) => {
     }).then((result) => {
         if (result.isConfirmed) {
             router.post(
-                route("courses-student.drop", { student: props.student.id }),
-                { course_id: courseId },
+                route("enrollments-student.drop", { student: props.student.id }),
+                { enrollment_id: enrollmentId },
                 {
                     onSuccess: () => {
                         Swal.fire(
@@ -127,13 +127,13 @@ watch(showDropModal, (v) => {
             </div>
         </div>
 
-        <div v-if="!student.courses.filter(course => course.studentStatus == 'Enrolled')" class="text-center">
+        <div v-if="!student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')" class="text-center">
             <p class="text-gray-500 dark:text-gray-400">
                 No course information available.
             </p>
         </div>
 
-        <div v-else-if="student.courses.filter(course => course.studentStatus == 'Enrolled')" class="flex flex-col">
+        <div v-else-if="student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')" class="flex flex-col">
             <div
                 class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
@@ -185,8 +185,8 @@ watch(showDropModal, (v) => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(course, index) in student.courses.filter(course => course.studentStatus == 'Enrolled')"
-                            :key="course.id"
+                            v-for="(enrollment, index) in student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')"
+                            :key="enrollment.id"
                             :class="
                                 index % 2 === 0
                                     ? 'bg-white dark:bg-gray-800'
@@ -204,29 +204,29 @@ watch(showDropModal, (v) => {
                                 <Link
                                     :href="
                                         route('courses.show', {
-                                            course: course.id,
+                                            course: enrollment.course.id,
                                         })
                                     "
                                 >
-                                    {{ course.name }}
+                                    {{ enrollment.course.name }}
                                 </Link>
                             </td>
                             <td
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                             >
-                                {{ course.code }}
+                                {{ enrollment.course.code }}
                             </td>
                             <td
                                 class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
                             >
-                                {{ course.credit_hours }}
+                                {{ enrollment.course.credit_hours }}
                             </td>
                             <td
                                 class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
                             >
                                 {{
                                     student.grades?.find(
-                                        (g) => g.course_id === course.id
+                                        (g) => g.course_id === enrollment.course.id
                                     )?.grade_letter ?? "Not Graded"
                                 }}
                             </td>
@@ -235,17 +235,17 @@ watch(showDropModal, (v) => {
                             >
                                 <span
                                     :class="
-                                        course.studentStatus === 'Enrolled'
+                                        enrollment.status === 'Enrolled'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
                                 >
-                                    {{ course.studentStatus }}
+                                    {{ enrollment.status }}
                                 </span>
                             </td>
                             <td class="px-4 py-2 text-sm">
                                 <button
-                                    @click="dropCourse(course.id)"
+                                    @click="dropEnrollment(enrollment.id)"
                                     class="flex items-center text-red-600 hover:text-red-800"
                                 >
                                     <MinusCircleIcon class="w-4 h-4 mr-1" />
@@ -320,7 +320,7 @@ watch(showDropModal, (v) => {
                 <Select
                     v-model="addForm.section_id"
                     :options="sectionOptions"
-                    placeholder="This course is available in..."
+                    :placeholder="`This course is available in (${sectionOptions.length})`"
                     empty-message="no available section!"
                     option-label="name"
                     append-to="self"

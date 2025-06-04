@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GradeUpdateRequest;
 use App\Models\Grade;
 use App\Models\Student;
+use App\Models\Weight;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GradeController extends Controller
 {
@@ -42,28 +44,55 @@ class GradeController extends Controller
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
+        DB::beginTransaction();
 
-        foreach ($data['grades'] as $gradeData) {
-            // Update existing or create new based on unique keys (e.g. student, course, section, year, semester)
-            Grade::updateOrCreate(
-                [
-                    'student_id' => $gradeData['student_id'],
-                    'course_id' => $gradeData['course_id'],
-                    'section_id' => $gradeData['section_id'],
-                    'year_id' => $gradeData['year_id'],
-                    'semester_id' => $gradeData['semester_id'],
+        try {
+            foreach ($data['grades'] as $gradeData) {
+                $weights = Weight::where('course_id', $gradeData['course_id'])
+                    ->where('section_id', $gradeData['section_id'])
+                    ->get();
 
-                ],
-                $gradeData,
+                $sum = $weights->sum(fn($w) => (int) $w->point);
 
-            );
+                if ($sum !== 100) {
+                    throw new \Exception("The sum of the weights must be 100.");
+                }
 
-            $student = Student::find($gradeData['student_id']); // Corrected method
+                Grade::updateOrCreate(
+                    [
+                        'student_id' => $gradeData['student_id'],
+                        'course_id' => $gradeData['course_id'],
+                        'section_id' => $gradeData['section_id'],
+                        'year_id' => $gradeData['year_id'],
+                        'semester_id' => $gradeData['semester_id'],
+                    ],
+                    $gradeData
+                );
 
-            $student->courses()->updateExistingPivot($gradeData['course_id'], [
-                'status' => 'Completed',
-            ]);
+                $student = Student::findOrFail($gradeData['student_id']);
+
+                $enrollment = $student->enrollments()
+                    ->whereHas(
+                        'courseOffering',
+                        fn($q) =>
+                        $q->where('course_id', $gradeData['course_id'])
+                    )
+                    ->first();
+
+                if ($enrollment) {
+                    $enrollment->update([
+                        'status' => $gradeData['grade_letter'] === 'F' ? 'Failed' : 'Completed',
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return back()->with('success', 'Grades saved successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['weights' => $e->getMessage()]);
         }
+
 
         return redirect()->back()->with('success', 'Grade created successfully.');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +35,7 @@ class StudentResource extends JsonResource
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
 
-            'courses' => CourseResource::collection($this->whenLoaded('courses')),
+            'enrollments' => EnrollmentResource::collection($this->whenLoaded('enrollments')),
             'program' => new ProgramResource($this->whenLoaded('program')),
             'track' => new TrackResource($this->whenLoaded('track')),
             'section' => new SectionResource($this->whenLoaded('section')),

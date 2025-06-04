@@ -54,14 +54,14 @@ const props = defineProps({
                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                 >
                     <div
-                        v-for="curriculum in student.activeCurricula"
+                        v-for="course in student.courses"
                         class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow"
                     >
                         <Link
                             :href="
                                 route(
                                     'student.courses.show',
-                                    curriculum.course.id
+                                    course.id
                                 )
                             "
                         >
@@ -71,15 +71,15 @@ const props = defineProps({
                                 <AcademicCapIcon
                                     class="h-6 w-6 text-blue-500 mr-2"
                                 />
-                                {{ curriculum.course.name }} ({{
-                                    curriculum.course.code
+                                {{ course.name }} ({{
+                                    course.code
                                 }})
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: {{ curriculum.course.instructor ? curriculum.course.instructor.name : 'N/A' }}
+                                Instructor: {{ course.instructor ? course.instructor.name : 'N/A' }}
                             </p>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Credits: {{ curriculum.course.creditHours }}
+                                Credits: {{ course.credit_hours }}
                             </p>
 
                         </Link>

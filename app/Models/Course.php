@@ -29,9 +29,9 @@ class Course extends Model
         return $this->belongsToMany(Instructor::class);
     }
 
-    public function courseSectionAssignments()
+    public function courseOfferings()
     {
-        return $this->hasMany(CourseSectionAssignment::class);
+        return $this->hasMany(CourseOffering::class);
     }
 
     public function classSchedules()

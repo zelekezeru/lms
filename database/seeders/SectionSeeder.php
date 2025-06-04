@@ -69,7 +69,7 @@ class SectionSeeder extends Seeder
             }
         }
 
-        DB::table('course_section')->insert($data);
+        DB::table('course_offerings')->insert($data);
 
         // Section Instructors
         // $data = [];

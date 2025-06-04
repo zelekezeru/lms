@@ -25,8 +25,8 @@ class CourseController extends Controller
 
         $coursesQuery = Course::with('track')
             ->when($search, function ($query, $search) {
-            $query->where('name', 'like', "%{$search}%")
-                ->orWhere('code', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
             })
             ->latest();
 
@@ -62,7 +62,7 @@ class CourseController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'CR'.'/'.str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
+        $course_id = 'CR' . '/' . str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $course_id;
 
@@ -87,7 +87,7 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course = new CourseResource($course->load('track', 'instructors', 'courseSectionAssignments.instructor', 'courseSectionAssignments.section'));
+        $course = new CourseResource($course->load('track', 'instructors', 'courseOfferings.instructor', 'courseOfferings.section'));
         $instructors = InstructorResource::collection(Instructor::all()->sortBy('name'));
 
         return inertia('Courses/Show', compact('course', 'instructors'));
@@ -121,7 +121,7 @@ class CourseController extends Controller
         // Optionally regenerate the course code if needed
         if (! $course->code) {
             $year = substr(Carbon::now()->year, -2);
-            $course_id = 'CR'.'/'.str_pad(Course::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
+            $course_id = 'CR' . '/' . str_pad(Course::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
             $fields['code'] = $course_id;
         }
 

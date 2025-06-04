@@ -14,6 +14,8 @@ use App\Http\Resources\UserDocumentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Http\Services\StudentRegistrationService;
+use App\Models\CourseOffering;
+use App\Models\Enrollment;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
 use App\Models\PaymentMethod;
@@ -87,16 +89,16 @@ class StudentController extends Controller
             $status->save();
         }
 
-        $student = new StudentResource($student->load(['user', 'courses' => fn ($q) => $q->withPivot('status'), 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
+        $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
 
         $yearLevel = $student->section->yearLevel();
         $semester = $student->section->semester->level;
 
         $studyModes = StudyMode::with(['sections' => function ($query) use ($yearLevel, $semester) {
-            $query->whereHas('courseSectionAssignments', function ($q) use ($yearLevel, $semester) {
+            $query->whereHas('courseOfferings', function ($q) use ($yearLevel, $semester) {
                 $q->where('year_level', $yearLevel)
                     ->where('semester', $semester);
-            })->with(['courseSectionAssignments' => function ($q) use ($yearLevel, $semester) {
+            })->with(['courseOfferings' => function ($q) use ($yearLevel, $semester) {
                 $q->where('year_level', $yearLevel)
                     ->where('semester', $semester);
             }]);
@@ -110,7 +112,7 @@ class StudentController extends Controller
                 ->get()->load('program', 'courses');
             $courses = [];
         } else {
-            $courses = $student->section->courses->sortBy('name')->values();
+            $courses = $student->section->courseOfferings()->with('course')->get()->pluck('course');
             $sections = [];
         }
 
@@ -127,8 +129,8 @@ class StudentController extends Controller
         $user = new UserResource($student->user->load('userDocuments'));
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn ($q) => $q
-                ->with(['course', 'section', 'semester']), ])->get();
+            ->with(['year', 'grades' => fn($q) => $q
+                ->with(['course', 'section', 'semester']),])->get();
 
         $activeSemester = Semester::where('status', 'Active')->with('year')->get();
 
@@ -263,17 +265,17 @@ class StudentController extends Controller
 
             // Check if any of the status fields are present in the request
             foreach ($statuses as $statusField) {
-                if ($request->has('is_'.$statusField)) {
+                if ($request->has('is_' . $statusField)) {
                     // Check if the status field is already set to 1
-                    if ($status->{'is_'.$statusField} == 1) {
+                    if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
-                        $status->{'is_'.$statusField} = 0;
+                        $status->{'is_' . $statusField} = 0;
                     } else {
                         // If it's not set, set it to 1
-                        $status->{'is_'.$statusField} = 1;
+                        $status->{'is_' . $statusField} = 1;
                     }
-                    $status->{$statusField.'_by_name'} = Auth::user()->name;
-                    $status->{$statusField.'_at'} = now();
+                    $status->{$statusField . '_by_name'} = Auth::user()->name;
+                    $status->{$statusField . '_at'} = now();
                 }
             }
         }
@@ -311,7 +313,7 @@ class StudentController extends Controller
         $semesters = $student->semesters()
             ->with([
                 'year',
-                'grades' => fn ($q) => $q->with(['course', 'section', 'semester']),
+                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
             ])
             ->get();
 
@@ -339,7 +341,7 @@ class StudentController extends Controller
         $yearLevel = intval($year->name) - intval($section->year->name) + 1;
 
         // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
-        $sectionCourseIds = $section->courseSectionAssignments()->where('semester', $semesterLevel)->where('year_level', $yearLevel)->with('course')->get()->pluck('course.id');
+        $courseOfferings = $section->courseOfferings()->where('semester', $semesterLevel)->where('year_level', $yearLevel)->get();
 
         /**
          * Arrange the courses so that it is suitable to sync the student to the courses with section_id pivot column
@@ -348,15 +350,13 @@ class StudentController extends Controller
          *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
          * ]
          */
-        $organizedCourses = [];
-        foreach ($sectionCourseIds as $courseId) {
-            $organizedCourses[$courseId] = [
-                'section_id' => $section->id,
-            ];
+        foreach ($courseOfferings as $courseOffering) {
+            Enrollment::updateOrCreate([
+                'student_id' => $student->id,
+                'course_offering_id' => $courseOffering->id 
+            ]);
         }
 
-        // sync the courses (when a student registers the courses will be added, but if the students wants to drop all of them...don't worry he can)
-        $student->courses()->attach($organizedCourses);
 
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
@@ -380,40 +380,39 @@ class StudentController extends Controller
         return back()->with('success', 'Student registered to semester successfully.');
     }
 
-    public function addCourse(Request $request, Student $student)
+    public function addEnrollment(Request $request, Student $student)
     {
         $fields = $request->validate([
             'course_id' => ['required', 'exists:courses,id'],
             'section_id' => ['required', 'exists:sections,id'],
         ]);
 
-        // Prevent duplicate entries
-        if ($student->courses()->where('course_id', $fields['course_id'])->exists()) {
-            return back()->withErrors(['course_id' => 'This course is already assigned to the student.']);
-        }
+        $courseOffering = CourseOffering::where('section_id', $fields['section_id'])
+            ->where('course_id', $fields['course_id'])
+            ->first();
 
-        $student->courses()->attach($fields['course_id'], [
-            'status' => 'Enrolled',
-            'section_id' => $fields['section_id'],
-            'created_at' => now(),
-            'updated_at' => now(),
+        if (! $courseOffering) {
+            return back()->withErrors(['course_id' => 'The given course is not being taken in the given section.']);
+        }
+        // Prevent duplicate entries
+        Enrollment::updateOrCreate([
+            'student_id' => $student->id,
+            'course_offering_id' => $courseOffering->id
         ]);
 
         return back()->with('success', 'Course added successfully.');
     }
 
-    public function dropCourse(Request $request, Student $student)
+    public function dropEnrollment(Request $request, Student $student)
     {
         $fields = $request->validate([
-            'course_id' => ['required', 'exists:courses,id'],
+            'enrollment_id' => ['required', 'exists:enrollments,id'],
         ]);
-
+        $enrollment = Enrollment::findOrFail($fields['enrollment_id']);
         // Instead of detaching, update the pivot status to "Dropped"
-        $student->courses()
-            ->updateExistingPivot(
-                $fields['course_id'],
-                ['status' => 'Dropped']
-            );
+        $enrollment->update([
+            'status' => 'Dropped'
+        ]);
 
         return back()->with('success', 'Course marked as dropped successfully.');
     }

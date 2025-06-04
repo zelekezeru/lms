@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\CourseOffering;
 use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Section;
@@ -27,9 +28,12 @@ class AssignmentController extends Controller
     // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {
-
-        $section->courses()->sync($request['courses']);
-
+        foreach ($request['courses'] as $courseId) {
+            CourseOffering::updateOrCreate([
+                'course_id' => $courseId,
+                'section_id' => $section->id,
+            ]);
+        }
         return redirect()->route('sections.show', $section->id)->with('success', 'Courses Assigned successfully.');
     }
 
@@ -52,14 +56,14 @@ class AssignmentController extends Controller
     // this method is used to assign courses to a courseSection
     public function assignInstructorToCourseSection(Request $request, Section $section, Course $course)
     {
-        $courseSectionAssignment = $section->courseSectionAssignments()->where('course_id', $course->id)->with('instructor.classSchedules');
+        $courseOffering = $section->courseOfferings()->where('course_id', $course->id)->with('instructor.classSchedules');
 
         // Remove or comment out this block if 'instructor_id' does not exist in class_schedules table
         $classSchedules = $section->classSchedules()->where('course_id', $course->id)->update([
             'instructor_id' => $request->instructor_id,
         ]);
 
-        $courseSectionAssignment->update([
+        $courseOffering->update([
             'instructor_id' => $request->instructor_id,
         ]);
 
@@ -81,7 +85,7 @@ class AssignmentController extends Controller
                 return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
             })
             ->toArray();
-            
+
         $student->courses()->sync($coursesWithStatus);
 
         $student->status()->update([
@@ -162,15 +166,15 @@ class AssignmentController extends Controller
             'semester' => ['required', 'integer', 'min:1'],
         ]);
 
-        $course = $section->courses()->where('courses.id', $validated['course_id'])->first();
+        $courseOffering = $section->courseOfferings()->where('course_id', $validated['course_id'])->first();
 
-        if (! $course) {
+        if (! $courseOffering) {
             return back()->withErrors(['course_id' => 'Course not found in this section.']);
         }
 
-        $course->pivot->year_level = $validated['year'];
-        $course->pivot->semester = $validated['semester'];
-        $course->pivot->save();
+        $courseOffering->year_level = $validated['year'];
+        $courseOffering->semester = $validated['semester'];
+        $courseOffering->save();
 
         return back()->with('success', 'Course updated successfully.');
     }

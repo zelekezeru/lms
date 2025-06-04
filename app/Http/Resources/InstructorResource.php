@@ -37,12 +37,11 @@ class InstructorResource extends JsonResource
 
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'classSchedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
-            'sections' => $this->whenLoaded('courseSectionAssignments', function () {
-                return $this->courseSectionAssignments->map(function ($courseSectionAssignment) {
-                    return new SectionResource($courseSectionAssignment->section);
+            'sections' => $this->whenLoaded('courseOfferings', function () {
+                return $this->courseOfferings->map(function ($courseOffering) {
+                    return new SectionResource($courseOffering->section);
                 });
             }),
         ];
-
     }
 }

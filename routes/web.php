@@ -136,8 +136,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
 
-    Route::post('/course-student/{student}/add', [StudentController::class, 'addCourse'])->name('courses-student.add');
-    Route::post('/course-student/{student}/drop', [StudentController::class, 'dropCourse'])->name('courses-student.drop');
+    Route::post('/enrollment-student/{student}/add', [StudentController::class, 'addEnrollment'])->name('enrollments-student.add');
+    Route::post('/enrollment-student/{student}/drop', [StudentController::class, 'dropEnrollment'])->name('enrollments-student.drop');
 
     // Student Managment
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');

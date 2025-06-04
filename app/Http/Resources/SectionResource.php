@@ -37,8 +37,8 @@ class SectionResource extends JsonResource
             'status' => $this->status,
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,
-            'courses' => $this->whenLoaded('courseSectionAssignments', function () {
-                return $this->courseSectionAssignments->map(function ($assignment) {
+            'courses' => $this->whenLoaded('courseOfferings', function () {
+                return $this->courseOfferings->map(function ($assignment) {
                     return [
                         'id' => $assignment->course->id,
                         'name' => $assignment->course->name,

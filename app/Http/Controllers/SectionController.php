@@ -57,7 +57,7 @@ class SectionController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $section_id = 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
         $track = Track::find($fields['track_id']);
@@ -88,11 +88,11 @@ class SectionController extends Controller
 
     public function show(Section $section)
     {
-        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'studyMode', 'students', 'grades', 'courseSectionAssignments.course', 'courseSectionAssignments.instructor', 'classSchedules.course', 'classSchedules.semester', 'classSchedules.instructor', 'classSchedules.room']));
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'year', 'semester', 'studyMode', 'students', 'grades', 'courseOfferings.course', 'courseOfferings.instructor', 'classSchedules.course', 'classSchedules.semester', 'classSchedules.instructor', 'classSchedules.room']));
 
-        $courses = CourseResource::collection(Course::withExists(['sections as related_to_section' => function ($query) use ($section) {
-            return $query->where('sections.id', $section->id);
-        }])->orderBy('name')->orderByDesc('related_to_section')->get());
+        $courses = CourseResource::collection(Course::withExists(['courseOfferings as related_to_course_offering' => function ($query) use ($section) {
+            return $query->where('section_id', $section->id);
+        }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
 
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $section->semester->level;

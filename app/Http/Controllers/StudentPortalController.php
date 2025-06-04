@@ -20,15 +20,12 @@ class StudentPortalController extends Controller
 
     public function courses()
     {
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
-
-        $instructors = Instructor::whereHas('courses.sections', function ($query) use ($student) {
-            $query->where('sections.id', $student->section_id);
-        })->with('user')->get();
+        $student = new StudentResource(request()->user()->student->load(['program', 'track', 'section', 'courses.courseOfferings' => function ($query) {
+            dd($query->get());
+        }]));
 
         return inertia('StudentPortal/Courses', [
             'student' => $student,
-            'instructor' => $instructors,
         ]);
     }
 

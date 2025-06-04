@@ -11,7 +11,7 @@ use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Course;
-use App\Models\CourseSectionAssignment;
+use App\Models\CourseOffering;
 use App\Models\Instructor;
 use App\Models\Room;
 use App\Models\Section;
@@ -27,9 +27,9 @@ class InstructorPortalController extends Controller
             request()->user()->instructor->load(
                 'user',
                 'courses',
-                'courseSectionAssignments.section.program',
-                'courseSectionAssignments.section.track',
-                'courseSectionAssignments.course'
+                'courseOfferings.section.program',
+                'courseOfferings.section.track',
+                'courseOfferings.course'
             )
         );
 
@@ -46,7 +46,7 @@ class InstructorPortalController extends Controller
             'user',
             'courses' => function ($query) use ($instructor) {
                 $query->withCount([
-                    'courseSectionAssignments as sectionsCount' => function ($q) use ($instructor) {
+                    'courseOfferings as sectionsCount' => function ($q) use ($instructor) {
                         $q->where('instructor_id', $instructor->id);
                     },
                 ]);
@@ -68,15 +68,15 @@ class InstructorPortalController extends Controller
         }
 
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
         );
 
         $course = new CourseResource($course->load([
-            'courseSectionAssignments' => fn ($q) => $q->where('instructor_id', $instructor->id),
-            'courseSectionAssignments.section',
-            'courseSectionAssignments.section.program',
-            'courseSectionAssignments.section.track',
-            'courseSectionAssignments.section.studyMode',
+            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings.section',
+            'courseOfferings.section.program',
+            'courseOfferings.section.track',
+            'courseOfferings.section.studyMode',
         ]));
 
         return Inertia::render('InstructorPortal/CourseDetail', [
@@ -91,14 +91,14 @@ class InstructorPortalController extends Controller
 
         $instructor->load([
             'user',
-            'courseSectionAssignments.section.program',
-            'courseSectionAssignments.section.track',
-            'courseSectionAssignments.section.studyMode',
+            'courseOfferings.section.program',
+            'courseOfferings.section.track',
+            'courseOfferings.section.studyMode',
         ]);
 
-        $uniqueAssignments = $instructor->courseSectionAssignments->unique('section_id');
+        $uniqueAssignments = $instructor->courseOfferings->unique('section_id');
 
-        $instructor->setRelation('courseSectionAssignments', $uniqueAssignments);
+        $instructor->setRelation('courseOfferings', $uniqueAssignments);
 
         $instructor = new InstructorResource($instructor);
 
@@ -133,12 +133,12 @@ class InstructorPortalController extends Controller
         // }
 
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
         );
 
         $section = new SectionResource($section->load([
-            'courseSectionAssignments' => fn ($q) => $q->where('instructor_id', $instructor->id),
-            'courseSectionAssignments.course',
+            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings.course',
             'program',
             'track',
             'studyMode',
@@ -155,7 +155,7 @@ class InstructorPortalController extends Controller
         $instructor = new InstructorResource(
             request()->user()->instructor->load('user')
         );
-        if (! CourseSectionAssignment::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
+        if (! CourseOffering::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
             abort(500);
         }
 
@@ -188,7 +188,7 @@ class InstructorPortalController extends Controller
     public function profile()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
         );
 
         return inertia('InstructorPortal/Profile', [
@@ -199,7 +199,7 @@ class InstructorPortalController extends Controller
     public function result()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
         );
 
         // Example: fetch results/grades for instructor's courses
@@ -214,7 +214,7 @@ class InstructorPortalController extends Controller
     public function calendar()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseSectionAssignments.section', 'courseSectionAssignments.course')
+            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
         );
 
         // Example: fetch calendar info for instructor

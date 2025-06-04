@@ -151,7 +151,7 @@ const getStudentGrade = (studentId) =>
                     >
                         <td class="px-4 py-2">{{ index + 1 }}</td>
                         <td class="px-4 py-2">
-                            {{ student.first_name }} {{ student.middle_name }}
+                            {{ student.firstName }} {{ student.middleName }}
                         </td>
                         <td class="px-4 py-2 font-semibold">
                             {{ getStudentTotalPoints(student.id) }}
@@ -227,7 +227,7 @@ const getStudentGrade = (studentId) =>
                     >
                         <td class="px-4 py-2">{{ index + 1 }}</td>
                         <td class="px-4 py-2">
-                            {{ student.first_name }} {{ student.middle_name }}
+                            {{ student.firstName }} {{ student.middleName }}
                         </td>
                         <td class="px-4 py-2 font-semibold">
                             {{

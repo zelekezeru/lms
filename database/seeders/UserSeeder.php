@@ -30,8 +30,8 @@ class UserSeeder extends Seeder
                 'tenant_id' => 1,
             ],
             [
-                'id' => 2,
-                'user_uuid' => 'SA/25',
+                'id' => 3,
+                'user_uuid' => 'SA/26',
                 'name' => 'Misganu Petros',
                 'email' => 'misganu.petros@sits.edu.et',
                 'phone' => '0937216471',
@@ -46,8 +46,8 @@ class UserSeeder extends Seeder
                 'tenant_id' => 1,
             ],
             [
-                'id' => 3,
-                'user_uuid' => 'SA/25',
+                'id' => 4,
+                'user_uuid' => 'SA/27',
                 'name' => 'Employee User',
                 'email' => 'employee.user@sits.edu.et',
                 'phone' => '0912345678',

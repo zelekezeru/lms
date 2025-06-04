@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WeightStoreRequest;
 use App\Http\Requests\WeightUpdateRequest;
 use App\Models\Course;
-use App\Models\CourseSectionAssignment;
+use App\Models\CourseOffering;
 use App\Models\Instructor;
 use App\Models\Section;
 use App\Models\Semester;
@@ -46,7 +46,7 @@ class WeightController extends Controller
     {
         $fields = $request->validated();
 
-        $instructorId = CourseSectionAssignment::where('course_id', $fields['course_id'])
+        $instructorId = CourseOffering::where('course_id', $fields['course_id'])
             ->where('section_id', $fields['section_id'])
             ->first()
             ->instructor_id;

@@ -54,7 +54,7 @@ class InstructorController extends Controller
         $instructor = new InstructorResource($instructor->load([
             'user',
             'courses',
-            'courseSectionAssignments.section.courseSectionAssignments' => function ($q) use ($instructor) {
+            'courseOfferings.section.courseOfferings' => function ($q) use ($instructor) {
                 $q->where('instructor_id', $instructor->id);
             },
         ]));
@@ -95,14 +95,14 @@ class InstructorController extends Controller
         } else {
             $profile_path = null;
         }
-        
+
         // user default password
         $firstName = explode(' ', $fields['name'])[0]; // Get the first name from the full name
-        
+
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users
-        
+        $default_password = strtolower($firstName) . '@' . $user_phone; // Default password for new users
+
         // Merge the default password into the request
         $request->merge([
             'password' => $default_password,

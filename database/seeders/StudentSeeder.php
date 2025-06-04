@@ -17,7 +17,7 @@ class StudentSeeder extends Seeder
         // Seed the initial student (already in the original code)
         DB::table('users')->insert([
             [
-                'id' => 3,
+                'id' => 6,
                 'user_uuid' => 'SITS-0019-25',
                 'name' => 'Student User Test',
                 'email' => 'student.user@sits.edu.et',
@@ -37,7 +37,7 @@ class StudentSeeder extends Seeder
         DB::table('students')->insert([
             [
                 'id' => 1,
-                'user_id' => 3,
+                'user_id' => 6,
                 'id_no' => 'SITS-0001-25',
                 'first_name' => 'Student',
                 'middle_name' => 'User',
@@ -138,7 +138,7 @@ class StudentSeeder extends Seeder
 
             DB::table('users')->insert([
                 [
-                    'id' => $i + 2, // Ensure unique user IDs, offset from the initial user
+                    'id' => $i + 5, // Ensure unique user IDs, offset from the initial user
                     'user_uuid' => $user_uuid,
                     'name' => $firstName.' '.$middleName.' '.$lastName,
                     'email' => $email,
@@ -158,7 +158,7 @@ class StudentSeeder extends Seeder
             DB::table('students')->insert([
                 [
                     'id' => $i, // Unique student ID
-                    'user_id' => $i + 2, // Link to the user ID
+                    'user_id' => $i + 5, // Link to the user ID
                     'id_no' => $user_uuid,
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
@@ -215,7 +215,7 @@ class StudentSeeder extends Seeder
                     'scholarship_approved_at' => null,
                     'scholarship_verified_at' => null,
                     'student_id' => $i,
-                    'user_id' => $i + 2,
+                    'user_id' => $i + 5,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
@@ -229,7 +229,7 @@ class StudentSeeder extends Seeder
                     'church_address' => $faker->address,
                     'position_denomination' => $faker->jobTitle,
                     'student_id' => $i,
-                    'user_id' => $i + 2,
+                    'user_id' => $i + 5,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],

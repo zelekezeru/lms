@@ -157,7 +157,19 @@ const changeTab = (tabName) => {
                                 "No description available."
                             }}
                         </p>
-                        <p><strong>Instructor:</strong> Dr. Jane Doe</p>
+                        <p>
+                            <strong>Instructor:</strong>
+                            {{ enrollment.instructor.name }}
+                        </p>
+                        <p>
+                            <strong>Course Taken In :</strong>
+                            {{ enrollment.section.name }}
+                            <span class="ml-1 text-gray-500 text-xs"
+                                >({{ enrollment.section.track.name }}
+                                Track)
+                                {{ enrollment.section.studyMode.name }}
+                            </span>
+                        </p>
                         <p>
                             <strong>Credits:</strong>
                             {{ enrollment.course.credit_hours }}
@@ -184,14 +196,11 @@ const changeTab = (tabName) => {
                             :classSchedules="classSchedules"
                         />
                         <ClassSessions
-                            v-else-if="
-                                activeTab === 'classSessionsClassSessions'
-                            "
+                            v-else-if="activeTab === 'classSessions'"
                             :enrollment="enrollment"
+                            :active-semester="activeSemester"
                             :student="student"
-                            :classSessionsClassSessions="
-                                classSessionsClassSessions
-                            "
+                            :classSessions="classSessions"
                         />
                     </div>
                 </div>

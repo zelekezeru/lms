@@ -20,7 +20,7 @@ class ClassSessionResource extends JsonResource
             'date' => Carbon::parse($this->date)->format('Y-m-d'),
             'startTime' => $this->start_time ? Carbon::parse($this->start_time)->format('H:i:s') : null,
             'endTime'   => $this->end_time ? Carbon::parse($this->end_time)->format('H:i:s') : null,
-            'status' => $this->is_completed ? "Completed!" : "Not Complete!",
+            'status' => $this->is_completed ? "Completed!" : "Upcoming!",
             'type' => $this->type,
             'classAbout' => $this->class_about,
             'section' => new SectionResource($this->whenLoaded('section')),

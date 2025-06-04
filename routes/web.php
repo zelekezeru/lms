@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/students', function () {
             return Inertia::render('Registrar/Students/Index');
         })->name('registrar.students');
-
+    });
 
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {

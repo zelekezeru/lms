@@ -44,6 +44,8 @@ class StudentPortalController extends Controller
             $q->where('student_id', $student->id);
         })->get());
 
+        $classSchedules = $enrollment->courseOffering->classSchedules;
+
         return Inertia::render('StudentPortal/Enrollments/Show', [
             'enrollment' => new EnrollmentResource($enrollment),
             'student' => $student,

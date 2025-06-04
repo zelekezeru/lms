@@ -36,4 +36,9 @@ class ClassSession extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function courseOffering()
+    {
+        return $this->belongsTo(CourseOffering::class);
+    }
 }

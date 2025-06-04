@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassSessionStoreRequest;
 use App\Models\ClassSession;
+use App\Models\CourseOffering;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,11 @@ class ClassSessionController extends Controller
         $validated['start_time'] = $start->toDateTimeString(); // full datetime
         $validated['end_time'] = $end->toDateTimeString();     // full datetime
 
+        $validated['course_offering_id'] = CourseOffering::lookUpFor($validated['course_id'], $validated['section_id'])->id;
+
         unset($validated['start_date_time']); // Remove the original datetime input
+        unset($validated['course_id']);
+        unset($validated['section_id']);
 
         ClassSession::create($validated);
 

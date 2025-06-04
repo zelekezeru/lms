@@ -37,12 +37,15 @@ class ClassScheduleController extends Controller
         $fields['start_time'] = Carbon::parse($fields['start_time'])->format('H:i:s');
         $fields['end_time'] = Carbon::parse($fields['end_time'])->format('H:i:s');
 
-        $courseSection = CourseOffering::where('course_id', $fields['course_id'])
-            ->where('section_id', $fields['section_id'])
-            ->with('instructor')
-            ->first();
+        $courseOffering = CourseOffering::lookUpFor($fields['course_id'], $fields['section_id']);
 
-        $fields['instructor_id'] = $courseSection->instructor ? $courseSection->instructor_id : null;
+        if (! $courseOffering) {
+            return back()->withErrors('error', 'No Course Offering of such!');
+        }
+
+        $fields['course_offering_id'] = $courseOffering->id;
+        unset($fields['section_id']);
+        unset($fields['course_id']);
 
         $classSchedule = ClassSchedule::create($fields);
 

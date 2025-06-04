@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CourseOffering extends Model
 {
     protected $guarded = [];
-    
+
     public function section()
     {
         return $this->belongsTo(Section::class);
@@ -26,6 +26,16 @@ class CourseOffering extends Model
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function classSchedules()
+    {
+        return $this->hasMany(ClassSchedule::class)->where('semester_id', Semester::getActiveSemester()->id);
+    }
+
+    public function classSessions()
+    {
+        return $this->hasMany(ClassSession::class)->where('semester_id', Semester::getActiveSemester()->id);
     }
 
     public static function lookUpFor($courseId, $sectionId)

@@ -16,10 +16,16 @@ class ClassScheduleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'section' => new SectionResource($this->whenLoaded('section')),
-            'course' => new CourseResource($this->whenLoaded('course')),
+            'section' => new SectionResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->section;
+            })),
+            'course' => new CourseResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->course;
+            })),
+            'instructor' => new InstructorResource($this->whenLoaded('courseOffering', function () {
+                return $this->courseOffering->instructor;
+            })),
             'semester' => new SemesterResource($this->whenLoaded('semester')),
-            'instructor' => new InstructorResource($this->whenLoaded('instructor')),
             'room' => new RoomResource($this->whenLoaded('room')),
             'dayOfWeek' => $this->day_of_week,
             'startTime' => $this->start_time ? Carbon::parse($this->start_time)->format('g:i A') : null,

@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('class_sessions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('section_id')->constrained();
-            $table->foreignId('course_id')->constrained();
-            $table->foreignId('instructor_id')->constrained();
+            $table->foreignId('course_offering_id')->constrained();
             $table->foreignId('semester_id')->constrained();
             $table->foreignId('room_id')->nullable()->constrained();
 

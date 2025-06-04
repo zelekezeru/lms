@@ -7,9 +7,7 @@ import {
     BookOpenIcon,
     ArrowPathIcon,
     ChartBarIcon,
-    CalendarIcon,
     UserCircleIcon,
-    ArrowLeftOnRectangleIcon,
     CogIcon,
     QuestionMarkCircleIcon,
 } from "@heroicons/vue/24/outline";
@@ -63,7 +61,7 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="BookOpenIcon"
                     label="Courses"
-                    :href="route('student.courses')"
+                    :href="route('student.enrollments')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

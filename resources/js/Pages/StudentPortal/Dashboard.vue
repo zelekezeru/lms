@@ -80,45 +80,77 @@ onMounted(createChart);
                 <!-- Enrolled Courses -->
                 <section>
                     <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
+                        class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6"
                     >
                         My Active Courses
                     </h2>
                     <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     >
                         <div
-                            v-for="curriculum in student.activeCurricula"
-                            class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all"
+                            v-for="enrollment in student.enrollments"
+                            :key="enrollment.id"
+                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300"
                         >
                             <Link
                                 :href="
                                     route(
-                                        'student.courses.show',
-                                        curriculum.course.id
+                                        'student.enrollments.show',
+                                        enrollment.course.id
                                     )
                                 "
+                                class="block"
                             >
-                                <AcademicCapIcon
-                                    class="h-6 w-6 text-blue-500 mb-2"
-                                />
+                                <div
+                                    class="flex items-center justify-between mb-3"
+                                >
+                                    <AcademicCapIcon
+                                        class="h-6 w-6 text-blue-500"
+                                    />
+                                    <span
+                                        class="text-xs text-gray-500 dark:text-gray-400"
+                                        >{{
+                                            enrollment.course.credit_hours
+                                        }}
+                                        credits</span
+                                    >
+                                </div>
+
                                 <h3
-                                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                                    class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
                                 >
-                                    {{ curriculum.course.name }} ({{
-                                        curriculum.course.code
-                                    }})
+                                    {{ enrollment.course.name }}
+                                    <span class="text-sm text-gray-500"
+                                        >({{ enrollment.course.code }})</span
+                                    >
                                 </h3>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400"
+
+                                <div
+                                    class="text-sm space-y-1 text-gray-700 dark:text-gray-300"
                                 >
-                                    Instructor: John Doe
-                                </p>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400"
-                                >
-                                    Credits: {{ curriculum.course.creditHours }}
-                                </p>
+                                    <p>
+                                        <strong>Instructor:</strong>
+                                        {{
+                                            enrollment.instructor
+                                                ? enrollment.instructor.name
+                                                : "TBA"
+                                        }}
+                                    </p>
+                                    <p>
+                                        <strong>Section:</strong>
+                                        {{ enrollment.section.name }}
+                                        <span class="ml-1 text-gray-500 text-xs"
+                                            >({{
+                                                enrollment.section.track.name
+                                            }}
+                                            Track)</span
+                                        >
+                                    </p>
+                                    <p>
+                                        <strong>Study Mode:</strong>
+                                        {{ enrollment.section.studyMode.name }}
+                                    </p>
+                                </div>
                             </Link>
                         </div>
                     </div>

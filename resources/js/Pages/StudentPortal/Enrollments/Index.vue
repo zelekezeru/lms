@@ -3,12 +3,9 @@ import StudentLayout from "@/Layouts/StudentLayout.vue";
 import { Link } from "@inertiajs/vue3";
 import {
     AcademicCapIcon,
-    ClockIcon,
     CheckCircleIcon,
     BookOpenIcon,
-    CalendarIcon,
 } from "@heroicons/vue/24/solid";
-import Instructor from "../Instructor.vue";
 
 const props = defineProps({
     student: {
@@ -19,7 +16,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    
 });
 </script>
 
@@ -31,13 +27,6 @@ const props = defineProps({
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
                     My Courses
                 </h1>
-                <select
-                    class="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-sm rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500 dark:text-white"
-                >
-                    <option>2024/2025</option>
-                    <option>2023/2024</option>
-                    <option>2022/2023</option>
-                </select>
             </div>
 
             <!-- Active Courses -->
@@ -54,15 +43,13 @@ const props = defineProps({
                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
                 >
                     <div
-                        v-for="course in student.courses"
+                        v-for="enrollment in student.enrollments"
+                        :key="enrollment.id"
                         class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow"
                     >
                         <Link
                             :href="
-                                route(
-                                    'student.courses.show',
-                                    course.id
-                                )
+                                route('student.enrollments.show', enrollment.id)
                             "
                         >
                             <h3
@@ -71,17 +58,29 @@ const props = defineProps({
                                 <AcademicCapIcon
                                     class="h-6 w-6 text-blue-500 mr-2"
                                 />
-                                {{ course.name }} ({{
-                                    course.code
+                                {{ enrollment.course.name }} ({{
+                                    enrollment.course.code
                                 }})
                             </h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Instructor: {{ course.instructor ? course.instructor.name : 'N/A' }}
+                                Instructor:
+                                {{
+                                    enrollment.instructor
+                                        ? enrollment.instructor.name
+                                        : "N/A"
+                                }}
                             </p>
                             <p class="text-sm text-gray-600 dark:text-gray-400">
-                                Credits: {{ course.credit_hours }}
+                                Section:
+                                {{
+                                    enrollment.section
+                                        ? enrollment.section.name
+                                        : "N/A"
+                                }}
                             </p>
-
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Credits: {{ enrollment.course.credit_hours }}
+                            </p>
                         </Link>
                     </div>
                 </div>
@@ -141,4 +140,3 @@ const props = defineProps({
         </div>
     </StudentLayout>
 </template>
-

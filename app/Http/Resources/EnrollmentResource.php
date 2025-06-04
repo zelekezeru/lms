@@ -17,15 +17,9 @@ class EnrollmentResource extends JsonResource
         return [
             'id' => $this->id,
             'student' => new StudentResource($this->whenLoaded('student')),
-            'course' => new CourseResource($this->whenLoaded('courseOffering', function() {
-                return $this->courseOffering->course;
-            })),
-            'section' => new SectionResource($this->whenLoaded('courseOffering', function() {
-                return $this->courseOffering->section;
-            })),
-            'instructor' => new InstructorResource($this->whenLoaded('courseOffering', function() {
-                return $this->courseOffering->instructor;
-            })),
+            'course' => new CourseResource($this->courseOffering->course),
+            'section' => new SectionResource($this->courseOffering->section),
+            'instructor' => new InstructorResource($this->courseOffering->instructor ?? null),
             'status' => $this->status,
         ];
     }

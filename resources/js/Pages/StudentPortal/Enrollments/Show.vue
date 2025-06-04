@@ -11,7 +11,11 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
-    course: Object,
+    enrollment: Object,
+    student: {
+        type: Object,
+        required: false,
+    },
 });
 
 // Right menu navigation items
@@ -66,21 +70,53 @@ const getProgressColor = (mark) => {
         <div class="max-w-7xl mx-auto py-10 px-4 flex flex-col lg:flex-row">
             <!-- Course Info -->
             <div class="flex-1">
-                <h1
-                    class="text-3xl font-bold mb-4 text-gray-900 dark:text-white flex"
-                >
-                    <AcademicCapIcon class="h-6 w-6 mr-2 text-blue-500" />
-                    {{ course.name }} ({{ course.code }})
-                </h1>
+                <div class="flex justify-between items-center">
+                    <h1
+                        class="text-3xl font-bold mb-4 text-gray-900 dark:text-white flex"
+                    >
+                        <AcademicCapIcon class="h-6 w-6 mr-2 text-blue-500" />
+                        {{ enrollment.course.name }} ({{
+                            enrollment.course.code
+                        }})
+                    </h1>
+                    <span
+                        class="py-1 px-3 bg-red-600 text-white rounded-3xl"
+                        :class="{
+                            '!bg-green-600': enrollment.status == 'Enrolled',
+                        }"
+                        >{{ enrollment.status }}</span
+                    >
+                </div>
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-4"
                 >
                     <p>
                         <strong>Description:</strong>
-                        {{ course.description || "No description available." }}
+                        {{
+                            enrollment.course.description ||
+                            "No description available."
+                        }}
                     </p>
-                    <p><strong>Instructor:</strong> Dr. Jane Doe</p>
-                    <p><strong>Credits:</strong> {{ course.credit_hours }}</p>
+                    <p>
+                        <strong>Instructor:</strong>
+                        {{
+                            enrollment.instructor
+                                ? enrollment.instructor.name
+                                : "TBA"
+                        }}
+                    </p>
+                    <p>
+                        <strong>You Take This Course In:</strong>
+                        {{
+                            enrollment.section.id == student.section.id
+                                ? `Your Own Section ${enrollment.section.name}`
+                                : `${enrollment.section.name}(${enrollment.section.track.name}) Track ${enrollment.section.studyMode.name}`
+                        }}
+                    </p>
+                    <p>
+                        <strong>Credits:</strong>
+                        {{ enrollment.course.credit_hours }}
+                    </p>
                 </div>
 
                 <!-- Assessments Section -->

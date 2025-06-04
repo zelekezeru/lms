@@ -353,7 +353,7 @@ class StudentController extends Controller
         foreach ($courseOfferings as $courseOffering) {
             Enrollment::updateOrCreate([
                 'student_id' => $student->id,
-                'course_offering_id' => $courseOffering->id 
+                'course_offering_id' => $courseOffering->id
             ]);
         }
 

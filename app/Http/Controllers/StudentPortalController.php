@@ -8,6 +8,7 @@ use App\Http\Resources\EnrollmentResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\WeightResource;
+use App\Models\ClassSchedule;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Instructor;
@@ -19,7 +20,14 @@ class StudentPortalController extends Controller
 {
     public function index()
     {
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section', 'enrollments.courseOffering', 'enrollments.courseOffering.section.track', 'enrollments.courseOffering.section.studyMode'));
+        $student = new StudentResource(request()->user()->student->load(
+            'program',
+            'track',
+            'section',
+            'enrollments.courseOffering',
+            'enrollments.courseOffering.section.track',
+            'enrollments.courseOffering.section.studyMode'
+        ));
 
         return inertia('StudentPortal/Dashboard', [
             'student' => $student,
@@ -28,7 +36,11 @@ class StudentPortalController extends Controller
 
     public function enrollments()
     {
-        $student = new StudentResource(request()->user()->student->load(['enrollments', 'enrollments.courseOffering', 'grades']));
+        $student = new StudentResource(request()->user()->student->load([
+            'enrollments',
+            'enrollments.courseOffering',
+            'grades'
+        ]));
         return inertia('StudentPortal/Enrollments/Index', [
             'student' => $student,
         ]);
@@ -60,6 +72,27 @@ class StudentPortalController extends Controller
         ]);
     }
 
+    public function classSchedules()
+    {
+        $studentModel = request()->user()->student->load([
+            'program',
+            'track',
+            'section',
+            'enrollments.courseOffering.classSchedules'
+        ]);
+
+        $student = new StudentResource($studentModel);
+
+        $classSchedules = ClassScheduleResource::collection($studentModel->classSchedules());
+
+        $activeSemester = new SemesterResource(Semester::getActiveSemester());
+
+        return inertia('StudentPortal/ClassSchedules', [
+            'student' => $student,
+            'classSchedules' => $classSchedules,
+            'activeSemester' => $activeSemester,
+        ]);
+    }
     public function profile()
     {
 

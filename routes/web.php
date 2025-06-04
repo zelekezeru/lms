@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
         Route::get('/enrollments', [StudentPortalController::class, 'enrollments'])->name('student.enrollments');
         Route::get('/enrollments/{enrollment}', [StudentPortalController::class, 'enrollmentDetail'])->name('student.enrollments.show');
+        Route::get('/classSchedules', [StudentPortalController::class, 'classSchedules'])->name('student.classSchedules');
         Route::get('/profile', [StudentPortalController::class, 'profile'])->name('student.profile');
         Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
         Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');

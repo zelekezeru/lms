@@ -46,6 +46,20 @@ class Student extends Model
         return $this->hasMany(Enrollment::class);
     }
 
+    public function classSchedules()
+    {
+        return $this->enrollments()
+            ->with(
+                'courseOffering.classSchedules.courseOffering.course',
+                'courseOffering.classSchedules.courseOffering.instructor',
+                'courseOffering.classSchedules.courseOffering.section.track',
+                'courseOffering.classSchedules.courseOffering.section.studyMode'
+            )
+            ->get()
+            ->pluck('courseOffering.classSchedules')
+            ->flatten();
+    }
+
     public function section()
     {
         return $this->belongsTo(Section::class);
@@ -85,11 +99,9 @@ class Student extends Model
     {
         return $this->belongsToMany(Semester::class)->withPivot('status');
     }
-    
+
     public function centers()
     {
         return $this->belongsToMany(Center::class, 'center_student');
     }
-
-
 }

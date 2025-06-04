@@ -65,6 +65,7 @@ const announcements = [
 const rightMenu = [
     { name: "Overview", key: "overview", icon: AcademicCapIcon },
     { name: "Students", key: "students", icon: AcademicCapIcon },
+    { name: "Assessments", key: "assessments", icon: AcademicCapIcon },
     { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
     { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
 ];

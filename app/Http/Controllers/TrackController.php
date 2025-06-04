@@ -11,6 +11,7 @@ use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
+use App\Models\CourseOffering;
 use App\Models\Curriculum;
 use App\Models\Program;
 use App\Models\Section;
@@ -20,6 +21,7 @@ use App\Models\User; // Ensure this class exists in the specified namespace
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class TrackController extends Controller
@@ -83,35 +85,46 @@ class TrackController extends Controller
         $fields = $request->validated();
         $year = substr(Carbon::now()->year, -2);
 
-        $track_id = 'DP'.'/'.str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
+        $track_id = 'DP' . '/' . str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $track_id;
+        DB::beginTransaction();
+        try {
+            $track = Track::create($fields);
+            $studyModes = $track->program->studyModes->pluck('id');
 
-        $track = Track::create($fields);
-        $studyModes = $track->program->studyModes->pluck('id');
+            $year = substr(Carbon::now()->year, -2);
+            // Create Section-1 by default for each study modes the program that the created track belongs to has.
+            $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
+                return Section::create([
+                    'name' => 'Section-1',
+                    'code' => 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                    'program_id' => $fields['program_id'],
+                    'track_id' => $track->id,
+                    'study_mode_id' => $studyModeId,
+                    'year_id' => Year::where('status', 'active')->first()->id,
+                    'semester_id' => Semester::where('status', 'active')->first()->id,
+                ]);
+            });
 
-        $year = substr(Carbon::now()->year, -2);
-        // Create Section-1 by default for each study modes the program that the created track belongs to has.
-        $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
-            return Section::create([
-                'name' => 'Section-1',
-                'code' => 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
-                'program_id' => $fields['program_id'],
-                'track_id' => $track->id,
-                'study_mode_id' => $studyModeId,
-                'year_id' => Year::where('status', 'active')->first()->id,
-                'semester_id' => Semester::where('status', 'active')->first()->id,
-            ]);
-        });
+            $commonCourses = $track->program->courses()->wherePivot('is_common', true)->pluck('courses.id');
 
-        $commonCourses = $track->program->courses()->wherePivot('is_common', true)->pluck('courses.id');
+            $track->courses()->syncWithoutDetaching($commonCourses);
 
-        $track->courses()->syncWithoutDetaching($commonCourses);
+            foreach ($sections as $section) {
+                foreach ($commonCourses as $commonCourse) {
+                    CourseOffering::updateOrCreate([
+                        'section_id' => $section->id,
+                        'course_id' => $commonCourse
+                    ]);
+                };
+            }
 
-        foreach ($sections as $section) {
-            $section->courses()->syncWithoutDetaching($commonCourses);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors('error', 'something went wrong');
         }
-
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the tracks.show method is the default
         $redirectTo = $request->input('redirectTo', route('tracks.show', $track));
 
@@ -170,7 +183,7 @@ class TrackController extends Controller
         // Optionally regenerate the track code if needed
         if (! $track->code) {
             $year = substr(Carbon::now()->year, -2);
-            $track_id = 'DP'.'/'.str_pad(Track::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
+            $track_id = 'DP' . '/' . str_pad(Track::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
             $fields['code'] = $track_id;
         }
 

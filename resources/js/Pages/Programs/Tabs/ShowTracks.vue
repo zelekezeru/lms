@@ -1,13 +1,14 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/vue/24/solid";
-import { CogIcon, PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { useI18n } from "vue-i18n"; // ✅ Import i18n
+
+const { t } = useI18n(); // ✅ Destructure t()
 
 const props = defineProps({
     program: { type: Object, required: true },
@@ -32,8 +33,8 @@ const addTrack = () => {
         {
             onSuccess: () => {
                 Swal.fire(
-                    $t("programs.tracks.added_title"),
-                    $t("programs.tracks.added_text"),
+                    t("programs.tracks.added_title"),
+                    t("programs.tracks.added_text"),
                     "success"
                 );
                 createTrack.value = false;
@@ -43,6 +44,7 @@ const addTrack = () => {
     );
 };
 </script>
+
 
 <template>
     <div>

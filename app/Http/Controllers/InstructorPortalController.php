@@ -159,13 +159,15 @@ class InstructorPortalController extends Controller
             abort(500);
         }
 
+        $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student');
+        
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $grades = $section->grades()->where('course_id', $course->id)->get();
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         // This fetches all students that learn $course in $section which means
-        $students = StudentResource::collection($section->studentsByCourse($course->id));
+        $students = StudentResource::collection($courseOffering->enrollments->pluck('student'));
         $activeSemester = Semester::getActiveSemester();
         $classSchedules = ClassScheduleResource::collection($course->classSchedules()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with('room')->get());
         $classSessions = ClassSessionResource::collection($course->classSessions()->where('section_id', $section->id)->where('instructor_id', $instructor->id)->with(['room', 'attendances.student'])->get());

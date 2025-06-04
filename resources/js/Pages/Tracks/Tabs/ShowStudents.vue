@@ -12,6 +12,9 @@ import {
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Select } from "primevue";
+import { useI18n } from "vue-i18n"; // ✅ Add this line
+
+const { t } = useI18n(); // ✅ Destructure the `t` function
 
 const props = defineProps({
     track: { type: Object, required: true },
@@ -29,11 +32,12 @@ const assignStudentToSection = (studentId) => {
     studentSectionForm.post(route("student-section.assign"), {
         onSuccess: () => {
             Swal.fire(
-                $t("students.success"),
-                $t("students.student_assigned_successfully"),
+                t("students.success"), // ✅ Use `t` instead of `$t`
+                t("students.student_assigned_successfully"),
                 "success"
             );
             studentSectionForm.reset();
+            console.log(studentSectionForm.section_id);
         },
     });
 };

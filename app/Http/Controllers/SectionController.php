@@ -13,6 +13,7 @@ use App\Http\Resources\SemesterResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Course;
+use App\Models\CourseOffering;
 use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Room;
@@ -22,6 +23,7 @@ use App\Models\User;
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class SectionController extends Controller
@@ -66,20 +68,28 @@ class SectionController extends Controller
             return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
         }])->get();
 
-        $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
-            $curriculum = $trackCourse->curricula->first();
+        DB::beginTransaction();
+        try {
+            $section = Section::create($fields);
+    
+            foreach($trackCourses as $trackCourse) {
+                $curriculum = $trackCourse->curricula->first();
+                
+                CourseOffering::updateOrCreate([
+                    'course_id' => $trackCourse->id ,
+                    'section_id' => $section->id
+                ], [
+                        'year_level' => $curriculum->year_level ?? null,
+                        'semester' => $curriculum->semester ?? null,
+                    ],
+                );
+            };
+            DB::commit();
+        } catch (\Exception $th) {
+            DB::rollBack();
+            return back()->withErrors('errors', 'Error occured');
+        }
 
-            return [
-                $trackCourse->id => [
-                    'year_level' => $curriculum->year_level ?? null,
-                    'semester' => $curriculum->semester ?? null,
-                ],
-            ];
-        });
-
-        $section = Section::create($fields);
-
-        $section->courses()->sync($trackCoursesOrganized);
         // if the request containss a redirectTo parameter it sets the value of $redirectTo with that value but if it doesnt exist the sections.show method is the default
         $redirectTo = $request->input('redirectTo', route('sections.show', $section));
 

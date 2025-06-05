@@ -10,6 +10,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstructorPortalController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegistrarPortalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
@@ -48,17 +49,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
     });
 
-    // Registrar Portal
-    Route::prefix('reg-portal')->group(function () {
-        Route::get('/', function () {
-            return Inertia::render('Registrar/RegistrarDashboard');
-        })->name('registrar.dashboard');
-
-        Route::get('/students', function () {
-            return Inertia::render('Registrar/Students/Index');
-        })->name('registrar.students');
-    });
-
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
         Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
@@ -76,6 +66,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/calendars', [InstructorPortalController::class, 'calendar'])->name('instructor.calendar');
         Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
         Route::get('/classSchedules', [InstructorPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
+    });
+    // Instructor Portal
+    Route::group(['prefix' => 'reg-portal', 'middleware' => ['role:REGISTRAR']], function () {
+        Route::get('/', [RegistrarPortalController::class, 'index'])->name('instructor.dashboard');
+        // Route::get('/courses', [RegistrarPortalController::class, 'courses'])->name('instructor.courses');
+        // Route::get('/courses/{course}', [RegistrarPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
+        // Route::get('/sections', [RegistrarPortalController::class, 'sections'])->name('instructor.sections');
+        // Route::get('/sections/{section}', [RegistrarPortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
+
+        // Route::get('sections/{section}/courses/{course}/students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('instructor.sections.courses.students');
+        // Route::get('sections/{section}/courses/{course}/assessments', [RegistrarPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
+        // Route::get('sections/{section}/courses/{course}/attendance', [RegistrarPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
+        // Route::get('sections/{section}/courses/{course}', [RegistrarPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
+
+        // Route::get('/result', [RegistrarPortalController::class, 'result'])->name('instructor.result');
+        // Route::get('/calendars', [RegistrarPortalController::class, 'calendar'])->name('instructor.calendar');
+        // Route::get('/profile', [RegistrarPortalController::class, 'profile'])->name('instructor.profile');
+        // Route::get('/classSchedules', [RegistrarPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
     });
 
     // Profiles related routes
@@ -196,4 +204,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('curricula', CurriculumController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

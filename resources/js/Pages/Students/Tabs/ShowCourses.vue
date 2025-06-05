@@ -18,6 +18,7 @@ import {
 import {
     BookmarkIcon,
     CheckCircleIcon,
+    EyeIcon,
     XCircleIcon,
 } from "@heroicons/vue/24/outline";
 
@@ -179,7 +180,7 @@ const dropEnrollment = (enrollmentId) => {
             class="flex flex-col"
         >
             <div
-                class="mt-10 border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="mt-10 min-w-[100px] overflow-auto border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
                 <table
                     class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -330,7 +331,7 @@ const dropEnrollment = (enrollmentId) => {
             class="flex flex-col"
         >
             <div
-                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="mt-8 min-w-[100px] overflow-auto border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
                 <table
                     class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -458,13 +459,13 @@ const dropEnrollment = (enrollmentId) => {
         <div class="flex items-center gap-3 mt-8 mb-6 text-green-600">
             <CheckCircleIcon class="w-6 h-6" />
             <h2 class="text-xl font-semibold dark:text-white text-gray-900">
-                completed Courses
+                Completed Courses
             </h2>
         </div>
         <div
             v-if="
                 student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'completed'
+                    (enrollment) => enrollment.status == 'Completed'
                 ).length == 0
             "
             class="text-center"
@@ -483,7 +484,7 @@ const dropEnrollment = (enrollmentId) => {
             class="flex flex-col"
         >
             <div
-                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="mt-8 min-w-[100px] overflow-auto border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
                 <table
                     class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -594,11 +595,10 @@ const dropEnrollment = (enrollmentId) => {
                             </td>
                             <td class="px-4 py-2 text-sm">
                                 <button
-                                    @click="dropEnrollment(enrollment.id)"
-                                    class="flex items-center text-red-600 hover:text-red-800"
+                                    class="flex items-center text-green-600 hover:text-green-800 dark:text-green-300 dark:hover:text-green-400"
                                 >
-                                    <MinusCircleIcon class="w-4 h-4 mr-1" />
-                                    Drop
+                                    <EyeIcon class="w-4 h-4 mr-1" />
+                                    View Results
                                 </button>
                             </td>
                         </tr>

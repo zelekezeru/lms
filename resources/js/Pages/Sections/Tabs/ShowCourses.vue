@@ -57,11 +57,20 @@ const filteredCourses = computed(() => {
         courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     } else {
         // Show courses based on selected filters
-        courses = courses.filter(
-            (course) =>
-                parseInt(course.yearLevel) === selectedYearLevel.value &&
-                parseInt(course.semester) === selectedSemester.value
-        );
+        courses = courses.filter((course) => {
+            console.log(
+                "type of selectedYearLevel: " + typeof selectedYearLevel.value
+            );
+            console.log(
+                "type of selectedSemester: " + typeof selectedSemester.value
+            );
+            console.log("type of course.yearLevel: " + typeof course.yearLevel);
+            console.log("type of course.semester: " + typeof course.semester);
+            return (
+                course.yearLevel == selectedYearLevel.value &&
+                course.semester == selectedSemester.value
+            );
+        });
         // Sort by name
         courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -69,7 +78,7 @@ const filteredCourses = computed(() => {
     return courses;
 });
 console.log(props.section.courses);
-console.log(filteredCourses);
+console.log(filteredCourses.value);
 
 const assignInstructor = ref(false);
 const assignCourses = ref(false);

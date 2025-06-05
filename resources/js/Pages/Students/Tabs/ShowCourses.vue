@@ -6,7 +6,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
 import Select from "primevue/select";
 import Listbox from "primevue/listbox";
-import { defineProps, ref, computed, watch } from "vue";
+import { defineProps, ref, computed, watch, onMounted, nextTick } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import {
     CogIcon,
@@ -15,6 +15,11 @@ import {
     PlusCircleIcon,
     MinusCircleIcon,
 } from "@heroicons/vue/24/solid";
+import {
+    BookmarkIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+} from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     student: { type: Object, required: true },
@@ -22,9 +27,20 @@ const props = defineProps({
     studyModes: { type: Array, required: false, default: () => [] },
 });
 
-const unAddableCourses = computed(() => props.student.enrollments.filter(enrollment => enrollment.status == "Enrolled" || enrollment.status == "Completed").map(e => e.course.id));
-const filteredCoursesList = computed(() => props.courses.filter(course => ! unAddableCourses.value.includes(course.id)));
-
+const unAddableCourses = computed(() =>
+    props.student.enrollments
+        .filter(
+            (enrollment) =>
+                enrollment.status == "Enrolled" ||
+                enrollment.status == "Completed"
+        )
+        .map((e) => e.course.id)
+);
+const filteredCoursesList = computed(() =>
+    props.courses.filter(
+        (course) => !unAddableCourses.value.includes(course.id)
+    )
+);
 
 const showAddModal = ref(false);
 const showDropModal = ref(false);
@@ -33,7 +49,12 @@ const addForm = useForm({ course_id: "", section_id: "" });
 const dropForm = useForm({});
 
 const enrolledIds = computed(
-    () => new Set(props.student.enrollments.filter((e) => e.status == "Enrolled").map(e => e.course.id))
+    () =>
+        new Set(
+            props.student.enrollments
+                .filter((e) => e.status == "Enrolled")
+                .map((e) => e.course.id)
+        )
 );
 const availableCourses = computed(() =>
     props.courses
@@ -66,13 +87,21 @@ const resetDrop = () => {
 };
 
 const submitAdd = () => {
-    addForm.post(route("enrollments-student.add", { student: props.student.id }), {
-        onSuccess: () => {
-            Swal.fire("Added!", "Course added successfully.", "success");
-            showAddModal.value = false;
-            resetAdd();
-        },
-    });
+    addForm.post(
+        route("enrollments-student.add", { student: props.student.id }),
+        {
+            onSuccess: () => {
+                Swal.fire("Added!", "Course added successfully.", "success");
+                showAddModal.value = false;
+                resetAdd();
+            },
+        }
+    );
+};
+
+const addEnrollmentBack = (enrollment) => {
+    addForm.course_id = enrollment.course.id;
+    showAddModal.value = true;
 };
 
 const dropEnrollment = (enrollmentId) => {
@@ -87,7 +116,9 @@ const dropEnrollment = (enrollmentId) => {
     }).then((result) => {
         if (result.isConfirmed) {
             router.post(
-                route("enrollments-student.drop", { student: props.student.id }),
+                route("enrollments-student.drop", {
+                    student: props.student.id,
+                }),
                 { enrollment_id: enrollmentId },
                 {
                     onSuccess: () => {
@@ -102,13 +133,6 @@ const dropEnrollment = (enrollmentId) => {
         }
     });
 };
-
-watch(showAddModal, (v) => {
-    if (v) resetAdd();
-});
-watch(showDropModal, (v) => {
-    if (v) resetDrop();
-});
 </script>
 
 <template>
@@ -127,20 +151,36 @@ watch(showDropModal, (v) => {
             </div>
         </div>
 
-        <div v-if="!student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')" class="text-center">
+        <div class="flex items-center gap-3 text-green-600">
+            <BookmarkIcon class="w-6 h-6" />
+            <h2 class="text-xl font-semibold dark:text-white text-gray-900">
+                Enrolled Courses
+            </h2>
+        </div>
+        <div
+            v-if="
+                !student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'Enrolled'
+                )
+            "
+            class="text-center"
+        >
             <p class="text-gray-500 dark:text-gray-400">
-                No course information available.
+                No Enrolled Courses For This Semester.
             </p>
         </div>
 
-        <div v-else-if="student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')" class="flex flex-col">
+        <div
+            v-else-if="
+                student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'Enrolled'
+                )
+            "
+            class="flex flex-col"
+        >
             <div
-                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                class="mt-10 border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
-                <span class="text-sm text-gray-500 dark:text-gray-400"
-                    >Enrolled Courses</span
-                >
-
                 <table
                     class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
                 >
@@ -185,7 +225,11 @@ watch(showDropModal, (v) => {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(enrollment, index) in student.enrollments.filter(enrollment => enrollment.status == 'Enrolled')"
+                            v-for="(
+                                enrollment, index
+                            ) in student.enrollments.filter(
+                                (enrollment) => enrollment.status == 'Enrolled'
+                            )"
                             :key="enrollment.id"
                             :class="
                                 index % 2 === 0
@@ -226,7 +270,312 @@ watch(showDropModal, (v) => {
                             >
                                 {{
                                     student.grades?.find(
-                                        (g) => g.course_id === enrollment.course.id
+                                        (g) =>
+                                            g.course_id === enrollment.course.id
+                                    )?.grade_letter ?? "Not Graded"
+                                }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                <span
+                                    :class="
+                                        enrollment.status === 'Enrolled'
+                                            ? 'text-green-500'
+                                            : 'text-red-500'
+                                    "
+                                >
+                                    {{ enrollment.status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-sm">
+                                <button
+                                    @click="dropEnrollment(enrollment.id)"
+                                    class="flex items-center text-red-600 hover:text-red-800"
+                                >
+                                    <MinusCircleIcon class="w-4 h-4 mr-1" />
+                                    Drop
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Dropped Courses List -->
+        <div class="flex items-center gap-3 mt-8 text-green-600">
+            <XCircleIcon class="w-6 h-6" />
+            <h2 class="text-xl font-semibold dark:text-white text-gray-900">
+                Dropped Courses
+            </h2>
+        </div>
+        <div
+            v-if="
+                student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'Dropped'
+                ).length == 0
+            "
+            class="text-center"
+        >
+            <p class="text-gray-500 dark:text-gray-400">No Dropped Courses.</p>
+        </div>
+
+        <div
+            v-else-if="
+                student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'Dropped'
+                )
+            "
+            class="flex flex-col"
+        >
+            <div
+                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+            >
+                <table
+                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                >
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700">
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                No.
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Name
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Course Code
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Credit Hours
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Grade
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Status
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(
+                                enrollment, index
+                            ) in student.enrollments.filter(
+                                (enrollment) => enrollment.status == 'Dropped'
+                            )"
+                            :key="enrollment.id"
+                            :class="
+                                index % 2 === 0
+                                    ? 'bg-white dark:bg-gray-800'
+                                    : 'bg-gray-50 dark:bg-gray-700'
+                            "
+                        >
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ index + 1 }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                <Link
+                                    :href="
+                                        route('courses.show', {
+                                            course: enrollment.course.id,
+                                        })
+                                    "
+                                >
+                                    {{ enrollment.course.name }}
+                                </Link>
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ enrollment.course.code }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ enrollment.course.credit_hours }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
+                            >
+                                {{
+                                    student.grades?.find(
+                                        (g) =>
+                                            g.course_id === enrollment.course.id
+                                    )?.grade_letter ?? "Not Graded"
+                                }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                <span
+                                    :class="
+                                        enrollment.status === 'Enrolled'
+                                            ? 'text-green-500'
+                                            : 'text-red-500'
+                                    "
+                                >
+                                    {{ enrollment.status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-sm">
+                                <button
+                                    @click="addEnrollmentBack(enrollment)"
+                                    class="flex items-center text-green-600 hover:text-green-700"
+                                >
+                                    <PlusCircleIcon class="w-4 h-4 mr-1" />
+                                    Add Back
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- completed Courses List -->
+        <div class="flex items-center gap-3 mt-8 mb-6 text-green-600">
+            <CheckCircleIcon class="w-6 h-6" />
+            <h2 class="text-xl font-semibold dark:text-white text-gray-900">
+                completed Courses
+            </h2>
+        </div>
+        <div
+            v-if="
+                student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'completed'
+                ).length == 0
+            "
+            class="text-center"
+        >
+            <p class="text-gray-500 dark:text-gray-400">
+                No completed Courses.
+            </p>
+        </div>
+
+        <div
+            v-else-if="
+                student.enrollments.filter(
+                    (enrollment) => enrollment.status == 'completed'
+                )
+            "
+            class="flex flex-col"
+        >
+            <div
+                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+            >
+                <table
+                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
+                >
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700">
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                No.
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Name
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Course Code
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Credit Hours
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Grade
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Status
+                            </th>
+                            <th
+                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                            >
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(
+                                enrollment, index
+                            ) in student.enrollments.filter(
+                                (enrollment) => enrollment.status == 'Completed'
+                            )"
+                            :key="enrollment.id"
+                            :class="
+                                index % 2 === 0
+                                    ? 'bg-white dark:bg-gray-800'
+                                    : 'bg-gray-50 dark:bg-gray-700'
+                            "
+                        >
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ index + 1 }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                <Link
+                                    :href="
+                                        route('courses.show', {
+                                            course: enrollment.course.id,
+                                        })
+                                    "
+                                >
+                                    {{ enrollment.course.name }}
+                                </Link>
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ enrollment.course.code }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
+                                {{ enrollment.course.credit_hours }}
+                            </td>
+                            <td
+                                class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
+                            >
+                                {{
+                                    student.grades?.find(
+                                        (g) =>
+                                            g.course_id === enrollment.course.id
                                     )?.grade_letter ?? "Not Graded"
                                 }}
                             </td>
@@ -259,11 +608,18 @@ watch(showDropModal, (v) => {
         </div>
 
         <!-- Add Course Modal -->
-        <!-- Add Course Modal -->
         <Modal :show="showAddModal" @close="showAddModal = false">
             <div class="px-8 py-6">
                 <h3 class="text-lg font-semibold mb-4">
-                    Enroll {{ student.name }} in a New Course
+                    Enroll {{ student.name }} to
+                    {{
+                        addForm.course_id
+                            ? courses.find(
+                                  (course) => course.id == addForm.course_id
+                              )?.name
+                            : "New Course"
+                    }}
+                    New Course
                 </h3>
 
                 <!-- Course Selection -->

@@ -59,7 +59,7 @@ class SectionController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $section_id = 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
         $track = Track::find($fields['track_id']);

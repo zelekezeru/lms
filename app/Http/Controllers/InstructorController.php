@@ -10,7 +10,6 @@ use App\Http\Resources\InstructorResource;
 use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\Track;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -101,7 +100,7 @@ class InstructorController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users
+        $default_password = strtolower($firstName) . '@' . $user_phone; // Default password for new users
 
         // Merge the default password into the request
         $request->merge([
@@ -190,7 +189,7 @@ class InstructorController extends Controller
 
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor updated successfully.');
     }
-    
+
     public function destroy(Instructor $instructor)
     {
         $user = $instructor->user;
@@ -204,5 +203,4 @@ class InstructorController extends Controller
 
         return to_route('instructors.index', $instructor)->with('success', 'Instructor deleted successfully.');
     }
-
 }

@@ -56,7 +56,9 @@ const logout = () => {
 
 <template>
     <div :class="{ dark: darkMode }">
-        <div class="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
+        <div
+            class="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative"
+        >
             <InstructorSidebar :is-open="isSidebarOpen" :is-mobile="isMobile" />
 
             <div
@@ -72,22 +74,27 @@ const logout = () => {
                     'ml-0': !isMobile && !isSidebarOpen,
                 }"
             >
-                <header class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 shadow">
-                    <button @click="toggleSidebar" class="text-gray-500 dark:text-gray-400">
+                <header
+                    class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 shadow"
+                >
+                    <button
+                        @click="toggleSidebar"
+                        class="text-gray-500 dark:text-gray-400"
+                    >
                         <Bars3Icon class="h-6 w-6" />
                     </button>
 
                     <div class="flex items-center space-x-3">
-
                         <!-- User Dropdown -->
-                        <div class="relative nav-item topbar-user dropdown hidden-caret" >
-
+                        <div
+                            class="relative nav-item topbar-user dropdown hidden-caret"
+                        >
                             <button
                                 class="dropdown-toggle profile-pic flex items-center gap-2 focus:outline-none"
                                 @click="toggleDropdown"
                                 aria-expanded="dropdownVisible"
                             >
-                                <div class="avatar-sm">                                    
+                                <div class="avatar-sm">
                                     <img
                                         src=""
                                         alt="Instructor Profile"
@@ -98,7 +105,7 @@ const logout = () => {
                                     class="profile-username text-sm hidden md:block"
                                 >
                                     <span class="fw-bold font-semibold">{{
-                                        user?.name || 'Guest'
+                                        user?.name || "Guest"
                                     }}</span>
                                 </span>
                             </button>
@@ -111,9 +118,10 @@ const logout = () => {
                                 <div
                                     class="dropdown-user-scroll scrollbar-outer p-4"
                                 >
-                                    <li class="user-box flex items-center gap-4">
+                                    <li
+                                        class="user-box flex items-center gap-4"
+                                    >
                                         <div class="avatar-lg">
-                                            
                                             <img
                                                 alt="Instructor Profile"
                                                 class="h-10 w-10 rounded-full object-cover"
@@ -199,7 +207,9 @@ const logout = () => {
                     </div>
                 </header>
 
-                <main class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900">
+                <main
+                    class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900"
+                >
                     <slot />
                 </main>
             </div>

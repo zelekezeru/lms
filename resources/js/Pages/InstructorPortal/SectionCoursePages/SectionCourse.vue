@@ -57,11 +57,6 @@ const props = defineProps({
 const showMobileNav = ref(false);
 const activeTab = ref(route().params.tab ?? "Overview");
 
-const announcements = [
-    { id: 1, title: "Midterm Date Announced", date: "2025-04-02" },
-    { id: 2, title: "Assignment Extension", date: "2025-04-04" },
-];
-
 const rightMenu = [
     { name: "Overview", key: "overview", icon: AcademicCapIcon },
     { name: "Students", key: "students", icon: AcademicCapIcon },
@@ -85,7 +80,10 @@ const changeTab = (tabName) => {
 
 <template>
     <InstructorLayout>
-        <div class="max-w-7xl mx-auto py-10 px-4" :class="{'!px-1': activeTab == 'classSessions'}">
+        <div
+            class="max-w-7xl mx-auto py-10 px-4"
+            :class="{ '!px-1': activeTab == 'classSessions' }"
+        >
             <!-- Course Header -->
             <h1
                 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white flex items-center"

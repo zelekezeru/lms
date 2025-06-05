@@ -27,8 +27,8 @@ Route::middleware(['auth'])->group(function () {
             return redirect(route('student.dashboard'));
         } elseif (request()->user()->hasRole('INSTRUCTOR')) {
             return redirect(route('instructor.dashboard'));
-        } elseif (request()->user()->hasRole('EMPLOYEE')) {
-            return redirect(route('employee.dashboard'));
+        } elseif (request()->user()->hasRole('REGISTRAR')) {
+            return redirect(route('registrar.dashboard'));
         } else {
             return redirect(route('admin.dashboard'));
         }
@@ -66,10 +66,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/calendars', [InstructorPortalController::class, 'calendar'])->name('instructor.calendar');
         Route::get('/profile', [InstructorPortalController::class, 'profile'])->name('instructor.profile');
         Route::get('/classSchedules', [InstructorPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
+        Route::get('/classSessions', [InstructorPortalController::class, 'classSessions'])->name('instructor.classSessions');
     });
     // Instructor Portal
     Route::group(['prefix' => 'reg-portal', 'middleware' => ['role:REGISTRAR']], function () {
-        Route::get('/', [RegistrarPortalController::class, 'index'])->name('instructor.dashboard');
+        Route::get('/', [RegistrarPortalController::class, 'index'])->name('registrar.dashboard');
         // Route::get('/courses', [RegistrarPortalController::class, 'courses'])->name('instructor.courses');
         // Route::get('/courses/{course}', [RegistrarPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
         // Route::get('/sections', [RegistrarPortalController::class, 'sections'])->name('instructor.sections');

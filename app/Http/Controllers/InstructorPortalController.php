@@ -113,13 +113,30 @@ class InstructorPortalController extends Controller
 
         $instructor->load([
             'classSchedules.room',
-            'classSchedules.course',
+            'classSchedules.courseOffering.course',
         ]);
 
         $activeSemester = new SemesterResource(Semester::getActiveSemester());
         $instructor = new InstructorResource($instructor);
 
         return inertia('InstructorPortal/ClassSchedules', [
+            'instructor' => $instructor,
+            'activeSemester' => $activeSemester,
+        ]);
+    }
+
+    public function classSessions()
+    {
+        $instructor = request()->user()->instructor;
+
+        $instructor->load([
+            'classSessions.room',
+            'classSessions.courseOffering.course',
+        ]);
+        $activeSemester = new SemesterResource(Semester::getActiveSemester());
+        $instructor = new InstructorResource($instructor);
+
+        return inertia('InstructorPortal/ClassSessions', [
             'instructor' => $instructor,
             'activeSemester' => $activeSemester,
         ]);

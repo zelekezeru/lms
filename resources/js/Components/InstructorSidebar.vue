@@ -10,6 +10,7 @@ import {
     CogIcon,
     QuestionMarkCircleIcon,
     Square2StackIcon,
+    ClockIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 
@@ -68,8 +69,14 @@ const wrapperClasses = computed(() => {
                 />
                 <SidebarItem
                     :icon="CalendarIcon"
-                    label="Class Schedules"
+                    label="All Class Schedules"
                     :href="route('instructor.classSchedules')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
+                    :icon="ClockIcon"
+                    label="All Class Sessions"
+                    :href="route('instructor.classSessions')"
                     :isCollapsed="!isOpen"
                 />
                 <!-- <SidebarItem

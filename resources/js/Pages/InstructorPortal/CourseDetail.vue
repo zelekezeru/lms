@@ -9,6 +9,7 @@ import {
     ChatBubbleBottomCenterTextIcon,
     MegaphoneIcon,
     AcademicCapIcon,
+    ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 import { Link } from "@inertiajs/vue3";
 

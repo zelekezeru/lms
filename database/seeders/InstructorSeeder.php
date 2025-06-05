@@ -87,7 +87,6 @@ class InstructorSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            echo $user->name;
             Instructor::create([
                 'user_id' => $user->id,
                 'specialization' => $specialization,

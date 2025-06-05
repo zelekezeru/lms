@@ -146,7 +146,7 @@ class StudentSeeder extends Seeder
                     'profile_img' => null,
                     'email_verified_at' => null,
                     'password' => Hash::make(strtolower($firstName) . '@' . substr($phone, -4)), // Default password
-                    'default_password' => $firstName . '@' . substr($phone, -4), // Example: Abel@8855
+                    'default_password' => strtolower($firstName) . '@' . substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
                     'created_at' => now(),

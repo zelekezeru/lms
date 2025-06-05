@@ -51,23 +51,34 @@ const filteredCourses = computed(() => {
     if (showUnassignedOnly.value) {
         // Show only unassigned courses
         courses = courses.filter(
-            (course) => course.yearLevel === null && course.semester === null
+            (course) => course.yearLevel === 0 && course.semester === 0
         );
         // Sort by name
         courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     } else {
         // Show courses based on selected filters
-        courses = courses.filter(
-            (course) =>
-                course.yearLevel === selectedYearLevel.value &&
-                course.semester === selectedSemester.value
-        );
+        courses = courses.filter((course) => {
+            console.log(
+                "type of selectedYearLevel: " + typeof selectedYearLevel.value
+            );
+            console.log(
+                "type of selectedSemester: " + typeof selectedSemester.value
+            );
+            console.log("type of course.yearLevel: " + typeof course.yearLevel);
+            console.log("type of course.semester: " + typeof course.semester);
+            return (
+                course.yearLevel == selectedYearLevel.value &&
+                course.semester == selectedSemester.value
+            );
+        });
         // Sort by name
         courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return courses;
 });
+console.log(props.section.courses);
+console.log(filteredCourses.value);
 
 const assignInstructor = ref(false);
 const assignCourses = ref(false);

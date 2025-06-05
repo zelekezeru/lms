@@ -18,7 +18,7 @@ class StudentSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'id' => 6,
-                'user_uuid' => 'SITS-0019-25',
+                'user_uuid' => 'SITS-0001-25',
                 'name' => 'Student User Test',
                 'email' => 'student.user@sits.edu.et',
                 'phone' => '0975000000',
@@ -131,22 +131,22 @@ class StudentSeeder extends Seeder
             $firstName = $faker->firstName;
             $middleName = $faker->firstName;
             $lastName = $faker->lastName;
-            $email = strtolower($firstName).'.'.strtolower($lastName).'@sits.edu.et';
-            $phone = '0916'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); // Generate a random phone number
-            $officePhone = '0462'.str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+            $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
+            $phone = '0916' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); // Generate a random phone number
+            $officePhone = '0462' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $dateOfBirth = $faker->date('Y-m-d', '2005-12-31'); // Set an upper limit
 
             DB::table('users')->insert([
                 [
                     'id' => $i + 5, // Ensure unique user IDs, offset from the initial user
                     'user_uuid' => $user_uuid,
-                    'name' => $firstName.' '.$middleName.' '.$lastName,
+                    'name' => $firstName . ' ' . $middleName . ' ' . $lastName,
                     'email' => $email,
                     'phone' => $phone,
                     'profile_img' => null,
                     'email_verified_at' => null,
-                    'password' => Hash::make(strtolower($firstName).'@'.substr($phone, -4)), // Default password
-                    'default_password' => $firstName.'@'.substr($phone, -4), // Example: Abel@8855
+                    'password' => Hash::make(strtolower($firstName) . '@' . substr($phone, -4)), // Default password
+                    'default_password' => $firstName . '@' . substr($phone, -4), // Example: Abel@8855
                     'password_changed' => 0,
                     'remember_token' => null,
                     'created_at' => now(),

@@ -61,7 +61,7 @@ class SectionSeeder extends Seeder
 
         // Section Courses
         foreach ($validSectionIds as $sectionId) {
-            for ($courseId = 1; $courseId <= 30; $courseId++) {
+            for ($courseId = 1; $courseId <= 40; $courseId++) {
                 $data[] = [
                     'course_id' => $courseId,
                     'section_id' => $sectionId,
@@ -70,20 +70,5 @@ class SectionSeeder extends Seeder
         }
 
         DB::table('course_offerings')->insert($data);
-
-        // Section Instructors
-        // $data = [];
-        // foreach ($validSectionIds as $sectionId) {
-        //     for ($i = 1; $i <= 3; $i++) { // Assuming each section has 3 instructors
-        //         $data[] = [
-        //             'section_id' => $sectionId,
-        //             'instructor_id' => $instructor,
-        //             'created_at' => Carbon::now(),
-        //             'updated_at' => Carbon::now(),
-        //         ];
-        //         $instructor++;
-        //     }
-        // }
-        // DB::table('section_instructors')->insert($data);
     }
 }

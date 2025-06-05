@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow; // Add this import if SectionResource exists in this namespace
+use Carbon\Carbon;
 
 class StudentsImport implements ToCollection, WithHeadingRow
 {
@@ -125,6 +126,13 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 $userUuid = 'SITS-'.str_pad($studentCount, 4, '0', STR_PAD_LEFT).'-'.$academicYear;
 
                 $default_password = strtolower($firstName).'@'.substr($row['phone'], -4); // Default password for new users
+
+                // Verify Date o Birth format
+                if (isset($row['date_of_birth']) && !empty($row['date_of_birth'])) {
+                    $dateOfBirth = Carbon::createFromFormat('Y-m-d', $row['date_of_birth']);
+                } else {
+                    $dateOfBirth = null; // Set to null if date_of_birth is not provided
+                }
 
                 $user = User::firstOrCreate(
                     ['email' => $email],

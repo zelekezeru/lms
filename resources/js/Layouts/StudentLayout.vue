@@ -104,14 +104,11 @@ const logout = () => {
                                 aria-expanded="dropdownVisible"
                             >
                                 <div class="avatar-sm">
+                                    
                                     <img
-                                        :src="
-                                            user?.profileImg
-                                                ? user.profileImg
-                                                : '/img/profile.jpg'
-                                        "
+                                        :src="user?.profileImg ? user.profileImg : '/img/profile.jpg'"
                                         alt="Profile Image"
-                                        class="avatar-img rounded-circle w-10 h-10"
+                                        class="avatar-img rounded-full w-10 h-15"
                                     />
                                 </div>
                                 <span
@@ -132,17 +129,9 @@ const logout = () => {
                                     class="dropdown-user-scroll scrollbar-outer p-4"
                                 >
                                     <li class="user-box flex items-center gap-4">
-                                        <div class="avatar-lg">
-                                            <img
-                                                :src="
-                                                    user.profileImg
-                                                        ? user.profileImg
-                                                        : '/img/profile.jpg'
-                                                "
-                                                alt="Profile Image"
-                                                class="avatar-img rounded-full w-16 h-16"
-                                            />
-                                        </div>
+                                        <img :src="user?.profileImg ? user.profileImg : '/img/profile.jpg'"
+                                            alt="Profile Image" class="avatar-img rounded-circle w-10 h-10" />
+
                                         <div class="u-text">
                                             <h4
                                                 class="font-bold text-gray-900 dark:text-gray-100"
@@ -155,7 +144,7 @@ const logout = () => {
                                                 {{ user.email }}
                                             </p>
                                             <Link
-                                                :href="route('profile.edit')"
+                                                :href="route('profile.show', { user: user.id })"
                                                 class="btn btn-xs btn-secondary btn-sm mt-2 inline-block px-3 py-1 bg-gray-800 text-white rounded-md hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                                             >
                                                 View Profile
@@ -169,7 +158,7 @@ const logout = () => {
                                         ></div>
                                         <Link
                                             class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                            :href="route('profile.edit')"
+                                            :href="route('profile.show', { user: user.id })"
                                         >
                                             My Profile
                                         </Link>
@@ -190,7 +179,7 @@ const logout = () => {
                                         ></div>
                                         <Link
                                             class="dropdown-item block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                            href="#"
+                                           :href="route('profile.edit')"
                                         >
                                             Account Settings
                                         </Link>
@@ -210,7 +199,6 @@ const logout = () => {
                                 </div>
                             </ul>
                         </div>
-
 
                         <!-- Dark mode toggle -->
                         <button

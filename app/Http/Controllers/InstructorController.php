@@ -190,7 +190,7 @@ class InstructorController extends Controller
 
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor updated successfully.');
     }
-
+    
     public function destroy(Instructor $instructor)
     {
         $user = $instructor->user;
@@ -204,4 +204,5 @@ class InstructorController extends Controller
 
         return to_route('instructors.index', $instructor)->with('success', 'Instructor deleted successfully.');
     }
+
 }

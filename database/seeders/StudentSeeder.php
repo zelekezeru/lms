@@ -127,7 +127,7 @@ class StudentSeeder extends Seeder
         // Generate 19 more random students
         $faker = Faker::create();
         for ($i = 2; $i <= 20; $i++) { // Changed loop to start from 2
-            $user_uuid = 'SITS-'.str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT).'-'.mt_rand(20, 30);
+            $user_uuid = 'SITS-' . str_pad($i, 4, '0', STR_PAD_LEFT) . '-25';
             $firstName = $faker->firstName;
             $middleName = $faker->firstName;
             $lastName = $faker->lastName;

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { defineProps, ref } from "vue";
-import AppLayout from '@/Layouts/AppLayout.vue';
+import InstructorLayout from '@/Layouts/InstructorLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
@@ -18,7 +18,7 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout>
+    <InstructorLayout>
         <template #header>
             <h2 class="flex flex-col text-xl font-semibold leading-tight text-gray-800 dark:text-gray-100">
                 Profile
@@ -47,5 +47,5 @@ defineProps({
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </InstructorLayout>
 </template>

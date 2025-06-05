@@ -17,12 +17,11 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'userId' => $this->user_uuid,
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
             'profileImg' => Storage::url($this->profile_img),
-            'user_uuid' => $this->user_uuid,
-            'tenant_id' => $this->tenant_id,
             'userRole' => $this->user ? $this->user->roles()->first()->name : null,
             'default_password' => $this->default_password,
             'userDocument' => new UserDocumentResource($this->whenLoaded('userDocument')),

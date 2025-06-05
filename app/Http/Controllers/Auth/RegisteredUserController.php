@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -40,6 +42,16 @@ class RegisteredUserController extends Controller
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
+
+            // Profile Image Handling
+        if ($request->hasFile('profile_img')) {
+            $image = $request->file('profile_img');
+            $user = $request->user();
+            $profile_img = $this->saveProfileImage($image, $request->name);
+        }else {
+            $profile_img = null; // or you can use a default image path here
+        }
+
         // SUPER-ADMIN Registration
 
         // Check if the user with id 1 already exists
@@ -60,9 +72,7 @@ class RegisteredUserController extends Controller
                 'user_uuid' => 'SA'.'/'.$year,
                 'email' => $request->email,
                 'phone' => $request->contact_phone,
-                'profile_img' => $request->hasFile('profile_img')
-                    ? $request->file('profile_img')->store('profile_images')
-                    : null,
+                'profile_img' => $$profile_img,
                 'password' => Hash::make($request->password),
             ]);
 
@@ -97,8 +107,6 @@ class RegisteredUserController extends Controller
 
             if ($userUuid) {
                 $fields['uuid'] = $userUuid;
-            } else {
-
             }
 
             if ($tenant_id == null) {
@@ -119,10 +127,8 @@ class RegisteredUserController extends Controller
                 'email' => $email,
                 'tenant_id' => $tenant->id,
                 'password' => Hash::make($request['password']),
-                'default_password' => $request['default_password'],
-                'profile_img' => $request->hasFile('profile_img')
-                    ? $request->file('profile_img')->store('profile_images')
-                    : null, // or you can use a default image path here
+                'default_password' => $request['default_password'],                
+                'profile_img' => $profile_img,
             ];
 
             // TENANT-ADMIN User
@@ -212,5 +218,31 @@ class RegisteredUserController extends Controller
         }
 
         return $userUuid;
+    }
+    
+    /**
+     * Update the user's profile image.
+     */
+    function saveProfileImage($image, $user)
+    {
+        $img = Image::make($image)->fit(300, 300, function ($constraint) {
+            $constraint->upsize();
+        });
+        
+        $name = preg_replace('/\s+/', '', $user->name);
+
+        $filename = 'profile_' . strToLower($name) . '.' . $image->getClientOriginalExtension();
+        $path = 'profile_images/' . $filename;
+        
+        Storage::disk('public')->put($path, (string) $img->encode());
+        
+        if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
+            Storage::disk('public')->delete($user->profile_img);
+        }
+        
+        $user->profile_img = $path;
+        $user->save();
+
+        return $path;
     }
 }

@@ -117,7 +117,6 @@ class StudentPortalController extends Controller
 
     public function profile()
     {
-
         $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
 
         return inertia('StudentPortal/Profile', [
@@ -141,6 +140,15 @@ class StudentPortalController extends Controller
         $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
 
         return inertia('StudentPortal/Payment', [
+            'student' => $student,
+        ]);
+    }
+
+    public function editProfile()
+    {
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        return inertia('profile/StudentEdit', [
             'student' => $student,
         ]);
     }

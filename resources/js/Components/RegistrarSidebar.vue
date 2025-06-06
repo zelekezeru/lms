@@ -37,7 +37,9 @@ const wrapperClasses = computed(() => {
         <div class="flex flex-col h-full ml-2">
             <!-- Logo / Title -->
             <div class="flex items-center justify-center h-16 px-2">
-                <AcademicCapIcon class="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+                <AcademicCapIcon
+                    class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                />
                 <span
                     v-if="isOpen"
                     class="ml-2 text-xl font-bold text-gray-800 dark:text-white select-none"
@@ -96,8 +98,8 @@ const wrapperClasses = computed(() => {
             <div class="px-2 pb-4 mt-auto">
                 <SidebarItem
                     :icon="CogIcon"
-                    label="Settings"
-                    href="/settings"
+                    label="Profile"
+                    href="/Profile"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

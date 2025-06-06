@@ -96,7 +96,7 @@ const wrapperClasses = computed(() => {
             <div class="px-2 pb-4 mt-auto">
                 <SidebarItem
                     :icon="CogIcon"
-                    label="Settings"
+                    label="Profile"
                     href="#"
                     :isCollapsed="!isOpen"
                 />

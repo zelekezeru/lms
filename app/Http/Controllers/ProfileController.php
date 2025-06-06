@@ -37,7 +37,7 @@ class ProfileController extends Controller
         }
 
         $user = new UserResource($request->user());
-        
+
         switch ($role) {
             case 'ADMIN':
                 return Inertia::render('Profile/ProfileShow/AdminView', [
@@ -73,55 +73,17 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request)
     {
         // Check if the user has the 'student' role
         if (!$request->user()) {
-            return Inertia::render('Auth/Redirect', [
-                'redirectTo' => route('login'),
-            ]);
+            return back();
         }
-        $role = $request->user()->getRoleNames()->first();
 
-        if (!$role) {
-            return Inertia::render('Auth/Redirect', [
-                'redirectTo' => route('login'),
-            ]);
-        }elseif ($role === 'ADMIN') {
-            return Inertia::render('Profile/Edit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        } elseif ($role === 'INSTRUCTOR') {
-            return Inertia::render('Profile/InstructorEdit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        }elseif ($role === 'REGISTRAR') {
-            return Inertia::render('Profile/RegistrarEdit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        } elseif ($role === 'STUDENT') {
-            return Inertia::render('Profile/StudentEdit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        } elseif ($role === 'Employee') {
-            return Inertia::render('Profile/EmployeeEdit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        } elseif ($role === 'USER') {
-            return Inertia::render('Profile/UserEdit', [
-                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                'status' => session('status'),
-            ]);
-        } else {
-            return Inertia::render('Auth/Redirect', [
-                'redirectTo' => route('login'),
-            ]);
-        }
+        return Inertia::render('Profile/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
     }
 
     /**
@@ -139,17 +101,17 @@ class ProfileController extends Controller
         if (!$request->user()) {
             return Redirect::route('login');
         }
-        
+
         if ($request->user()->isDirty('password')) {
 
             $request->user()->password = bcrypt($request->input('password'));
         }
-        
+
         $data = [
             'name' => $request->input('name'),
             'profile_img' => $request->input('profile_img'),
         ];
-        
+
         $request->user()->update($data);
 
         $role = $request->user()->getRoleNames()->first();
@@ -157,10 +119,9 @@ class ProfileController extends Controller
         if (!$role) {
             return Redirect::route('login');
         } elseif ($role === 'ADMIN') {
-            
-            return Redirect::back()->with('success', 'Profile updated successfully.');
 
-        }else {
+            return Redirect::back()->with('success', 'Profile updated successfully.');
+        } else {
             return Redirect::route('login');
         }
     }
@@ -188,7 +149,7 @@ class ProfileController extends Controller
             $request->session()->regenerateToken();
 
             return Redirect::to('/');
-        }else {
+        } else {
             return Redirect::route('login')->with('error', 'You are not authorized to perform this action.');
         }
     }
@@ -200,18 +161,18 @@ class ProfileController extends Controller
         $img = Image::make($image)->fit(300, 300, function ($constraint) {
             $constraint->upsize();
         });
-        
+
         $name = preg_replace('/\s+/', '', $user->name);
 
         $filename = 'profile_' . strToLower($name) . '.' . $image->getClientOriginalExtension();
         $path = 'profile_images/' . $filename;
-        
+
         Storage::disk('public')->put($path, (string) $img->encode());
-        
+
         if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
             Storage::disk('public')->delete($user->profile_img);
         }
-        
+
         $user->profile_img = $path;
         $user->save();
 

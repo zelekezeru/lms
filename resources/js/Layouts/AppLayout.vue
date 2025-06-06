@@ -1,71 +1,49 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { useDark } from "@vueuse/core";
+import { Bars3Icon, MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
 import { router } from "@inertiajs/vue3";
-import {
-    Bars3Icon,
-    MoonIcon,
-    SunIcon,
-    ArrowLeftIcon,
-    ArrowRightIcon,
-} from "@heroicons/vue/24/outline";
 import Sidebar from "@/Components/Sidebar.vue";
-import LanguageToggle from '@/Components/LanguageToggle.vue';
+import LanguageToggle from "@/Components/LanguageToggle.vue";
 
 // Auth User
 const user = computed(() => usePage().props.auth.user);
+const userRoles = usePage().props.auth.user.roles;
 
-// Sidebar state
-const isMobile = ref(window.innerWidth < 768);
-const sidebarVisible = ref(!isMobile.value);
-const sidebarHovered = ref(false);
+const darkMode = ref(localStorage.getItem("darkMode") === "true");
+const toggleDarkMode = () => {
+    darkMode.value = !darkMode.value;
+    localStorage.setItem("darkMode", darkMode.value);
+};
 
-// Dark mode handling
-const isDarkMode = useDark();
+// Responsive sidebar logic
+const isMobile = ref(false);
+const isSidebarOpen = ref(true);
 
-const toggleTheme = () => {
-    isDarkMode.value = !isDarkMode.value;
-    if (isDarkMode.value) {
-        document.documentElement.classList.add("dark");
-    } else {
-        document.documentElement.classList.remove("dark");
+function updateScreen() {
+    const mobile = window.innerWidth < 768;
+    if (mobile !== isMobile.value) {
+        isSidebarOpen.value = !mobile;
     }
-};
-
-// Navigation functions
-const goBack = () => {
-    window.history.length > 1
-        ? window.history.back()
-        : (window.location.href = "/dashboard");
-};
-
-const goForward = () => {
-    window.history.forward();
-};
-
-// Detect screen size changes
-const updateScreenSize = () => {
-    isMobile.value = window.innerWidth < 768;
-    sidebarVisible.value = !isMobile.value;
-};
+    isMobile.value = mobile;
+}
 
 onMounted(() => {
-    updateScreenSize();
-    window.addEventListener("resize", updateScreenSize);
+    updateScreen();
+    window.addEventListener("resize", updateScreen);
+});
+onUnmounted(() => {
+    window.removeEventListener("resize", updateScreen);
 });
 
-const handleAsideHover = (e) => {
-    if (sidebarVisible.value) return;
-    sidebarHovered.value = e.type === "mouseenter";
+const toggleSidebar = () => {
+    isSidebarOpen.value = !isSidebarOpen.value;
 };
 
-onUnmounted(() => {
-    window.removeEventListener("resize", updateScreenSize);
-});
-
-// Dropdown visibility state
+// Dropdown logic
 const dropdownVisible = ref(false);
+const dropdownRef = ref(null);
+
 const toggleDropdown = () => {
     dropdownVisible.value = !dropdownVisible.value;
 };
@@ -73,218 +51,244 @@ const closeDropdown = () => {
     dropdownVisible.value = false;
 };
 
-// Logout function
+const handleClickOutside = (event) => {
+    if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+        closeDropdown();
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+});
+onUnmounted(() => {
+    document.removeEventListener("click", handleClickOutside);
+});
+
+// Logout
 const logout = () => {
-    router.flushAll;
     router.post(route("logout"));
 };
 </script>
 
 <template>
-    <div
-        class="relative flex h-screen transition-colors bg-gray-100 dark:bg-gray-900 duration-900"
-    >
-        <Sidebar
-            :sidebarHovered="sidebarHovered"
-            :sidebarVisible="sidebarVisible"
-            :isMobile="isMobile"
-            :handle-aside-hover="handleAsideHover"
-        />
-
-        <!-- Mobile Sidebar Overlay -->
+    <div :class="{ dark: darkMode }">
         <div
-            v-if="isMobile && sidebarVisible"
-            class="fixed inset-0 z-40 bg-gray-800 bg-opacity-50 dark:bg-gray-800"
-            @click="sidebarVisible = false"
-        ></div>
-
-        <!-- Main Content -->
-        <div
-            class="flex flex-col flex-1 overflow-x-hidden duration-300 transition-margin"
-            :class="{
-                'ml-64': !isMobile && sidebarVisible,
-                'ml-20': !isMobile && !sidebarVisible,
-            }"
+            class="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative"
         >
-            <!-- Fixed Navbar -->
-            <nav
-                class="fixed top-0 right-0 z-50 flex items-center justify-between px-4 py-4 text-gray-200 transition-all duration-300 bg-gray-800 border-b border-gray-300 dark:border-gray-700"
-                :class="{
-                    'left-64': !isMobile && sidebarVisible,
-                    'left-20': !isMobile && !sidebarVisible,
-                    'left-0': isMobile,
-                }"
-            >
-                <div class="flex items-center gap-3">
-                    <button @click="sidebarVisible = !sidebarVisible">
-                        <Bars3Icon class="w-6 h-6 text-gray-200" />
-                    </button>
-                    <button
-                        @click="goBack"
-                        class="p-2 rounded-md hover:bg-gray-700"
-                    >
-                        <ArrowLeftIcon class="w-6 h-6 text-gray-200" />
-                    </button>
-                    <button
-                        @click="goForward"
-                        class="p-2 rounded-md hover:bg-gray-700"
-                    >
-                        <ArrowRightIcon class="w-6 h-6 text-gray-200" />
-                    </button>
-                </div>
+            <Sidebar
+                :user-roles="userRoles"
+                :is-open="isSidebarOpen"
+                :is-mobile="isMobile"
+            />
 
-                <!-- Right-side nav -->
-                <div class="flex items-center gap-4 ml-auto">
-                    <!-- User Dropdown -->
-                    <div
-                        class="relative nav-item topbar-user dropdown hidden-caret"
-                    >
-                        <button
-                            class="flex items-center gap-2 dropdown-toggle profile-pic focus:outline-none"
-                            @click="toggleDropdown"
-                            aria-expanded="dropdownVisible"
-                        >
-                            <div class="avatar-sm">
-                                <img
-                                    :src="
-                                        user.profileImg
-                                            ? user.profileImg
-                                            : '/img/profile.jpg'
-                                    "
-                                    alt="Profile Image"
-                                    class="w-10 h-10 avatar-img rounded-circle"
-                                />
-                            </div>
-                            <span
-                                class="hidden text-sm profile-username md:block"
-                            >
-                                <span class="font-semibold fw-bold">{{
-                                    user.name
-                                }}</span>
-                            </span>
-                        </button>
+            <div
+                v-if="isMobile && isSidebarOpen"
+                class="fixed inset-0 bg-black bg-opacity-50 z-40"
+                @click="toggleSidebar"
+            />
 
-                        <ul
-                            v-show="dropdownVisible"
-                            @click.outside="closeDropdown"
-                            class="absolute right-0 z-50 w-64 mt-2 bg-white border border-gray-300 rounded-md shadow-lg dropdown-menu dropdown-user animated fadeIn dark:bg-gray-800 dark:border-gray-700"
-                        >
-                            <div
-                                class="p-4 dropdown-user-scroll scrollbar-outer"
+            <div class="flex-1 flex flex-col overflow-x-hidden">
+                <header
+                    class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 shadow z-30"
+                >
+                    <!-- Sidebar toggle -->
+                    <button
+                        @click="toggleSidebar"
+                        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    >
+                        <Bars3Icon class="h-6 w-6" />
+                    </button>
+
+                    <!-- Right side controls -->
+                    <div class="flex items-center gap-4">
+                        <!-- Language Toggle -->
+                        <LanguageToggle />
+
+                        <!-- User Dropdown -->
+                        <div class="relative" ref="dropdownRef">
+                            <button
+                                @click="toggleDropdown"
+                                class="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                             >
-                                <li class="flex items-center gap-4 user-box">
-                                    <div class="avatar-lg">
+                                <span
+                                    class="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center overflow-hidden"
+                                >
+                                    <template v-if="user.profileImg">
                                         <img
-                                            :src="
-                                                user.profileImg
-                                                    ? user.profileImg
-                                                    : '/img/profile.jpg'
-                                            "
-                                            alt="Profile Image"
-                                            class="w-16 h-16 rounded-full avatar-img"
+                                            :src="user.profileImg"
+                                            alt="Profile"
+                                            class="h-8 w-8 object-cover rounded-full"
                                         />
+                                    </template>
+                                    <template v-else>
+                                        <!-- Default profile icon -->
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-6 w-6 text-gray-500 dark:text-gray-300"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.225.805 5.879 2.137M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                        </svg>
+                                    </template>
+                                </span>
+
+                                <span
+                                    class="hidden md:block text-sm font-medium text-gray-800 dark:text-gray-200"
+                                >
+                                    {{ user?.name || "Guest" }}
+                                </span>
+
+                                <svg
+                                    :class="[
+                                        'h-4 w-4 transition-transform text-gray-500 dark:text-gray-300',
+                                        { 'rotate-180': dropdownVisible },
+                                    ]"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <ul
+                                v-show="dropdownVisible"
+                                class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-md z-50 overflow-hidden"
+                            >
+                                <li
+                                    class="px-4 py-3 flex items-center space-x-3"
+                                >
+                                    <div
+                                        class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center overflow-hidden"
+                                    >
+                                        <template v-if="user.profileImg">
+                                            <img
+                                                :src="user.profileImg"
+                                                alt="Profile Large"
+                                                class="h-10 w-10 object-cover rounded-full"
+                                            />
+                                        </template>
+                                        <template v-else>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="h-6 w-6 text-gray-500 dark:text-gray-300"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.225.805 5.879 2.137M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
+                                            </svg>
+                                        </template>
                                     </div>
-                                    <div class="u-text">
-                                        <h4
-                                            class="font-bold text-gray-900 dark:text-gray-100"
+                                    <div>
+                                        <p
+                                            class="font-semibold text-gray-900 dark:text-gray-100"
                                         >
                                             {{ user.name }}
-                                        </h4>
+                                        </p>
                                         <p
-                                            class="text-sm text-gray-500 dark:text-gray-400"
+                                            class="text-xs text-gray-500 dark:text-gray-400"
                                         >
                                             {{ user.email }}
                                         </p>
-                                        <Link
-                                            :href="route('profile.edit')"
-                                            class="inline-block px-3 py-1 mt-2 text-white bg-gray-800 rounded-md btn btn-xs btn-secondary btn-sm hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
-                                        >
-                                            View Profile
-                                        </Link>
                                     </div>
                                 </li>
-
                                 <li>
-                                    <div
-                                        class="my-2 border-t dropdown-divider"
-                                    ></div>
+                                    <hr
+                                        class="border-gray-200 dark:border-gray-700"
+                                    />
+                                </li>
+                                <li>
                                     <Link
-                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         :href="route('profile.edit')"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                                     >
                                         My Profile
                                     </Link>
+                                </li>
+                                <li>
                                     <Link
-                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                                     >
                                         My Balance
                                     </Link>
+                                </li>
+                                <li>
                                     <Link
-                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                                     >
                                         Inbox
                                     </Link>
-                                    <div
-                                        class="my-2 border-t dropdown-divider"
-                                    ></div>
+                                </li>
+                                <li>
+                                    <hr
+                                        class="border-gray-200 dark:border-gray-700"
+                                    />
+                                </li>
+                                <li>
                                     <Link
-                                        class="block px-4 py-2 text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                         href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                                     >
                                         Account Settings
                                     </Link>
-                                    <div
-                                        class="my-2 border-t dropdown-divider"
-                                    ></div>
-                                    <div>
-                                        <button
-                                            @click="logout"
-                                            type="submit"
-                                            class="block w-full px-4 py-2 text-left text-gray-700 dropdown-item dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        >
-                                            Log Out
-                                        </button>
-                                    </div>
                                 </li>
-                            </div>
-                        </ul>
+                                <li>
+                                    <hr
+                                        class="border-gray-200 dark:border-gray-700"
+                                    />
+                                </li>
+                                <li>
+                                    <button
+                                        @click="logout"
+                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                    >
+                                        Log Out
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Dark Mode Toggle -->
+                        <button
+                            @click="toggleDarkMode"
+                            class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                        >
+                            <component
+                                :is="darkMode ? SunIcon : MoonIcon"
+                                class="h-6 w-6 text-gray-600 dark:text-gray-300"
+                            />
+                        </button>
                     </div>
+                </header>
 
-                    <!-- Theme toggle -->
-                    <button @click="toggleTheme" class="p-2">
-                        <MoonIcon
-                            v-if="!isDarkMode"
-                            class="w-6 h-6 text-gray-200"
-                        />
-                        <SunIcon v-else class="w-6 h-6 text-gray-200" />
-                    </button>
-
-                    <LanguageToggle />
-
-                </div>
-            </nav>
-
-            <!-- Main Page Content -->
-            <main class="flex-1 p-6 pt-24 bg-gray-100 dark:bg-gray-800">
-                <slot />
-            </main>
+                <main
+                    class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900"
+                >
+                    <slot />
+                </main>
+            </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.1s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-.fade-enter-to,
-.fade-leave-from {
-    opacity: 1;
-}
-</style>

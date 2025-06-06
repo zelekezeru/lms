@@ -13,7 +13,7 @@ import {
     CogIcon,
     AcademicCapIcon,
     UsersIcon,
-    PaperClipIcon, 
+    PaperClipIcon,
     PlusCircleIcon,
     BookOpenIcon,
     HomeModernIcon,
@@ -84,16 +84,16 @@ const props = defineProps({
 });
 
 // Multi nav header options
-const selectedTab = ref('details');
+const selectedTab = ref("details");
 
 const tabs = [
-    { key: 'details', label: 'Details', icon: CogIcon },
-    { key: 'academics', label: 'Academics', icon: BookOpenIcon },
-    { key: 'courses', label: 'Courses', icon: AcademicCapIcon },
-    { key: 'registrations', label: 'Registration', icon: UsersIcon },
-    { key: 'payments', label: 'Payment', icon: CurrencyDollarIcon },
-    { key: 'church', label: 'Church', icon: HomeModernIcon },
-    { key: 'documents', label: 'Documents', icon: PaperClipIcon },
+    { key: "details", label: "Details", icon: CogIcon },
+    { key: "academics", label: "Academics", icon: BookOpenIcon },
+    { key: "courses", label: "Courses", icon: AcademicCapIcon },
+    { key: "registrations", label: "Registration", icon: UsersIcon },
+    { key: "payments", label: "Payment", icon: CurrencyDollarIcon },
+    { key: "church", label: "Church", icon: HomeModernIcon },
+    { key: "documents", label: "Documents", icon: PaperClipIcon },
 ];
 
 const imageLoaded = ref(false);
@@ -133,13 +133,13 @@ const deleteStudent = (id) => {
     <Head title="Student Details" />
     <AppLayout>
         <div class="max-w-8xl mx-auto p-6">
-            
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
+                {{ student.firstName }} {{ student.middleName }}
+                {{ student.lastName }}
             </h1>
-            
+
             <nav
                 class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
@@ -159,17 +159,16 @@ const deleteStudent = (id) => {
                 </button>
             </nav>
 
-
-                <!-- Details Panel -->
-                <transition
-                    mode="out-in"
-                    enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition duration-200 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
-                >
+            <!-- Details Panel -->
+            <transition
+                mode="out-in"
+                enter-active-class="transition duration-300 ease-out"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
+                leave-active-class="transition duration-200 ease-in"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
+            >
                 <div
                     :key="selectedTab"
                     class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
@@ -193,7 +192,7 @@ const deleteStudent = (id) => {
                         :student="student"
                         :courses="courses"
                         :studyModes="studyModes"
-                        />
+                    />
 
                     <!-- Registrations Panel -->
                     <ShowRegistrations
@@ -208,7 +207,8 @@ const deleteStudent = (id) => {
                         v-else-if="selectedTab === 'payments'"
                         :student="student"
                         :status="status"
-                        :payments="payments",
+                        :payments="payments"
+                        ,
                         :paymentMethods="paymentMethods"
                         :paymentCategories="paymentCategories"
                         :paymentStatuses="paymentStatuses"
@@ -228,10 +228,8 @@ const deleteStudent = (id) => {
                         :documents="documents"
                         :semesters="semesters"
                     />
-
-                    </div>
-                </transition>
-                
+                </div>
+            </transition>
         </div>
     </AppLayout>
 </template>

@@ -76,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/sections', [RegistrarPortalController::class, 'sections'])->name('instructor.sections');
         // Route::get('/sections/{section}', [RegistrarPortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
 
-        // Route::get('sections/{section}/courses/{course}/students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('instructor.sections.courses.students');
+        Route::get('students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('registrar.students');
         // Route::get('sections/{section}/courses/{course}/assessments', [RegistrarPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
         // Route::get('sections/{section}/courses/{course}/attendance', [RegistrarPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
         // Route::get('sections/{section}/courses/{course}', [RegistrarPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');

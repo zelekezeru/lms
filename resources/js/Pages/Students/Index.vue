@@ -37,7 +37,7 @@ const searchstudents = () => {
     router.get(
         route("students.index"),
         { ...route().params, search: search.value },
-        { preserveState: true },
+        { preserveState: true }
     );
 };
 
@@ -69,7 +69,9 @@ const deletestudent = (id) => {
 
 <template>
     <AppLayout>
-        <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">
+        <h1
+            class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
+        >
             Student Details
         </h1>
 
@@ -77,8 +79,19 @@ const deletestudent = (id) => {
         <div class="flex justify-between items-center mb-3">
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"/>
+                    <svg
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-4.35-4.35M9 17A8 8 0 109 1a8 8 0 000 16z"
+                        />
                     </svg>
                 </span>
                 <input
@@ -104,7 +117,10 @@ const deletestudent = (id) => {
                     class="inline-flex items-center rounded-md bg-blue-800 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     title="Refresh Data"
                 >
-                    <ArrowPathIcon class="w-5 h-5 mr-2" :class="{ 'animate-spin': refreshing }"/>
+                    <ArrowPathIcon
+                        class="w-5 h-5 mr-2"
+                        :class="{ 'animate-spin': refreshing }"
+                    />
                     Refresh Data
                 </button>
             </div>

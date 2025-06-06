@@ -5,7 +5,6 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/vue/24/solid";
-import { Select } from "primevue";
 
 // Props
 const props = defineProps({
@@ -71,124 +70,92 @@ const emit = defineEmits(["next", "previous"]);
 </script>
 
 <template>
-    <div>
+    <div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6 rounded-md shadow">
         <h2 class="text-lg font-bold mb-4">Academic Information</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Academic Year Dropdown -->
             <div>
                 <InputLabel for="year_id" value="Select Registration year" />
-                <Select
+                <select
                     id="year_id"
                     v-model="form.year_id"
-                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                    :options="years"
-                    placeholder="Select Year"
-                    option-value="id"
-                    option-label="name"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                </Select>
+                    <option value="" disabled>Select Year</option>
+                    <option v-for="year in years" :key="year.id" :value="year.id">
+                        {{ year.name }}
+                    </option>
+                </select>
                 <InputError :message="form.errors?.year_id" class="mt-2" />
             </div>
 
             <!-- Semester Dropdown -->
             <div>
-                <InputLabel for="semester_id" value="Select semester" />
-                <Select
+                <InputLabel for="semester_id" value="Select Semester" />
+                <select
                     id="semester_id"
                     v-model="form.semester_id"
-                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                    :options="selectedYearSemesters"
-                    placeholder="Select Semester"
-                    empty-message="First Select Year!"
-                    option-value="id"
-                    option-label="name"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 >
-                </Select>
+                    <option value="" disabled>Select Semester</option>
+                    <option v-for="semester in selectedYearSemesters" :key="semester.id" :value="semester.id">
+                        {{ semester.name }}
+                    </option>
+                </select>
                 <InputError :message="form.errors?.semester_id" class="mt-2" />
             </div>
 
-            <!-- Programs Dropdown-->
+            <!-- Programs Dropdown -->
             <div>
-                <InputLabel
-                    for="program_id"
-                    value="Select Program"
-                    class="block mb-1 text-gray-800 dark:text-gray-200"
-                />
-
-                <Select
-                    id="cousesList"
+                <InputLabel for="program_id" value="Select Program" />
+                <select
+                    id="program_id"
                     v-model="form.program_id"
-                    :options="programs"
-                    option-value="id"
-                    option-label="name"
-                    checkmark
-                    filter
-                    placeholder="Select Program"
-                    :maxSelectevdLabels="3"
-                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                />
-                <InputError
-                    :message="form.errors?.program_id"
-                    class="mt-2 text-sm text-red-500"
-                />
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                >
+                    <option value="" disabled>Select Program</option>
+                    <option v-for="program in programs" :key="program.id" :value="program.id">
+                        {{ program.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors?.program_id" class="mt-2" />
             </div>
 
-            <!-- Tracks Dropdown-->
+            <!-- Tracks Dropdown -->
             <div>
-                <InputLabel
-                    for="track_id"
-                    value="Select Track"
-                    class="block mb-1 text-gray-800 dark:text-gray-200"
-                />
-
-                <Select
-                    id="cousesList"
+                <InputLabel for="track_id" value="Select Track" />
+                <select
+                    id="track_id"
                     v-model="form.track_id"
-                    :options="selectedProgramTracks"
-                    option-value="id"
-                    option-label="name"
-                    checkmark
-                    filter
-                    empty-message="First Select Program!"
-                    placeholder="Select Track"
-                    :maxSelectevdLabels="3"
-                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                />
-                <InputError
-                    :message="form.errors?.track_id"
-                    class="mt-2 text-sm text-red-500"
-                />
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                >
+                    <option value="" disabled>Select Track</option>
+                    <option v-for="track in selectedProgramTracks" :key="track.id" :value="track.id">
+                        {{ track.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors?.track_id" class="mt-2" />
             </div>
 
-            <!-- Study Modes Dropdown-->
+            <!-- Study Modes Dropdown -->
             <div>
-                <InputLabel
-                    for="track_id"
-                    value="Select Study Mode"
-                    class="block mb-1 text-gray-800 dark:text-gray-200"
-                />
-                
-                <Select
-                    id="modesList"
+                <InputLabel for="study_mode_id" value="Select Study Mode" />
+                <select
+                    id="study_mode_id"
                     v-model="form.study_mode_id"
-                    :options="selectedProgramStudyModes"
-                    option-value="id"
-                    option-label="name"
-                    checkmark
-                    filter
-                    empty-message="First Select Program!"
-                    placeholder="Select Study Mode"
-                    :maxSelectevdLabels="3"
-                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                />
-                <InputError
-                    :message="form.errors?.study_mode_id"
-                    class="mt-2 text-sm text-red-500"
-                />
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                >
+                    <option value="" disabled>Select Study Mode</option>
+                    <option v-for="mode in selectedProgramStudyModes" :key="mode.id" :value="mode.id">
+                        {{ mode.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors?.study_mode_id" class="mt-2" />
             </div>
         </div>
     </div>
+
 
     <div class="flex justify-center mt-4">
         <div>

@@ -29,7 +29,6 @@ class StudentResource extends JsonResource
             'maritalStatus' => $this->marital_status,
             'user_id' => $this->user_id,
 
-            'profileImg' => Storage::url($this->user->profile_img),
             'user' => $this->whenLoaded('user'),
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
@@ -42,6 +41,7 @@ class StudentResource extends JsonResource
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'grades' => GradeResource::collection($this->whenLoaded('grades')),
+            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             'createdBy' => $this->whenLoaded('createdBy'),
             'activeCurricula' => $this->whenLoaded('courses', function () {
                 return $this->courses->filter(function ($course) {
@@ -49,6 +49,7 @@ class StudentResource extends JsonResource
                 });
             }),
 
+            'profileImg' => Storage::url($this->user->profile_img),
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 
             'results' => $this->whenLoaded('results'),

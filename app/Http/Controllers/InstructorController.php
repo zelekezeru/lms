@@ -61,7 +61,7 @@ class InstructorController extends Controller
         $courses = CourseResource::collection(Course::withExists(['instructors as related_to_instructor' => function ($query) use ($instructor) {
             return $query->where('instructors.id', $instructor->id);
         }])->orderBy('name')->orderByDesc('related_to_instructor', 'name')->get());
-
+        
         return Inertia::render('Instructors/Show', [
             'instructor' => $instructor,
             'courses' => $courses,

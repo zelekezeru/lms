@@ -28,10 +28,10 @@ class InstructorResource extends JsonResource
             'employmentType' => $this->employment_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            
+            'user' => $this->whenLoaded('user'),
 
             'profileImg' => Storage::url($this->user->profile_img),
-
-            'user' => $this->whenLoaded('user'),
 
             'userRole' => $this->user && $this->user->roles()->first() ? $this->user->roles()->first()->name : null,
 

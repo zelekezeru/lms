@@ -90,10 +90,10 @@ class StudentController extends Controller
         }
 
         $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
-
-        $yearLevel = $student->section->yearLevel();
-        $semester = $student->section->semester->level;
-
+        
+        $yearLevel = $student->section ? $student->section->yearLevel() : null;
+        $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
+        
         $studyModes = StudyMode::with(['sections' => function ($query) use ($yearLevel, $semester) {
             $query->whereHas('courseOfferings', function ($q) use ($yearLevel, $semester) {
                 $q->where('year_level', $yearLevel)
@@ -109,7 +109,7 @@ class StudentController extends Controller
         // Check if the student has a section & Fetch courses accordingly
         if ($student->section === null) {
             $sections = Section::where('program_id', $student->program->id)
-                ->get()->load('program', 'courses');
+                ->get()->load('program', 'courseOfferings.course');
             $courses = [];
         } else {
             $courses = $student->section->courseOfferings()->with('course')->get()->pluck('course');
@@ -139,12 +139,9 @@ class StudentController extends Controller
         } else {
             $activeSemester = SemesterResource::collection($activeSemester)->first()->load('year');
         }
-
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
-            'user' => $user,
-            'documents' => UserDocumentResource::collection($user->userDocuments),
-            'status' => new StatusResource($student->status),
             'sections' => $sections,
             'studyModes' => $studyModes,
             'courses' => $courses,

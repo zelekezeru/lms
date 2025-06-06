@@ -20,7 +20,6 @@ const props = defineProps({
     },
     paymentMethods: Array, // Add prop for payment types
     paymentCategories: Array, // Add prop for payment categories
-    paymentStatuses: Array, // Add prop for payment statuses
 });
 
 // Refs for controlling modal visibility

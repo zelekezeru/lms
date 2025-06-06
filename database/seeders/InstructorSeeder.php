@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class InstructorSeeder extends Seeder
 {
@@ -28,8 +29,8 @@ class InstructorSeeder extends Seeder
             'default_password' => 'instructor@0000',
             'password_changed' => false,
             'tenant_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
         Instructor::create([
             'user_id' => $user->id,
@@ -38,8 +39,8 @@ class InstructorSeeder extends Seeder
             'hire_date' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'status' => 'Active',
             'bio' => fake()->sentence(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ]);
 
         // Assign the SUPER-ADMIN role to the user
@@ -83,8 +84,8 @@ class InstructorSeeder extends Seeder
                 'default_password' => strtolower($firstName) . '@' . substr($phone, -4),
                 'password_changed' => false,
                 'tenant_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             Instructor::create([
@@ -94,8 +95,8 @@ class InstructorSeeder extends Seeder
                 'hire_date' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
                 'status' => 'Active',
                 'bio' => fake()->sentence(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             // Assign the SUPER-ADMIN role to the user
@@ -107,5 +108,104 @@ class InstructorSeeder extends Seeder
                 ],
             ]);
         }
+
+        DB::table('course_instructor')->insert([
+            [
+                'course_id' => 1,
+                'instructor_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 2,
+                'instructor_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 3,
+                'instructor_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 4,
+                'instructor_id' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 5,
+                'instructor_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 6,
+                'instructor_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 7,
+                'instructor_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 8,
+                'instructor_id' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 9,
+                'instructor_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 10,
+                'instructor_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 11,
+                'instructor_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 12,
+                'instructor_id' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 13,
+                'instructor_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 14,
+                'instructor_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 15,
+                'instructor_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'course_id' => 16,
+                'instructor_id' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
     }
 }

@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentTypeSeeder::class);
         $this->call(WeightSeeder::class);
         $this->call(CarculaSeeder::class);
+        $this->call(CourseOfferingSeeder::class);
         $this->call(RoomSeeder::class);
     }
 }

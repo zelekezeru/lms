@@ -178,4 +178,36 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
+
+    public function updateProfilePicture(Request $request, User $user)
+        {
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'profile_image' => 'required|image|max:10240|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        
+        $image = $request->file('profile_image');
+        
+        $img = Image::make($image)->fit(300, 300, function ($constraint) {
+            $constraint->upsize();
+        });
+        
+        $name = preg_replace('/\s+/', '', $user->name);
+        
+        $filename = 'profile_' . strtolower($name) . '.' . $image->getClientOriginalExtension();
+        $path = 'profile_images/' . $filename;
+        
+        Storage::disk('public')->put($path, (string) $img->encode());
+        
+        if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
+            Storage::disk('public')->delete($user->profile_img);
+        }
+        
+        $user->profile_img = $path;
+        $user->save();
+    }
+
 }

@@ -43,14 +43,6 @@ class RegisteredUserController extends Controller
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
 
-            // Profile Image Handling
-        if ($request->hasFile('profile_img')) {
-            $image = $request->file('profile_img');
-            $user = $request->user();
-            $profile_img = $this->saveProfileImage($image, $request->name);
-        }else {
-            $profile_img = null; // or you can use a default image path here
-        }
 
         // SUPER-ADMIN Registration
 
@@ -72,9 +64,11 @@ class RegisteredUserController extends Controller
                 'user_uuid' => 'SA'.'/'.$year,
                 'email' => $request->email,
                 'phone' => $request->contact_phone,
-                'profile_img' => $$profile_img,
                 'password' => Hash::make($request->password),
             ]);
+            
+            // Profile Image Handling         
+            $profile_img = $this->saveProfileImage($request, $user);
 
             $user->assignRole('SUPER-ADMIN');
 
@@ -127,14 +121,16 @@ class RegisteredUserController extends Controller
                 'email' => $email,
                 'tenant_id' => $tenant->id,
                 'password' => Hash::make($request['password']),
-                'default_password' => $request['default_password'],                
-                'profile_img' => $profile_img,
+                'default_password' => $request['default_password'],
             ];
 
             // TENANT-ADMIN User
             if ($role == 'TENANT-ADMIN') {
 
                 $user = User::create($fields);
+                
+                // Profile Image Handling
+                $profile_img = $this->saveProfileImage($request, $user);
 
                 $parent->update([
                     'user_id' => $user->id,
@@ -152,6 +148,9 @@ class RegisteredUserController extends Controller
             elseif ($role == 'INSTRUCTOR') {
 
                 $user = User::create($fields);
+                
+                // Profile Image Handling         
+                $profile_img = $this->saveProfileImage($request, $user);
 
                 $parent->update([
                     'user_id' => $user->id,
@@ -164,6 +163,9 @@ class RegisteredUserController extends Controller
             // Employee User
             elseif ($role != null) {
                 $user = User::create($fields);
+                
+                // Profile Image Handling         
+                $profile_img = $this->saveProfileImage($request, $user);
 
                 $parent->update([
                     'user_id' => $user->id,
@@ -177,6 +179,9 @@ class RegisteredUserController extends Controller
             else {
 
                 $user = User::create($fields);
+                
+                // Profile Image Handling         
+                $profile_img = $this->saveProfileImage($request, $user);
 
                 $user->assignRole('USER');
 
@@ -223,26 +228,41 @@ class RegisteredUserController extends Controller
     /**
      * Update the user's profile image.
      */
-    function saveProfileImage($image, $user)
+    function saveProfileImage($request, $user)
     {
-        $img = Image::make($image)->fit(300, 300, function ($constraint) {
-            $constraint->upsize();
-        });
         
-        $name = preg_replace('/\s+/', '', $user->name);
+        if ($request->hasFile('profile_img')) {
 
-        $filename = 'profile_' . strToLower($name) . '.' . $image->getClientOriginalExtension();
-        $path = 'profile_images/' . $filename;
-        
-        Storage::disk('public')->put($path, (string) $img->encode());
-        
-        if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
-            Storage::disk('public')->delete($user->profile_img);
+            $image = $request->file('profile_img');
+
+            // Resize and convert image to JPEG format
+            $img = Image::make($image)->fit(350, 350, function ($constraint) {
+                $constraint->upsize();
+            });
+
+            // Sanitize and lowercase the user name (remove spaces)
+            $name = preg_replace('/\s+/', '', $user->name);
+
+            // Force .jpeg extension
+            $filename = 'profile_' . strtolower($name) . '.jpeg';
+            $path = 'profile_images/' . $filename;
+
+            // Encode as JPEG and save to public storage
+            Storage::disk('public')->put($path, (string) $img->encode('jpeg', 90)); // 90 = JPEG quality
+
+            // Delete old image if exists
+            if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
+                Storage::disk('public')->delete($user->profile_img);
+            }
+            
+            // Update user record
+            $user->profile_img = $path;
+            $user->save();
+
+            return $path;
+
+        } else {
+            return $profile_img ?? null;
         }
-        
-        $user->profile_img = $path;
-        $user->save();
-
-        return $path;
     }
 }

@@ -68,10 +68,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    paymentStatuses: {
-        type: Array,
-        required: true,
-    },
     semesters: {
         type: Object,
         required: true,
@@ -211,7 +207,6 @@ const deleteStudent = (id) => {
                         ,
                         :paymentMethods="paymentMethods"
                         :paymentCategories="paymentCategories"
-                        :paymentStatuses="paymentStatuses"
                         :showVerifyModal="showVerifyModal"
                     />
 

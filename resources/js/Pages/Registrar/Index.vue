@@ -1,5 +1,4 @@
 <script setup>
-import RegistrarLayout from "@/Layouts/RegistrarLayout.vue";
 import { usePage } from "@inertiajs/vue3";
 import {
     AcademicCapIcon,
@@ -11,6 +10,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import { ref, onMounted } from "vue";
 import Chart from "chart.js/auto";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const user = usePage().props.auth.user;
 
@@ -99,7 +99,7 @@ const recentActivities = [
 </script>
 
 <template>
-    <RegistrarLayout>
+    <AppLayout>
         <h1 class="text-2xl font-extrabold mb-6 text-gray-900 dark:text-white">
             Welcome, {{ user.name }}
         </h1>
@@ -241,5 +241,5 @@ const recentActivities = [
                 </ul>
             </section>
         </div>
-    </RegistrarLayout>
+    </AppLayout>
 </template>

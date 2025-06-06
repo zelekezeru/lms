@@ -120,7 +120,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Student Semester Registration
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
-    
+
     // User Profile Picture Update
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
 

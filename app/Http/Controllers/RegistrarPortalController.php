@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
 class RegistrarPortalController extends Controller
 {
     public function index()
     {
-        $employee = new EmployeeResource(
-            request()->user()->employee
+        $user = new UserResource(
+            request()->user()
         );
+
+        return inertia('Registrar/Index');
     }
 }

@@ -287,7 +287,7 @@ const logout = () => {
                                 class="h-6 w-6 text-gray-600 dark:text-gray-300"
                             />
                         </button>
-                        
+
                         <!-- Language Toggle -->
                         <LanguageToggle />
                     </div>

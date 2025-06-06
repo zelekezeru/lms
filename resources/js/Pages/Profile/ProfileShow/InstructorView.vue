@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from '@/Layouts/InstructorLayout.vue';
+import InstructorLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({

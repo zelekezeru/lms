@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import StudentLayout from "@/Layouts/AppLayout.vue";
 import {
     BookOpenIcon,
     DocumentIcon,

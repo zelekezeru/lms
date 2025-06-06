@@ -1,5 +1,5 @@
 <script setup>
-import RegistrarLayout from '@/Layouts/RegistrarLayout.vue'
+import RegistrarLayout from '@/Layouts/AppLayout.vue'
 import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { MagnifyingGlassIcon, EyeIcon } from '@heroicons/vue/24/outline'

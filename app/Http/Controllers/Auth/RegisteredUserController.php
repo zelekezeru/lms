@@ -242,7 +242,7 @@ class RegisteredUserController extends Controller
 
             // Sanitize and lowercase the user name (remove spaces)
             $name = preg_replace('/\s+/', '', $user->name);
-
+            
             // Force .jpeg extension
             $filename = 'profile_' . strtolower($name) . '.jpeg';
             $path = 'profile_images/' . $filename;

@@ -11,8 +11,6 @@ import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowResults from "../InstructorPortal/Components/ShowResults.vue";
 import ShowWeights from "../InstructorPortal/Components/ShowWeights.vue";
 import ShowGrades from "../InstructorPortal/Components/ShowGrades.vue";
-
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
 import AppLayout from "@/Layouts/AppLayout.vue"; // default
 import { usePage } from "@inertiajs/vue3";
 

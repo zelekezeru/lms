@@ -32,7 +32,7 @@ class AssessmentController extends Controller
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
         $students = StudentResource::collection($courseOffering->enrollments->pluck('student'));
-
+        
         return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,

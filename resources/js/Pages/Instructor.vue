@@ -7,7 +7,7 @@ import {
     CalendarIcon,
     CurrencyDollarIcon,
 } from "@heroicons/vue/24/outline";
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import InstructorLayout from "@/Layouts/AppLayout.vue";
 import { Chart } from "chart.js/auto";
 
 let chart = null;

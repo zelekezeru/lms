@@ -1,5 +1,5 @@
 <script setup>
-import RegistrarLayout from '@/Layouts/RegistrarLayout.vue';
+import RegistrarLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({

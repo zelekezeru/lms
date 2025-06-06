@@ -15,7 +15,6 @@ class SectionSeeder extends Seeder
     {
 
         $data = [];
-        $yearId = 1;
         $userId = 2;
         $semesterId = 1;
 
@@ -38,7 +37,7 @@ class SectionSeeder extends Seeder
                     'id' => $i,
                     'name' => 'Section 1',
                     'code' => 'SC-25-'.str_pad($i, 2, '0', STR_PAD_LEFT),
-                    'year_id' => $yearId,
+                    'year_id' => rand(2, 6),
                     'user_id' => $userId,
                     'program_id' => $programId,
                     'track_id' => $trackId,
@@ -57,18 +56,5 @@ class SectionSeeder extends Seeder
 
         // Ensure course_section references valid section IDs
         $validSectionIds = DB::table('sections')->pluck('id')->toArray();
-        $instructor = 1;
-
-        // Section Courses
-        foreach ($validSectionIds as $sectionId) {
-            for ($courseId = 1; $courseId <= 40; $courseId++) {
-                $data[] = [
-                    'course_id' => $courseId,
-                    'section_id' => $sectionId,
-                ];
-            }
-        }
-
-        DB::table('course_offerings')->insert($data);
     }
 }

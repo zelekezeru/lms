@@ -223,6 +223,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 
                 // 👨‍🎓 Create Student
                 $student = Student::updateOrCreate($data);
+        
+                $user->assignRole('STUDENT');
+
 
                 // ✅ Register Student Status
                 $this->createStudentStatus($student);

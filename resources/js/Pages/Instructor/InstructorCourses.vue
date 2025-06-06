@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import InstructorLayout from "@/Layouts/AppLayout.vue";
 import {
     AcademicCapIcon,
     ClockIcon,

@@ -27,17 +27,17 @@ class CourseOfferingSeeder extends Seeder
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 3, 'section_id' => 1, 'instructor_id' => 1,
+            'course_id' => 3, 'section_id' => 1, 'instructor_id' => 3,
             'completed' => 0, 'year_level' => 1, 'semester' => 1,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 4, 'section_id' => 1, 'instructor_id' => 1,
+            'course_id' => 4, 'section_id' => 1, 'instructor_id' => 4,
             'completed' => 0, 'year_level' => 1, 'semester' => 1,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 5, 'section_id' => 1, 'instructor_id' => 2,
+            'course_id' => 5, 'section_id' => 1, 'instructor_id' => 1,
             'completed' => 0, 'year_level' => 1, 'semester' => 1,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
@@ -47,7 +47,7 @@ class CourseOfferingSeeder extends Seeder
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 7, 'section_id' => 1, 'instructor_id' => 2,
+            'course_id' => 7, 'section_id' => 1, 'instructor_id' => 3,
             'completed' => 0, 'year_level' => 1, 'semester' => 2,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
@@ -57,22 +57,22 @@ class CourseOfferingSeeder extends Seeder
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 9, 'section_id' => 1, 'instructor_id' => 4,
+            'course_id' => 9, 'section_id' => 1, 'instructor_id' => 1,
             'completed' => 0, 'year_level' => 1, 'semester' => 2,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 10, 'section_id' => 1, 'instructor_id' => 5,
+            'course_id' => 10, 'section_id' => 1, 'instructor_id' => 2,
             'completed' => 0, 'year_level' => 1, 'semester' => 2,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 11, 'section_id' => 1, 'instructor_id' => 5,
+            'course_id' => 11, 'section_id' => 1, 'instructor_id' => 3,
             'completed' => 0, 'year_level' => 2, 'semester' => 1,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],
             [
-            'course_id' => 12, 'section_id' => 1, 'instructor_id' => null,
+            'course_id' => 12, 'section_id' => 1, 'instructor_id' => 4,
             'completed' => 0, 'year_level' => 2, 'semester' => 1,
             'created_at' => Carbon::now(), 'updated_at' => Carbon::now(),
             ],

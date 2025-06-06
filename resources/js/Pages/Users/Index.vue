@@ -62,7 +62,7 @@ const deleteuser = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                users
+                All Users in The System
             </h1>
         </div>
 
@@ -93,19 +93,23 @@ const deleteuser = (id) => {
             <Table>
                 <TableHeader>
                     <tr>
+                        <Thead>#</Thead>
                         <Thead>Name</Thead>
+                        <Thead>Profile</Thead>
                         <Thead>Email</Thead>
-                        <Thead>Role</Thead>
-                        <Thead>Job Position</Thead>
+                        <Thead>Phone</Thead>
                         <Thead>Action</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
                     <tr
-                        v-for="user in users.data"
+                        v-for="user, index in users.data"
                         :key="user.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                     >
+                        <td class="px-6 py-4">
+                            {{ index + 1 + ((users.meta.current_page - 1) * users.meta.per_page) }}
+                        </td>
                         <td
                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
@@ -115,14 +119,36 @@ const deleteuser = (id) => {
                                 {{ user.name }}
                             </Link>
                         </td>
+                        <td>
+                            <span class="mr-2"></span>
+                            <img
+                                v-if="user.profileImg != '/storage/' && user.profileImg.trim() !== ''"
+                                :src="user.profileImg"
+                                alt="Profile"
+                                class="h-8 w-8 object-cover rounded-full"
+                            />
+                            <svg
+                                v-else
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-8 w-8 text-gray-500 dark:text-gray-300 rounded-full bg-gray-100 dark:bg-gray-700 p-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.225.805 5.879 2.137M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                            </svg>
+                        </td>
+
                         <td class="px-6 py-4">
                             {{ user.email }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ user.userRole }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ user.jobPosition }}
+                            {{ user.phone }}
                         </td>
                         <td class="flex px-6 py-4 gap-3">
                             <Link

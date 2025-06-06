@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import StudentLayout from '@/Layouts/StudentLayout.vue'
+import StudentLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
     student: {

@@ -1,5 +1,5 @@
 <script setup>
-import StudentLayout from '@/Layouts/StudentLayout.vue';
+import StudentLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({

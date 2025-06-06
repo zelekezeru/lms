@@ -60,15 +60,6 @@ class EmployeeController extends Controller
     {
         $fields = $request->validated();
 
-        $profileImg = $fields['profile_img'] ?? null;
-
-        // Profile   of Instructor
-        if ($profileImg) {
-            $profile_path = $profileImg->store('profile-images', 'public');
-        } else {
-            $profile_path = null;
-        }
-
         // user default password
         $firstName = explode(' ', $fields['name'])[0]; // Get the first name from the full name
 
@@ -80,7 +71,6 @@ class EmployeeController extends Controller
         $request->merge([
             'password' => $default_password,
             'default_password' => $default_password, // needed for 'confirmed' rule
-            'profile_img' => $profile_path,
         ]);
 
         $employee = Employee::create([
@@ -134,22 +124,12 @@ class EmployeeController extends Controller
     public function update(EmployeeUpdateRequest $request, Employee $employee)
     {
         $fields = $request->validated();
-        $image = $fields['profile_img'] ?? null;
         $user = $employee->user;
-
-        // Handle profile image upload
-        if ($image) {
-            if ($user->profile_img) {
-                Storage::disk('public')->delete($user->profile_img);
-            }
-            $profile_path = $image->store('profile-images', 'public');
-        }
 
         // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 
         // Update employee details

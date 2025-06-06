@@ -86,14 +86,6 @@ class InstructorController extends Controller
         $fields = $request->validated();
 
         $courses = $fields['courses'] ?? [];
-        $profileImg = $fields['profile_img'] ?? null;
-
-        // Profile   of Instructor
-        if ($profileImg) {
-            $profile_path = $profileImg->store('profile-images', 'public');
-        } else {
-            $profile_path = null;
-        }
 
         // user default password
         $firstName = explode(' ', $fields['name'])[0]; // Get the first name from the full name
@@ -106,7 +98,6 @@ class InstructorController extends Controller
         $request->merge([
             'password' => $default_password,
             'default_password' => $default_password, // needed for 'confirmed' rule
-            'profile_img' => $profile_path,
         ]);
 
         $instructor = Instructor::create([
@@ -153,22 +144,12 @@ class InstructorController extends Controller
     {
         $fields = $request->validated();
         $courses = $fields['courses'] ?? [];
-        $profileImg = $fields['profile_img'] ?? null;
         $user = $instructor->user;
-
-        // Handle profile image update
-        if ($profileImg) {
-            if ($user->profile_img) {
-                Storage::disk('public')->delete($user->profile_img);
-            }
-            $profile_path = $profileImg->store('profile-images', 'public');
-        }
 
         // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'profile_img' => $profile_path ?? $user->profile_img,
             'phone' => $fields['contact_phone'],
         ]);
 

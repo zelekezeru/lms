@@ -97,7 +97,7 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="CogIcon"
                     label="Profile"
-                    href="#"
+                    :href="route('profile.edit')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem

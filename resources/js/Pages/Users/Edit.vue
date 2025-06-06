@@ -19,7 +19,7 @@ const form = useForm({
     password: "",
     password_confirmation: "",
     phone: props.user.phone | "",
-    role_name: props.user.roles?.[0]?.name || "", // Get the first role name if available
+    roles: props.user.roles.map((role) => role.id) || [], // Get the first role name if available
     profile_img: props.user.profile_img || "",
     _method: "PUT", // Indicates PUT method for the update
 });
@@ -53,7 +53,7 @@ const submit = (id) => {
                         v-if="!imageLoaded"
                         class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                     ></div>
-                    
+
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
@@ -66,12 +66,11 @@ const submit = (id) => {
 
             <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6">
                 <!-- Pass the form to the Form component, and handle submit with user.id -->
-                <Form 
-                    :form="form" 
-                    :roles="roles" 
-                    :user="props.user"
-                    :userRoles="userRoles"
-                    @submit="submit(props.user.id)" 
+                <Form
+                    :form="form"
+                    :roles="roles"
+                    :user="user"
+                    @submit="submit(user.id)"
                 />
             </div>
         </div>

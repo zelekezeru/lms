@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Instructor;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -54,13 +55,13 @@ class UserController extends Controller
         $image = $request->file('profile_img');
 
         if ($image) {
-            $imageName = Str::uuid().'.'.$image->getClientOriginalExtension();
-            $path = storage_path('app/public/profile-images/'.$imageName);
+            $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/' . $imageName);
 
             Image::make($image)->resize(300, 300)->save($path);
 
             $user->update([
-                'profile_img' => 'profile-images/'.$imageName,
+                'profile_img' => 'profile-images/' . $imageName,
             ]);
         }
 
@@ -85,9 +86,10 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
+        $user->load('tenant', 'roles');
 
         return inertia('Users/Edit', [
-            'user' => new UserResource($user->load('tenant')),
+            'user' => new UserResource($user),
             'roles' => $roles,
         ]);
     }
@@ -108,14 +110,29 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->profile_img);
             }
 
-            $imageName = Str::uuid().'.'.$profileImg->getClientOriginalExtension();
-            $path = storage_path('app/public/profile-images/'.$imageName);
+            $imageName = Str::uuid() . '.' . $profileImg->getClientOriginalExtension();
+            $path = storage_path('app/public/profile-images/' . $imageName);
 
             Image::make($profileImg)->resize(300, 300)->save($path);
 
-            $user->profile_img = 'profile-images/'.$imageName;
+            $user->profile_img = 'profile-images/' . $imageName;
         }
 
+        $user->syncRoles($fields['roles']);
+
+        if ($user->hasRole('INSTRUCTOR')) {
+            if (! $user->instructor) {
+                $instructor = Instructor::create([
+                    'name' => $fields['name'],
+                    'user_id' => $user->id,
+                    'specialization' => "Instructor",
+                    'employment_type' => "FULL-TIME",
+                    'bio' => "This is an instructor",
+                    'status' => 'Active',
+                    'hire_date' => Carbon::now(),
+                ]);
+            }
+        }
         // Update user details
         $user->update([
             'name' => $fields['name'],

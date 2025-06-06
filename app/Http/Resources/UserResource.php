@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'profileImg' => Storage::url($this->profile_img),
-            'userRole' => $this->user ? $this->user->roles()->first()->name : null,
+            'roles' => $this->whenLoaded('roles'),
             'default_password' => $this->default_password,
             'userDocument' => new UserDocumentResource($this->whenLoaded('userDocument')),
         ];

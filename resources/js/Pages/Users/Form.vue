@@ -5,12 +5,12 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { PhotoIcon } from "@heroicons/vue/24/outline";
+import { MultiSelect, Select } from "primevue";
 
 // Define the expected props: form data and roles for the dropdown
 const props = defineProps({
     form: { type: Object, required: true }, // The form object passed from parent
     roles: { type: Array, required: true },
-    userRoles: { type: Array, required: true },
 });
 
 // Handle profile image selection and preview
@@ -43,7 +43,7 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
-            
+
             <div>
                 <InputLabel for="phone" value="Phone Number" />
                 <TextInput
@@ -68,24 +68,20 @@ const handleFileChange = (e) => {
             </div>
 
             <div>
-                <InputLabel for="role" value="Select Role" />
-                <select
-                    id="role"
-                    v-model="form.role_name"
+                <InputLabel for="roles" value="Select Role" />
+                <MultiSelect
+                    id="roles"
+                    class="w-full"
+                    v-model="form.roles"
+                    :options="roles"
+                    option-label="name"
+                    option-value="id"
                     required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                >
-                    <option disabled value="">Select Role</option>
-                    <option
-                        v-for="role in role"
-                        :key="r.id"
-                        :value="role.name">
-                        {{ role.name }}
-                    </option>
-                </select>
-                <InputError :message="form.errors.role_name" />
+                    filter
+                    checkmark
+                />
+                <InputError :message="form.errors.roles" />
             </div>
-
 
             <!-- Profile Image Upload & Preview -->
             <div>

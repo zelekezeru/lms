@@ -12,6 +12,7 @@ import {
     UserCircleIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
+import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 
 const props = defineProps({
     isOpen: Boolean,
@@ -56,42 +57,55 @@ const wrapperClasses = computed(() => {
                     :href="route('registrar.dashboard')"
                     :isCollapsed="!isOpen"
                 />
-                <SidebarItem
+                <SidebarDropdownMenu
+                    label="Student Management"
                     :icon="UsersIcon"
-                    label="Students"
-                    :href="route('registrar.students')"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="ClipboardDocumentListIcon"
-                    label="Registrations"
-                    href="/registrations"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="BookOpenIcon"
-                    label="Programs"
-                    href="/programs"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="CalendarIcon"
-                    label="Semesters"
-                    href="/semesters"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="ChartBarIcon"
-                    label="Reports"
-                    href="/reports"
-                    :isCollapsed="!isOpen"
-                />
-                <SidebarItem
-                    :icon="UserCircleIcon"
-                    label="Profile"
-                    href="/profile"
-                    :isCollapsed="!isOpen"
-                />
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="UsersIcon"
+                        label="Manage Students"
+                        :href="route('students.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="PlusIcon"
+                        label="Register Student"
+                        :href="route('students.create')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="User Documents"
+                        :href="route('userDocuments.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                    label="Section Classes"
+                    :icon="AcademicCapIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Sections"
+                        :href="route('sections.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Rooms"
+                        :href="route('rooms.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Weights"
+                        :href="route('weights.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
             </nav>
 
             <!-- Bottom links -->

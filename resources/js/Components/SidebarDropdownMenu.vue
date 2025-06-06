@@ -62,7 +62,8 @@ const afterLeave = (el) => {
         <button
             @click="isOpen = !isOpen"
             :class="{
-                'border-l-4 border-blue-700 box-border bg-gray-100': isOpen,
+                'border-l-4 border-blue-700 box-border bg-gray-100 dark:bg-gray-600':
+                    isOpen,
             }"
             class="w-full flex items-center rounded-md justify-between px-4 py-1 hover:bg-gray-200 dark:hover:bg-gray-700"
         >

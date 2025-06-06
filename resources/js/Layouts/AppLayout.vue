@@ -18,6 +18,7 @@ const darkMode = ref(localStorage.getItem("darkMode") === "true");
 const toggleDarkMode = () => {
     darkMode.value = !darkMode.value;
     localStorage.setItem("darkMode", darkMode.value);
+    document.documentElement.classList.toggle("dark", darkMode.value);
 };
 
 // Responsive sidebar logic
@@ -35,7 +36,17 @@ function updateScreen() {
 onMounted(() => {
     updateScreen();
     window.addEventListener("resize", updateScreen);
+
+    // Sync dark mode on load
+    if (darkMode.value) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
+
+    document.addEventListener("click", handleClickOutside);
 });
+
 onUnmounted(() => {
     window.removeEventListener("resize", updateScreen);
 });

@@ -1,5 +1,5 @@
 <script setup>
-import UserLayout from '@/Layouts/UserLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <UserLayout>
+    <AppLayout>
 
         <section class="min-h-screen bg-gradient-to-br from-indigo-100 to-white dark:from-gray-900 dark:to-gray-800 py-10 px-4">
             <div
@@ -60,7 +60,7 @@ const props = defineProps({
             <div class="mt-8 border-t border-gray-200 dark:border-gray-700"></div>
             </div>
         </section>
-    </UserLayout>
+    </AppLayout>
 </template>
 
 <style scoped>

@@ -54,10 +54,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div ref="dropdownRef" class="justify-between p-4 text-left">
+    <div class="relative inline-block text-left">
         <button
             @click="dropdownOpen = !dropdownOpen"
-            class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-md shadow transition-colors duration-200 bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-100 dark:focus:ring-indigo-100 dark:focus:ring-offset-gray-800"
+            class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md shadow bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 focus:outline-none"
         >
             <GlobeAltIcon class="w-5 h-5 mr-2" />
             Language

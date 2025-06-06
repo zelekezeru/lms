@@ -1,11 +1,9 @@
 <script setup>
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
-import LanguageToggle from '@/Components/LanguageToggle.vue';
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import { Link } from "@inertiajs/vue3";
 </script>
 
 <template>
-    <LanguageToggle />
     <div
         class="flex flex-col items-center min-h-screen pt-6 bg-gray-100 sm:justify-center sm:pt-0"
     >

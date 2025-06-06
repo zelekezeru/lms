@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
             $user->save();
         }
 
-        $roleName = strtoupper($user->loggedInAs->name);
+        $roleName = $user->loggedInAs ? strtoupper($user->loggedInAs->name) : null;
 
         if ($roleName === 'STUDENT') {
             return redirect()->route('student.dashboard');

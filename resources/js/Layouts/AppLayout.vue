@@ -110,8 +110,6 @@ const logout = () => {
                             :roles="userRoles"
                             :active-role="loggedInAs"
                         />
-                        <!-- Language Toggle -->
-                        <LanguageToggle />
 
                         <!-- User Dropdown -->
                         <div class="relative" ref="dropdownRef">
@@ -289,6 +287,9 @@ const logout = () => {
                                 class="h-6 w-6 text-gray-600 dark:text-gray-300"
                             />
                         </button>
+                        
+                        <!-- Language Toggle -->
+                        <LanguageToggle />
                     </div>
                 </header>
 

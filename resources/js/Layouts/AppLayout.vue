@@ -5,10 +5,14 @@ import { Bars3Icon, MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
 import { router } from "@inertiajs/vue3";
 import Sidebar from "@/Components/Sidebar.vue";
 import LanguageToggle from "@/Components/LanguageToggle.vue";
+import RolePicker from "@/Components/RolePicker.vue";
+import RegistrarSidebar from "@/Components/RegistrarSidebar.vue";
 
 // Auth User
 const user = computed(() => usePage().props.auth.user);
 const userRoles = usePage().props.auth.user.roles;
+const loggedInAs = usePage().props.auth.user.loggedInAs;
+console.log(loggedInAs);
 
 const darkMode = ref(localStorage.getItem("darkMode") === "true");
 const toggleDarkMode = () => {
@@ -76,7 +80,7 @@ const logout = () => {
             class="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative"
         >
             <Sidebar
-                :user-roles="userRoles"
+                :active-role="loggedInAs.name"
                 :is-open="isSidebarOpen"
                 :is-mobile="isMobile"
             />
@@ -101,6 +105,11 @@ const logout = () => {
 
                     <!-- Right side controls -->
                     <div class="flex items-center gap-4">
+                        Currently Logged In As
+                        <RolePicker
+                            :roles="userRoles"
+                            :active-role="loggedInAs"
+                        />
                         <!-- Language Toggle -->
                         <LanguageToggle />
 

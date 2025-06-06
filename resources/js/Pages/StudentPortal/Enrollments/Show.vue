@@ -7,7 +7,7 @@ import Attendance from "./Tabs/Attendance.vue";
 import Assessments from "./Tabs/Results.vue";
 import ClassSchedules from "./Tabs/ClassSchedules.vue";
 import ClassSessions from "./Tabs/ClassSessions.vue";
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import Results from "./Tabs/Results.vue";
 
 const props = defineProps({
@@ -60,7 +60,7 @@ const changeTab = (tabName) => {
 </script>
 
 <template>
-    <StudentLayout>
+    <AppLayout>
         <div
             class="max-w-7xl mx-auto py-10 px-4"
             :class="{ '!px-1': activeTab == 'classSessions' }"
@@ -237,5 +237,5 @@ const changeTab = (tabName) => {
                 </div>
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>

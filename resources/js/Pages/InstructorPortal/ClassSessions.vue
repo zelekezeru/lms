@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { ListBulletIcon, ViewColumnsIcon } from "@heroicons/vue/24/outline";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const props = defineProps({
     instructor: Object,
@@ -30,7 +30,7 @@ function toggleViewMode() {
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 space-y-6">
             <!-- Header -->
             <div class="flex justify-between items-center">
@@ -208,5 +208,5 @@ function toggleViewMode() {
                 </div>
             </transition>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

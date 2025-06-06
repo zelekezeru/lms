@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import {
     AcademicCapIcon,
     ClipboardIcon,
@@ -21,7 +21,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4">
             <!-- Section Header -->
             <h1
@@ -132,5 +132,5 @@ const props = defineProps({
                 </div>
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

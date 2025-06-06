@@ -1,5 +1,5 @@
 <script setup>
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
 import {
     PlusIcon,
@@ -46,7 +46,7 @@ const enrolledCourses = ref([
 </script>
 
 <template>
-    <StudentLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 space-y-10">
             <div class="flex justify-between items-center">
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -145,5 +145,5 @@ const enrolledCourses = ref([
                 </p>
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>

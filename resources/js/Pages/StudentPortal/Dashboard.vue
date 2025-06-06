@@ -7,7 +7,7 @@ import {
     UsersIcon,
     CurrencyDollarIcon,
 } from "@heroicons/vue/24/outline";
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { Chart } from "chart.js/auto";
 import { Link } from "@inertiajs/vue3";
 
@@ -53,7 +53,7 @@ onMounted(createChart);
 </script>
 
 <template>
-    <StudentLayout>
+    <AppLayout>
         <!-- Dashboard Header -->
         <div
             class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8"
@@ -74,7 +74,7 @@ onMounted(createChart);
 
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Sidebar omitted (handled by StudentLayout) -->
+            <!-- Sidebar omitted (handled by AppLayout) -->
 
             <div class="col-span-4 space-y-8 px-4">
                 <!-- Enrolled Courses -->
@@ -334,5 +334,5 @@ onMounted(createChart);
                 </section>
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>

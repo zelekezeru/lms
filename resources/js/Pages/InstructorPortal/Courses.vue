@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import {
     AcademicCapIcon,
     ClockIcon,
@@ -16,7 +16,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="mb-8">
             <h1
                 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white"
@@ -105,5 +105,5 @@ const props = defineProps({
                 </div>
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

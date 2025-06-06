@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
 
 const selectedCourse = ref(null);
@@ -82,7 +82,7 @@ function submitAttendance() {
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
                 Take Attendance
@@ -238,5 +238,5 @@ function submitAttendance() {
                 </table>
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

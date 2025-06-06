@@ -11,7 +11,7 @@ import {
     ClockIcon,
     ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { Chart } from "chart.js/auto";
 import { Link } from "@inertiajs/vue3";
 
@@ -51,7 +51,7 @@ onMounted(createChart);
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <!-- Header -->
         <div
             class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8"
@@ -307,5 +307,5 @@ onMounted(createChart);
         </section> -->
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

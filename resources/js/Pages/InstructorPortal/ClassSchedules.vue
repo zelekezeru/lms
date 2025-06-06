@@ -6,7 +6,7 @@ import { Link } from "@inertiajs/vue3";
 import { DatePicker, Select } from "primevue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import "sweetalert2/dist/sweetalert2.min.css";
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const props = defineProps({
     instructor: {
@@ -36,7 +36,7 @@ const filteredClassSchedules = computed(() => {
 });
 </script>
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
             <!-- Header -->
             <div class="text-center">
@@ -202,5 +202,5 @@ const filteredClassSchedules = computed(() => {
                 </div>
             </transition>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

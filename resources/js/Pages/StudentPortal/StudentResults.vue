@@ -1,5 +1,5 @@
 <script setup>
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref, onMounted } from "vue";
 import { Chart, registerables } from "chart.js";
 import {
@@ -64,7 +64,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <StudentLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
             <div class="flex justify-between items-center">
                 <h1
@@ -141,7 +141,7 @@ onMounted(() => {
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Academic Chart -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
                 <h2
@@ -151,7 +151,6 @@ onMounted(() => {
                 </h2>
                 <canvas id="academicChart" class="w-full h-64"></canvas>
             </div>
-
 
             <!-- Yearly Course Details -->
             <div class="space-y-4">
@@ -321,5 +320,5 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>

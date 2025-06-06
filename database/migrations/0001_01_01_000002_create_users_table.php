@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('default_password')->nullable();
             $table->boolean('password_changed')->default(false);
             $table->boolean('is_deleted')->default(false);
+
+            $table->foreignId('active_role_id')->nullable()->constrained('roles');
             $table->timestamp('deleted_at')->nullable();
             $table->string('deleted_by_name')->nullable();
 

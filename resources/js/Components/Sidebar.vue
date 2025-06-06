@@ -5,9 +5,9 @@ import RegistrarSidebar from "./RegistrarSidebar.vue";
 import StudentSidebar from "./StudentSidebar.vue";
 
 const props = defineProps({
-    userRoles: {
+    activeRole: {
         type: Array,
-        default: () => [],
+        required: true,
     },
     isOpen: Boolean,
     isMobile: Boolean,
@@ -15,7 +15,7 @@ const props = defineProps({
 
 let sidebarComponent = null;
 
-switch (props.userRoles[0]) {
+switch (props.activeRole) {
     case "SUPER-ADMIN":
         sidebarComponent = AdminSidebar;
         break;
@@ -33,7 +33,7 @@ switch (props.userRoles[0]) {
         break;
 
     default:
-        console.warn("No layout set for role: " + props.userRoles[0]);
+        console.warn("No layout set for role: " + props.activeRole);
         break;
 }
 </script>

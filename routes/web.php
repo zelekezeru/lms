@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\UserDocumentController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,17 +25,25 @@ Route::middleware('auth')->group(function () {});
 Route::middleware(['auth'])->group(function () {
     // Student Dashboard
     Route::get('/', function () {
-        if (request()->user()->hasRole('STUDENT')) {
-            return redirect(route('student.dashboard'));
-        } elseif (request()->user()->hasRole('INSTRUCTOR')) {
-            return redirect(route('instructor.dashboard'));
-        } elseif (request()->user()->hasRole('REGISTRAR')) {
-            return redirect(route('registrar.dashboard'));
+        $user = Auth::user();
+
+        if (!$user->loggedInAs) {
+            $user->active_role_id = $user->roles->first()?->id;
+            $user->save();
+        }
+
+        $roleName = strtoupper($user->loggedInAs->name);
+
+        if ($roleName === 'STUDENT') {
+            return redirect()->route('student.dashboard');
+        } elseif ($roleName === 'INSTRUCTOR') {
+            return redirect()->route('instructor.dashboard');
+        } elseif ($roleName === 'REGISTRAR') {
+            return redirect()->route('registrar.dashboard');
         } else {
-            return redirect(route('admin.dashboard'));
+            return redirect()->route('admin.dashboard');
         }
     })->name('dashboard');
-
     // Admin Dashboard
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
 
@@ -92,6 +102,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('switch-role', [AuthenticatedSessionController::class, 'switchRole'])->name('switch-role');
 
     // User Ducuments
     Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');

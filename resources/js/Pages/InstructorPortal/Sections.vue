@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
@@ -10,8 +10,8 @@ const props = defineProps({
 });
 </script>
 
-<template> 
-    <InstructorLayout>
+<template>
+    <AppLayout>
         <div class="mb-8">
             <h1
                 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white"
@@ -79,12 +79,16 @@ const props = defineProps({
 
                 <!-- View Details Button -->
                 <Link
-                    :href="route('instructor.sections.detail', {section: section.id})"
+                    :href="
+                        route('instructor.sections.detail', {
+                            section: section.id,
+                        })
+                    "
                     class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg shadow"
                 >
                     View Details
                 </Link>
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

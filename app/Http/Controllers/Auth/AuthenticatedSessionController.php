@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -48,5 +49,22 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function switchRole(Request $request)
+    {
+        if ($request->has('role')) {
+            $role = Role::where('name', $request->role)->first();
+            if (!$role) {
+                return back()->withErrors(['role' => 'Role not found.']);
+            }
+
+            $request->user()->active_role_id = $role->id;
+            $request->user()->save();
+
+            $roleName = strtoupper($request->role);
+
+            return redirect('/');
+        }
     }
 }

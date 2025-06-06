@@ -1,5 +1,5 @@
 <script setup>
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
 
 const form = ref({
@@ -15,7 +15,7 @@ const successMessage = ref("");
 const submit = () => {
     console.log("Form submitted:", form.value);
     successMessage.value = "Registration submitted successfully!";
-    
+
     // Clear form
     form.value = {
         full_name: "",
@@ -28,15 +28,21 @@ const submit = () => {
 </script>
 
 <template>
-    <StudentLayout>
-        <div class="max-w-3xl mx-auto mt-10 bg-white dark:bg-gray-800 p-8 rounded-xl shadow">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">
+    <AppLayout>
+        <div
+            class="max-w-3xl mx-auto mt-10 bg-white dark:bg-gray-800 p-8 rounded-xl shadow"
+        >
+            <h2
+                class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100"
+            >
                 Apply for Registration
             </h2>
 
             <form @submit.prevent="submit" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                         Full Name
                     </label>
                     <input
@@ -48,7 +54,9 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                         Email Address
                     </label>
                     <input
@@ -60,7 +68,9 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                         Phone Number
                     </label>
                     <input
@@ -72,7 +82,9 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                         Program
                     </label>
                     <select
@@ -81,14 +93,22 @@ const submit = () => {
                         class="mt-1 w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                     >
                         <option value="" disabled>Select a program</option>
-                        <option value="BSc in Computer Science">BSc in Computer Science</option>
-                        <option value="BA in Business Administration">BA in Business Administration</option>
-                        <option value="BSc in Civil Engineering">BSc in Civil Engineering</option>
+                        <option value="BSc in Computer Science">
+                            BSc in Computer Science
+                        </option>
+                        <option value="BA in Business Administration">
+                            BA in Business Administration
+                        </option>
+                        <option value="BSc in Civil Engineering">
+                            BSc in Civil Engineering
+                        </option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
                         Semester
                     </label>
                     <select
@@ -119,6 +139,5 @@ const submit = () => {
                 {{ successMessage }}
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>
-

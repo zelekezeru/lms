@@ -1,5 +1,5 @@
 <script setup>
-import StudentLayout from "@/Layouts/StudentLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import { Link } from "@inertiajs/vue3";
 import {
     AcademicCapIcon,
@@ -34,7 +34,7 @@ const failedCourses = props.student.enrollments.filter(
 </script>
 
 <template>
-    <StudentLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 space-y-10">
             <!-- Header & Year Dropdown -->
             <div class="flex justify-between items-center mt-2">
@@ -175,5 +175,5 @@ const failedCourses = props.student.enrollments.filter(
                 </div>
             </div>
         </div>
-    </StudentLayout>
+    </AppLayout>
 </template>

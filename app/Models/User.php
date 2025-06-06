@@ -52,6 +52,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function loggedInAs()
+    {
+        return $this->belongsTo(Role::class, 'active_role_id');
+    }
+
     public function student()
     {
         return $this->hasOne(Student::class);

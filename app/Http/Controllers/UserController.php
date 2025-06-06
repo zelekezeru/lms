@@ -120,19 +120,36 @@ class UserController extends Controller
 
         $user->syncRoles($fields['roles']);
 
-        if ($user->hasRole('INSTRUCTOR')) {
-            if (! $user->instructor) {
-                $instructor = Instructor::create([
-                    'name' => $fields['name'],
-                    'user_id' => $user->id,
-                    'specialization' => "Instructor",
-                    'employment_type' => "FULL-TIME",
-                    'bio' => "This is an instructor",
-                    'status' => 'Active',
-                    'hire_date' => Carbon::now(),
-                ]);
-            }
+        $userId = $user->id;
+
+        cache()->forget("user_roles_{$userId}");
+        cache()->forget("user_permissions_{$userId}");
+
+        $roles = cache()->remember(
+            "user_roles_{$userId}",
+            now()->addMinutes(10),
+            fn() => $user->getRoleNames()
+        );
+
+        $permissions = cache()->remember(
+            "user_permissions_{$userId}",
+            now()->addMinutes(10),
+            fn() => $user->getAllPermissions()->pluck('name')
+        );
+
+        // if user and doesnt have an instructor instance create it
+        if ($user->hasRole('INSTRUCTOR') && ! $user->instructor) {
+            $instructor = Instructor::create([
+                'name' => $fields['name'],
+                'user_id' => $user->id,
+                'specialization' => "Instructor",
+                'employment_type' => "FULL-TIME",
+                'bio' => "This is an instructor",
+                'status' => 'Active',
+                'hire_date' => Carbon::now(),
+            ]);
         }
+
         // Update user details
         $user->update([
             'name' => $fields['name'],

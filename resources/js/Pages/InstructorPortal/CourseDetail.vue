@@ -1,5 +1,5 @@
 <script setup>
-import InstructorLayout from "@/Layouts/InstructorLayout.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 import StudentLayout from "@/Layouts/StudentLayout.vue";
 import {
     BookOpenIcon,
@@ -37,7 +37,7 @@ const getProgressColor = (mark) => {
 </script>
 
 <template>
-    <InstructorLayout>
+    <AppLayout>
         <div class="max-w-7xl mx-auto py-10 px-4 flex flex-col lg:flex-row">
             <!-- Course Info -->
             <div class="flex-1">
@@ -151,5 +151,5 @@ const getProgressColor = (mark) => {
                 </div>
             </div>
         </div>
-    </InstructorLayout>
+    </AppLayout>
 </template>

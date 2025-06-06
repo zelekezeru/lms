@@ -2,6 +2,8 @@
 import { defineProps } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { EyeIcon } from "@heroicons/vue/24/outline";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 // Props from parent
 const props = defineProps({
@@ -35,12 +37,25 @@ function submit() {
     form.post(route("sectionStudents.import"), {
         forceFormData: true,
         onSuccess: () => {
-            alert("Import successful!");
+            Swal.fire({
+                icon: "success",
+                title: "Import Successful",
+                text: "Students have been imported successfully!",
+                timer: 2000,
+                showConfirmButton: false,
+            });
             form.reset("file");
         },
         onError: () => {
-            alert("Import failed. Please check your file and try again.");
+            Swal.fire({
+                icon: "error",
+                title: "Import Failed",
+                text: "There was an error importing students. Please check your file and try again.",
+            });
         },
+        onFinish: () => {
+            form.processing = false;
+        }
     });
 }
 </script>

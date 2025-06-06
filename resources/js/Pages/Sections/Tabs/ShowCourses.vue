@@ -535,16 +535,19 @@ function submitMove() {
     </div>
     <Popover ref="popOverRef">
         <div v-if="selectedCourse" class="space-y-4 w-64">
-            <h3 class="font-semibold">
-                Move
-                {{ selectedCourse.name }}
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100">
+                Move {{ selectedCourse.name }}
             </h3>
+
             <div>
-                <label class="block text-sm">Year</label>
+                <label class="block text-sm text-gray-700 dark:text-gray-300">
+                    Year
+                </label>
                 <select
                     v-model="targetYear"
-                    class="mt-1 block w-full border rounded"
+                    class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
+                    <option disabled value="">To year</option>
                     <option
                         v-for="y in parseInt(section.track.duration)"
                         :key="y"
@@ -554,17 +557,22 @@ function submitMove() {
                     </option>
                 </select>
             </div>
+
             <div>
-                <label class="block text-sm">Semester</label>
+                <label class="block text-sm text-gray-700 dark:text-gray-300">
+                    Semester
+                </label>
                 <select
                     v-model="targetSemester"
-                    class="mt-1 block w-full border rounded"
+                    class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
+                    <option disabled value="">Select semester</option>
                     <option v-for="s in 3" :key="s" :value="s">
                         Semester {{ s }}
                     </option>
                 </select>
             </div>
+
             <div class="flex justify-end">
                 <Button label="Confirm" @click="submitMove" />
             </div>

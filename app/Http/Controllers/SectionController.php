@@ -151,27 +151,44 @@ class SectionController extends Controller
         $track = Track::find($fields['track_id']);
 
         $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
-            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+            $q->where('track_id', $fields['track_id'])
+                ->where('study_mode_id', $fields['study_mode_id']);
         }])->get();
 
-        $trackCoursesOrganized = $trackCourses->mapWithKeys(function ($trackCourse) {
-            $curriculum = $trackCourse->curricula->first();
+        DB::beginTransaction();
 
-            return [
-                $trackCourse->id => [
-                    'year_level' => $curriculum->year_level ?? null,
-                    'semester' => $curriculum->semester ?? null,
-                ],
-            ];
-        });
+        try {
+            // Update the section fields
+            $section->update($fields);
 
-        // Update the section record
-        $section->update($fields);
+            foreach ($trackCourses as $trackCourse) {
+                $curriculum = $trackCourse->curricula->first();
 
-        $section->courses()->sync($trackCoursesOrganized);
+                CourseOffering::updateOrCreate(
+                    [
+                        'course_id' => $trackCourse->id,
+                        'section_id' => $section->id,
+                    ],
+                    [
+                        'year_level' => $curriculum->year_level ?? null,
+                        'semester' => $curriculum->semester ?? null,
+                    ]
+                );
+            }
 
-        return redirect()->route('sections.show', $section)->with('success', 'Section updated successfully.');
+            DB::commit();
+
+            // Optional redirect logic
+            $redirectTo = $request->input('redirectTo', route('sections.show', $section));
+
+            return redirect($redirectTo)->with('success', 'Section updated successfully.');
+        } catch (\Exception $th) {
+            DB::rollBack();
+
+            return back()->withErrors(['error' => 'An error occurred: ' . $th->getMessage()]);
+        }
     }
+
 
     public function edit(Section $section)
     {

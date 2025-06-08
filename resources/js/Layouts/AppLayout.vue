@@ -259,10 +259,11 @@ const changeRole = (roleName) => {
                                 <!-- Switch Role Section below logout -->
                                 <li
                                     class="px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100"
+                                    v-if="userRoles.length > 1"
                                 >
                                     Switch Role
                                 </li>
-                                <li>
+                                <li v-if="userRoles.length > 1">
                                     <div
                                         class="flex flex-col space-y-1 px-4 py-2 max-h-40 overflow-auto"
                                         style="scrollbar-width: thin"

@@ -18,6 +18,7 @@ use App\Models\Instructor;
 use App\Models\Program;
 use App\Models\Room;
 use App\Models\Section;
+use App\Models\Semester;
 use App\Models\Track;
 use App\Models\User;
 use App\Models\Year;
@@ -122,7 +123,7 @@ class SectionController extends Controller
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
 
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
-        $currentSemesterLevel = $section->semester->level;
+        $currentSemesterLevel = Semester::getActiveSemester()->level;
         $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());

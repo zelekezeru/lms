@@ -24,9 +24,7 @@ const selectedTab = ref("details");
 const tabs = [
     { key: "details", label: "Details", icon: CogIcon },
     { key: "instructors", label: "Instructors", icon: AcademicCapIcon },
-];  
-
-
+];
 </script>
 
 <template>
@@ -57,7 +55,6 @@ const tabs = [
                 </button>
             </nav>
 
-
             <!-- Details Panel -->
             <transition
                 mode="out-in"
@@ -68,20 +65,20 @@ const tabs = [
                 leave-from-class="opacity-100 scale-100"
                 leave-to-class="opacity-0 scale-75"
             >
-            <div
-                :key="selectedTab"
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
-                <ShowDetails
-                    v-if="selectedTab === 'details'"
-                    :course="course"
-                />
+                <div
+                    :key="selectedTab"
+                    class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                >
+                    <ShowDetails
+                        v-if="selectedTab === 'details'"
+                        :course="course"
+                    />
 
-                <!-- Courses Panel -->
+                    <!-- Courses Panel -->
                     <ShowInstructors
-                    v-else-if="selectedTab === 'instructors'"
-                    :course="course"
-                    :instructors="instructors"
+                        v-else-if="selectedTab === 'instructors'"
+                        :course="course"
+                        :instructors="instructors"
                     />
                 </div>
             </transition>

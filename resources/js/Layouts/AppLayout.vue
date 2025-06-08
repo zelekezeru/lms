@@ -116,9 +116,10 @@ const logout = () => {
 
                     <!-- Right side controls -->
                     <div class="flex items-center gap-4">
-                        Currently Logged In As
                         <RolePicker
+                            v-if="userRoles.length > 1"
                             :roles="userRoles"
+                            :collapsed="isMobile"
                             :active-role="loggedInAs"
                         />
 
@@ -300,7 +301,7 @@ const logout = () => {
                         </button>
 
                         <!-- Language Toggle -->
-                        <LanguageToggle />
+                        <LanguageToggle :collapsed="isMobile" />
                     </div>
                 </header>
 

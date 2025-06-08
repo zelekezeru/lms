@@ -102,4 +102,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Section::class);
     }
+
+    public function coordinator()
+    {
+        return $this->hasOne(Coordinator::class);
+    }
+
 }

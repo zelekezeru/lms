@@ -86,7 +86,7 @@ class CoordinatorController extends Controller
             'default_password' => $default_password,
         ];
 
-        $user = User::create($data);
+        $user = User::updateOrCreate($data);
 
         $coordinator = Coordinator::create([
             'user_id' => $user->id,

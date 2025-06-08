@@ -192,7 +192,7 @@ class RolePermissionSeeder extends Seeder
             'create-centers',
             'update-centers',
             'delete-centers',
-
+            
             // Coordinator (CRUD)
             'view-coordinators',
             'create-coordinators',

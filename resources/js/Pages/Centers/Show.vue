@@ -3,6 +3,15 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { ref } from "vue";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import Thead from "@/Components/Thead.vue";
+import Modal from "@/Components/Modal.vue";
+import ShowDetails from "./Tabs/ShowDetails.vue";
+import ShowCoordinators from "./Tabs/ShowCoordinators.vue";
+import ShowStudents from "./Tabs/ShowStudents.vue";
+import ShowExcels from "./Tabs/ShowExcels.vue";
 import {
   ArrowPathIcon,
   TrashIcon,
@@ -16,19 +25,13 @@ import {
   CogIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
-import Table from "@/Components/Table.vue";
-import TableHeader from "@/Components/TableHeader.vue";
-import Thead from "@/Components/Thead.vue";
-import Modal from "@/Components/Modal.vue";
-
-import ShowDetails from "./Tabs/ShowDetails.vue";
-import ShowCoordinators from "./Tabs/ShowCoordinators.vue";
-import ShowStudents from "./Tabs/ShowStudents.vue";
-import ShowExcels from "./Tabs/ShowExcels.vue";
 
 defineProps({
     center: {
+        type: Object,
+        required: true,
+    },  
+    coordinator: {
         type: Object,
         required: true,
     },  
@@ -66,26 +69,6 @@ const refreshData = () => {
     onFinish: () => {
       refreshing.value = false;
     },
-  });
-};
-
-const deleteCoordinator = (id) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "This action cannot be undone!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      router.delete(route("coordinators.destroy", { coordinator: id }), {
-        onSuccess: () => {
-          Swal.fire("Deleted!", "Coordinator has been removed.", "success");
-        },
-      });
-    }
   });
 };
 
@@ -143,12 +126,12 @@ const searchCoordinators = () => {
                 <ShowDetails
                     v-if="selectedTab == 'details'"
                     :center="center"
-                    :coordinator="center.coordinator?.user"
+                    :coordinator="coordinator?.user"
                 />
 
                 <!-- Coordinators Panel -->
                 <ShowCoordinators v-else-if="selectedTab == 'coordinators'" 
-                    :coordinator="center.coordinator?.user"
+                    :coordinator="coordinator?.user"
                     :center="center"
                 />
                 
@@ -157,7 +140,7 @@ const searchCoordinators = () => {
                     v-else-if="selectedTab == 'students'"
                     :center="center"
                     :students="center.students"
-                    :coordinator="center.coordinator?.user"
+                    :coordinator="coordinator?.user"
                     @close="showStudentsModal = false"
                 />
 
@@ -165,7 +148,7 @@ const searchCoordinators = () => {
                 <ShowExcels
                     v-else-if="selectedTab == 'excels'"
                     :center="center"
-                    :coordinator="center.coordinator?.user"
+                    :coordinator="coordinator?.user"
                 />
             </div>
         </transition>

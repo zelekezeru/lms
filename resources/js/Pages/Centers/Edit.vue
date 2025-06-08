@@ -19,8 +19,6 @@ const form = useForm({
   code: props.center?.code || "",
   address: props.center?.address || "",
   status: props.center?.status || "Inactive",
-  coordinator_id: props.center?.coordinator_id || null,
-  coordinators: props.coordinators, // Pass to Form.vue for select dropdown
   _method: "PATCH",
 });
 

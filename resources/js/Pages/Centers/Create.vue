@@ -4,16 +4,16 @@ import Form from "./Form.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const form = useForm({
-    name: '',
-    code: '',
-    address: '',
-    coordinator_id: null,
-    status: 'Inactive',
+    name: "",
+    code: "",
+    address: "",
+    status: "Inactive",
 });
 
 const submit = () => {
     form.post(route("centers.store"));
 };
+
 </script>
 
 <template>

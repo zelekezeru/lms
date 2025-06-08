@@ -16,13 +16,8 @@ class CenterUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'code' => [
-                'required',
-                'string',
-                'max:100',
-                Rule::unique('centers', 'code')->ignore($this->center->id),
-            ],
-            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:Active,Inactive',
+            'address' => 'required|string|max:255',
         ];
     }
 }

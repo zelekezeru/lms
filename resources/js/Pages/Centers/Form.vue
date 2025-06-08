@@ -4,10 +4,12 @@ import { defineProps } from "vue";
 const props = defineProps({
   form: { type: Object, required: true },
 });
+
+const emits = defineEmits(["submit"]);
 </script>
 
 <template>
-  <form @submit.prevent="$emit('submit')">
+    <form @submit.prevent="emits('submit')" enctype="multipart/form-data">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Name -->
       <div>
@@ -19,7 +21,10 @@ const props = defineProps({
           type="text"
           v-model="form.name"
           required
-          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          :class="[
+            'mt-1 block w-full rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+            'dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200'
+          ]"
         />
         <div v-if="form.errors.name" class="text-red-500 text-sm">
           {{ form.errors.name }}
@@ -40,27 +45,6 @@ const props = defineProps({
         />
         <div v-if="form.errors.address" class="text-red-500 text-sm">
           {{ form.errors.address }}
-        </div>
-      </div>
-
-      <!-- Coordinator (optional select) -->
-      <div>
-        <label for="coordinator_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          {{ $t('centers.coordinator') }}
-        </label>
-        <select
-          id="coordinator_id"
-          v-model="form.coordinator_id"
-          class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-          <option :value="null">{{ $t('centers.select_coordinator') }}</option>
-          <!-- Add your coordinators list dynamically if passed via props -->
-          <option v-for="coordinator in form.coordinators ?? []" :key="coordinator.id" :value="coordinator.id">
-            {{ coordinator.name }}
-          </option>
-        </select>
-        <div v-if="form.errors.coordinator_id" class="text-red-500 text-sm">
-          {{ form.errors.coordinator_id }}
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { defineProps } from "vue";
+import { defineProps, inject } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -30,7 +30,7 @@ const deleteCenter = (id) => {
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("common.yes"),
+        confirmButtonText: $t("actions.yes"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("centers.destroy", { center: id }), {
@@ -117,25 +117,30 @@ const deleteCenter = (id) => {
                 </span>
             </div>
         </div>
-
+    
         <!-- Edit and Delete Buttons -->
-        <div class="flex justify-end col-span-2 mt-4">
+        <div class="flex justify-end mt-6 space-x-6">
             <Link
                 v-if="userCan('update-centers')"
-                :href="route('centers.edit', { center: center.id })"
-                class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
+                :href="
+                    route('centers.edit', { center: center.id })
+                "
+                class="text-blue-500 hover:text-blue-700"
             >
-                <PencilIcon class="w-5 h-5" />
-                <span>{{ $t('actions.edit') }}</span>
+                <span class="flex items-center space-x-1">
+                    <PencilIcon class="w-5 h-5" />
+                    <span>Edit</span>
+                </span>
             </Link>
-
             <button
                 v-if="userCan('delete-centers')"
-                @click="deleteCenter(center.id)"
-                class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
+                @click="deleteEmployee(center.id)"
+                class="text-red-500 hover:text-red-700"
             >
-                <TrashIcon class="w-5 h-5" />
-                <span>{{ $t('actions.delete') }}</span>
+                <span class="flex items-center space-x-1">
+                    <TrashIcon class="w-5 h-5" />
+                    <span>Delete</span>
+                </span>
             </button>
         </div>
     </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CenterStoreRequest;
 use App\Http\Requests\CenterUpdateRequest;
 use App\Http\Resources\CenterResource;
+use App\Http\Resources\CoordinatorResource;
 use App\Http\Resources\UserResource;
 use App\Models\Center;
 use App\Models\User;
@@ -39,10 +40,13 @@ class CenterController extends Controller
 
     public function show(Center $center)
     {
-        $center = new CenterResource($center->load('coordinator', 'coordinator.user', 'students', 'students.user'));
+        $center = new CenterResource($center->load('coordinator', 'students'));
 
+        $coordinator = new CoordinatorResource($center->coordinator->load('user'));
+        
         return inertia('Centers/Show', [
             'center' => $center,
+            'coordinator' => $coordinator,
         ]);
     }
 
@@ -56,23 +60,13 @@ class CenterController extends Controller
     public function store(CenterStoreRequest $request)
     {
         $fields = $request->validated();
-
         // Generate Center Code
         $counCenters = Center::count();
 
         $fields['code'] = 'SITS-C-'.str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
 
-        $center = Center::create($fields);
-
-        // Create Coordinator record
-        if ($request['user_id']) {
-            $user = User::find($fields['user_id']);
-
-            $user->assignRole('CENTER-COORDINATOR');
-
-            $user->update(['center_id' => $center->id]);
-        }
-
+        $center = Center::updateOrCreate($fields);
+        
         return redirect()->route('centers.show', $center)->with('success', 'Center created successfully.');
     }
 
@@ -89,18 +83,22 @@ class CenterController extends Controller
         $fields = $request->validated();
 
         $center->update($fields);
-
-        $user = User::find($fields['user_id']);
-        if ($user && ! $user->hasRole('CENTER-COORDINATOR')) {
-            $user->assignRole('CENTER-COORDINATOR');
-        }
-
+        
         return redirect()->route('centers.show', $center)->with('success', 'Center updated successfully.');
     }
 
     public function destroy(Center $center)
     {
         $center->delete();
+
+        // Delete the coordinator and the related user
+        if ($center->coordinator) {
+            $coordinator = $center->coordinator;
+            if ($coordinator->user) {
+            $coordinator->user->delete();
+            }
+            $coordinator->delete();
+        }
 
         return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
     }

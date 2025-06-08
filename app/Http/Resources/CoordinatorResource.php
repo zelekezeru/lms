@@ -12,6 +12,7 @@ class CoordinatorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'userId' => $this->user->user_uuid,
             'email' => $this->email,
             'center' => new CenterResource($this->whenLoaded('center')),
             'user' => new UserResource($this->whenLoaded('user')),

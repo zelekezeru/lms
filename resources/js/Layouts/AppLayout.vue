@@ -5,14 +5,12 @@ import { Bars3Icon, MoonIcon, SunIcon } from "@heroicons/vue/24/outline";
 import { router } from "@inertiajs/vue3";
 import Sidebar from "@/Components/Sidebar.vue";
 import LanguageToggle from "@/Components/LanguageToggle.vue";
-import RolePicker from "@/Components/RolePicker.vue";
 import RegistrarSidebar from "@/Components/RegistrarSidebar.vue";
 
 // Auth User
 const user = computed(() => usePage().props.auth.user);
 const userRoles = usePage().props.auth.user.roles;
 const loggedInAs = usePage().props.auth.user.loggedInAs;
-console.log(loggedInAs);
 
 const darkMode = ref(localStorage.getItem("darkMode") === "true");
 const toggleDarkMode = () => {
@@ -37,7 +35,6 @@ onMounted(() => {
     updateScreen();
     window.addEventListener("resize", updateScreen);
 
-    // Sync dark mode on load
     if (darkMode.value) {
         document.documentElement.classList.add("dark");
     } else {
@@ -49,6 +46,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     window.removeEventListener("resize", updateScreen);
+    document.removeEventListener("click", handleClickOutside);
 });
 
 const toggleSidebar = () => {
@@ -72,16 +70,17 @@ const handleClickOutside = (event) => {
     }
 };
 
-onMounted(() => {
-    document.addEventListener("click", handleClickOutside);
-});
-onUnmounted(() => {
-    document.removeEventListener("click", handleClickOutside);
-});
-
 // Logout
 const logout = () => {
     router.post(route("logout"));
+};
+
+// Role switcher function
+const changeRole = (roleName) => {
+    router.visit(route("switch-role"), {
+        method: "post",
+        data: { role: roleName },
+    });
 };
 </script>
 
@@ -116,14 +115,7 @@ const logout = () => {
 
                     <!-- Right side controls -->
                     <div class="flex items-center gap-4">
-                        <RolePicker
-                            v-if="userRoles.length > 1"
-                            :roles="userRoles"
-                            :collapsed="isMobile"
-                            :active-role="loggedInAs"
-                        />
-
-                        <!-- User Dropdown -->
+                        <!-- User Dropdown with logout and roles below -->
                         <div class="relative" ref="dropdownRef">
                             <button
                                 @click="toggleDropdown"
@@ -188,6 +180,7 @@ const logout = () => {
                                 v-show="dropdownVisible"
                                 class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-md z-50 overflow-hidden"
                             >
+                                <!-- Profile Info -->
                                 <li
                                     class="px-4 py-3 flex items-center space-x-3"
                                 >
@@ -231,11 +224,14 @@ const logout = () => {
                                         </p>
                                     </div>
                                 </li>
+
                                 <li>
                                     <hr
                                         class="border-gray-200 dark:border-gray-700"
                                     />
                                 </li>
+
+                                <!-- Profile Links -->
                                 <li>
                                     <Link
                                         :href="route('profile.edit')"
@@ -248,66 +244,64 @@ const logout = () => {
                                     <Link
                                         href="#"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                        @click.prevent="logout"
                                     >
-                                        My Balance
+                                        Logout
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link
-                                        href="#"
-                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
-                                    >
-                                        Inbox
-                                    </Link>
-                                </li>
+
                                 <li>
                                     <hr
                                         class="border-gray-200 dark:border-gray-700"
                                     />
                                 </li>
-                                <li>
-                                    <Link
-                                        href="#"
-                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
-                                    >
-                                        Account Settings
-                                    </Link>
+
+                                <!-- Switch Role Section below logout -->
+                                <li
+                                    class="px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100"
+                                >
+                                    Switch Role
                                 </li>
                                 <li>
-                                    <hr
-                                        class="border-gray-200 dark:border-gray-700"
-                                    />
-                                </li>
-                                <li>
-                                    <button
-                                        @click="logout"
-                                        class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+                                    <div
+                                        class="flex flex-col space-y-1 px-4 py-2 max-h-40 overflow-auto"
+                                        style="scrollbar-width: thin"
                                     >
-                                        Log Out
-                                    </button>
+                                        <button
+                                            v-for="role in userRoles"
+                                            :key="role"
+                                            @click="changeRole(role)"
+                                            :class="[
+                                                'text-left px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700',
+                                                role === loggedInAs.name
+                                                    ? 'font-bold bg-gray-300 dark:bg-gray-600'
+                                                    : '',
+                                            ]"
+                                        >
+                                            {{ role }}
+                                        </button>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- Dark Mode Toggle -->
+                        <!-- Language toggle -->
+                        <LanguageToggle collapsed="isMobile" />
+
+                        <!-- Dark mode toggle -->
                         <button
                             @click="toggleDarkMode"
-                            class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                         >
                             <component
                                 :is="darkMode ? SunIcon : MoonIcon"
-                                class="h-6 w-6 text-gray-600 dark:text-gray-300"
+                                class="h-6 w-6"
                             />
                         </button>
-
-                        <!-- Language Toggle -->
-                        <LanguageToggle :collapsed="isMobile" />
                     </div>
                 </header>
 
-                <main
-                    class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900"
-                >
+                <main class="flex-1 overflow-y-auto p-4">
                     <slot />
                 </main>
             </div>

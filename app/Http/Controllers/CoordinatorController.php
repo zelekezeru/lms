@@ -110,6 +110,7 @@ class CoordinatorController extends Controller
 
     public function update(CoordinatorUpdateRequest $request, Coordinator $coordinator)
     {
+        dd($coordinator);
         $fields = $request->validated();
 
         $coordinator->update($fields);
@@ -119,7 +120,7 @@ class CoordinatorController extends Controller
             $user->assignRole('COORDINATOR');
         }
 
-        return redirect()->route('coordinators.show', $coordinator)->with('success', 'Coordinator updated successfully.');
+        return redirect()->route('centers.show', $coordinator->center)->with('success', 'Coordinator Updated successfully.');
     }
 
     public function destroy(Coordinator $coordinator)

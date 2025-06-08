@@ -40,9 +40,13 @@ class CenterController extends Controller
 
     public function show(Center $center)
     {
-        $center = new CenterResource($center->load('coordinator', 'students'));
+        $center = new CenterResource($center->load('students'));
 
-        $coordinator = new CoordinatorResource($center->coordinator->load('user'));
+        if($center->coordinator){
+            $coordinator = new CoordinatorResource($center->coordinator->load('user'));
+        }else{
+            $coordinator = null;
+        }       
         
         return inertia('Centers/Show', [
             'center' => $center,

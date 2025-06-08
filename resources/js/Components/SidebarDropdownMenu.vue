@@ -62,7 +62,7 @@ const afterLeave = (el) => {
         <button
             @click="isOpen = !isOpen"
             :class="{
-                'border-l-4 border-blue-700 box-border bg-gray-100 dark:bg-gray-600':
+                'border-l-4 border-blue-700 box-border bg-gray-200 dark:bg-gray-600':
                     isOpen,
             }"
             class="w-full flex items-center rounded-md justify-between px-4 py-1 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -94,7 +94,7 @@ const afterLeave = (el) => {
         >
             <div
                 v-if="isOpen && (sidebarVisible || sidebarHovered)"
-                class="space-y-2 rounded-md p-2"
+                class="space-y-2 rounded-md p-2 bg-gray-100 dark:bg-gray-700"
             >
                 <slot />
             </div>

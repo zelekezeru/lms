@@ -10,6 +10,12 @@ import {
     CogIcon,
     QuestionMarkCircleIcon,
     UserCircleIcon,
+    UserIcon,
+    BuildingOffice2Icon,
+    ClockIcon,
+    BriefcaseIcon,
+    PlusIcon,
+    ChartPieIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
@@ -50,13 +56,119 @@ const wrapperClasses = computed(() => {
             </div>
 
             <!-- Menu items -->
-            <nav class="flex-1 px-2 space-y-1 mt-4">
+            <nav class="flex-1 px-2 space-y-1 mt-4 max-h-[800px] overflow-auto">
                 <SidebarItem
                     :icon="AcademicCapIcon"
                     label="Dashboard"
                     :href="route('registrar.dashboard')"
                     :isCollapsed="!isOpen"
                 />
+                <SidebarDropdownMenu
+                    label="Calendar Structure"
+                    :icon="ClockIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CalendarIcon"
+                        label="Manage Years"
+                        :href="route('years.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="ChartPieIcon"
+                        label="Manage Semesters"
+                        :href="route('semesters.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="ClockIcon"
+                        label="Manage Calendars"
+                        :href="route('calendars.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                    label="Academic Structure"
+                    :icon="AcademicCapIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Programs"
+                        :href="route('programs.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="BuildingOffice2Icon"
+                        label="Manage Tracks"
+                        :href="route('tracks.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="ClockIcon"
+                        label="Manage Study Modes"
+                        :href="route('studyModes.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="BriefcaseIcon"
+                        label="Manage Courses"
+                        :href="route('courses.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                    label="Section Classes"
+                    :icon="AcademicCapIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Sections"
+                        :href="route('sections.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Rooms"
+                        :href="route('rooms.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Weights"
+                        :href="route('weights.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                    label="User Management"
+                    :icon="UserIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        label="Manage Instructors"
+                        :href="route('instructors.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="BriefcaseIcon"
+                        label="Manage Employees"
+                        :href="route('employees.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                    <SidebarItem
+                        :icon="BriefcaseIcon"
+                        label="Manage Users"
+                        :href="route('users.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
                 <SidebarDropdownMenu
                     label="Student Management"
                     :icon="UsersIcon"
@@ -83,26 +195,14 @@ const wrapperClasses = computed(() => {
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Section Classes"
-                    :icon="AcademicCapIcon"
+                    label="Centers"
+                    :icon="BuildingOffice2Icon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
-                        :icon="CogIcon"
-                        label="Manage Sections"
-                        :href="route('sections.index')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
-                        :icon="CogIcon"
-                        label="Manage Rooms"
-                        :href="route('rooms.index')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
-                        :icon="CogIcon"
-                        label="Manage Weights"
-                        :href="route('weights.index')"
+                        :icon="BuildingOffice2Icon"
+                        label="Manage Centers"
+                        :href="route('centers.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>

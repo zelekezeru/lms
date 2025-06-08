@@ -192,7 +192,7 @@ class RolePermissionSeeder extends Seeder
             'create-centers',
             'update-centers',
             'delete-centers',
-            
+
             // Coordinator (CRUD)
             'view-coordinators',
             'create-coordinators',
@@ -933,6 +933,229 @@ class RolePermissionSeeder extends Seeder
                     'reset-password',
                     'update-password',
 
+                ]);
+                $role->syncPermissions($employeePermissions);
+            } elseif (in_array($roleName, ['REGISTRAR'])) {
+                $employeePermissions = array_diff($permissions, [
+                    // Tenants (CRUD)
+                    'view-tenants',
+                    'create-tenants',
+                    'update-tenants',
+                    'delete-tenants',
+
+                    // Roles (CRUD)
+                    'view-roles',
+                    'create-roles',
+                    'update-roles',
+                    'delete-roles',
+
+                    // Permissions (CRUD)
+                    'view-permissions',
+                    'create-permissions',
+                    'update-permissions',
+                    'delete-permissions',
+
+                    // Additional role routes
+                    'assign-permissions-roles',
+                    'attach-permissions-roles',
+                    'detach-permissions-roles',
+
+                    // Programs (CRUD)
+                    // 'view-programs',
+                    'create-programs',
+                    'update-programs',
+                    'delete-programs',
+
+                    // StudyMode (CRUD)
+                    // 'view-studyModes',
+                    'create-studyModes',
+                    'update-studyModes',
+                    'delete-studyModes',
+
+                    // Tracks (CRUD)
+                    // 'view-tracks',
+                    'create-tracks',
+                    'update-tracks',
+                    'delete-tracks',
+
+                    // Courses (CRUD)
+                    // 'view-courses',
+                    // 'create-courses',
+                    // 'update-courses',
+                    // 'delete-courses',
+
+                    // Users (CRUD)
+                    // 'view-users',
+                    // 'create-users',
+                    // 'update-users',
+                    // 'delete-users',
+
+                    // Students (CRUD)
+                    // 'view-students',
+                    // 'create-students',
+                    // 'delete-students',
+
+                    // Instructors (CRUD)
+                    // 'view-instructors',
+                    // 'create-instructors',
+                    // 'update-instructors',
+                    // 'delete-instructors',
+
+                    // Employees (CRUD)
+                    // 'view-employees',
+                    // 'create-employees',
+                    // 'update-employees',
+                    // 'delete-employees',
+
+                    // User Documents (CRUD)
+                    // 'view-userDocuments',
+                    // 'create-userDocuments',
+                    // 'update-userDocuments',
+                    // 'delete-userDocuments',
+
+                    // Inventories (CRUD)
+                    'view-inventories',
+                    'create-inventories',
+                    'update-inventories',
+                    'delete-inventories',
+
+                    // Inventory Categories (CRUD)
+                    'view-inventory-categories',
+                    'create-inventory-categories',
+                    'update-inventory-categories',
+                    'delete-inventory-categories',
+
+                    // Inventory Suppliers (CRUD)
+                    'view-inventory-suppliers',
+                    'create-inventory-suppliers',
+                    'update-inventory-suppliers',
+                    'delete-inventory-suppliers',
+
+                    // Years (CRUD)
+                    // 'view-years',
+                    // 'create-years',
+                    // 'update-years',
+                    // 'delete-years',
+
+                    // Semesters (CRUD)
+                    // 'view-semesters',
+                    // 'create-semesters',
+                    // 'update-semesters',
+                    // 'delete-semesters',
+
+                    // Calendars (CRUD)
+                    'view-calendars',
+                    'create-calendars',
+                    'update-calendars',
+                    'delete-calendars',
+
+                    // Sections (CRUD)
+                    // 'view-sections',
+                    // 'create-sections',
+                    // 'update-sections',
+                    // 'delete-sections',
+
+                    // Results (CRUD)
+                    // 'view-results',
+                    // 'create-results',
+                    // 'update-results',
+                    // 'delete-results',
+
+                    // Weights (CRUD)
+                    // 'view-weights',
+                    // 'create-weights',
+                    // 'update-weights',
+                    // 'delete-weights',
+
+                    // Grades (CRUD)
+                    // 'view-grades',
+                    // 'create-grades',
+                    // 'update-grades',
+                    // 'delete-grades',
+
+                    // Curriculums (CRUD)
+                    // 'view-curriculums',
+                    // 'create-curriculums',
+                    // 'update-curriculums',
+                    // 'delete-curriculums',
+
+                    // Centers (CRUD)
+                    // 'view-centers',
+                    // 'create-centers',
+                    // 'update-centers',
+                    // 'delete-centers',
+
+                    // Coordinators (CRUD)
+                    // 'view-coordinators',
+                    // 'create-coordinators',
+                    // 'update-coordinators',
+                    // 'delete-coordinators',
+
+                    // Payments (CRUD)
+                    'view-payments',
+                    'create-payments',
+                    'update-payments',
+                    'delete-payments',
+
+                    // Payment Categories (CRUD)
+                    'view-paymentCategories',
+                    'create-paymentCategories',
+                    'update-paymentCategories',
+                    'delete-paymentCategories',
+
+                    // Payment Items (CRUD)
+                    'view-paymentItems',
+                    'create-paymentItems',
+                    'update-paymentItems',
+                    'delete-paymentItems',
+
+                    // Payment Calendars (CRUD)
+                    'view-paymentSchedules',
+                    'create-paymentSchedules',
+                    'update-paymentSchedules',
+                    'delete-paymentSchedules',
+
+                    // Payment Methods (CRUD)
+                    'view-paymentMethods',
+                    'create-paymentMethods',
+                    'update-paymentMethods',
+                    'delete-paymentMethods',
+
+                    // Payment Types (CRUD)
+                    'view-paymentTypes',
+                    'create-paymentTypes',
+                    'update-paymentTypes',
+                    'delete-paymentTypes',
+
+                    // Assigning Relationships
+                    // 'section-courses',
+                    // 'attach-section-courses',
+                    // 'detach-section-courses',
+
+                    // 'section-instructors',
+                    // 'attach-section-instructors',
+                    // 'detach-section-instructors',
+
+                    // 'attach-section-students',
+                    // 'detach-section-students',
+
+                    // 'course-instructors',
+                    // 'attach-course-instructors',
+                    // 'detach-course-instructors',
+
+                    // 'course-students',
+                    // 'attach-course-students',
+                    // 'detach-course-students',
+
+                    // // User Documents
+                    // 'update-user-document',
+                    // 'update-user-document-image',
+
+                    // Password/Account
+                    'view-password',
+                    'default-password',
+                    'reset-password',
+                    'update-profile',
                 ]);
                 $role->syncPermissions($employeePermissions);
             }

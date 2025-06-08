@@ -6,7 +6,7 @@ import StudentSidebar from "./StudentSidebar.vue";
 
 const props = defineProps({
     activeRole: {
-        type: Array,
+        type: String,
         required: true,
     },
     isOpen: Boolean,

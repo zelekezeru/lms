@@ -8,7 +8,7 @@ import {
 import { router } from "@inertiajs/vue3";
 const props = defineProps({
     roles: Array,
-    activeRole: Object,
+    activeRole: String,
 });
 
 // Refs for state and element tracking

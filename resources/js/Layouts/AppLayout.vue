@@ -286,7 +286,7 @@ const changeRole = (roleName) => {
                         </div>
 
                         <!-- Language toggle -->
-                        <LanguageToggle collapsed="isMobile" />
+                        <LanguageToggle :collapsed="isMobile" />
 
                         <!-- Dark mode toggle -->
                         <button

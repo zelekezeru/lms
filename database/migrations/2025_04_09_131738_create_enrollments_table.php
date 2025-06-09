@@ -13,9 +13,16 @@ return new class extends Migration
     {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('course_offering_id')->constrained()->onDelete('cascade');
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['Enrolled', 'Completed', 'Failed', 'Dropped'])->default('Enrolled');
+
+            // Financial status is tracked in invoices table — no need to duplicate it here
+            $table->enum('status', ['pending', 'enrolled', 'dropped', 'deferred'])->default('pending');
+
+            // Tracks student academic progress for this course
+            $table->enum('academic_status', ['in_progress', 'completed', 'failed', 'dropped'])->default('in_progress');
+
             $table->timestamps();
         });
     }

@@ -46,8 +46,7 @@ const filteredCoursesList = computed(() =>
 const showAddModal = ref(false);
 const showDropModal = ref(false);
 
-const addForm = useForm({ course_id: null, section_id: null });
-
+const addForm = useForm({ course_id: "", section_id: "" });
 const dropForm = useForm({});
 
 const enrolledIds = computed(
@@ -65,11 +64,13 @@ const availableCourses = computed(() =>
 );
 
 const selectedStudyModeId = ref(props.studyModes[0].id || null);
+console.log(props.student.enrollments);
 
 const sectionOptions = computed(() => {
     const selected = props.studyModes.find(
         (sm) => sm.id === selectedStudyModeId.value
     );
+
     return (
         selected?.sections?.filter((section) =>
             section.courses
@@ -162,7 +163,7 @@ const dropEnrollment = (enrollmentId) => {
         <div
             v-if="
                 !student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'Enrolled'
+                    (enrollment) => enrollment.status == 'enrolled'
                 )
             "
             class="text-center"
@@ -175,7 +176,7 @@ const dropEnrollment = (enrollmentId) => {
         <div
             v-else-if="
                 student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'Enrolled'
+                    (enrollment) => enrollment.status == 'enrolled'
                 )
             "
             class="flex flex-col"
@@ -230,7 +231,7 @@ const dropEnrollment = (enrollmentId) => {
                             v-for="(
                                 enrollment, index
                             ) in student.enrollments.filter(
-                                (enrollment) => enrollment.status == 'Enrolled'
+                                (enrollment) => enrollment.status == 'enrolled'
                             )"
                             :key="enrollment.id"
                             :class="
@@ -282,7 +283,7 @@ const dropEnrollment = (enrollmentId) => {
                             >
                                 <span
                                     :class="
-                                        enrollment.status === 'Enrolled'
+                                        enrollment.status === 'enrolled'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
@@ -315,7 +316,7 @@ const dropEnrollment = (enrollmentId) => {
         <div
             v-if="
                 student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'Dropped'
+                    (enrollment) => enrollment.status == 'dropped'
                 ).length == 0
             "
             class="text-center"
@@ -326,7 +327,7 @@ const dropEnrollment = (enrollmentId) => {
         <div
             v-else-if="
                 student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'Dropped'
+                    (enrollment) => enrollment.status == 'dropped'
                 )
             "
             class="flex flex-col"
@@ -381,7 +382,7 @@ const dropEnrollment = (enrollmentId) => {
                             v-for="(
                                 enrollment, index
                             ) in student.enrollments.filter(
-                                (enrollment) => enrollment.status == 'Dropped'
+                                (enrollment) => enrollment.status == 'dropped'
                             )"
                             :key="enrollment.id"
                             :class="
@@ -433,7 +434,7 @@ const dropEnrollment = (enrollmentId) => {
                             >
                                 <span
                                     :class="
-                                        enrollment.status === 'Enrolled'
+                                        enrollment.status === 'enrolled'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
@@ -466,7 +467,7 @@ const dropEnrollment = (enrollmentId) => {
         <div
             v-if="
                 student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'Completed'
+                    (enrollment) => enrollment.status == 'completed'
                 ).length == 0
             "
             class="text-center"
@@ -534,7 +535,7 @@ const dropEnrollment = (enrollmentId) => {
                             v-for="(
                                 enrollment, index
                             ) in student.enrollments.filter(
-                                (enrollment) => enrollment.status == 'Completed'
+                                (enrollment) => enrollment.status == 'completed'
                             )"
                             :key="enrollment.id"
                             :class="
@@ -586,7 +587,7 @@ const dropEnrollment = (enrollmentId) => {
                             >
                                 <span
                                     :class="
-                                        enrollment.status === 'Enrolled'
+                                        enrollment.status === 'enrolled'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
@@ -610,66 +611,70 @@ const dropEnrollment = (enrollmentId) => {
 
         <!-- Add Course Modal -->
         <Modal :show="showAddModal" @close="showAddModal = false">
-            <div class="px-8 py-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-md">
+            <div class="px-8 py-6">
                 <h3 class="text-lg font-semibold mb-4">
                     Enroll {{ student.name }} to
                     {{
                         addForm.course_id
-                            ? courses.find((course) => course.id == addForm.course_id)?.name
+                            ? courses.find(
+                                  (course) => course.id == addForm.course_id
+                              )?.name
                             : "New Course"
                     }}
+                    New Course
                 </h3>
 
                 <!-- Course Selection -->
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                >
                     Course
                 </label>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                <p class="text-sm text-gray-500 mb-2">
                     Choose a course the student hasn’t taken yet.
                 </p>
-                <select
+                <Listbox
                     v-model="addForm.course_id"
-                    class="w-full mb-4 px-3 py-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring focus:ring-indigo-500 transition"
-                >
-                    <option :value="null" disabled>Select Course</option>
-                    <option
-                        v-for="course in filteredCoursesList"
-                        :key="course.id"
-                        :value="course.id"
-                    >
-                        {{ course.name }}
-                    </option>
-                </select>
+                    :options="filteredCoursesList"
+                    checkmark
+                    optionLabel="name"
+                    option-value="id"
+                    filter
+                    placeholder="Select Course"
+                    class="w-full mb-4"
+                />
 
                 <!-- Study Mode Selection -->
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                >
                     Study Mode
                 </label>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    Select how the course will be attended (e.g. regular, weekend).
+                <p class="text-sm text-gray-500 mb-2">
+                    Select how the course will be attended (e.g. regular,
+                    weekend).
                 </p>
-                <select
-                    v-model="addForm.course_id"
-                    class="w-full mb-4 px-3 py-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 rounded-md shadow-sm focus:ring focus:ring-indigo-500 transition"
-                >
-                    <option :value="null" disabled>Select Study Mode</option>
-                    <option
-                        v-for="studyMode in props.studyModes"
-                        :key="studyMode.id"
-                        :value="studyMode.id"
-                    >
-                        {{ studyMode.name }}
-                    </option>
-                </select>
+                <Select
+                    v-model="selectedStudyModeId"
+                    :options="props.studyModes"
+                    placeholder="Select Study Mode"
+                    option-label="name"
+                    append-to="self"
+                    option-value="id"
+                    class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                />
 
                 <!-- Section Selection -->
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+                >
                     Section
                 </label>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    Pick the section where the student will take the given course in the given study mode.
+                <p class="text-sm text-gray-500 mb-2">
+                    Pick the section where the student will take the given
+                    course in the given study mode.
                 </p>
-                
+
                 <Select
                     v-model="addForm.section_id"
                     :options="sectionOptions"
@@ -682,23 +687,22 @@ const dropEnrollment = (enrollmentId) => {
                 />
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end mt-4">
+                <div class="flex justify-end">
                     <button
                         @click="submitAdd"
                         :disabled="addForm.processing"
-                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded mr-3 transition"
+                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded mr-3"
                     >
                         {{ addForm.processing ? "Adding..." : "Add" }}
                     </button>
                     <button
                         @click="showAddModal = false"
-                        class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded transition"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded"
                     >
                         Cancel
                     </button>
                 </div>
             </div>
         </Modal>
-
     </div>
 </template>

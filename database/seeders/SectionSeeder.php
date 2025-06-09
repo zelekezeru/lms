@@ -36,8 +36,8 @@ class SectionSeeder extends Seeder
                 $data[] = [
                     'id' => $i,
                     'name' => 'Section 1',
-                    'code' => 'SC-25-'.str_pad($i, 2, '0', STR_PAD_LEFT),
-                    'year_id' => rand(2, 6),
+                    'code' => 'SC-25-' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'year_id' => rand(1, 4),
                     'user_id' => $userId,
                     'program_id' => $programId,
                     'track_id' => $trackId,

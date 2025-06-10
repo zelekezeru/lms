@@ -16,6 +16,13 @@ class Student extends Model
         return $this->belongsTo(User::class);
     }
 
+    public static function getActiveStudents()
+    {
+        return Student::whereHas('status', function ($q) {
+            $q->where('is_active', true);
+        })->get();
+    }
+
     public function status()
     {
         return $this->hasOne(Status::class);
@@ -111,7 +118,7 @@ class Student extends Model
 
     public function semesters()
     {
-        return $this->belongsToMany(Semester::class)->withPivot('status');
+        return $this->belongsToMany(Semester::class)->withPivot('academic_status');
     }
 
     public function centers()

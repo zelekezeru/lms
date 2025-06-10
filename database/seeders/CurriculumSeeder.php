@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class CarculaSeeder extends Seeder
+class CurriculumSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -59,14 +59,14 @@ class CarculaSeeder extends Seeder
                     $record = array_merge($commonData, [
                         'course_id'  => $courseId,
                         'year_level' => $yearLevel,
-                        'semester'   => $semester,
+                        'semester_level'   => $semester,
                     ]);
                     // Add the created record to our collection
                     $recordsToInsert[] = $record;
                 }
             }
         }
-        
+
         // Insert all collected records into the database at once
         DB::table('curricula')->insert($recordsToInsert);
     }

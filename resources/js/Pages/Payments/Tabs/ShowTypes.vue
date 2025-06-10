@@ -81,7 +81,11 @@ const deletePaymentType = (id) => {
         if (result.isConfirmed) {
             router.delete(route("paymentTypes.destroy", { paymentType: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "The type has been deleted.", "success");
+                    Swal.fire(
+                        "Deleted!",
+                        "The type has been deleted.",
+                        "success"
+                    );
                     refreshData();
                 },
                 onError: () => {
@@ -116,13 +120,16 @@ const editType = (type) => {
 
 const submitEditType = () => {
     if (!currentEditId.value) return;
-    typeEditForm.put(route("paymentTypes.update", { paymentType: currentEditId.value }), {
-        onSuccess: () => {
-            editTypeModal.value = false;
-            typeEditForm.reset();
-            refreshData();
-        },
-    });
+    typeEditForm.put(
+        route("paymentTypes.update", { paymentType: currentEditId.value }),
+        {
+            onSuccess: () => {
+                editTypeModal.value = false;
+                typeEditForm.reset();
+                refreshData();
+            },
+        }
+    );
 };
 
 const closeCreateTypeModal = () => {
@@ -136,21 +143,30 @@ const closeEditModal = () => {
 };
 </script>
 
-
 <template>
     <div>
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Payment Types</h2>
-            <button @click="createTypeModal = true" class="flex text-green-600 hover:text-green-800">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Payment Types
+            </h2>
+            <button
+                @click="createTypeModal = true"
+                class="flex text-green-600 hover:text-green-800"
+            >
                 <PlusCircleIcon class="mx-2 w-8 h-8" />
                 Create Payment Type
             </button>
         </div>
-        
+
         <!-- Table -->
-        <div class="overflow-x-auto mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4">
-            <div v-if="!paymentTypes?.length" class="text-center text-gray-500 dark:text-gray-400">
+        <div
+            class="overflow-x-auto mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+        >
+            <div
+                v-if="!paymentTypes?.length"
+                class="text-center text-gray-500 dark:text-gray-400"
+            >
                 No payment type information available.
             </div>
             <div v-else>
@@ -167,16 +183,32 @@ const closeEditModal = () => {
                         </tr>
                     </TableHeader>
                     <tbody>
-                        <TableZebraRows v-for="(type, index) in paymentTypes || []" :key="type.id">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <TableZebraRows
+                            v-for="(type, index) in paymentTypes || []"
+                            :key="type.id"
+                        >
+                            <th
+                                scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            >
                                 {{ index + 1 }}
                             </th>
                             <td class="px-6 py-4">{{ type.type }}</td>
-                            <td class="px-6 py-4">{{ type.language || 'N/A' }}</td>
-                            <td class="px-6 py-4">{{ type.duration || 'N/A' }}</td>
-                            <td class="px-6 py-4">{{ type.amount || 'N/A' }}</td>
                             <td class="px-6 py-4">
-                                {{ type.is_active == "1" ? "Active" : "Inactive" }}
+                                {{ type.language || "N/A" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ type.duration || "N/A" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ type.amount || "N/A" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{
+                                    type.is_active == "1"
+                                        ? "Active"
+                                        : "Inactive"
+                                }}
                             </td>
                             <td class="px-6 py-4 flex justify-start space-x-4">
                                 <button
@@ -201,7 +233,10 @@ const closeEditModal = () => {
         </div>
 
         <!-- Pagination -->
-        <div v-if="paymentTypes?.meta?.links" class="mt-3 flex justify-center space-x-6">
+        <div
+            v-if="paymentTypes?.meta?.links"
+            class="mt-3 flex justify-center space-x-6"
+        >
             <Link
                 v-for="link in paymentTypes.meta.links"
                 :key="link.label"
@@ -217,14 +252,26 @@ const closeEditModal = () => {
         </div>
 
         <!-- Create Type Modal -->
-        <Modal :show="createTypeModal" @close="closeCreateTypeModal" :maxWidth="'md'" class="p-6">
+        <Modal
+            :show="createTypeModal"
+            @close="closeCreateTypeModal"
+            :maxWidth="'md'"
+            class="p-6"
+        >
             <div class="w-full px-8 py-6">
-                <h1 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Create New Payment Item</h1>
+                <h1
+                    class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
+                >
+                    Create New Payment Item
+                </h1>
                 <form @submit.prevent="submitNewType">
                     <div>
                         <!-- Type -->
                         <div class="mb-4">
-                            <label for="type" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="type"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Type
                             </label>
                             <input
@@ -233,12 +280,18 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeCreationForm.errors.type" class="mt-2" />
+                            <InputError
+                                :message="typeCreationForm.errors.type"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Payment Category Select -->
                         <div class="mb-4">
-                            <label for="payment_category_id" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="payment_category_id"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Payment Category
                             </label>
                             <select
@@ -246,18 +299,33 @@ const closeEditModal = () => {
                                 id="payment_category_id"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Category </option>
-                                <option v-for="paymentCategory in paymentCategories" :key="paymentCategory.id" :value="paymentCategory.id">
+                                <option disabled value="">
+                                    Select Category
+                                </option>
+                                <option
+                                    v-for="paymentCategory in paymentCategories"
+                                    :key="paymentCategory.id"
+                                    :value="paymentCategory.id"
+                                >
                                     {{ paymentCategory.name }}
                                 </option>
                             </select>
-                            <InputError :message="typeCreationForm.errors['payment_category_id']" class="mt-2" />
-
+                            <InputError
+                                :message="
+                                    typeCreationForm.errors[
+                                        'payment_category_id'
+                                    ]
+                                "
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Study Mode Select -->
                         <div class="mb-4">
-                            <label for="study_mode_id" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="study_mode_id"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Study Mode
                             </label>
                             <select
@@ -265,18 +333,29 @@ const closeEditModal = () => {
                                 id="study_mode_id"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Study Mode </option>
-                                <option v-for="mode in studyModes" :key="mode.id" :value="mode.id">
-                                    {{ mode.mode }} - {{ mode.program.name }}
+                                <option disabled value="">
+                                    Select Study Mode
+                                </option>
+                                <option
+                                    v-for="mode in studyModes"
+                                    :key="mode.id"
+                                    :value="mode.id"
+                                >
+                                    {{ mode.name }}
                                 </option>
                             </select>
-                            <InputError :message="typeCreationForm.errors.study_mode_id" class="mt-2" />
+                            <InputError
+                                :message="typeCreationForm.errors.study_mode_id"
+                                class="mt-2"
+                            />
                         </div>
-                        
 
                         <!-- Pay Duration Select -->
                         <div class="mb-4">
-                            <label for="duration" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="duration"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Payment Duration
                             </label>
                             <select
@@ -284,17 +363,36 @@ const closeEditModal = () => {
                                 id="duration"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Pay Duration </option>
-                                <option v-for="duration in ['One-Time', 'Per-Semester', 'Per-Course', 'Monthly', 'Anually', 'Other']" :key="duration" :value="duration">
+                                <option disabled value="">
+                                    Select Pay Duration
+                                </option>
+                                <option
+                                    v-for="duration in [
+                                        'One-Time',
+                                        'Per-Semester',
+                                        'Per-Course',
+                                        'Monthly',
+                                        'Anually',
+                                        'Other',
+                                    ]"
+                                    :key="duration"
+                                    :value="duration"
+                                >
                                     {{ duration }}
                                 </option>
                             </select>
-                            <InputError :message="typeCreationForm.errors.duration" class="mt-2" />
+                            <InputError
+                                :message="typeCreationForm.errors.duration"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Language -->
                         <div class="mb-4">
-                            <label for="language" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="language"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Language
                             </label>
                             <input
@@ -303,12 +401,18 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeCreationForm.errors.language" class="mt-2" />
+                            <InputError
+                                :message="typeCreationForm.errors.language"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Amount -->
                         <div class="mb-4">
-                            <label for="amount" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="amount"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Amount
                             </label>
                             <input
@@ -317,15 +421,30 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeCreationForm.errors.amount" class="mt-2" />
+                            <InputError
+                                :message="typeCreationForm.errors.amount"
+                                class="mt-2"
+                            />
                         </div>
                     </div>
 
                     <div class="flex justify-end mt-4">
-                        <button type="submit" :disabled="typeCreationForm.processing" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-4">
-                            {{ typeCreationForm.processing ? "Creating..." : "Create Payment Item" }}
+                        <button
+                            type="submit"
+                            :disabled="typeCreationForm.processing"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-4"
+                        >
+                            {{
+                                typeCreationForm.processing
+                                    ? "Creating..."
+                                    : "Create Payment Item"
+                            }}
                         </button>
-                        <button type="button" @click="closeCreateTypeModal" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+                        <button
+                            type="button"
+                            @click="closeCreateTypeModal"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                        >
                             Close
                         </button>
                     </div>
@@ -333,16 +452,27 @@ const closeEditModal = () => {
             </div>
         </Modal>
 
-
         <!-- Edit Type Modal -->
-        <Modal :show="editTypeModal" @close="closeEditModal" :maxWidth="'md'" class="p-6">
+        <Modal
+            :show="editTypeModal"
+            @close="closeEditModal"
+            :maxWidth="'md'"
+            class="p-6"
+        >
             <div class="w-full px-8 py-6">
-                <h1 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Edit Payment Type</h1>
+                <h1
+                    class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
+                >
+                    Edit Payment Type
+                </h1>
                 <form @submit.prevent="submitEditType">
                     <div>
                         <!-- Type -->
                         <div class="mb-4">
-                            <label for="type" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="type"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Type
                             </label>
                             <input
@@ -351,12 +481,18 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeEditForm.errors.type" class="mt-2" />
+                            <InputError
+                                :message="typeEditForm.errors.type"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Payment Category Select -->
                         <div class="mb-4">
-                            <label for="payment_category_id" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="payment_category_id"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Payment Category
                             </label>
                             <select
@@ -364,17 +500,31 @@ const closeEditModal = () => {
                                 id="payment_category_id"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Category </option>
-                                <option v-for="paymentCategory in paymentCategories" :key="paymentCategory.id" :value="paymentCategory.id">
+                                <option disabled value="">
+                                    Select Category
+                                </option>
+                                <option
+                                    v-for="paymentCategory in paymentCategories"
+                                    :key="paymentCategory.id"
+                                    :value="paymentCategory.id"
+                                >
                                     {{ paymentCategory.name }}
                                 </option>
                             </select>
-                            <InputError :message="typeEditForm.errors.payment_category_id" class="mt-2" />
+                            <InputError
+                                :message="
+                                    typeEditForm.errors.payment_category_id
+                                "
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Study Mode Select -->
                         <div class="mb-4">
-                            <label for="study_mode_id" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="study_mode_id"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Study Mode
                             </label>
                             <select
@@ -382,17 +532,29 @@ const closeEditModal = () => {
                                 id="study_mode_id"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Study Mode </option>
-                                <option v-for="mode in studyModes" :key="mode.id" :value="mode.id">
-                                    {{ mode.mode }} - {{ mode.program.name }}
+                                <option disabled value="">
+                                    Select Study Mode
+                                </option>
+                                <option
+                                    v-for="mode in studyModes"
+                                    :key="mode.id"
+                                    :value="mode.id"
+                                >
+                                    {{ mode.name }}
                                 </option>
                             </select>
-                            <InputError :message="typeEditForm.errors.study_mode_id" class="mt-2" />
+                            <InputError
+                                :message="typeEditForm.errors.study_mode_id"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Pay Duration Select -->
                         <div class="mb-4">
-                            <label for="duration" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="duration"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Payment Duration
                             </label>
                             <select
@@ -400,17 +562,36 @@ const closeEditModal = () => {
                                 id="duration"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             >
-                                <option disabled value=""> Select Pay Duration </option>
-                                <option v-for="duration in ['One-Time', 'Per-Semester', 'Per-Course', 'Monthly', 'Anually', 'Other']" :key="duration" :value="duration">
+                                <option disabled value="">
+                                    Select Pay Duration
+                                </option>
+                                <option
+                                    v-for="duration in [
+                                        'One-Time',
+                                        'Per-Semester',
+                                        'Per-Course',
+                                        'Monthly',
+                                        'Anually',
+                                        'Other',
+                                    ]"
+                                    :key="duration"
+                                    :value="duration"
+                                >
                                     {{ duration }}
                                 </option>
                             </select>
-                            <InputError :message="typeEditForm.errors.duration" class="mt-2" />
+                            <InputError
+                                :message="typeEditForm.errors.duration"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Language -->
                         <div class="mb-4">
-                            <label for="language" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="language"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Language
                             </label>
                             <input
@@ -419,12 +600,18 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeEditForm.errors.language" class="mt-2" />
+                            <InputError
+                                :message="typeEditForm.errors.language"
+                                class="mt-2"
+                            />
                         </div>
 
                         <!-- Amount -->
                         <div class="mb-4">
-                            <label for="amount" class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">
+                            <label
+                                for="amount"
+                                class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300"
+                            >
                                 Amount
                             </label>
                             <input
@@ -433,22 +620,35 @@ const closeEditModal = () => {
                                 type="text"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none"
                             />
-                            <InputError :message="typeEditForm.errors.amount" class="mt-2" />
+                            <InputError
+                                :message="typeEditForm.errors.amount"
+                                class="mt-2"
+                            />
                         </div>
                     </div>
 
                     <div class="flex justify-end mt-4">
-                        <button type="submit" :disabled="typeEditForm.processing" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-4">
-                            {{ typeEditForm.processing ? "Updating..." : "Update Payment Type" }}
+                        <button
+                            type="submit"
+                            :disabled="typeEditForm.processing"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-4"
+                        >
+                            {{
+                                typeEditForm.processing
+                                    ? "Updating..."
+                                    : "Update Payment Type"
+                            }}
                         </button>
-                        <button type="button" @click="closeEditModal" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition">
+                        <button
+                            type="button"
+                            @click="closeEditModal"
+                            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                        >
                             Close
                         </button>
                     </div>
                 </form>
             </div>
         </Modal>
-
     </div>
 </template>
-

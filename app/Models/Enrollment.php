@@ -13,6 +13,11 @@ class Enrollment extends Model
         return $this->belongsTo(Student::class);
     }
 
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
     public function classSchedules()
     {
         return $this->hasManyThrough(ClassSchedule::class, CourseOffering::class);

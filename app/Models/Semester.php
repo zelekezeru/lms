@@ -33,9 +33,9 @@ class Semester extends Model
         return $this->hasMany(Program::class);
     }
 
-    public function courses()
+    public function enrollments()
     {
-        return $this->hasMany(Course::class);
+        return $this->hasMany(Enrollment::class);
     }
 
     public static function getActiveSemester()

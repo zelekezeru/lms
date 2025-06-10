@@ -58,7 +58,7 @@ const buildGroupedCurricula = (selectedStudyModeId) => {
         for (let j = 1; j <= 3; j++) {
             const semesterCurricula = props.track.curricula.filter(
                 (curriculum) =>
-                    curriculum.semester == j &&
+                    curriculum.semesterLevel == j &&
                     curriculum.yearLevel == i &&
                     curriculum.studyMode.id == selectedStudyModeId
             );
@@ -72,7 +72,7 @@ const buildGroupedCurricula = (selectedStudyModeId) => {
                     label:
                         semesterCurricula[k]?.course.name +
                         " (" +
-                        semesterCurricula[k]?.course.creditHours +
+                        semesterCurricula[k]?.course.credit_hours +
                         " Credit Hrs. )",
                 };
 
@@ -116,7 +116,6 @@ const selectedStudyModeId = ref(props.track.program.studyModes[0]?.id);
 const editSemisterCurricula = ref(false);
 const groupedCurricula = ref(buildGroupedCurricula(selectedStudyModeId.value));
 
-
 watch(
     () => props.track.curricula,
     () => {
@@ -131,7 +130,7 @@ const curriculaForm = useForm({
     track_id: props.track.id,
     courses: [],
     year_level: "",
-    semester: "",
+    semester_level: "",
     description: "",
 });
 
@@ -147,7 +146,7 @@ const treeNodeSelected = (node) => {
         editSemisterCurricula.value = true;
         curriculaForm.courses = node.children.map((child) => child.courseId);
         curriculaForm.year_level = node.yearLevel;
-        curriculaForm.semester = node.semester;
+        curriculaForm.semester_level = node.semester;
     } else if (node.isCourseNode) {
         router.get(route("courses.show", { course: node.courseId }));
     }
@@ -162,7 +161,7 @@ const expandedKeys = ref({
 function expandAll(nodes) {
     let _expandedKeys = {};
     const expandNode = (node) => {
-        console.log(node.children)
+        console.log(node.children);
         if (node.children && node.children.length) {
             _expandedKeys[node.key] = true;
             node.children.forEach((child) => expandNode(child));
@@ -190,16 +189,16 @@ const saveCurricula = () => {
 
 const allCoursesAreAssigned = ref(
     props.courses.every((course) =>
-        props.track.curricula
-            .some(
-                (curriculum) =>
-                    curriculum.course.id === course.id
-            )
+        props.track.curricula.some(
+            (curriculum) => curriculum.course.id === course.id
+        )
     )
 );
 
 const sortedCourses = computed(() => {
-    return [...props.track.courses].sort((a, b) => a.name.localeCompare(b.name));
+    return [...props.track.courses].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
 });
 </script>
 
@@ -213,13 +212,15 @@ const sortedCourses = computed(() => {
                 <h2
                     class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.program.name }} {{ t('programs.tracks.in_language') }} {{ track.name }} {{ t('programs.tracks.curriculum.with') }}
+                    {{ track.program.name }}
+                    {{ t("programs.tracks.in_language") }} {{ track.name }}
+                    {{ t("programs.tracks.curriculum.with") }}
                     {{
                         studyModes.find(
                             (studyMode) => studyMode.id == selectedStudyModeId
                         )?.name
                     }}
-                    {{ t('programs.tracks.curriculum.mode') }}
+                    {{ t("programs.tracks.curriculum.mode") }}
                 </h2>
             </div>
             <div class="inline-flex items-center gap-2 px-4 py-2">
@@ -228,7 +229,7 @@ const sortedCourses = computed(() => {
                     class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                     <PlusIcon class="w-5 h-5" />
-                    {{ t('programs.tracks.curriculum.create') }}
+                    {{ t("programs.tracks.curriculum.create") }}
                 </button>
             </div>
 
@@ -241,7 +242,9 @@ const sortedCourses = computed(() => {
                         :options="studyModes"
                         option-label="name"
                         option-value="id"
-                        :placeholder="t('programs.tracks.curriculum.select_study_mode')"
+                        :placeholder="
+                            t('programs.tracks.curriculum.select_study_mode')
+                        "
                         class="w-full"
                     />
                 </div>
@@ -257,14 +260,14 @@ const sortedCourses = computed(() => {
                             class="inline-flex items-center gap-2 mr-3 bg-gray-400 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-600 px-4 py-2 text-white rounded-lg shadow"
                         >
                             <PlusIcon class="w-5 h-5" />
-                            {{ t('programs.tracks.curriculum.expand_all') }}
+                            {{ t("programs.tracks.curriculum.expand_all") }}
                         </button>
                         <button
                             @click="collapseAll"
                             class="inline-flex items-center gap-2 bg-gray-400 hover:bg-gray-300 dark:bg-gray-700 hover:dark:bg-gray-600 px-4 py-2 text-white rounded-lg shadow"
                         >
                             <MinusIcon class="w-5 h-5" />
-                            {{ t('programs.tracks.curriculum.collapse_all') }}
+                            {{ t("programs.tracks.curriculum.collapse_all") }}
                         </button>
                     </div>
                     <Tree
@@ -308,24 +311,43 @@ const sortedCourses = computed(() => {
                         leave-from-class="opacity-100 scale-100"
                         leave-to-class="opacity-0 scale-75"
                     >
-                        <div :key="curriculaForm.semester">
+                        <div :key="curriculaForm.semester_level">
                             <div
-                                v-if="editSemisterCurricula && curriculaForm.study_mode_id"
+                                v-if="
+                                    editSemisterCurricula &&
+                                    curriculaForm.study_mode_id
+                                "
                                 class="flex flex-col h-full"
                             >
                                 <h1 class="text-xl font-extralight mb-4">
-                                    {{ t('programs.tracks.curriculum.edit') }}
+                                    {{ t("programs.tracks.curriculum.edit") }}
                                     <span class="font-extrabold">
-                                        {{ t('programs.tracks.curriculum.year') }} {{ curriculaForm.year_level }} –
-                                        {{ t('programs.tracks.curriculum.semester') }} {{ curriculaForm.semester }}
+                                        {{
+                                            t("programs.tracks.curriculum.year")
+                                        }}
+                                        {{ curriculaForm.year_level }} –
+                                        {{
+                                            t(
+                                                "programs.tracks.curriculum.semester"
+                                            )
+                                        }}
+                                        {{ curriculaForm.semester_level }}
                                     </span>
-                                    {{ t('programs.tracks.curriculum.curricula') }}
+                                    {{
+                                        t(
+                                            "programs.tracks.curriculum.curricula"
+                                        )
+                                    }}
                                 </h1>
                                 <p
                                     class="text-red-600"
                                     v-if="allCoursesAreAssigned"
                                 >
-                                    {{ t('programs.tracks.curriculum.all_assigned') }}
+                                    {{
+                                        t(
+                                            "programs.tracks.curriculum.all_assigned"
+                                        )
+                                    }}
                                 </p>
                                 <Listbox
                                     v-model="curriculaForm.courses"
@@ -343,8 +365,8 @@ const sortedCourses = computed(() => {
                                                         option.id &&
                                                     (curriculum.yearLevel !=
                                                         curriculaForm.year_level ||
-                                                        curriculaForm.semester !=
-                                                            curriculum.semester)
+                                                        curriculaForm.semester_level !=
+                                                            curriculum.semesterLevel)
                                             )
                                     "
                                     placeholder="Select Courses"
@@ -353,7 +375,9 @@ const sortedCourses = computed(() => {
                                 >
                                     <template #option="slotProps">
                                         <div class="flex flex-col">
-                                            <span>{{ slotProps.option.name }}</span>
+                                            <span>{{
+                                                slotProps.option.name
+                                            }}</span>
                                             <small
                                                 v-if="
                                                     props.track.curricula.some(
@@ -364,14 +388,22 @@ const sortedCourses = computed(() => {
                                                                     .id &&
                                                             (curriculum.yearLevel !=
                                                                 curriculaForm.year_level ||
-                                                                curriculaForm.semester !=
-                                                                    curriculum.semester)
+                                                                curriculaForm.semester_level !=
+                                                                    curriculum.semesterLevel)
                                                     )
                                                 "
                                                 class="text-xs text-gray-500 dark:text-gray-200"
                                             >
-                                                {{ t('programs.tracks.curriculum.already_in') }}
-                                                {{ t('programs.tracks.curriculum.year') }}
+                                                {{
+                                                    t(
+                                                        "programs.tracks.curriculum.already_in"
+                                                    )
+                                                }}
+                                                {{
+                                                    t(
+                                                        "programs.tracks.curriculum.year"
+                                                    )
+                                                }}
                                                 {{
                                                     props.track.curricula.find(
                                                         (curriculum) =>
@@ -381,11 +413,15 @@ const sortedCourses = computed(() => {
                                                                     .id &&
                                                             (curriculum.yearLevel !=
                                                                 curriculaForm.year_level ||
-                                                                curriculaForm.semester !=
-                                                                    curriculum.semester)
+                                                                curriculaForm.semester_level !=
+                                                                    curriculum.semesterLevel)
                                                     ).yearLevel
                                                 }}
-                                                {{ t('programs.tracks.curriculum.semester') }}
+                                                {{
+                                                    t(
+                                                        "programs.tracks.curriculum.semester"
+                                                    )
+                                                }}
                                                 {{
                                                     props.track.curricula.find(
                                                         (curriculum) =>
@@ -395,9 +431,9 @@ const sortedCourses = computed(() => {
                                                                     .id &&
                                                             (curriculum.yearLevel !=
                                                                 curriculaForm.year_level ||
-                                                                curriculaForm.semester !=
-                                                                    curriculum.semester)
-                                                    ).semester
+                                                                curriculaForm.semester_level !=
+                                                                    curriculum.semesterLevel)
+                                                    ).semesterLevel
                                                 }}
                                             </small>
                                         </div>
@@ -409,13 +445,15 @@ const sortedCourses = computed(() => {
                                         @click="cancelEdit"
                                         class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg shadow"
                                     >
-                                        {{ t('common.cancel', 'Cancel') }}
+                                        {{ t("common.cancel", "Cancel") }}
                                     </button>
                                     <button
                                         @click="saveCurricula"
                                         class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-green-400"
                                     >
-                                        {{ t('programs.tracks.curriculum.save') }}
+                                        {{
+                                            t("programs.tracks.curriculum.save")
+                                        }}
                                     </button>
                                 </div>
                             </div>
@@ -425,7 +463,11 @@ const sortedCourses = computed(() => {
                                 v-else
                             >
                                 <h1 class="text-center">
-                                    {{ t('programs.tracks.curriculum.choose_study_mode') }}
+                                    {{
+                                        t(
+                                            "programs.tracks.curriculum.choose_study_mode"
+                                        )
+                                    }}
                                 </h1>
                             </div>
                         </div>
@@ -444,7 +486,8 @@ const sortedCourses = computed(() => {
                 <h2
                     class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.name }} {{ t('programs.tracks.curriculum.design') }}
+                    {{ track.name }}
+                    {{ t("programs.tracks.curriculum.design") }}
                 </h2>
                 <button
                     type="button"
@@ -478,14 +521,16 @@ const sortedCourses = computed(() => {
                             for="yearLevelsList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            {{ t('programs.tracks.curriculum.year') }}
+                            {{ t("programs.tracks.curriculum.year") }}
                         </label>
                         <Select
                             id="yearLevelsList"
                             v-model="form.year_level"
                             :options="yearLevels"
                             appendTo="self"
-                            :placeholder="t('programs.tracks.curriculum.select_year')"
+                            :placeholder="
+                                t('programs.tracks.curriculum.select_year')
+                            "
                             class="w-full"
                         />
                         <InputError :message="form.errors.year" class="mt-2" />
@@ -497,14 +542,16 @@ const sortedCourses = computed(() => {
                             for="semestersList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            {{ t('programs.tracks.curriculum.semester') }}
+                            {{ t("programs.tracks.curriculum.semester") }}
                         </label>
                         <Select
                             id="semestersList"
-                            v-model="form.semester"
+                            v-model="form.semester_level"
                             :options="[1, 2, 3]"
                             appendTo="self"
-                            :placeholder="t('programs.tracks.curriculum.select_semester')"
+                            :placeholder="
+                                t('programs.tracks.curriculum.select_semester')
+                            "
                             class="w-full"
                         />
                         <InputError
@@ -519,7 +566,7 @@ const sortedCourses = computed(() => {
                             for="studyModesList"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            {{ t('programs.tracks.curriculum.study_mode') }}
+                            {{ t("programs.tracks.curriculum.study_mode") }}
                         </label>
                         <Select
                             id="studyModesList"
@@ -528,7 +575,9 @@ const sortedCourses = computed(() => {
                             option-value="id"
                             option-label="name"
                             appendTo="self"
-                            :placeholder="t('programs.tracks.curriculum.select_mode')"
+                            :placeholder="
+                                t('programs.tracks.curriculum.select_mode')
+                            "
                             class="w-full"
                         />
                         <InputError
@@ -546,7 +595,7 @@ const sortedCourses = computed(() => {
                             for="description"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            {{ t('programs.tracks.curriculum.description') }}
+                            {{ t("programs.tracks.curriculum.description") }}
                         </label>
                         <input
                             id="description"
@@ -566,16 +615,26 @@ const sortedCourses = computed(() => {
                             for="status"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
-                            {{ t('programs.tracks.curriculum.status') }}
+                            {{ t("programs.tracks.curriculum.status") }}
                         </label>
                         <select
                             id="status"
                             v-model="form.status"
                             class="w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-100"
                         >
-                            <option value="" disabled>{{ t('programs.tracks.curriculum.select_status') }}</option>
-                            <option value="active">{{ t('programs.tracks.curriculum.active') }}</option>
-                            <option value="inactive">{{ t('programs.tracks.curriculum.inactive') }}</option>
+                            <option value="" disabled>
+                                {{
+                                    t(
+                                        "programs.tracks.curriculum.select_status"
+                                    )
+                                }}
+                            </option>
+                            <option value="active">
+                                {{ t("programs.tracks.curriculum.active") }}
+                            </option>
+                            <option value="inactive">
+                                {{ t("programs.tracks.curriculum.inactive") }}
+                            </option>
                         </select>
                         <InputError
                             :message="form.errors.status"
@@ -589,7 +648,7 @@ const sortedCourses = computed(() => {
                     <label
                         class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                     >
-                        {{ t('programs.tracks.curriculum.select_courses') }}
+                        {{ t("programs.tracks.curriculum.select_courses") }}
                     </label>
                     <Listbox
                         v-model="form.courses"
@@ -600,7 +659,11 @@ const sortedCourses = computed(() => {
                         filter
                         checkmark
                         multiple
-                        :placeholder="t('programs.tracks.curriculum.search_select_courses')"
+                        :placeholder="
+                            t(
+                                'programs.tracks.curriculum.search_select_courses'
+                            )
+                        "
                         class="w-full"
                         list-style="max-height: 400px"
                     />
@@ -617,14 +680,18 @@ const sortedCourses = computed(() => {
                     :disabled="form.processing"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md focus:outline-none disabled:opacity-50"
                 >
-                    {{ form.processing ? t('programs.tracks.curriculum.assigning') : t('programs.tracks.curriculum.assign') }}
+                    {{
+                        form.processing
+                            ? t("programs.tracks.curriculum.assigning")
+                            : t("programs.tracks.curriculum.assign")
+                    }}
                 </button>
                 <button
                     type="button"
                     @click="closeModal"
                     class="ml-3 bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-4 py-2 rounded-md focus:outline-none"
                 >
-                    {{ t('common.cancel', 'Cancel') }}
+                    {{ t("common.cancel", "Cancel") }}
                 </button>
             </div>
         </form>

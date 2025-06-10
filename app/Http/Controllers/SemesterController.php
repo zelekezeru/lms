@@ -91,7 +91,7 @@ class SemesterController extends Controller
     public function update(Request $request, Semester $semester)
     {
         $request->validate([
-            'name' => 'required|string|unique:semesters,name,'.$semester->id,
+            'name' => 'required|string|unique:semesters,name,' . $semester->id,
             'year_id' => 'required|exists:years,id',
             'status' => 'required|string|in:Active,Inactive',
             'start_date' => 'required|date',
@@ -110,10 +110,12 @@ class SemesterController extends Controller
      */
     public function destroy(Semester $semester)
     {
+        // This could bread the a lot of things
+        // we might want to just redirect back!
+        return back()->withErrors('Not Allowed', 'This Action Is Prohibited');
         $semester->delete();
 
         return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
-
     }
 
     // Close Semester

@@ -17,7 +17,7 @@ class PaymentResource extends JsonResource
         return [
             'payment_date' => $this->payment_date,
             'total_amount' => $this->total_amount,
-            'narration' => $this->narration,
+            'description' => $this->description,
             'status' => $this->status,
             'payment_reference' => $this->payment_reference,
             'tenant_id' => $this->tenant_id,
@@ -28,7 +28,9 @@ class PaymentResource extends JsonResource
             'is_deleted' => $this->is_deleted,
 
             'paymentMethod' => $this->whenLoaded('paymentMethod'),
-            'paymentCategory' => $this->whenLoaded('paymentCategory'),
+            'paymentType' => $this->whenLoaded('paymentType'),
+            'semester' => $this->whenLoaded('semester'),
+
         ];
     }
 }

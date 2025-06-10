@@ -83,7 +83,7 @@ class SectionController extends Controller
                     ],
                     [
                         'year_level' => $curriculum->year_level ?? null,
-                        'semester' => $curriculum->semester ?? null,
+                        'semester_level' => $curriculum->semester ?? null,
                     ],
                 );
             }
@@ -172,7 +172,7 @@ class SectionController extends Controller
                     ],
                     [
                         'year_level' => $curriculum->year_level ?? null,
-                        'semester' => $curriculum->semester ?? null,
+                        'semester_level' => $curriculum->semester ?? null,
                     ]
                 );
             }

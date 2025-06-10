@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\SemesterResource;
+use App\Http\Services\AutoEnrollmentService;
 use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +108,8 @@ class CalendarController extends Controller
                 'start_date' => $request->new_semester_start_date,
                 'end_date' => $request->new_semester_end_date,
             ]);
+
+            AutoEnrollmentService::autoEnroll();
         });
 
         return redirect()->route('semesters.index')->with('success', 'Semester closed and new semester activated successfully.');

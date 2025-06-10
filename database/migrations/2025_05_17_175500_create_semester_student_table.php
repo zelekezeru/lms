@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('semester_id')->constrained()->onDelete('cascade');
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->string('status')->default('Active', ['Active, Inactive, Graduated, Dropped']);
+
+            // Whether or not the student payed for the semester
+            $table->enum('payment_status', ['paid', 'unpaid']);
+            // Whether the student is currently learning in this semester, completed this semester or dropped for some reason
+            $table->enum('academic_status', ['in_progress', 'completed', 'dropped']);
             $table->timestamps();
         });
     }

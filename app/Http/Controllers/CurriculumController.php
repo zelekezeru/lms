@@ -46,7 +46,7 @@ class CurriculumController extends Controller
         $existingCourseIds = Curriculum::where('track_id', $fields['track_id'])
             ->where('study_mode_id', $fields['study_mode_id'])
             ->where('year_level', $fields['year_level'])
-            ->where('semester', $fields['semester'])
+            ->where('semester_level', $fields['semester_level'])
             ->pluck('course_id')
             ->toArray();
 
@@ -55,7 +55,7 @@ class CurriculumController extends Controller
                 $curriculum = Curriculum::where('track_id', $fields['track_id'])
                     ->where('study_mode_id', $fields['study_mode_id'])
                     ->where('year_level', $fields['year_level'])
-                    ->where('semester', $fields['semester'])
+                    ->where('semester_level', $fields['semester_level'])
                     ->where('course_id', $existingCourseId)
                     ->delete();
 
@@ -70,8 +70,8 @@ class CurriculumController extends Controller
                     'track_id' => $fields['track_id'],
                     'course_id' => $courseId,
                     'year_level' => $fields['year_level'],
-                    'semester' => $fields['semester'],
-                    'description' => 'This Course In This Study MOde And Track Should Be Taken'.$fields['description'] ?? 'Year '.$fields['year_level'].'Semester '.$fields['semester'],
+                    'semester_level' => $fields['semester_level'],
+                    'description' => 'This Course In This Study MOde And Track Should Be Taken' . $fields['description'] ?? 'Year ' . $fields['year_level'] . 'Semester ' . $fields['semester_level'],
                 ];
             }
         }

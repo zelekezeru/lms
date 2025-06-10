@@ -19,6 +19,7 @@ use App\Models\Enrollment;
 use App\Models\Payment;
 use App\Models\PaymentCategory;
 use App\Models\PaymentMethod;
+use App\Models\PaymentType;
 use App\Models\Program;
 use App\Models\Section;
 use App\Models\Semester;
@@ -90,17 +91,17 @@ class StudentController extends Controller
         }
 
         $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
-        
+
         $yearLevel = $student->section ? $student->section->yearLevel() : null;
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
-        
+
         $studyModes = StudyMode::with(['sections' => function ($query) use ($yearLevel, $semester) {
             $query->whereHas('courseOfferings', function ($q) use ($yearLevel, $semester) {
                 $q->where('year_level', $yearLevel)
-                    ->where('semester', $semester);
+                    ->where('semester_level', $semester);
             })->with(['courseOfferings' => function ($q) use ($yearLevel, $semester) {
                 $q->where('year_level', $yearLevel)
-                    ->where('semester', $semester);
+                    ->where('semester_level', $semester);
             }]);
         }])->get();
 
@@ -117,20 +118,22 @@ class StudentController extends Controller
         }
 
         // Fetch Payment Categories and Methods
-        $paymentCategories = PaymentCategory::where('is_active', true)->get();
+        $paymentTypes = PaymentType::where('is_active', true)->get();
 
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
 
         // Fetch the payments for the student
         $payments = Payment::where('student_id', $student->id)
-            ->with(['paymentMethod', 'paymentCategory'])
+            ->with(['paymentMethod', 'paymentType', 'enrollment.courseOffering.course'])
             ->get();
 
         $user = new UserResource($student->user->load('userDocuments'));
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q
-                ->with(['course', 'section', 'semester']),])->get();
+            ->with([
+                'year',
+                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
+            ])->get();
 
         $activeSemester = Semester::where('status', 'Active')->with('year')->get();
 
@@ -139,13 +142,13 @@ class StudentController extends Controller
         } else {
             $activeSemester = SemesterResource::collection($activeSemester)->first()->load('year');
         }
-        
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'sections' => $sections,
             'studyModes' => $studyModes,
             'courses' => $courses,
-            'paymentCategories' => $paymentCategories,
+            'paymentTypes' => $paymentTypes,
             'paymentMethods' => $paymentMethods,
             'payments' => $payments,
             'semesters' => $semesters,
@@ -338,7 +341,7 @@ class StudentController extends Controller
         $yearLevel = intval($year->name) - intval($section->year->name) + 1;
 
         // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
-        $courseOfferings = $section->courseOfferings()->where('semester', $semesterLevel)->where('year_level', $yearLevel)->get();
+        $courseOfferings = $section->courseOfferings()->where('semester_level', $semesterLevel)->where('year_level', $yearLevel)->get();
 
         /**
          * Arrange the courses so that it is suitable to sync the student to the courses with section_id pivot column

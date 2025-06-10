@@ -18,14 +18,14 @@ class Payment extends Model
         return $this->belongsTo(Student::class);
     }
 
+    public function enrollment(): BelongsTo
+    {
+        return $this->belongsTo(Enrollment::class);
+    }
+
     public function paymentType(): BelongsTo
     {
         return $this->belongsTo(PaymentType::class);
-    }
-
-    public function paymentCategory(): BelongsTo
-    {
-        return $this->belongsTo(PaymentCategory::class);
     }
 
     public function paymentScheduleItem(): BelongsTo

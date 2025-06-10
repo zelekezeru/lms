@@ -25,6 +25,11 @@ class SemesterStudent extends Model
         return $this->hasMany(CourseStudent::class);
     }
 
+    public function isEligibleForCompletion()
+    {
+        // Here we should right rules that will check if the student is elligible to complete(set academic_status 'complete') and return true if they are
+        return true;
+    }
     public function promotionStatus()
     {
         return $this->hasOne(PromotionStatus::class);

@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentMethodSeeder::class);
         $this->call(PaymentTypeSeeder::class);
         $this->call(WeightSeeder::class);
-        $this->call(CarculaSeeder::class);
+        $this->call(CurriculumSeeder::class);
         $this->call(CourseOfferingSeeder::class);
         $this->call(RoomSeeder::class);
     }

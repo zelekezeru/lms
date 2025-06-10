@@ -16,12 +16,23 @@ return new class extends Migration
 
             $table->foreignId('course_offering_id')->constrained()->onDelete('cascade');
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignId('semester_id')->constrained()->onDelete('cascade');
 
-            // Financial status is tracked in invoices table — no need to duplicate it here
-            $table->enum('status', ['pending', 'enrolled', 'dropped', 'deferred'])->default('pending');
+            // Tracks the student's **financial/enrollment status** for this course:
+            // - 'pending'   → The student has not completed payment yet.
+            // - 'enrolled'  → Payment is completed; the student is officially enrolled.
+            // - 'dropped'   → Student dropped the course before it started (after payment).
+            $table->enum('status', ['pending', 'enrolled', 'dropped'])->default('pending');
 
-            // Tracks student academic progress for this course
-            $table->enum('academic_status', ['in_progress', 'completed', 'failed', 'dropped'])->default('in_progress');
+            // Tracks the student's **academic progress** in the course:
+            // - 'in_progress' → The student is currently taking the course.
+            // - 'completed'   → The student finished and passed the course.
+            // - 'failed'      → The student finished but did not pass (e.g., grade F).
+            $table->enum('academic_status', ['in_progress', 'completed', 'failed'])->nullable()->default('in_progress');
+
+            // If Student Drops A course
+            $table->timestamp('dropped_at')->nullable();
+            $table->string('drop_reason')->nullable();
 
             $table->timestamps();
         });

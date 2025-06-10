@@ -4,8 +4,8 @@ import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
-import { Listbox, MultiSelect, Select } from "primevue";
-import { defineProps, ref, watch } from "vue";
+import { Listbox, MultiSelect } from "primevue";
+import { defineProps, ref } from "vue";
 import InputError from "@/Components/InputError.vue";
 import {
     CogIcon,
@@ -23,12 +23,8 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    activeSemester: {
-        type: Object,
-        required: true,
-    },
     paymentMethods: Array, // Add prop for payment types
-    paymentTypes: Array, // Add prop for payment categories
+    paymentCategories: Array, // Add prop for payment categories
 });
 
 // Refs for controlling modal visibility
@@ -45,18 +41,13 @@ const paymentForm = useForm({
 const paymentCreationForm = useForm({
     student_id: props.student.id,
     payment_method_id: null,
-    payment_type_id: null,
+    payment_category_id: null,
     payment_date: new Date().toISOString().slice(0, 10),
-    paid_amount: null,
     total_amount: null,
-    description: null,
+    narration: null,
     status: null,
-    reference_number: null,
+    payment_reference: null,
 });
-
-const unpaidEnrollments = props.student.enrollments.filter(
-    (enrollment) => enrollment.status == "pending"
-);
 
 const closePayment = () => {
     assignPayments.value = false;
@@ -73,38 +64,11 @@ const submitPayment = () => {
         },
     });
 };
-const perCoursePaymentType = ref(false);
+
 const closeCreatePaymentModal = () => {
     createPaymentModal.value = false;
     paymentCreationForm.reset();
 };
-
-watch(
-    () => paymentCreationForm.payment_type_id,
-    () => {
-        const selectedPaymentType = props.paymentTypes.find(
-            (paymentType) =>
-                paymentType.id == paymentCreationForm.payment_type_id &&
-                paymentType.study_mode_id == props.student.studyMode.id
-        );
-
-        if (
-            selectedPaymentType &&
-            selectedPaymentType.duration == "per-course"
-        ) {
-            perCoursePaymentType.value = true;
-            console.log(perCoursePaymentType.value);
-
-            paymentCreationForm.total_amount =
-                selectedPaymentType.amount * unpaidEnrollments.length;
-        }
-    }
-);
-const statusOptions = [
-    { label: "pending", value: "pending" },
-    { label: "completed", value: "completed" },
-    { label: "canceled", value: "failed" },
-];
 
 const submitNewPayment = () => {
     paymentCreationForm.post(
@@ -176,12 +140,12 @@ const submitNewPayment = () => {
                                     <th
                                         class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        Description
+                                        Naration
                                     </th>
                                     <th
                                         class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        Type
+                                        Category
                                     </th>
                                     <th
                                         class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
@@ -191,12 +155,7 @@ const submitNewPayment = () => {
                                     <th
                                         class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        Total Amount
-                                    </th>
-                                    <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Paid Amount
+                                        Amount
                                     </th>
                                     <th
                                         class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
@@ -241,7 +200,13 @@ const submitNewPayment = () => {
                                                 })
                                             "
                                         >
-                                            {{ payment.description }}
+                                            {{
+                                                payment.enrollment
+                                                    ? payment.enrollment
+                                                          .course_offering
+                                                          .course.name
+                                                    : "N/A"
+                                            }}
                                         </Link>
                                     </td>
                                     <td
@@ -271,17 +236,12 @@ const submitNewPayment = () => {
                                     <td
                                         class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.paid_amount }}
-                                    </td>
-                                    <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
                                         {{ payment.payment_date }}
                                     </td>
                                     <td
                                         class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.reference_number }}
+                                        {{ payment.payment_reference }}
                                     </td>
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -389,82 +349,80 @@ const submitNewPayment = () => {
             <h1
                 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
             >
-                Create Payment for –
-                <span class="text-yellow-700 underline">
-                    {{ student.first_name }} {{ student.middle_name }}
-                </span>
+                Create Payment for -
+                <span class="text-yellow-700 underline"
+                    >{{ student.first_name }} {{ student.middle_name }}</span
+                >
             </h1>
 
             <form @submit.prevent="submitNewPayment">
-                <!-- Payment Method -->
                 <div class="mb-4">
                     <label
                         for="payment_method_id"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Payment Method</label
                     >
-                        Payment Method
-                    </label>
-                    <Select
+                    <select
                         v-model="paymentCreationForm.payment_method_id"
-                        :options="paymentMethods"
-                        optionLabel="bank_name"
-                        optionValue="id"
-                        append-to="self"
-                        placeholder="Select Payment Method"
-                        class="w-full"
-                    />
+                        id="payment_method_id"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option :value="null" disabled>
+                            Select Payment Method
+                        </option>
+                        <option
+                            v-for="type in paymentMethods"
+                            :key="type.id"
+                            :value="type.id"
+                        >
+                            {{ type.bank_name }}
+                        </option>
+                    </select>
                     <InputError
                         :message="paymentCreationForm.errors.payment_method_id"
                         class="mt-2 text-sm text-red-500"
                     />
                 </div>
 
-                <!-- Payment Type -->
                 <div class="mb-4">
                     <label
-                        for="payment_type_id"
+                        for="payment_category_id"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Payment Category</label
                     >
-                        Payment Type
-                    </label>
-                    <Select
-                        v-model="paymentCreationForm.payment_type_id"
-                        :options="paymentTypes"
-                        optionLabel="type"
-                        optionValue="id"
-                        append-to="self"
-                        placeholder="Select Type"
-                        class="w-full"
-                    />
+                    <select
+                        v-model="paymentCreationForm.payment_category_id"
+                        id="payment_category_id"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option :value="null" disabled>Select Category</option>
+                        <option
+                            v-for="category in paymentCategories"
+                            :key="category.id"
+                            :value="category.id"
+                        >
+                            {{ category.name }}
+                        </option>
+                    </select>
                     <InputError
-                        :message="paymentCreationForm.errors.payment_type_id"
+                        :message="
+                            paymentCreationForm.errors.payment_category_id
+                        "
                         class="mt-2 text-sm text-red-500"
                     />
                 </div>
 
-                <div v-if="perCoursePaymentType">
-                    <h1 class="text-md font-bold">
-                        This Payment is for the following coures of the student
-                        in {{ activeSemester.year.name }} Semester
-                        {{ activeSemester.level }}
-                    </h1>
-                    <p v-for="unpaidEnrollment in unpaidEnrollments">
-                        {{ unpaidEnrollment.course.name }}
-                    </p>
-                </div>
-                <!-- Total Amount -->
                 <div class="mb-4">
                     <label
                         for="total_amount"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Total Amount</label
                     >
-                        Total Amount
-                    </label>
                     <input
                         type="number"
                         v-model="paymentCreationForm.total_amount"
                         id="total_amount"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
                     />
                     <InputError
                         :message="paymentCreationForm.errors.total_amount"
@@ -472,39 +430,17 @@ const submitNewPayment = () => {
                     />
                 </div>
 
-                <!-- Paid Amount -->
-                <div class="mb-4">
-                    <label
-                        for="paid_amount"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Paid Amount
-                    </label>
-                    <input
-                        type="number"
-                        v-model="paymentCreationForm.paid_amount"
-                        id="paid_amount"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.paid_amount"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
-
-                <!-- Narration -->
                 <div class="mb-4">
                     <label
                         for="narration"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Payment Naration</label
                     >
-                        Payment Description
-                    </label>
                     <input
                         type="text"
-                        v-model="paymentCreationForm.description"
+                        v-model="paymentCreationForm.narration"
                         id="narration"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
                     />
                     <InputError
                         :message="paymentCreationForm.errors.narration"
@@ -512,19 +448,17 @@ const submitNewPayment = () => {
                     />
                 </div>
 
-                <!-- Payment Date -->
                 <div class="mb-4">
                     <label
                         for="payment_date"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Payment Date</label
                     >
-                        Payment Date
-                    </label>
                     <input
                         type="date"
                         v-model="paymentCreationForm.payment_date"
                         id="payment_date"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
                     />
                     <InputError
                         :message="paymentCreationForm.errors.payment_date"
@@ -532,50 +466,46 @@ const submitNewPayment = () => {
                     />
                 </div>
 
-                <!-- Status -->
                 <div class="mb-4">
                     <label
                         for="status"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Status</label
                     >
-                        Status
-                    </label>
-                    <Select
+                    <select
                         v-model="paymentCreationForm.status"
-                        :options="statusOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        append-to="self"
-                        placeholder="Select Status"
-                        class="w-full"
-                    />
+                        id="status"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                        <option value="refunded">Refunded</option>
+                    </select>
                     <InputError
                         :message="paymentCreationForm.errors.status"
                         class="mt-2 text-sm text-red-500"
                     />
                 </div>
 
-                <!-- Reference Number -->
                 <div class="mb-4">
                     <label
-                        for="reference_number"
+                        for="payment_reference"
                         class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >Payment Reference (Optional)</label
                     >
-                        Reference Number (Optional)
-                    </label>
                     <input
                         type="text"
-                        v-model="paymentCreationForm.reference_number"
-                        id="reference_number"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        v-model="paymentCreationForm.payment_reference"
+                        id="payment_reference"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
                     />
                     <InputError
-                        :message="paymentCreationForm.errors.reference_number"
+                        :message="paymentCreationForm.errors.payment_reference"
                         class="mt-2 text-sm text-red-500"
                     />
                 </div>
 
-                <!-- Buttons -->
                 <div class="flex justify-end mt-4">
                     <button
                         type="submit"

@@ -13,14 +13,14 @@ class SemesterSeeder extends Seeder
     public function run(): void
     {
         DB::table('semesters')->insert([
-            
+
             [
                 'name' => '1st Semester of 2025',
                 'year_id' => 1,
                 'level' => 1,
                 'start_date' => '2025-01-10',
                 'end_date' => '2025-04-10',
-                'status' => 'Active',
+                'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 0,
             ],
@@ -33,7 +33,7 @@ class SemesterSeeder extends Seeder
                 'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 0,
-            ],  
+            ],
             [
                 'name' => '1st Semester of 2024',
                 'year_id' => 2,
@@ -50,10 +50,10 @@ class SemesterSeeder extends Seeder
                 'level' => 2,
                 'start_date' => '2024-04-15',
                 'end_date' => '2024-07-15',
-                'status' => 'Inactive',
+                'status' => 'Active',
                 'is_approved' => 1,
                 'is_completed' => 1,
-            ],  
+            ],
             [
                 'name' => '1st Semester of 2023',
                 'year_id' => 3,
@@ -73,7 +73,7 @@ class SemesterSeeder extends Seeder
                 'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 1,
-            ],    
+            ],
             [
                 'name' => '1st Semester of 2022',
                 'year_id' => 4,
@@ -93,7 +93,7 @@ class SemesterSeeder extends Seeder
                 'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 1,
-            ],   
+            ],
             [
                 'name' => '1st Semester of 2021',
                 'year_id' => 5,
@@ -133,7 +133,7 @@ class SemesterSeeder extends Seeder
                 'status' => 'Inactive',
                 'is_approved' => 1,
                 'is_completed' => 1,
-            ], 
+            ],
 
         ]);
     }

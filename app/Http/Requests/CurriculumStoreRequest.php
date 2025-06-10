@@ -27,7 +27,7 @@ class CurriculumStoreRequest extends FormRequest
             'courses' => 'required|array|min:1',
             'courses.*' => 'integer|exists:courses,id',
             'year_level' => 'required|integer',
-            'semester' => 'required|integer',
+            'semester_level' => 'required|integer',
             'description' => 'nullable|string|max:255',
         ];
     }

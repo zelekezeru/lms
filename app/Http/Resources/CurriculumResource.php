@@ -20,7 +20,7 @@ class CurriculumResource extends JsonResource
             'studyMode' => new StudyModeResource($this->whenLoaded('studyMode')),
             'course' => new CourseResource($this->whenLoaded('course')),
             'yearLevel' => $this->year_level,
-            'semester' => $this->semester,
+            'semesterLevel' => $this->semester_level,
             'description' => $this->description,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

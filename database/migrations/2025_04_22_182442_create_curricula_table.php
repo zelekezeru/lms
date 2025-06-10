@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('study_mode_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->integer('year_level');
-            $table->integer('semester');
+            $table->integer('semester_level');
             $table->text('description')->nullable();
             $table->boolean('active')->default(false);
             $table->timestamps();

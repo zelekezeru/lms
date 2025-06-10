@@ -36,7 +36,7 @@ const props = defineProps({
     courses: Array,
     payments: Array,
     paymentMethods: Array,
-    paymentCategories: Array,
+    paymentTypes: Array,
     semesters: Object,
     activeSemester: Object,
     showVerifyModal: Boolean,
@@ -238,6 +238,7 @@ const deleteStudent = (id) => {
 
                     <ShowCourses
                         v-else-if="selectedTab === 'courses'"
+                        :activeSemester="activeSemester"
                         :student="student"
                         :courses="courses"
                         :studyModes="studyModes"
@@ -255,8 +256,9 @@ const deleteStudent = (id) => {
                         :student="student"
                         :status="status"
                         :payments="payments"
+                        :active-semester="activeSemester"
                         :paymentMethods="paymentMethods"
-                        :paymentCategories="paymentCategories"
+                        :paymentTypes="paymentTypes"
                         :showVerifyModal="showVerifyModal"
                     />
 

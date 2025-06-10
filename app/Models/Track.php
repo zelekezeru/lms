@@ -40,7 +40,7 @@ class Track extends Model
 
     public function getActiveCurricula()
     {
-        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester', Semester::getActiveSemester()->level)->with('course')->where('track_id', $this->id)->get();
+        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester_level', Semester::getActiveSemester()->level)->with('course')->where('track_id', $this->id)->get();
 
         return $curricula;
     }

@@ -14,21 +14,27 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('payment_method_id')->nullable()->constrained('payment_methods')->cascadeOnDelete();
-            $table->foreignId('payment_category_id')->nullable()->constrained('payment_categories')->cascadeOnDelete();
-            $table->date('payment_date');
-            $table->decimal('total_amount', 10, 2);
-            $table->string('narration')->nullable();
-            $table->string('status')->nullable()->default('pending');
-            $table->string('payment_reference')->nullable();
+            $table->foreignId('payment_method_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('payment_type_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('semester_id')->nullable()->constrained()->nullOnDelete();
+
+            // Only If the payment is for an enrollment
+            $table->foreignId('enrollment_id')->nullable()->nullable()->constrained()->nullOnDelete();
+
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete();
-            $table->softDeletes();
+
+            $table->enum('status', ['pending', 'completed', 'canceled'])->nullable()->default('pending');
+            $table->string('reference_number')->nullable();
+            $table->decimal('paid_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->nullable();
+            $table->string('description')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_deleted')->default(false);
+            $table->date('payment_date')->default(now());
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

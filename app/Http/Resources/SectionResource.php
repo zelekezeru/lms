@@ -38,17 +38,17 @@ class SectionResource extends JsonResource
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,
             'courses' => $this->whenLoaded('courseOfferings', function () {
-                return $this->courseOfferings->map(function ($assignment) {
+                return $this->courseOfferings->map(function ($offering) {
                     return [
-                        'id' => $assignment->course->id,
-                        'name' => $assignment->course->name,
-                        'code' => $assignment->course->code,
-                        'creditHour' => $assignment->course->credit_hours,
-                        'yearLevel' => intval($assignment->year_level),
-                        'semester' => intval($assignment->semester),
-                        'instructor' => $assignment->instructor ? [
-                            'id' => $assignment->instructor->id,
-                            'name' => $assignment->instructor->user->name,
+                        'id' => $offering->course->id,
+                        'name' => $offering->course->name,
+                        'code' => $offering->course->code,
+                        'creditHour' => $offering->course->credit_hours,
+                        'yearLevel' => intval($offering->year_level),
+                        'semester' => intval($offering->semester_level),
+                        'instructor' => $offering->instructor ? [
+                            'id' => $offering->instructor->id,
+                            'name' => $offering->instructor->user->name,
                         ] : null,
                     ];
                 });

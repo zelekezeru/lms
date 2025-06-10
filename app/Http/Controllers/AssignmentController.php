@@ -174,7 +174,7 @@ class AssignmentController extends Controller
         }
 
         $courseOffering->year_level = $validated['year'];
-        $courseOffering->semester = $validated['semester'];
+        $courseOffering->semester_level = $validated['semester'];
         $courseOffering->save();
 
         return back()->with('success', 'Course updated successfully.');

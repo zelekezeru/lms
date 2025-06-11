@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head, Link, router, useForm } from "@inertiajs/vue3";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
@@ -31,6 +31,7 @@ const props = defineProps({
     paymentTypes: Array, // Add prop for payment categories
 });
 
+const errors = usePage().props.errors;
 // Refs for controlling modal visibility
 const assignPayments = ref(false);
 const createPaymentModal = ref(false);
@@ -152,11 +153,9 @@ const submitNewPayment = () => {
                 paymentCreationForm.reset();
             },
             onError: (errors) => {
-                Swal.fire(
-                    "Error!",
-                    "Failed to create the payment. Please check the form for errors.",
-                    "error"
-                );
+                createPaymentModal.value = false;
+                paymentCreationForm.reset();
+                Swal.fire("Error!", errors.error, "error");
             },
         }
     );
@@ -425,7 +424,7 @@ const submitNewPayment = () => {
                     {{ student.first_name }} {{ student.middle_name }}
                 </span>
             </h1>
-
+            <span class="text-red-700 text-lg">{{ errors.error }}</span>
             <form @submit.prevent="submitNewPayment">
                 <!-- Description -->
                 <div class="mb-4">

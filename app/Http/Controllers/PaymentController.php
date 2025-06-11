@@ -10,6 +10,7 @@ use App\Models\PaymentCategory; // Assuming you have this
 use App\Models\PaymentMethod; // Add this line to import PaymentMethod
 use App\Models\PaymentType; // Import StudyMode model
 use App\Models\Semester;
+use App\Models\SemesterStudent;
 use App\Models\Student;
 use App\Models\StudyMode;
 use Illuminate\Http\Request; // Add this line to import StudentResource
@@ -77,12 +78,32 @@ class PaymentController extends Controller
         $data['created_by'] = Auth::user()->id;
         $data['semester_id'] = $semester->id;
 
-        if ($data['total_amount'] == $data['paid_amount']) {
-            $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();
+        $semesterStudent = $semester->SemesterStudents()->where('student_id', $data['student_id'])->where('payment_status', 'unpaid')->first();
 
-            foreach ($enrollments as $enrollment) {
-                $enrollment->update([
-                    'status' => 'enrolled'
+        $selectedPayment = PaymentType::find($data['payment_type_id']);
+
+        if ($selectedPayment->duration == 'per-course') {
+            if ($semesterStudent) {
+                return back()->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
+            }
+
+            if ($data['total_amount'] == $data['paid_amount']) {
+                $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();
+
+
+                foreach ($enrollments as $enrollment) {
+                    $enrollment->update([
+                        'status' => 'enrolled'
+                    ]);
+                }
+            }
+        } else if ($selectedPayment->duration == 'per-semester' && $selectedPayment->type == 'Semester Registration') {
+            if (! $semesterStudent) {
+                return back()->withErrors(['error' => 'The Student Has Already Payed All Semester Registration Fees']);
+            }
+            if ($data['total_amount'] == $data['paid_amount']) {
+                $semesterStudent = $semesterStudent->update([
+                    'payment_status' => 'paid'
                 ]);
             }
         }

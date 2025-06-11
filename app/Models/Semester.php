@@ -50,7 +50,7 @@ class Semester extends Model
         return $this->hasMany(Grade::class);
     }
 
-    public function semesterStudent()
+    public function semesterStudents()
     {
         return $this->hasMany(SemesterStudent::class);
     }

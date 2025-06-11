@@ -353,7 +353,7 @@ class StudentController extends Controller
          *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
          * ]
          */
-        
+
         foreach ($courseOfferings as $courseOffering) {
             Enrollment::updateOrCreate([
                 'student_id' => $student->id,
@@ -363,13 +363,13 @@ class StudentController extends Controller
                 'academic_status' => 'in_progress'
             ]);
         }
-        
+
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
             ->where('student_id', $student->id)
             ->where('academic_status', 'in_progress')
             ->update(['academic_status' => 'completed']);
-        
+
         // Updert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [
@@ -413,6 +413,25 @@ class StudentController extends Controller
             'academic_status' => 'in_progress',
         ]);
 
+        // update or create a payment of type course fee
+
+        $courseFeeType = PaymentType::where('type', 'Course Fee')->where('study_mode_id', $student->study_mode_id)->first();
+
+        $payment = Payment::firstOrNew([
+            'student_id' => $student->id,
+            'semester_id' => $semester->id,
+            'payment_type_id' => $courseFeeType->id,
+            'tenant_id' => 1,
+        ]);
+
+        $existingAmount = $payment->total_amount ?? 0;
+        $newAmount = $existingAmount + ($courseFeeType->amount ?? 0);
+
+        $payment->status = 'pending';
+        $payment->total_amount = $newAmount;
+        $payment->save();
+
+
         return back()->with('success', 'Course added successfully.');
     }
 
@@ -421,7 +440,28 @@ class StudentController extends Controller
         $fields = $request->validate([
             'enrollment_id' => ['required', 'exists:enrollments,id'],
         ]);
+
+
+
         $enrollment = Enrollment::findOrFail($fields['enrollment_id']);
+
+        $courseFeeType = PaymentType::where('type', 'Course Fee')->where('study_mode_id', $student->study_mode_id)->first();
+        if ($enrollment->status == 'pending') {
+            $semester = Semester::getActiveSemester();
+            $payment = Payment::firstOrNew([
+                'student_id' => $student->id,
+                'semester_id' => $semester->id,
+                'payment_type_id' => $courseFeeType->id,
+                'tenant_id' => 1,
+            ]);
+
+            $existingAmount = $payment->total_amount ?? 0;
+            $newAmount = $existingAmount - ($courseFeeType->amount ?? 0);
+
+            $payment->status = 'pending';
+            $payment->total_amount = $newAmount;
+            $payment->save();
+        }
         // Instead of detaching, update the pivot status to "Dropped"
         $enrollment->update([
             'status' => 'Dropped',

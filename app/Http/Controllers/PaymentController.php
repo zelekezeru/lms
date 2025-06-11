@@ -126,6 +126,21 @@ class PaymentController extends Controller
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.');
     }
 
+    public function finishPayment(Payment $payment)
+    {
+        $semester = Semester::getActiveSemester();
+
+        if ($payment->duration == 'per-course') {
+            $enrollments = $semester->enrollments()->where('student_id', $payment->student_id)->where('status', 'pending')->get();
+
+
+            foreach ($enrollments as $enrollment) {
+                $enrollment->update([
+                    'status' => 'enrolled'
+                ]);
+            }
+        }
+    }
     public function show(Payment $payment)
     {
         $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentItems']);

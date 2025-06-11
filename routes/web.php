@@ -9,6 +9,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstructorPortalController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrarPortalController;
@@ -99,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/classSchedules', [RegistrarPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
     });
 
+
     // Profiles related routes
     Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -107,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('switch-role', [AuthenticatedSessionController::class, 'switchRole'])->name('switch-role');
 
+    Route::post('/finishPayment/{payment}', [PaymentController::class, 'finishPayment'])->name('payment.finishPayment');
     // User Ducuments
     Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');
 
@@ -152,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
-    
+
     // Detach Program from Study Mode
     Route::delete('/studymodes/{study_mode}/programs/{program}', [StudyModeController::class, 'destroyProgram'])->name('studymodes.programs.destroy');
 

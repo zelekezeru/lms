@@ -23,6 +23,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    semesters: {
+        type: Array,
+        required: true,
+    },
     activeSemester: {
         type: Object,
         required: true,
@@ -42,6 +46,22 @@ const paymentForm = useForm({
     student_id: props.student.id, // Set student ID here
 });
 
+const selectedStatus = ref("");
+const selectedSemester = ref(props.activeSemester.id);
+
+const semesterPayments = ref(
+    props.payments.filter(
+        (payment) => payment.semester.id === selectedSemester.value
+    )
+);
+
+watch(selectedSemester, () => {
+    console.log(selectedSemester.value);
+
+    semesterPayments.value = props.payments.filter(
+        (payment) => payment.semester.id === selectedSemester.value
+    );
+});
 // Form for creating new payment
 const paymentCreationForm = useForm({
     student_id: props.student.id,
@@ -163,203 +183,232 @@ const submitNewPayment = () => {
 </script>
 
 <template>
-    <div class="">
+    <div class="max-w-5xl mx-auto">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Payments
+                Payments Of
+                {{
+                    semesters.find(
+                        (semester) => semester.id == selectedSemester
+                    ).name
+                }}
+                {{
+                    semesters.find(
+                        (semester) => semester.id == selectedSemester
+                    ).id == activeSemester.id
+                        ? "(Current Semester)"
+                        : ""
+                }}
             </h2>
             <button
                 @click="createPaymentModal = !createPaymentModal"
-                class="flex text-green-600 hover:text-green-800"
+                class="flex items-center text-green-600 hover:text-green-800"
             >
-                <PlusCircleIcon class="mx-2 w-8 h-8" />
-                Create Payment
+                <PlusCircleIcon class="mx-2 w-6 h-6" />
+                <span class="font-medium">Create Payment</span>
             </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <div
-                class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
-            >
-                <div v-if="!payments" class="text-center">
-                    <p class="text-gray-500 dark:text-gray-400">
-                        No payment information available.
-                    </p>
+        <!-- Filters -->
+        <div class="mb-6 space-y-4">
+            <div>
+                <h3
+                    class="text-lg font-semibold text-gray-800 dark:text-gray-100"
+                >
+                    Filters
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Narrow down payments based on status or semester.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap gap-6">
+                <!-- Status Filter -->
+                <div class="w-64">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
+                        Status
+                    </label>
+                    <Select
+                        v-model="selectedStatus"
+                        :options="statusOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Select Status"
+                        class="w-full"
+                    />
                 </div>
-                <div v-else-if="payments" class="flex flex-col">
-                    <div
-                        class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
+
+                <!-- Semester Filter -->
+                <div class="w-64">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                     >
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Enrolled Payments</span
-                        >
-                        <table
-                            class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                        >
-                            <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-700">
-                                    <th
-                                        class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        No.
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Type
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Method
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Total Amount
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Paid Amount
-                                    </th>
-                                    
-                                    <th
-                                        class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Semester
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Date
-                                    </th>
-                                    <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Reference
-                                    </th>
-                                    <th
-                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Status
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(payment, index) in payments"
-                                    :key="payment.id"
-                                    :class="
-                                        index % 2 === 0
-                                            ? 'bg-white dark:bg-gray-800'
-                                            : 'bg-gray-50 dark:bg-gray-700'
-                                    "
-                                    class="border-b border-gray-300 dark:border-gray-600"
-                                >
-                                    <td
-                                        class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{ index + 1 }}
-                                    </td>
-                                    <td
-                                        class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        <Link
-                                            :href="
-                                                route('payments.show', {
-                                                    payment: payment.id,
-                                                })
-                                            "
-                                        >
-                                            {{
-                                                payment.payment_type
-                                                    ? payment.payment_type.type
-                                                    : "N/A"
-                                            }}
-                                        </Link>
-                                    </td>
-                                    <td
-                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{
-                                            payment.payment_method
-                                                ? payment.payment_method
-                                                      .bank_name
-                                                : "N/A"
-                                        }}
-                                    </td>
-                                    <td
-                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{ payment?.total_amount }}
-                                    </td>
-                                    <td
-                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{ payment?.paid_amount }}
-                                    </td>
-                                    <td
-                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                            {{ payment?.semester?.name }}
-                                    </td>
-                                    <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{ payment?.payment_date }}
-                                    </td>
-                                    <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{ payment?.reference_number }}
-                                    </td>
-                                    <td
-                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        <span
-                                            :class="{
-                                                'text-yellow-500':
-                                                    payment.status ===
-                                                    'pending',
-                                                'text-green-500':
-                                                    payment.status ===
-                                                    'completed',
-                                                'text-red-500':
-                                                    payment.status === 'failed',
-                                                'text-blue-500':
-                                                    payment.status ===
-                                                    'refunded',
-                                            }"
-                                        >
-                                            {{
-                                                payment.status
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                payment.status.slice(1)
-                                            }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div v-else class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >No Payments Enrolled</span
+                        Semester
+                    </label>
+                    <Select
+                        v-model="selectedSemester"
+                        :options="semesters"
+                        optionLabel="name"
+                        optionValue="id"
+                        placeholder="Select Semester"
+                        class="w-full"
                     >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                    >
-                        {{ student?.name }}
-                        has not enrolled in any payments yet.
-                    </span>
+                        <template #option="slotProps">
+                            {{ slotProps.option.name }}
+                            <span class="text-sm">
+                                {{
+                                    slotProps.option.id == activeSemester.id
+                                        ? "(Current Semester)"
+                                        : ""
+                                }}
+                            </span>
+                        </template>
+                    </Select>
                 </div>
             </div>
         </div>
-    </div>
+        <transition
+            mode="out-in"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="scale-75 opacity-0"
+            enter-to-class="scale-100 opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="scale-100 opacity-100"
+            leave-to-class="scale-75 opacity-0"
+        >
+            <div
+                class="grid grid-cols-1 gap-4 mt-6"
+                :key="`${selectedStatus}-${selectedSemester}`"
+            >
+                <div
+                    v-for="(payment, index) in semesterPayments"
+                    :key="payment.id"
+                    class="rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-5 shadow-sm transition hover:shadow-md"
+                >
+                    <!-- Summary -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3
+                                class="text-lg font-semibold text-gray-800 dark:text-gray-100"
+                            >
+                                {{
+                                    payment.payment_type?.type || "Unknown Type"
+                                }}
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ payment.semester?.name || "No Semester" }} |
+                                {{
+                                    new Date(
+                                        payment.payment_date
+                                    ).toLocaleDateString()
+                                }}
+                            </p>
+                        </div>
 
+                        <div class="text-right space-y-1">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Total: {{ payment.total_amount }} ETB
+                            </p>
+                            <p
+                                class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                            >
+                                Paid: {{ payment.paid_amount }} ETB
+                            </p>
+                            <p
+                                :class="{
+                                    'text-yellow-500':
+                                        payment.status === 'pending',
+                                    'text-green-500':
+                                        payment.status === 'completed',
+                                    'text-red-500': payment.status === 'failed',
+                                    'text-blue-500':
+                                        payment.status === 'refunded',
+                                }"
+                                class="text-sm font-bold"
+                            >
+                                {{
+                                    payment.status.charAt(0).toUpperCase() +
+                                    payment.status.slice(1)
+                                }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div
+                        class="mt-3 w-full bg-gray-300 dark:bg-gray-700 h-2 rounded-full overflow-hidden"
+                    >
+                        <div
+                            class="h-full bg-green-500"
+                            :style="{
+                                width:
+                                    (payment.paid_amount /
+                                        payment.total_amount) *
+                                        100 +
+                                    '%',
+                            }"
+                        ></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 flex justify-between items-center">
+                        <button
+                            @click="payment.showDetails = !payment.showDetails"
+                            class="text-sm text-blue-600 hover:underline dark:text-blue-400"
+                        >
+                            {{
+                                payment.showDetails
+                                    ? "Hide Details"
+                                    : "Show Details"
+                            }}
+                        </button>
+                        <div class="space-x-2 flex flex-wrap">
+                            <Link
+                                :href="
+                                    route('payments.show', {
+                                        payment: payment.id,
+                                    })
+                                "
+                                class="px-3 py-1 text-sm font-medium rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                            >
+                                View
+                            </Link>
+                            <button
+                                @click="downloadReceipt(payment.id)"
+                                class="px-3 py-1 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-800 dark:text-white dark:hover:bg-indigo-700"
+                            >
+                                Receipt
+                            </button>
+                            <button
+                                v-if="payment.status === 'pending'"
+                                @click="finishPayment(payment.id)"
+                                class="px-3 py-1 text-sm font-medium rounded-md bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-800 dark:text-white dark:hover:bg-green-700"
+                            >
+                                Finish Payment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Detail Section -->
+                    <div
+                        v-if="payment.showDetails"
+                        class="mt-4 text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-xl p-4"
+                    >
+                        <p>
+                            <strong>Method:</strong>
+                            {{ payment.payment_method?.bank_name || "N/A" }}
+                        </p>
+                        <p>
+                            <strong>Reference:</strong>
+                            {{ payment.reference_number || "N/A" }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </div>
     <Modal
         :show="assignPayments"
         @close="assignPayments = false"
@@ -421,9 +470,7 @@ const submitNewPayment = () => {
                 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
             >
                 Create Payment for –
-                <span class="text-yellow-700 underline">
-                    {{ student.first_name }} {{ student.middle_name }}
-                </span>
+                {{ activeSemester.name }}
             </h1>
             <span class="text-red-700 text-lg">{{ errors.error }}</span>
             <form @submit.prevent="submitNewPayment">

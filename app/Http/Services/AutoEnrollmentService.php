@@ -47,25 +47,27 @@ class AutoEnrollmentService
         continue;
       }
 
-      // Ensure student has a SemesterStudent record for the current semester
-      $semesterStudent = SemesterStudent::firstOrCreate([
+      $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
+
+      $semesterRegistrationPayment = Payment::create([
         'student_id' => $student->id,
-        'semester_id' => $activeSemester->id
+        'payment_type_id' => $semesterRegistrationPaymentType?->id,
+        'semester_id' => $activeSemester->id,
+        'tenant_id' => 1,
+        'created_by' => Auth::id(),
+        'status' => 'pending',
+        'paid_amount' => 0,
+        'total_amount' => $semesterRegistrationPaymentType->amount,
+      ]);
+
+      // Ensure student has a SemesterStudent record for the current semester
+      $semesterStudent = SemesterStudent::updateOrCreate([
+        'student_id' => $student->id,
+        'semester_id' => $activeSemester->id,
       ], [
         'payment_status' => 'unpaid',
         'academic_status' => 'in_progress'
       ]);
-      // $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
-
-      // Payment::create([
-      //   'student_id' => $student->id,
-      //   'payment_type_id' => $semesterRegistrationPaymentType?->id,
-      //   'semester_id' => $activeSemester->id,
-      //   'tenant_id' => 1,
-      //   'created_by' => Auth::id(),
-      //   'status' => 'pending',
-      //   'paid_amount' => 0
-      // ]);
 
       // Fetch course offerings for the section
       $courseOfferingIds = CourseOffering::where('section_id', $section->id)
@@ -80,7 +82,6 @@ class AutoEnrollmentService
           ->whereIn('status', ['pending', 'enrolled'])
           ->exists();
 
-        $courseFeePaymentType = PaymentType::where('type', 'Course Fee')->where('duration', 'per-course')->where('study_mode_id', $student->study_mode_id)->first();
         if (!$alreadyEnrolled) {
           $enrollment = Enrollment::create([
             'student_id' => $student->id,
@@ -89,19 +90,21 @@ class AutoEnrollmentService
             'status' => 'pending',
             'academic_status' => 'in_progress'
           ]);
-
-          // Payment::create([
-          //   'student_id' => $student->id,
-          //   'payment_type_id' => $courseFeePaymentType?->id,
-          //   'semester_id' => $activeSemester->id,
-          //   'enrollment_id' => $enrollment->id,
-          //   'tenant_id' => 1,
-          //   'created_by' => Auth::id(),
-          //   'status' => 'pending',
-          //   'paid_amount' => 0
-          // ]);
         }
       }
+
+      $courseFeePaymentType = PaymentType::where('type', 'Course Fee')->where('duration', 'per-course')->where('study_mode_id', $student->study_mode_id)->first();
+      Payment::create([
+        'student_id' => $student->id,
+        'payment_type_id' => $courseFeePaymentType?->id,
+        'semester_id' => $activeSemester->id,
+        'description' => 'Tuition Fee',
+        'tenant_id' => 1,
+        'created_by' => Auth::id(),
+        'status' => 'pending',
+        'paid_amount' => 0,
+        'total_amount' => $courseFeePaymentType->amount * count($courseOfferingIds),
+      ]);
     }
   }
 }

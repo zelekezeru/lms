@@ -222,6 +222,9 @@ const deleteStudent = (id) => {
                 <div
                     :key="selectedTab"
                     class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+                    :class="{
+                        'max-w-5xl mx-auto': selectedTab == 'payments',
+                    }"
                 >
                     <ShowDetails
                         v-if="selectedTab === 'details'"
@@ -255,6 +258,7 @@ const deleteStudent = (id) => {
                         v-else-if="selectedTab === 'payments'"
                         :student="student"
                         :status="status"
+                        :semesters="semesters"
                         :payments="payments"
                         :active-semester="activeSemester"
                         :paymentMethods="paymentMethods"

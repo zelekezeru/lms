@@ -18,9 +18,6 @@ return new class extends Migration
             $table->foreignId('payment_type_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('semester_id')->nullable()->constrained()->nullOnDelete();
 
-            // Only If the payment is for an enrollment
-            $table->foreignId('enrollment_id')->nullable()->nullable()->constrained()->nullOnDelete();
-
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();

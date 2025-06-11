@@ -29,7 +29,7 @@ class PaymentController extends Controller
         $students = StudentResource::collection(Student::all()->sortBy('name'));
         $studyModes = StudyModeResource::collection(StudyMode::with('programs')->get());
         $paymentTypes = PaymentTypeResource::collection(PaymentType::with(['studyMode'])->get());
-        
+
         $filters = [
             'category' => $request->input('category'),
             'payment_method' => $request->input('payment_method'),
@@ -83,7 +83,18 @@ class PaymentController extends Controller
 
         $selectedPayment = PaymentType::find($data['payment_type_id']);
 
+        $existingCoursePayment = Payment::where('student_id', $data['student_id'])
+            ->where('semester_id', $data['semester_id'])
+            ->where('payment_type_id', $data['payment_type_id'])
+            ->where('status', 'pending')
+            ->first();
+
+        if ($existingCoursePayment) {
+            return back()->withErrors(['error' => 'This Type Of Payment Is Already Pending Please Finish ' . $existingCoursePayment->paymentType->type]);
+        }
+        // if payment type is course fee(per-course)
         if ($selectedPayment->duration == 'per-course') {
+
             if ($semesterStudent) {
                 return back()->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
             }
@@ -99,6 +110,7 @@ class PaymentController extends Controller
                 }
             }
         } else if ($selectedPayment->duration == 'per-semester' && $selectedPayment->type == 'Semester Registration') {
+
             if (! $semesterStudent) {
                 return back()->withErrors(['error' => 'The Student Has Already Payed All Semester Registration Fees']);
             }

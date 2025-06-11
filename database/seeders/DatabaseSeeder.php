@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RolePermissionSeeder::class);
 
         // After creating the roles, permissions, SuperAdmin
-        $this->call(UserSeeder::class);
         $this->call(TenantSeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(CourseSeeder::class);
         $this->call(StudyModeSeeder::class);
         $this->call(ProgramSeeder::class);
@@ -33,5 +33,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CurriculumSeeder::class);
         $this->call(CourseOfferingSeeder::class);
         $this->call(RoomSeeder::class);
+        $this->call(CenterSeeder::class);
     }
 }

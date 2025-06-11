@@ -7,6 +7,7 @@ use App\Http\Requests\CenterUpdateRequest;
 use App\Http\Resources\CenterResource;
 use App\Http\Resources\CoordinatorResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\StudentResource;
 use App\Models\Center;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class CenterController extends Controller
         }
 
         $centers = CenterResource::collection(
-            $query->with(['coordinator.user', 'students'])->paginate(15)->withQueryString()
+            $query->with(['coordinator.user', 'students',])->paginate(15)->withQueryString()
         );
 
         return inertia('Centers/Index', [
@@ -40,8 +41,12 @@ class CenterController extends Controller
 
     public function show(Center $center)
     {
-        $center = new CenterResource($center->load('students'));
+        $center = new CenterResource($center);
 
+        $students = StudentResource::collection(
+            $center->students()->with(['user'])->get()
+        );
+        
         if($center->coordinator){
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
         }else{
@@ -51,6 +56,7 @@ class CenterController extends Controller
         return inertia('Centers/Show', [
             'center' => $center,
             'coordinator' => $coordinator,
+            'students' => $students,
         ]);
     }
 

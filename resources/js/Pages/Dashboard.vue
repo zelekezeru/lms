@@ -152,48 +152,6 @@ onMounted(createCharts);
         </div>
       </div>
 
-      <!-- Instructor Management Section -->
-      <div class="p-6 bg-white shadow-md dark:bg-gray-800 rounded-xl">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $t('admin_dashboard.manage_instructors') }}</h2>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="bg-gray-100 dark:bg-gray-700">
-              <tr>
-                <th class="px-6 py-3">{{ $t('table.name') }}</th>
-                <th class="px-6 py-3">{{ $t('table.email') }}</th>
-                <th class="px-6 py-3">{{ $t('table.specialization') }}</th>
-                <th class="px-6 py-3">{{ $t('table.status') }}</th>
-                <th class="px-6 py-3">{{ $t('table.actions') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900">
-                <td class="px-6 py-4">Dr. Jane Smith</td>
-                <td class="px-6 py-4">jane.smith@example.com</td>
-                <td class="px-6 py-4">Computer Science</td>
-                <td class="px-6 py-4">
-                  <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
-                    {{ $t('status.active') }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 space-x-2">
-                  <button class="inline-flex items-center text-blue-600 hover:underline">
-                    <PencilSquareIcon class="w-4 h-4 mr-1" />
-                    {{ $t('actions.edit') }}
-                  </button>
-                  <button class="inline-flex items-center text-red-600 hover:underline">
-                    <TrashIcon class="w-4 h-4 mr-1" />
-                    {{ $t('actions.delete') }}
-                  </button>
-                </td>
-              </tr>
-              <!-- Add more instructors here -->
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </AppLayout>
 </template>

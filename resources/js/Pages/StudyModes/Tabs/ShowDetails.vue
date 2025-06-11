@@ -17,6 +17,14 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    programs_count: {
+        type: Number,
+        required: false,
+    },
+    students_count: {
+        type: Number,
+        required: false,
+    },
 });
 
 
@@ -60,6 +68,22 @@ const deletestudyMode = (id) => {
             <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ studyMode.name }}
+            </span>
+        </div>
+
+        <!-- Programs Count -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Number of Programs</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ programs_count }}
+            </span>
+        </div>
+
+        <!-- Students Count -->
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Number of Students</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ students_count }}
             </span>
         </div>
 

@@ -353,9 +353,11 @@ class StudentController extends Controller
          *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
          * ]
          */
+        
         foreach ($courseOfferings as $courseOffering) {
             Enrollment::updateOrCreate([
                 'student_id' => $student->id,
+                'semester_id' => $request->semester_id,
                 'course_offering_id' => $courseOffering->id,
             ]);
         }
@@ -365,7 +367,7 @@ class StudentController extends Controller
             ->where('student_id', $student->id)
             ->whereIn('status', ['Active', 'Enrolled'])
             ->update(['status' => 'Completed']);
-
+        
         // Upsert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [

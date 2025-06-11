@@ -1,18 +1,28 @@
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
+import { ref, computed } from "vue";
 import { useForm, Link } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import Dialog from 'primevue/dialog';
 import Select from "primevue/select";
-import { ArrowPathIcon, ChevronDownIcon, EyeIcon } from "@heroicons/vue/24/outline";
+import { ArrowPathIcon, ChevronDownIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/solid";
+import Table from "@/Components/Table.vue";
+import TableHeader from "@/Components/TableHeader.vue";
+import TableZebraRows from "@/Components/TableZebraRows.vue";
+import Thead from "@/Components/Thead.vue";
 
 const props = defineProps({
     center: Object,
+
     students: {
         type: Array,
         required: true,
     },
     coordinator: {
+        type: Object,
+        required: false,
+    },
+    sortInfo: {
         type: Object,
         required: false,
     },
@@ -47,44 +57,49 @@ const assignStudentToSection = (studentId) => {
         </div>
 
         <!-- Students Table -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border border-gray-300 dark:border-gray-600">
-                <thead>
-                    <tr class="bg-gray-50 dark:bg-gray-700">
-                        <th class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">No.</th>
-                        <th class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Name</th>
-                        <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">ID Number</th>
-                        <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Track</th>
-                        <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Status</th>
+        <div class="overflow-x-auto shadow-md sm:rounded-lg mt-3">
+            <!-- Export list to Excel -->
+            
+            <Table>
+                <TableHeader>
+                    <tr>
+                        <Thead>No.</Thead>
+                        <Thead>Student Name</Thead>
+                        <Thead>ID Number</Thead>
+                        <Thead>Phone</Thead>
+                        <Thead>Actions</Thead>
                     </tr>
-                </thead>
+                </TableHeader>
                 <tbody>
-                    <tr
-                        v-for="(student, index) in [...props.students].sort((a, b) => a.firstName.localeCompare(b.firstName))"
+                    <TableZebraRows
+                        v-for="(student, index) in students"
                         :key="student.id"
-                        :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
-                        class="border-b border-gray-300 dark:border-gray-600"
                     >
-                        <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">{{ index + 1 }}</td>
-                        <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">
+                        <td class="px-6 py-4">
+                            {{ index + 1 }}
+                        </td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             <Link :href="route('students.show', { student: student.id })">
                                 {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
                             </Link>
+                        </th>
+                        <td class="px-6 py-4">{{ student.idNo }}</td>
+                        <td class="px-6 py-4">{{ student.mobilePhone }}</td>
+                        <td class="px-6 py-4 flex space-x-6">
+                            <div v-if="userCan('view-students')">
+                                <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">
+                                    <EyeIcon class="w-5 h-5" />
+                                </Link>
+                            </div>
+                            <div v-if="userCan('update-students')">
+                                <Link :href="route('students.edit', { student: student.id })" class="text-green-500 hover:text-green-700">
+                                    <PencilSquareIcon class="w-5 h-5" />
+                                </Link>
+                            </div>
                         </td>
-                        <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">
-                            {{ student.idNo }}
-                        </td>
-                        <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">
-                            {{ student.user.email }}
-                        </td>
-                        <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 text-center">
-                            <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">
-                                 <EyeIcon class="w-5 h-5 inline" /> View
-                            </Link>
-                        </td>
-                    </tr>
+                    </TableZebraRows>
                 </tbody>
-            </table>
+            </Table>
         </div>
     </div>
 </template>

@@ -83,11 +83,10 @@ class StudyModeController extends Controller
      */
     public function show(StudyMode $studyMode)
     {
-        $studyMode = new StudyModeResource($studyMode->load('programs')); // Load the related program
+        $studyMode = new StudyModeResource($studyMode->load('programs', 'students')); // Load the related program
 
         return inertia('StudyModes/Show', [
             'studyMode' => $studyMode,
-            'programs' => $studyMode->programs,
         ]);
     }
 
@@ -129,5 +128,16 @@ class StudyModeController extends Controller
         $studyMode->delete();
 
         return redirect()->route('studyModes.index')->with('success', 'Study Mode deleted successfully.');
+    }
+
+    /**
+     * Remove the specified program from the study mode.
+     */
+    public function destroyProgram(StudyMode $studyMode, Program $program)
+    {
+        $studyMode->programs()->detach($program->id);
+
+        return redirect()->route('studyModes.show', $studyMode)
+            ->with('success', 'Program removed from Study Mode successfully.');
     }
 }

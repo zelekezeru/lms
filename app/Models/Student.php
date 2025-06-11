@@ -125,4 +125,9 @@ class Student extends Model
     {
         return $this->belongsToMany(Center::class, 'center_student');
     }
+
+    public function study_modes()
+    {
+        return $this->belongsTo(StudyMode::class, 'study_mode');
+    }
 }

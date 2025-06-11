@@ -19,6 +19,7 @@ class InstructorSeeder extends Seeder
         // Create one random instructor with full information
 
         $user = User::create([
+            
             'user_uuid' => 'SITS-IN-001',
             'name' => 'Instructor User Test',
             'email' => 'instructor.user@sits.edu.et',

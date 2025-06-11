@@ -16,10 +16,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    programs: {
-        type: Array,
-        required: true,
-    },
 });
 
 const selectedTab = ref("details");
@@ -76,13 +72,16 @@ const tabs = [
                     <ShowDetails
                         v-if="selectedTab === 'details'"
                         :studyMode="studyMode"
+                        :programs_count="studyMode.programs ? studyMode.programs.length : 0"
+                        :students_count="studyMode.students ? studyMode.students.length : 0"
                     />
 
-                    <!-- Courses Panel -->
+                    <!-- Programs Panel -->
                     <ShowPrograms
-                        v-else-if="selectedTab === 'programs'"
+                        v-else-if="selectedTab === 'programs'"                        
+                        v-if="userCan('view-programs')"
                         :studyMode="studyMode"
-                        :programs="programs"
+                        :programs="studyMode.programs"
                     />
 
                 </div>

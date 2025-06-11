@@ -14,6 +14,11 @@ class StudyMode extends Model
         return $this->belongsToMany(Program::class)->withPivot('duration');
     }
 
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
+
     public function sections(): HasMany
     {
         return $this->hasMany(Section::class);

@@ -143,12 +143,22 @@ class TrackSeeder extends Seeder
                 'created_at' => '2025-04-11 09:17:08',
                 'updated_at' => '2025-04-11 09:17:08',
             ],
+            [
+                'id' => 14,
+                'name' => 'Distance Learning Track',
+                'code' => 'DP/014/25',
+                'description' => 'Distance Learning Track in Amharic',
+                'program_id' => 9,
+                'duration' => 4,
+                'created_at' => '2025-04-11 09:17:08',
+                'updated_at' => '2025-04-11 09:17:08',
+            ],
         ]);
 
         $data = [];
         $isCommon = 0;
 
-        for ($trackId = 1; $trackId <= 13; $trackId++) {
+        for ($trackId = 1; $trackId <= 14; $trackId++) {
             for ($courseId = 1; $courseId <= 45; $courseId++) {
                 $data[] = [
                     'course_id' => $courseId,

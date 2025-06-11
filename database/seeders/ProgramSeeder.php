@@ -109,6 +109,19 @@ class ProgramSeeder extends Seeder
                 'created_at' => '2025-04-11 07:21:25',
                 'updated_at' => '2025-04-11 07:21:25',
             ],
+            [
+                'id' => 9,
+                'name' => 'Distance learning',
+                'language' => 'Amharic',
+                'code' => 'PR/08/25',
+                'status' => 'Active',
+                'duration' => 4,
+                'description' => 'Distance learning in Amharic',
+                'user_id' => 2,
+                'created_at' => '2025-04-11 07:21:25',
+                'updated_at' => '2025-04-11 07:21:25',
+            ],
+
         ]);
 
         // Insert data into program_study_mode table
@@ -118,7 +131,7 @@ class ProgramSeeder extends Seeder
         // Loop for program_id values 1 to 8
         for ($programId = 1; $programId <= 8; $programId++) {
             // Define study mode IDs.
-            $studyModeIds = [1, 2, 3, 4];
+            $studyModeIds = [1, 2, 3];
             $duration = ($programId >= 1 && $programId <= 4) || ($programId >= 7 && $programId <= 8) ? 4 : 3;
 
             // Loop through study mode ids
@@ -131,6 +144,12 @@ class ProgramSeeder extends Seeder
                 ];
             }
         }
+        $data[] = [
+            'program_id' => 9,
+            'study_mode_id' => 4, // Assuming 1 is the ID for Distance Learning
+            'duration' => 4,
+            'created_at' => now(),
+        ];
         DB::table('program_study_mode')->insert($data);
 
     }

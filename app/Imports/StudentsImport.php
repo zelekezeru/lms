@@ -36,6 +36,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected $user_id;
 
+    protected $duplicate_entries = [];
+
     public function __construct($section_id)
     {
         $this->section_id = $section_id;
@@ -54,7 +56,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         $this->study_mode_id = $section->studyMode->id;
         $this->tenant_id = $section->user->tenant_id; // assuming user relation carries tenant
         $this->user_id = $section->user->id;
-
+            
         DB::transaction(function () use ($rows) {
             
             foreach ($rows as $row) {
@@ -66,6 +68,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'title' => 'Missing Required Fields',
                         'text' => 'Some required fields are missing in this row. Skipping this entry.',
                     ]);
+                    
+                    // add the user to duplicate entries
+                    $this->duplicate_entries[] = $row['full_name'];
 
                     continue;
                 }

@@ -204,29 +204,30 @@ const submitNewPayment = () => {
                                         No.
                                     </th>
                                     <th
-                                        class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        Description
-                                    </th>
-                                    <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         Type
                                     </th>
                                     <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         Method
                                     </th>
                                     <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         Total Amount
                                     </th>
                                     <th
-                                        class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         Paid Amount
+                                    </th>
+                                    
+                                    <th
+                                        class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                        Semester
                                     </th>
                                     <th
                                         class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
@@ -271,20 +272,15 @@ const submitNewPayment = () => {
                                                 })
                                             "
                                         >
-                                            {{ payment.description }}
+                                            {{
+                                                payment.payment_type
+                                                    ? payment.payment_type.type
+                                                    : "N/A"
+                                            }}
                                         </Link>
                                     </td>
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                                    >
-                                        {{
-                                            payment.payment_type
-                                                ? payment.payment_type.type
-                                                : "N/A"
-                                        }}
-                                    </td>
-                                    <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         {{
                                             payment.payment_method
@@ -294,14 +290,19 @@ const submitNewPayment = () => {
                                         }}
                                     </td>
                                     <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         {{ payment.total_amount }}
                                     </td>
                                     <td
-                                        class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
                                         {{ payment.paid_amount }}
+                                    </td>
+                                    <td
+                                        class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                            {{ payment.semester.name }}
                                     </td>
                                     <td
                                         class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"

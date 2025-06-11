@@ -176,32 +176,48 @@ const handleFileChange = (e, targetForm) => {
                 <h2 class="text-lg font-bold">New Coordinator</h2>
                 <form @submit.prevent="submitForm" class="space-y-4">
                     <div>
-                        <InputLabel value="Name" />
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Name
+                        </label>
                         <input
+                            id="name"
                             v-model="form.name"
                             type="text"
-                            class="input"
+                            required
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Full Name"
                         />
-                        <InputError :message="form.errors.name" />
+                        <div v-if="form.errors.name" class="text-red-500 text-sm">
+                            {{ form.errors.name }}
+                        </div>
                     </div>
 
                     <div>
-                        <InputLabel value="Phone" />
+                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Phone
+                        </label>
                         <input
+                            id="phone"
                             v-model="form.phone"
                             type="text"
-                            class="input"
+                            required
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Phone Number"
                         />
-                        <InputError :message="form.errors.phone" />
+                        <div v-if="form.errors.phone" class="text-red-500 text-sm">
+                            {{ form.errors.phone }}
+                        </div>
                     </div>
 
                     <div>
-                        <InputLabel value="Profile Image" />
+                        <label for="profile_img_create" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Profile Image
+                        </label>
                         <input
+                            id="profile_img_create"
                             type="file"
                             accept="image/*"
+                            class="mt-1 block w-full text-gray-700 dark:text-gray-200"
                             @change="(e) => handleFileChange(e, form)"
                         />
                         <div v-if="imagePreview" class="mt-2">
@@ -210,16 +226,26 @@ const handleFileChange = (e, targetForm) => {
                                 class="w-16 h-16 rounded-full object-cover"
                             />
                         </div>
-                        <InputError :message="form.errors.profile_img" />
+                        <div v-if="form.errors.profile_img" class="text-red-500 text-sm">
+                            {{ form.errors.profile_img }}
+                        </div>
                     </div>
 
                     <div>
-                        <InputLabel value="Status" />
-                        <select v-model="form.status" class="input">
+                        <label for="status_create" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Status
+                        </label>
+                        <select
+                            id="status_create"
+                            v-model="form.status"
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
-                        <InputError :message="form.errors.status" />
+                        <div v-if="form.errors.status" class="text-red-500 text-sm">
+                            {{ form.errors.status }}
+                        </div>
                     </div>
 
                     <div class="flex justify-end space-x-2">
@@ -248,95 +274,75 @@ const handleFileChange = (e, targetForm) => {
                 <h2 class="text-lg font-bold">Edit Coordinator</h2>
                 <form @submit.prevent="submitEditForm" class="space-y-4">
                     <div>
-                        <label
-                            class="block mb-1 font-semibold text-gray-700 dark:text-gray-300"
-                            >Name</label
-                        >
+                        <label for="edit_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Name
+                        </label>
                         <input
-                            v-model="form.name"
+                            id="edit_name"
+                            v-model="editForm.name"
                             type="text"
-                            class="w-full border px-3 py-2 rounded bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
-                            placeholder="Full name"
+                            required
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Full Name"
                         />
-                        <div
-                            v-if="form.errors.name"
-                            class="text-red-500 text-sm"
-                        >
-                            {{ form.errors.name }}
+                        <div v-if="editForm.errors.name" class="text-red-500 text-sm">
+                            {{ editForm.errors.name }}
                         </div>
                     </div>
 
                     <div>
-                        <label
-                            class="block mb-1 font-semibold text-gray-700 dark:text-gray-300"
-                            >Phone</label
-                        >
+                        <label for="edit_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Phone
+                        </label>
                         <input
-                            v-model="form.phone"
+                            id="edit_phone"
+                            v-model="editForm.phone"
                             type="text"
-                            class="w-full border px-3 py-2 rounded bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
-                            placeholder="Phone number"
+                            required
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Phone Number"
                         />
-                        <div
-                            v-if="form.errors.phone"
-                            class="text-red-500 text-sm"
-                        >
-                            {{ form.errors.phone }}
+                        <div v-if="editForm.errors.phone" class="text-red-500 text-sm">
+                            {{ editForm.errors.phone }}
                         </div>
                     </div>
 
                     <div>
-                        <InputLabel
-                            for="profile_img"
-                            value="Profile Image"
-                            class="dark:text-gray-300"
+                        <label for="profile_img_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Profile Image
+                        </label>
+                        <input
+                            id="profile_img_edit"
+                            type="file"
+                            accept="image/*"
+                            class="mt-1 block w-full text-gray-700 dark:text-gray-200"
+                            @change="(e) => handleFileChange(e, editForm)"
                         />
-                        <div class="flex items-center gap-4">
-                            <label
-                                for="profile_img"
-                                class="cursor-pointer px-4 py-2 bg-black text-white flex items-center gap-2 rounded"
-                            >
-                                <PhotoIcon class="w-5 h-5" />
-                                Upload Image
-                            </label>
-                            <input
-                                id="profile_img"
-                                type="file"
-                                accept="image/*"
-                                class="hidden"
-                                @change="(e) => handleFileChange(e, form)"
+                        <div v-if="imagePreview" class="mt-2">
+                            <img
+                                :src="imagePreview"
+                                class="w-16 h-16 rounded-full object-cover"
                             />
-                            <div
-                                class="w-16 h-16 rounded-full border shadow bg-gray-100 dark:bg-gray-700 overflow-hidden"
-                            >
-                                <template v-if="imagePreview">
-                                    <img
-                                        :src="imagePreview"
-                                        class="object-cover w-full h-full"
-                                    />
-                                </template>
-                            </div>
                         </div>
-                        <InputError :message="form.errors.profile_img" />
+                        <div v-if="editForm.errors.profile_img" class="text-red-500 text-sm">
+                            {{ editForm.errors.profile_img }}
+                        </div>
                     </div>
 
                     <div>
-                        <label
-                            class="block mb-1 font-semibold text-gray-700 dark:text-gray-300"
-                            >Status</label
-                        >
+                        <label for="status_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Status
+                        </label>
                         <select
-                            v-model="form.status"
-                            class="w-full border px-3 py-2 rounded bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+                            id="status_edit"
+                            v-model="editForm.status"
+                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
-                        <div
-                            v-if="form.errors.status"
-                            class="text-red-500 text-sm"
-                        >
-                            {{ form.errors.status }}
+                        <div v-if="editForm.errors.status" class="text-red-500 text-sm">
+                            {{ editForm.errors.status }}
                         </div>
                     </div>
 
@@ -344,13 +350,13 @@ const handleFileChange = (e, targetForm) => {
                         <button
                             type="button"
                             @click="showEditModal = false"
-                            class="btn-secondary dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                            class="btn-secondary"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            class="btn-primary dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white"
+                            class="btn-primary"
                             :disabled="editForm.processing"
                         >
                             {{ editForm.processing ? "Updating..." : "Update" }}

@@ -27,13 +27,13 @@ class StudyModeSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'DISTANCE',
+                'name' => 'ONLINE',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 4,
-                'name' => 'ONLINE',
+                'name' => 'DISTANCE',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

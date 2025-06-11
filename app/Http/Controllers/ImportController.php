@@ -21,7 +21,8 @@ class ImportController extends Controller
 
         Excel::import(new StudentsImport($request->section_id), $request->file);
 
-        return back()->with('success', 'Students imported successfully.');
+        $duplicates = isset($this->duplicate) ? count($this->duplicate) : 0;
+        return back()->with('success', "Students imported successfully. Duplicates: {$duplicates}");
 
     }
 
@@ -32,12 +33,11 @@ class ImportController extends Controller
             'center_id' => 'required|exists:centers,id',
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
-
-        $study_mode_id = StudyMode::where('name', 'DISTANCE')->first()->id; // Assuming you want to use a default study mode
-
+        
         // Assuming you have a similar import class for center students
-        Excel::import(new CenterImport($request->center_id, $study_mode_id), $request->file);
+        Excel::import(new CenterImport($request->center_id), $request->file);
 
-        return back()->with('success', 'Center students imported successfully.');
+        $duplicates = isset($this->duplicate) ? count($this->duplicate) : 0;
+        return back()->with('success', "Center students imported successfully. Duplicates: {$duplicates}");
     }
 }

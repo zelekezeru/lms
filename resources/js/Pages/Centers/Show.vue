@@ -34,7 +34,15 @@ defineProps({
     coordinator: {
         type: Object,
         required: true,
-    },  
+    },
+    students: {
+        type: Array,
+        required: true,
+    },
+    sortInfo: {
+        type: Object,
+        required: false,
+    },
 });
 
 const selectedCenter = ref(null);
@@ -118,6 +126,7 @@ const searchCoordinators = () => {
             leave-from-class="opacity-100 scale-100"
             leave-to-class="opacity-0 scale-75"
         >
+        
             <div
                 :key="selectedTab"
                 class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
@@ -139,8 +148,9 @@ const searchCoordinators = () => {
                 <ShowStudents
                     v-else-if="selectedTab == 'students'"
                     :center="center"
-                    :students="center.students"
+                    :students="students"
                     :coordinator="coordinator?.user"
+                    :sort-info="sortInfo"
                     @close="showStudentsModal = false"
                 />
 

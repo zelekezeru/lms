@@ -25,7 +25,7 @@ class ProgramResource extends JsonResource
 
             'tracks' => TrackResource::collection($this->whenLoaded('tracks')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
-            'studyModes' => StudyModeResource::collection($this->studyModes),
+            'studyModes' => StudyModeResource::collection($this->whenLoaded('studyModes')),
             'director' => new UserResource($this->whenLoaded('director')),
         ];
     }

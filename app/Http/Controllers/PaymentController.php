@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\StudyModeResource;
+use App\Http\Resources\PaymentTypeResource; // Import PaymentTypeResource
 use App\Models\Enrollment;
 use App\Models\Payment;
 use App\Models\PaymentCategory; // Assuming you have this
@@ -27,8 +28,8 @@ class PaymentController extends Controller
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
         $studyModes = StudyModeResource::collection(StudyMode::with('programs')->get());
-        $paymentTypes = PaymentType::all();
-
+        $paymentTypes = PaymentTypeResource::collection(PaymentType::with(['studyMode'])->get());
+        
         $filters = [
             'category' => $request->input('category'),
             'payment_method' => $request->input('payment_method'),

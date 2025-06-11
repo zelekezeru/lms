@@ -15,6 +15,10 @@ class PaymentType extends Model
 
     public function paymentCategories()
     {
-        return $this->hasMany(PaymentCategory::class);
+        return $this->belongsTo(PaymentCategory::class);
+    }
+    public function studyMode()
+    {
+        return $this->belongsTo(StudyMode::class);
     }
 }

@@ -127,7 +127,7 @@ class StudentController extends Controller
 
         // Fetch the payments for the student
         $payments = Payment::where('student_id', $student->id)
-            ->with(['paymentMethod', 'paymentType', 'enrollment.courseOffering.course'])
+            ->with(['paymentMethod', 'paymentType', 'enrollment.courseOffering.course', 'semester'])
             ->get();
 
         $user = new UserResource($student->user->load('userDocuments'));
@@ -368,7 +368,7 @@ class StudentController extends Controller
         DB::table('semester_student')
             ->where('student_id', $student->id)
             ->where('academic_status', 'in_progress')
-            ->update('academic_status'' => 'completed']);
+            ->update(['academic_status' => 'completed']);
         
         // Updert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(

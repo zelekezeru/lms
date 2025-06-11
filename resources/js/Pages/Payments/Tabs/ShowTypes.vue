@@ -175,6 +175,7 @@ const closeEditModal = () => {
                         <tr>
                             <Thead>No.</Thead>
                             <Thead>Type</Thead>
+                            <Thead>Study Mode</Thead>
                             <Thead>Language</Thead>
                             <Thead>Duration</Thead>
                             <Thead>Amount</Thead>
@@ -194,6 +195,9 @@ const closeEditModal = () => {
                                 {{ index + 1 }}
                             </th>
                             <td class="px-6 py-4">{{ type.type }}</td>
+                            <td class="px-6 py-4">
+                                {{ type.studyMode?.name || "N/A" }}
+                            </td>
                             <td class="px-6 py-4">
                                 {{ type.language || "N/A" }}
                             </td>

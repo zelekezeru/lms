@@ -292,27 +292,27 @@ const submitNewPayment = () => {
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.total_amount }}
+                                        {{ payment?.total_amount }}
                                     </td>
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.paid_amount }}
+                                        {{ payment?.paid_amount }}
                                     </td>
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                            {{ payment.semester.name }}
+                                            {{ payment?.semester?.name }}
                                     </td>
                                     <td
                                         class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.payment_date }}
+                                        {{ payment?.payment_date }}
                                     </td>
                                     <td
                                         class="w-20 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                     >
-                                        {{ payment.reference_number }}
+                                        {{ payment?.reference_number }}
                                     </td>
                                     <td
                                         class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -352,7 +352,7 @@ const submitNewPayment = () => {
                     <span
                         class="text-lg font-medium text-gray-900 dark:text-gray-100"
                     >
-                        {{ student.name }}
+                        {{ student?.name }}
                         has not enrolled in any payments yet.
                     </span>
                 </div>

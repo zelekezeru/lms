@@ -19,7 +19,7 @@ const registerForSemester = () => {
     }
 
     router.post(
-        route('enrollments-student.add', props.student.id),
+        route('students.registerSemester', props.student.id),
         {
             student_id: props.student.id,
             semester_id: selectedSemesterId.value,
@@ -121,8 +121,8 @@ const registerForSemester = () => {
                                                 ? 'bg-red-100 text-red-800 dark:bg-red-200 dark:text-red-900 px-2 py-0.5 rounded-full font-semibold'
                                                 : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 px-2 py-0.5 rounded-full font-semibold'"
                             >
-                                {{ enrol.pivot?.status
-                                    ? enrol.pivot.status.charAt(0).toUpperCase() + enrol.pivot.status.slice(1)
+                                {{ enrol.pivot?.academic_status
+                                    ? enrol.pivot.academic_status.charAt(0).toUpperCase() + enrol.pivot.academic_status.slice(1)
                                     : 'N/A'
                                 }}
                             </span>

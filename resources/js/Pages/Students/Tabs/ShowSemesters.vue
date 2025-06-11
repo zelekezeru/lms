@@ -19,7 +19,7 @@ const registerForSemester = () => {
     }
 
     router.post(
-        route('students.registerSemester', props.student.id),
+        route('enrollments-student.add', props.student.id),
         {
             student_id: props.student.id,
             semester_id: selectedSemesterId.value,

@@ -361,14 +361,14 @@ class StudentController extends Controller
                 'course_offering_id' => $courseOffering->id,
             ]);
         }
-
+        
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
             ->where('student_id', $student->id)
             ->whereIn('status', ['Active', 'Enrolled'])
             ->update(['status' => 'Completed']);
         
-        // Upsert the new/selected semester as Active for this student
+        // Updert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [
                 'student_id' => $student->id,

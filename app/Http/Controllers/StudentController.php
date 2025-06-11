@@ -359,14 +359,16 @@ class StudentController extends Controller
                 'student_id' => $student->id,
                 'semester_id' => $request->semester_id,
                 'course_offering_id' => $courseOffering->id,
+                'status' => 'pending',
+                'academic_status' => 'in_progress'
             ]);
         }
         
         // Set all previous semester_student records for this student to Inactive
         DB::table('semester_student')
             ->where('student_id', $student->id)
-            ->whereIn('status', ['Active', 'Enrolled'])
-            ->update(['status' => 'Completed']);
+            ->where('academic_status', 'in_progress')
+            ->update('academic_status'' => 'completed']);
         
         // Updert the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
@@ -375,7 +377,9 @@ class StudentController extends Controller
                 'semester_id' => $request->semester_id,
             ],
             [
-                'status' => 'Enrolled',
+                'academic_status' => 'in_progress',
+                'payment_status' => 'unpaid',
+
                 'updated_at' => now(),
                 'created_at' => now(),
             ]

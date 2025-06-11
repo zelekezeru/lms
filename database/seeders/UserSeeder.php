@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class UserSeeder extends Seeder
 {
@@ -18,47 +19,48 @@ class UserSeeder extends Seeder
                 'user_uuid' => 'SA/25',
                 'name' => 'S Admin User',
                 'email' => 'admin@gmail.com',
-                'phone' => '0911121314',
+                'phone' => '0911000000',
                 'profile_img' => null,
                 'email_verified_at' => null,
                 'password' => '$2y$12$wp5F46QHQShXx82FbZB5w.wF4UPcUGT6tTnBsgwvX4neH29h0N0Ue',
                 'default_password' => null,
                 'password_changed' => 0,
                 'remember_token' => null,
-                'created_at' => '2025-04-23 18:46:47',
-                'updated_at' => '2025-04-24 07:44:17',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'tenant_id' => 1,
             ],
             [
                 'id' => 3,
-                'user_uuid' => 'SA/26',
-                'name' => 'Misganu Petros',
-                'email' => 'misganu.petros@sits.edu.et',
-                'phone' => '0937216471',
+                'user_uuid' => 'SITS-EM-001',
+                'name' => 'Registrar User',
+                'email' => 'registrar.user@sits.edu.et',
+                'phone' => '0906000000',
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => '$2y$12$g1iRu7Em6kQwNUYB4rTCV.An3xtkHVXsjtFdTU2jDM6PJA5D6Bgxa',
-                'default_password' => 'misganu@123',
+                'password' => '$2y$12$wp5F46QHQShXx82FbZB5w.wF4UPcUGT6tTnBsgwvX4neH29h0N0Ue',
+                'default_password' => null,
                 'password_changed' => 0,
                 'remember_token' => null,
-                'created_at' => '2025-04-23 18:46:47',
-                'updated_at' => '2025-04-24 07:44:17',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'tenant_id' => 1,
             ],
+            // Finance User
             [
                 'id' => 4,
-                'user_uuid' => 'SA/27',
-                'name' => 'Employee User',
-                'email' => 'employee.user@sits.edu.et',
-                'phone' => '0912345678',
+                'user_uuid' => 'SITS-EM-002',
+                'name' => 'Finance User',
+                'email' => 'finance.user@sits.edu.et',
+                'phone' => '0911000001',
                 'profile_img' => null,
                 'email_verified_at' => null,
-                'password' => '$2y$12$eW8Z1b5kz9f3Q0j6F4d5uO7Y1Jx5m1a5F4d5uO7Y1Jx5m1a5F4d5u',
-                'default_password' => 'employee@123',
+                'password' => '$2y$12$wp5F46QHQShXx82FbZB5w.wF4UPcUGT6tTnBsgwvX4neH29h0N0Ue',
+                'default_password' => null,
                 'password_changed' => 0,
                 'remember_token' => null,
-                'created_at' => '2025-04-23 18:46:47',
-                'updated_at' => '2025-04-24 07:44:17',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'tenant_id' => 1,
             ],
         ]);
@@ -70,10 +72,16 @@ class UserSeeder extends Seeder
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 1, // The user ID
             ],
+            // Assign the REGISTRAR role to the registrar user
             [
                 'role_id' => 6, // REGISTERAR role ID
                 'model_type' => 'App\Models\User', // The model type for the user
-                'model_id' => 2, // The user ID
+                'model_id' => 3, // The user ID
+            ],
+            [
+                'role_id' => 13, // FINANCE role ID
+                'model_type' => 'App\Models\User', // The model type for the user
+                'model_id' => 4, // The user ID
             ],
         ]);
     }

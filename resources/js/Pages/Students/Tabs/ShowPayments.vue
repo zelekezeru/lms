@@ -56,7 +56,7 @@ const semesterPayments = ref(
 );
 
 watch(
-    () => [selectedSemester.value, selectedStatus.value],
+    () => [selectedSemester.value, selectedStatus.value, props.payments],
     ([newSemester, newStatus]) => {
         console.log("Semester:", newSemester);
         console.log("Status:", newStatus);
@@ -85,6 +85,33 @@ const paymentCreationForm = useForm({
     reference_number: null,
 });
 
+const paymentUpdateForm = useForm({
+    payment_method_id: null,
+    description: "",
+    paid_amount: 0,
+    payment_date: new Date().toISOString().slice(0, 10),
+    reference_number: "",
+    _method: "PATCH",
+});
+
+const selectedPayment = ref(null);
+const updatePaymentModal = ref(false);
+
+const showUpdatePaymentModal = (payment) => {
+    selectedPayment.value = payment;
+    paymentUpdateForm.payment_method_id = payment.payment_method_id;
+    paymentUpdateForm.description = payment.description;
+    paymentUpdateForm.paid_amount = payment.paid_amount;
+    paymentUpdateForm.reference_number = payment.reference_number;
+
+    updatePaymentModal.value = true;
+};
+
+const closeUpdatePaymentModal = () => {
+    selectedPayment.value = null;
+    updatePaymentModal.value = false;
+    paymentUpdateForm.reset();
+};
 const unpaidEnrollments = props.student.enrollments.filter(
     (enrollment) => enrollment.status == "pending"
 );
@@ -191,13 +218,23 @@ const submitNewPayment = () => {
     );
 };
 
-const finishPayment = (id) => {
-    router.visit(
-        route("payment.finishPayment", {
-            payment: id,
-        }),
+const updatePayment = () => {
+    paymentUpdateForm.post(
+        route("payments.update", { payment: selectedPayment.value.id }),
         {
-            method: post,
+            onSuccess: () => {
+                closeUpdatePaymentModal();
+                Swal.fire(
+                    "Success!",
+                    "Payment has been created successfully.",
+                    "success"
+                );
+            },
+            onError: (errors) => {
+                createPaymentModal.value = false;
+                paymentUpdateForm.reset();
+                Swal.fire("Error!", errors.error, "error");
+            },
         }
     );
 };
@@ -404,10 +441,10 @@ const finishPayment = (id) => {
                             </button>
                             <button
                                 v-if="payment.status === 'pending'"
-                                @click="finishPayment(payment.id)"
+                                @click="showUpdatePaymentModal(payment)"
                                 class="px-3 py-1 text-sm font-medium rounded-md bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-800 dark:text-white dark:hover:bg-green-700"
                             >
-                                Finish Payment
+                                Update Payment
                             </button>
                         </div>
                     </div>
@@ -462,6 +499,12 @@ const finishPayment = (id) => {
                                             >
                                                 Fee Amount
                                             </th>
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                            >
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody
@@ -470,7 +513,7 @@ const finishPayment = (id) => {
                                         <tr
                                             v-for="(
                                                 enrollment, index
-                                            ) in unpaidEnrollments"
+                                            ) in student.enrollments"
                                             :key="enrollment.course.id"
                                             class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                                         >
@@ -491,6 +534,11 @@ const finishPayment = (id) => {
                                                     payment.payment_type.amount
                                                 }}
                                             </td>
+                                            <td
+                                                class="px-6 py-2 text-sm text-yellow-700 dark:text-yellow-400"
+                                            >
+                                                {{ enrollment.status }}
+                                            </td>
                                         </tr>
 
                                         <!-- Total Row -->
@@ -509,8 +557,14 @@ const finishPayment = (id) => {
                                                 {{
                                                     payment.payment_type
                                                         .amount *
-                                                    unpaidEnrollments.length
+                                                    student.enrollments.length
                                                 }}
+                                            </td>
+                                            <td
+                                                colspan="2"
+                                                class="px-6 py-2 text-gray-900 dark:text-gray-100"
+                                            >
+                                                {{ payment.status }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -951,6 +1005,156 @@ const finishPayment = (id) => {
                             paymentCreationForm.processing
                                 ? "Creating..."
                                 : "Create Payment"
+                        }}
+                    </button>
+
+                    <button
+                        type="button"
+                        @click="closeCreatePaymentModal"
+                        class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                    >
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </Modal>
+
+    <Modal
+        :show="updatePaymentModal"
+        @close="closeUpdatePaymentModal"
+        :maxWidth="'6xl'"
+        class="p-6"
+    >
+        <div class="w-full px-8 py-6">
+            <h1
+                class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
+            >
+                Update {{ selectedPayment.payment_type.type }} Payment for –
+                {{ activeSemester.name }}
+            </h1>
+            <span class="text-red-700 text-lg">{{ errors.error }}</span>
+            <form @submit.prevent="updatePayment">
+                <div class="flex flex-wrap -mx-2">
+                    <!-- Payment Method -->
+                    <div class="w-full md:w-1/2 px-2 mb-4">
+                        <label
+                            for="payment_method_id"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Method
+                        </label>
+                        <Select
+                            v-model="paymentCreationForm.payment_method_id"
+                            :options="paymentMethods"
+                            optionLabel="bank_name"
+                            optionValue="id"
+                            appendTo="self"
+                            placeholder="Select Payment Method"
+                            class="w-full"
+                        />
+                        <InputError
+                            :message="
+                                paymentCreationForm.errors.payment_method_id
+                            "
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+
+                    <!-- Payment Type -->
+                    <div class="w-full md:w-1/2 px-2 mb-4">
+                        <label
+                            for="description"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Description
+                        </label>
+                        <input
+                            type="text"
+                            v-model="paymentUpdateForm.description"
+                            placeholder="Payment Description (eg Registration Fee, Tuition Fee...)"
+                            id="description"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="paymentUpdateForm.errors.description"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+                </div>
+
+                <!-- Last Four Fields in a Responsive Flex Row -->
+                <div class="flex flex-wrap -mx-2">
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="paid_amount"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Paid Amount
+                        </label>
+                        <input
+                            type="number"
+                            v-model="paymentUpdateForm.paid_amount"
+                            id="paid_amount"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="paymentUpdateForm.errors.paid_amount"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+                    <!-- Payment Date -->
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="payment_date"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Date
+                        </label>
+                        <input
+                            type="date"
+                            v-model="paymentUpdateForm.payment_date"
+                            id="payment_date"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="paymentUpdateForm.errors.payment_date"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+
+                    <!-- Reference Number -->
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="reference_number"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Reference Number (Optional)
+                        </label>
+                        <input
+                            type="text"
+                            v-model="paymentUpdateForm.reference_number"
+                            id="reference_number"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="paymentUpdateForm.errors.reference_number"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end mt-4">
+                    <button
+                        type="submit"
+                        :disabled="paymentUpdateForm.processing"
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition mr-5"
+                    >
+                        {{
+                            paymentCreationForm.processing
+                                ? "Saving..."
+                                : "Save Payment"
                         }}
                     </button>
 

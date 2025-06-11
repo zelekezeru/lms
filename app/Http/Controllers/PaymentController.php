@@ -126,21 +126,6 @@ class PaymentController extends Controller
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.');
     }
 
-    public function finishPayment(Payment $payment)
-    {
-        $semester = Semester::getActiveSemester();
-
-        if ($payment->duration == 'per-course') {
-            $enrollments = $semester->enrollments()->where('student_id', $payment->student_id)->where('status', 'pending')->get();
-
-
-            foreach ($enrollments as $enrollment) {
-                $enrollment->update([
-                    'status' => 'enrolled'
-                ]);
-            }
-        }
-    }
     public function show(Payment $payment)
     {
         $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentItems']);
@@ -153,21 +138,43 @@ class PaymentController extends Controller
     public function update(Request $request, Payment $payment)
     {
         $data = $request->validate([
-            'student_id' => 'required|exists:students,id',
             'payment_method_id' => 'nullable|exists:payment_methods,id',
-            'payment_category_id' => 'nullable|exists:payment_categories,id',
             'payment_date' => 'required|date',
-            'total_amount' => 'required|numeric|min:0.01',
-            'narration' => 'nullable|string|max:255',
-            'status' => 'nullable|string|in:pending,completed,failed,refunded',
+            'paid_amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string|max:255',
             'payment_reference' => 'nullable|string|max:255',
         ]);
         $data['tenant_id'] = Auth::user()->tenant_id;
-        $data['created_by'] = Auth::user()->id;
+        $data['updated_by'] = Auth::user()->id;
+        $data['status'] = $payment->total_amount <= $data['paid_amount'] ? 'completed' : 'pending';
 
         $payment->update($data);
 
-        return redirect()->route('payments.show', $payment->id)->with('success', 'Payment updated successfully.');
+        $semester = Semester::getActiveSemester();
+        $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
+
+        if ($payment->paymentType->duration == 'per-course') {
+
+            if ($payment->total_amount == $payment->paid_amount) {
+                $enrollments = $semester->enrollments()->where('student_id', $payment->student_id)->where('status', 'pending')->get();
+
+
+                foreach ($enrollments as $enrollment) {
+                    $enrollment->update([
+                        'status' => 'enrolled'
+                    ]);
+                }
+                dd($enrollments);
+            }
+        } else if ($payment->paymentType->duration == 'per-semester' && $payment->type == 'Semester Registration') {
+            if ($payment->total_amount == $payment->paid_amount) {
+                $semesterStudent = $semesterStudent->update([
+                    'payment_status' => 'paid'
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Payment updated successfully.');
     }
 
     public function destroy(Payment $payment)

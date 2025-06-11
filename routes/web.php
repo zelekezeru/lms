@@ -109,7 +109,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('switch-role', [AuthenticatedSessionController::class, 'switchRole'])->name('switch-role');
 
-    Route::post('/finishPayment/{payment}', [PaymentController::class, 'finishPayment'])->name('payment.finishPayment');
     // User Ducuments
     Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');
 

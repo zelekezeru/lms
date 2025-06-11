@@ -66,7 +66,6 @@ const availableCourses = computed(() =>
 );
 
 const selectedStudyModeId = ref(props.studyModes[0].id || null);
-console.log(props.student.enrollments);
 
 const sectionOptions = computed(() => {
     const selected = props.studyModes.find(
@@ -74,11 +73,14 @@ const sectionOptions = computed(() => {
     );
 
     return (
-        selected?.sections?.filter((section) =>
-            section.courses
+        selected?.sections?.filter((section) => {
+            const courses = Array.isArray(section.courses)
+                ? section.courses
+                : [];
+            return courses
                 .map((course) => course.id)
-                .includes(addForm.course_id)
-        ) || []
+                .includes(addForm.course_id);
+        }) || []
     );
 });
 
@@ -850,7 +852,16 @@ const dropEnrollment = (enrollmentId) => {
                     append-to="self"
                     option-value="id"
                     class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                />
+                >
+                    <template #option="slotProps">
+                        {{ slotProps.option.name }} In
+                        {{ slotProps.option.studyMode.name }}
+                        <span class="text-sm">
+                            ({{ slotProps.option.program.name }} in
+                            {{ slotProps.option.track.name }})
+                        </span>
+                    </template>
+                </Select>
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end">

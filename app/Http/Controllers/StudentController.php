@@ -95,15 +95,18 @@ class StudentController extends Controller
         $yearLevel = $student->section ? $student->section->yearLevel() : null;
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
 
-        $studyModes = StudyMode::with(['sections' => function ($query) use ($yearLevel, $semester) {
-            $query->whereHas('courseOfferings', function ($q) use ($yearLevel, $semester) {
-                $q->where('year_level', $yearLevel)
-                    ->where('semester_level', $semester);
-            })->with(['courseOfferings' => function ($q) use ($yearLevel, $semester) {
-                $q->where('year_level', $yearLevel)
-                    ->where('semester_level', $semester);
-            }]);
-        }])->get();
+        $activeSemester = Semester::getActiveSemester();
+        $studyModes = StudyMode::with(['sections.courseOfferings', 'sections.studyMode', 'sections.track', 'sections.program'])->get();
+
+        $studyModes->each(function ($studyMode) use ($activeSemester) {
+            $studyMode->sections->each(function ($section) use ($activeSemester) {
+                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($activeSemester, $section) {
+                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $activeSemester->level;
+                });
+
+                $section->setRelation('courseOfferings', $filteredCourseOfferings);
+            });
+        });
 
         $studyModes = StudyModeResource::collection($studyModes);
 
@@ -392,12 +395,16 @@ class StudentController extends Controller
         if (! $courseOffering) {
             return back()->withErrors(['course_id' => 'The given course is not being taken in the given section.']);
         }
+
+        $semester = Semester::getActiveSemester();
         // Prevent duplicate entries
         Enrollment::updateOrCreate([
             'student_id' => $student->id,
             'course_offering_id' => $courseOffering->id,
+            'semester_id' => $semester->id,
         ], [
-            'status' => 'Enrolled'
+            'status' => 'pending',
+            'academic_status' => 'in_progress',
         ]);
 
         return back()->with('success', 'Course added successfully.');

@@ -55,17 +55,17 @@ class AutoEnrollmentService
         'payment_status' => 'unpaid',
         'academic_status' => 'in_progress'
       ]);
-      $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
+      // $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
 
-      Payment::create([
-        'student_id' => $student->id,
-        'payment_type_id' => $semesterRegistrationPaymentType?->id,
-        'semester_id' => $activeSemester->id,
-        'tenant_id' => 1,
-        'created_by' => Auth::id(),
-        'status' => 'pending',
-        'paid_amount' => 0
-      ]);
+      // Payment::create([
+      //   'student_id' => $student->id,
+      //   'payment_type_id' => $semesterRegistrationPaymentType?->id,
+      //   'semester_id' => $activeSemester->id,
+      //   'tenant_id' => 1,
+      //   'created_by' => Auth::id(),
+      //   'status' => 'pending',
+      //   'paid_amount' => 0
+      // ]);
 
       // Fetch course offerings for the section
       $courseOfferingIds = CourseOffering::where('section_id', $section->id)
@@ -90,16 +90,16 @@ class AutoEnrollmentService
             'academic_status' => 'in_progress'
           ]);
 
-          Payment::create([
-            'student_id' => $student->id,
-            'payment_type_id' => $courseFeePaymentType?->id,
-            'semester_id' => $activeSemester->id,
-            'enrollment_id' => $enrollment->id,
-            'tenant_id' => 1,
-            'created_by' => Auth::id(),
-            'status' => 'pending',
-            'paid_amount' => 0
-          ]);
+          // Payment::create([
+          //   'student_id' => $student->id,
+          //   'payment_type_id' => $courseFeePaymentType?->id,
+          //   'semester_id' => $activeSemester->id,
+          //   'enrollment_id' => $enrollment->id,
+          //   'tenant_id' => 1,
+          //   'created_by' => Auth::id(),
+          //   'status' => 'pending',
+          //   'paid_amount' => 0
+          // ]);
         }
       }
     }

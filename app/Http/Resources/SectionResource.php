@@ -38,7 +38,7 @@ class SectionResource extends JsonResource
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,
             'courses' => $this->whenLoaded('courseOfferings', function () {
-                return $this->courseOfferings->map(function ($offering) {
+                return array_values($this->courseOfferings->map(function ($offering) {
                     return [
                         'id' => $offering->course->id,
                         'name' => $offering->course->name,
@@ -51,8 +51,9 @@ class SectionResource extends JsonResource
                             'name' => $offering->instructor->user->name,
                         ] : null,
                     ];
-                });
+                })->all()); // force normal array
             }),
+
         ];
     }
 }

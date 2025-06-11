@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\StudyModeResource;
+use App\Models\Enrollment;
 use App\Models\Payment;
 use App\Models\PaymentCategory; // Assuming you have this
 use App\Models\PaymentMethod; // Add this line to import PaymentMethod
@@ -67,12 +68,24 @@ class PaymentController extends Controller
             'total_amount' => 'required|numeric|min:0.01',
             'paid_amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
-            'status' => 'nullable|string|in:pending,completed,canceled',
+            'status' => 'required|string|in:pending,completed,canceled',
             'reference_number' => 'nullable|string|max:255',
         ]);
+
+        $semester = Semester::getActiveSemester();
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] = Auth::user()->id;
-        $data['semester_id'] = Semester::getActiveSemester()->id;
+        $data['semester_id'] = $semester->id;
+
+        if ($data['total_amount'] == $data['paid_amount']) {
+            $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();
+
+            foreach ($enrollments as $enrollment) {
+                $enrollment->update([
+                    'status' => 'enrolled'
+                ]);
+            }
+        }
 
         $payment = Payment::create($data);
 

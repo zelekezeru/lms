@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
 import { Listbox, MultiSelect, Select } from "primevue";
-import { defineProps, ref, watch } from "vue";
+import { computed, defineProps, ref, watch } from "vue";
 import InputError from "@/Components/InputError.vue";
 import {
     CogIcon,
@@ -78,28 +78,60 @@ const closeCreatePaymentModal = () => {
     createPaymentModal.value = false;
     paymentCreationForm.reset();
 };
+const selectedPaymentType = computed(() =>
+    props.paymentTypes.find(
+        (paymentType) =>
+            paymentType.id == paymentCreationForm.payment_type_id &&
+            paymentType.study_mode_id == props.student.studyMode.id
+    )
+);
+
+watch(
+    () => paymentCreationForm.paid_amount,
+    (newVal) => {
+        if (newVal == paymentCreationForm.total_amount) {
+            paymentCreationForm.status = "completed";
+        } else {
+            paymentCreationForm.status = "pending";
+        }
+    }
+);
+
+watch(
+    () => paymentCreationForm.status,
+    (newVal) => {
+        if (newVal == "completed") {
+            paymentCreationForm.paid_amount = paymentCreationForm.total_amount;
+        } else {
+            paymentCreationForm.paid_amount = 0;
+        }
+    }
+);
 
 watch(
     () => paymentCreationForm.payment_type_id,
     () => {
-        const selectedPaymentType = props.paymentTypes.find(
-            (paymentType) =>
-                paymentType.id == paymentCreationForm.payment_type_id &&
-                paymentType.study_mode_id == props.student.studyMode.id
-        );
+        console.log(selectedPaymentType.value);
 
         if (
-            selectedPaymentType &&
-            selectedPaymentType.duration == "per-course"
+            selectedPaymentType.value &&
+            selectedPaymentType.value.duration == "per-course"
         ) {
             perCoursePaymentType.value = true;
-            console.log(perCoursePaymentType.value);
 
             paymentCreationForm.total_amount =
-                selectedPaymentType.amount * unpaidEnrollments.length;
+                selectedPaymentType.value.amount * unpaidEnrollments.length;
+        } else {
+            perCoursePaymentType.value = false;
+
+            if (selectedPaymentType.value) {
+                paymentCreationForm.total_amount =
+                    selectedPaymentType.value.amount;
+            }
         }
     }
 );
+
 const statusOptions = [
     { label: "pending", value: "pending" },
     { label: "completed", value: "completed" },
@@ -125,7 +157,6 @@ const submitNewPayment = () => {
                     "Failed to create the payment. Please check the form for errors.",
                     "error"
                 );
-                console.log(errors); // Log errors for debugging
             },
         }
     );
@@ -382,7 +413,7 @@ const submitNewPayment = () => {
     <Modal
         :show="createPaymentModal"
         @close="closeCreatePaymentModal"
-        :maxWidth="'md'"
+        :maxWidth="'6xl'"
         class="p-6"
     >
         <div class="w-full px-8 py-6">
@@ -396,103 +427,7 @@ const submitNewPayment = () => {
             </h1>
 
             <form @submit.prevent="submitNewPayment">
-                <!-- Payment Method -->
-                <div class="mb-4">
-                    <label
-                        for="payment_method_id"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Payment Method
-                    </label>
-                    <Select
-                        v-model="paymentCreationForm.payment_method_id"
-                        :options="paymentMethods"
-                        optionLabel="bank_name"
-                        optionValue="id"
-                        append-to="self"
-                        placeholder="Select Payment Method"
-                        class="w-full"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.payment_method_id"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
-
-                <!-- Payment Type -->
-                <div class="mb-4">
-                    <label
-                        for="payment_type_id"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Payment Type
-                    </label>
-                    <Select
-                        v-model="paymentCreationForm.payment_type_id"
-                        :options="paymentTypes"
-                        optionLabel="type"
-                        optionValue="id"
-                        append-to="self"
-                        placeholder="Select Type"
-                        class="w-full"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.payment_type_id"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
-
-                <div v-if="perCoursePaymentType">
-                    <h1 class="text-md font-bold">
-                        This Payment is for the following coures of the student
-                        in {{ activeSemester.year.name }} Semester
-                        {{ activeSemester.level }}
-                    </h1>
-                    <p v-for="unpaidEnrollment in unpaidEnrollments">
-                        {{ unpaidEnrollment.course.name }}
-                    </p>
-                </div>
-                <!-- Total Amount -->
-                <div class="mb-4">
-                    <label
-                        for="total_amount"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Total Amount
-                    </label>
-                    <input
-                        type="number"
-                        v-model="paymentCreationForm.total_amount"
-                        id="total_amount"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.total_amount"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
-
-                <!-- Paid Amount -->
-                <div class="mb-4">
-                    <label
-                        for="paid_amount"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Paid Amount
-                    </label>
-                    <input
-                        type="number"
-                        v-model="paymentCreationForm.paid_amount"
-                        id="paid_amount"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.paid_amount"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
-
-                <!-- Narration -->
+                <!-- Description -->
                 <div class="mb-4">
                     <label
                         for="narration"
@@ -503,6 +438,7 @@ const submitNewPayment = () => {
                     <input
                         type="text"
                         v-model="paymentCreationForm.description"
+                        placeholder="Payment Description (eg Registration Fee, Tuition Fee...)"
                         id="narration"
                         class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                     />
@@ -511,68 +447,337 @@ const submitNewPayment = () => {
                         class="mt-2 text-sm text-red-500"
                     />
                 </div>
+                <div class="flex flex-wrap -mx-2">
+                    <!-- Payment Method -->
+                    <div class="w-full md:w-1/2 px-2 mb-4">
+                        <label
+                            for="payment_method_id"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Method
+                        </label>
+                        <Select
+                            v-model="paymentCreationForm.payment_method_id"
+                            :options="paymentMethods"
+                            optionLabel="bank_name"
+                            optionValue="id"
+                            appendTo="self"
+                            placeholder="Select Payment Method"
+                            class="w-full"
+                        />
+                        <InputError
+                            :message="
+                                paymentCreationForm.errors.payment_method_id
+                            "
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
 
-                <!-- Payment Date -->
-                <div class="mb-4">
-                    <label
-                        for="payment_date"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Payment Date
-                    </label>
-                    <input
-                        type="date"
-                        v-model="paymentCreationForm.payment_date"
-                        id="payment_date"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.payment_date"
-                        class="mt-2 text-sm text-red-500"
-                    />
+                    <!-- Payment Type -->
+                    <div class="w-full md:w-1/2 px-2 mb-4">
+                        <label
+                            for="payment_type_id"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Type
+                        </label>
+                        <Select
+                            v-model="paymentCreationForm.payment_type_id"
+                            :options="paymentTypes"
+                            optionLabel="type"
+                            optionValue="id"
+                            appendTo="self"
+                            placeholder="Select Type"
+                            class="w-full"
+                        />
+                        <InputError
+                            :message="
+                                paymentCreationForm.errors.payment_type_id
+                            "
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
                 </div>
 
-                <!-- Status -->
-                <div class="mb-4">
-                    <label
-                        for="status"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
-                    >
-                        Status
-                    </label>
-                    <Select
-                        v-model="paymentCreationForm.status"
-                        :options="statusOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        append-to="self"
-                        placeholder="Select Status"
-                        class="w-full"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.status"
-                        class="mt-2 text-sm text-red-500"
-                    />
-                </div>
+                <Transition
+                    enter-active-class="transition ease-out duration-500"
+                    enter-from-class="opacity-0 -translate-y-6"
+                    enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition ease-in duration-100"
+                    leave-from-class="opacity-100 translate-y-0"
+                    leave-to-class="opacity-0 -translate-y-6"
+                >
+                    <div v-if="perCoursePaymentType" class="mb-6">
+                        <h2
+                            class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3"
+                        >
+                            Courses with Unpaid Fees –
+                            {{ activeSemester.year.name }} Semester
+                            {{ activeSemester.level }}
+                        </h2>
 
-                <!-- Reference Number -->
-                <div class="mb-4">
-                    <label
-                        for="reference_number"
-                        class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        <div class="overflow-x-auto">
+                            <table
+                                class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+                            >
+                                <thead class="bg-gray-100 dark:bg-gray-800">
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            Course Name
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            Fee Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody
+                                    class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"
+                                >
+                                    <tr
+                                        v-for="(
+                                            enrollment, index
+                                        ) in unpaidEnrollments"
+                                        :key="enrollment.course.id"
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                                    >
+                                        <td
+                                            class="px-6 py-2 text-sm text-gray-800 dark:text-gray-200"
+                                        >
+                                            {{ index + 1 }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ enrollment.course.name }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-sm text-yellow-700 dark:text-yellow-400"
+                                        >
+                                            {{ selectedPaymentType.amount }}
+                                        </td>
+                                    </tr>
+
+                                    <!-- Total Row -->
+                                    <tr
+                                        class="bg-yellow-50 dark:bg-yellow-900 font-bold"
+                                    >
+                                        <td
+                                            colspan="2"
+                                            class="px-6 py-2 text-gray-900 dark:text-gray-100"
+                                        >
+                                            Total
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-yellow-800 dark:text-yellow-200 text-lg"
+                                        >
+                                            {{
+                                                selectedPaymentType.amount *
+                                                unpaidEnrollments.length
+                                            }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div
+                        v-else-if="
+                            selectedPaymentType &&
+                            selectedPaymentType.duration != 'per-course'
+                        "
+                        class="mb-6"
                     >
-                        Reference Number (Optional)
-                    </label>
-                    <input
-                        type="text"
-                        v-model="paymentCreationForm.reference_number"
-                        id="reference_number"
-                        class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
-                    />
-                    <InputError
-                        :message="paymentCreationForm.errors.reference_number"
-                        class="mt-2 text-sm text-red-500"
-                    />
+                        <h2
+                            class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3"
+                        >
+                            Courses with Unpaid Fees –
+                            {{ activeSemester.year.name }} Semester
+                            {{ activeSemester.level }}
+                        </h2>
+
+                        <div class="overflow-x-auto">
+                            <table
+                                class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+                            >
+                                <thead class="bg-gray-100 dark:bg-gray-800">
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            Fee Description
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-1 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+                                        >
+                                            Fee Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody
+                                    class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"
+                                >
+                                    <tr
+                                        class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                                    >
+                                        <td
+                                            class="px-6 py-2 text-sm text-gray-800 dark:text-gray-200"
+                                        >
+                                            1
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                                        >
+                                            {{ selectedPaymentType.type }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-sm text-yellow-700 dark:text-yellow-400"
+                                        >
+                                            {{ selectedPaymentType.amount }}
+                                        </td>
+                                    </tr>
+
+                                    <!-- Total Row -->
+                                    <tr
+                                        class="bg-yellow-50 dark:bg-yellow-900 font-bold"
+                                    >
+                                        <td
+                                            colspan="2"
+                                            class="px-6 py-2 text-gray-900 dark:text-gray-100"
+                                        >
+                                            Total
+                                        </td>
+                                        <td
+                                            class="px-6 py-2 text-yellow-800 dark:text-yellow-200 text-lg"
+                                        >
+                                            {{ selectedPaymentType.amount }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </Transition>
+
+                <!-- Last Four Fields in a Responsive Flex Row -->
+                <div class="flex flex-wrap -mx-2">
+                    <!-- Status -->
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="status"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Status
+                        </label>
+                        <Select
+                            v-model="paymentCreationForm.status"
+                            :options="statusOptions"
+                            optionLabel="label"
+                            optionValue="value"
+                            appendTo="self"
+                            placeholder="Select Status"
+                            class="w-full"
+                        />
+                        <InputError
+                            :message="paymentCreationForm.errors.status"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+
+                    <!-- Paid Amount -->
+                    <Transition
+                        enter-active-class="transition ease-out duration-500"
+                        enter-from-class="opacity-0 -translate-x-6"
+                        enter-to-class="opacity-100 translate-x-0"
+                        leave-active-class="transition ease-in duration-300"
+                        leave-from-class="opacity-100 translate-x-0"
+                        leave-to-class="opacity-0 -translate-x-6"
+                    >
+                        <div
+                            class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4"
+                            v-if="paymentCreationForm.status !== 'completed'"
+                        >
+                            <label
+                                for="paid_amount"
+                                class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                            >
+                                Paid Amount
+                            </label>
+                            <input
+                                type="number"
+                                v-model="paymentCreationForm.paid_amount"
+                                id="paid_amount"
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                            />
+                            <InputError
+                                :message="
+                                    paymentCreationForm.errors.paid_amount
+                                "
+                                class="mt-2 text-sm text-red-500"
+                            />
+                        </div>
+                    </Transition>
+                    <!-- Payment Date -->
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="payment_date"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Payment Date
+                        </label>
+                        <input
+                            type="date"
+                            v-model="paymentCreationForm.payment_date"
+                            id="payment_date"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="paymentCreationForm.errors.payment_date"
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
+
+                    <!-- Reference Number -->
+                    <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
+                        <label
+                            for="reference_number"
+                            class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                        >
+                            Reference Number (Optional)
+                        </label>
+                        <input
+                            type="text"
+                            v-model="paymentCreationForm.reference_number"
+                            id="reference_number"
+                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        />
+                        <InputError
+                            :message="
+                                paymentCreationForm.errors.reference_number
+                            "
+                            class="mt-2 text-sm text-red-500"
+                        />
+                    </div>
                 </div>
 
                 <!-- Buttons -->

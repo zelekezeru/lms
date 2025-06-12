@@ -23,6 +23,7 @@ use App\Models\PaymentType;
 use App\Models\Program;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\SemesterStudent;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\StudyMode;
@@ -138,14 +139,6 @@ class StudentController extends Controller
                 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
             ])->get();
 
-        $activeSemester = Semester::where('status', 'Active')->with('year')->get();
-
-        if ($activeSemester->isEmpty()) {
-            $activeSemester = null;
-        } else {
-            $activeSemester = SemesterResource::collection($activeSemester)->first()->load('year');
-        }
-
         return Inertia::render('Students/Show', [
             'student' => $student,
             'sections' => $sections,
@@ -183,6 +176,9 @@ class StudentController extends Controller
 
         $student = $registerStudent->store($request);
 
+        if (!$student) {
+            return back()->withErrors(['error' => 'Something Went Wrong!']);
+        }
         // Load related data for the student resource
         return to_route('students.show', $student);
     }
@@ -335,6 +331,16 @@ class StudentController extends Controller
             'semester_id' => 'required|exists:semesters,id',
         ]);
 
+
+        $alreadyRegistered = SemesterStudent::where('student_id', $student->id)
+            ->where('semester_id', $fields['semester_id'])
+            ->first();
+
+        if ($alreadyRegistered) {
+            $message = $alreadyRegistered->payment_status == 'unpaid' ? 'The Student Is Already Registered But hasn\'t fully Paid For This Semester.' : 'The Student Is Already Registered And Has Paid Fully For This Semester.';
+
+            return back()->withErrors(['error' => $message]);
+        }
         // retrieve the section of the student and the year level and semester of the section he/she belongs too
         $section = $student->section;
         $semester = Semester::find($fields['semester_id']);
@@ -370,7 +376,7 @@ class StudentController extends Controller
             ->where('academic_status', 'in_progress')
             ->update(['academic_status' => 'completed']);
 
-        // Updert the new/selected semester as Active for this student
+        // Update the new/selected semester as Active for this student
         DB::table('semester_student')->updateOrInsert(
             [
                 'student_id' => $student->id,

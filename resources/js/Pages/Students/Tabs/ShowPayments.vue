@@ -51,7 +51,7 @@ const selectedSemester = ref(props.activeSemester.id);
 
 const semesterPayments = ref(
     props.payments.filter(
-        (payment) => payment.semester.id === selectedSemester.value
+        (payment) => payment.semester?.id === selectedSemester.value
     )
 );
 
@@ -63,7 +63,7 @@ watch(
 
         semesterPayments.value = props.payments.filter((payment) => {
             const matchesSemester =
-                !newSemester || payment.semester.id === newSemester;
+                !newSemester || payment.semester?.id === newSemester;
             const matchesStatus = !newStatus || payment.status === newStatus;
 
             return matchesSemester && matchesStatus;
@@ -248,12 +248,12 @@ const updatePayment = () => {
                 {{
                     semesters.find(
                         (semester) => semester.id == selectedSemester
-                    ).name
+                    )?.name
                 }}
                 {{
                     semesters.find(
                         (semester) => semester.id == selectedSemester
-                    ).id == activeSemester.id
+                    )?.id == activeSemester.id
                         ? "(Current Semester)"
                         : ""
                 }}

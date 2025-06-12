@@ -86,12 +86,12 @@ class PaymentController extends Controller
         $existingCoursePayment = Payment::where('student_id', $data['student_id'])
             ->where('semester_id', $data['semester_id'])
             ->where('payment_type_id', $data['payment_type_id'])
-            ->where('status', 'pending')
             ->first();
 
         if ($existingCoursePayment) {
             return back()->withErrors(['error' => 'This Type Of Payment Is Already Pending Please Finish ' . $existingCoursePayment->paymentType->type]);
         }
+
         // if payment type is course fee(per-course)
         if ($selectedPayment->duration == 'per-course') {
 
@@ -117,6 +117,13 @@ class PaymentController extends Controller
             if ($data['total_amount'] == $data['paid_amount']) {
                 $semesterStudent = $semesterStudent->update([
                     'payment_status' => 'paid'
+                ]);
+            }
+        } else if ($selectedPayment->duration == 'one-time' && $selectedPayment->type == 'Registration Fee') {
+            if ($data['total_amount'] == $data['paid_amount']) {
+                $student = Student::find($data['student_id']);
+                $student->status->update([
+                    'is_active' => true
                 ]);
             }
         }
@@ -148,11 +155,11 @@ class PaymentController extends Controller
         $data['updated_by'] = Auth::user()->id;
         $data['status'] = $payment->total_amount <= $data['paid_amount'] ? 'completed' : 'pending';
 
-        $payment->update($data);
 
         $semester = Semester::getActiveSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
 
+        $payment->update($data);
         if ($payment->paymentType->duration == 'per-course') {
 
             if ($payment->total_amount == $payment->paid_amount) {
@@ -165,10 +172,17 @@ class PaymentController extends Controller
                     ]);
                 }
             }
-        } else if ($payment->paymentType->duration == 'per-semester' && $payment->type == 'Semester Registration') {
+        } else if ($payment->paymentType->duration == 'per-semester' && $payment->paymentType->type == 'Semester Registration') {
             if ($payment->total_amount == $payment->paid_amount) {
                 $semesterStudent = $semesterStudent->update([
                     'payment_status' => 'paid'
+                ]);
+            }
+        } else if ($payment->paymentType->duration == 'one-time' && $payment->paymentType->type == 'Registration Fee') {
+            if ($payment->total_amount == $payment->paid_amount) {
+                $student = Student::find($payment->student_id);
+                $student->status->update([
+                    'is_active' => true
                 ]);
             }
         }

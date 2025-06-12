@@ -5,6 +5,9 @@ namespace App\Http\Services;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\Tenant;
@@ -12,6 +15,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StudentRegistrationService extends Controller
@@ -30,20 +34,44 @@ class StudentRegistrationService extends Controller
         $dateOfBirth = $request->input('date_of_birth');
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
 
+        DB::beginTransaction();
+
+        try {
+
+            $user = $this->createStudentUser($fields, $student_email);
+
+            $user->assignRole('STUDENT');
+
+            // Link the user ID to the student fields
+            $fields['user_id'] = $user->id;
+
+            // Create the student record
+            $student = $this->createStudent($fields);
+
+            $activeSemester = Semester::getActiveSemester();
+            $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
+
+            Payment::create([
+                'student_id' => $student->id,
+                'payment_type_id' => $registrationFee?->id,
+                'semester_id' => $activeSemester?->id,
+                'tenant_id' => 1,
+                'created_by' => Auth::id(),
+                'status' => 'pending',
+                'paid_amount' => 0,
+                'total_amount' => $registrationFee->amount,
+            ]);
+
+            // Create related records (status and church)
+            $this->createStudentStatus($student);
+            $this->createStudentChurch($student, $fields);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return;
+        }
         // Create a new user for the student
-        $user = $this->createStudentUser($fields, $student_email);
-        
-        $user->assignRole('STUDENT');
-
-        // Link the user ID to the student fields
-        $fields['user_id'] = $user->id;
-
-        // Create the student record
-        $student = $this->createStudent($fields);
-
-        // Create related records (status and church)
-        $this->createStudentStatus($student);
-        $this->createStudentChurch($student, $fields);
 
         return $student;
     }
@@ -56,10 +84,10 @@ class StudentRegistrationService extends Controller
         // user default password
         $user_phone = substr($fields['mobile_phone'], -4);
 
-        $default_password = strtolower($fields['first_name']).'@'.$user_phone; // Default password for new users
+        $default_password = strtolower($fields['first_name']) . '@' . $user_phone; // Default password for new users
 
         $user_data = [
-            'name' => $fields['first_name'].' '.$fields['middle_name'].' '.$fields['last_name'],
+            'name' => $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'],
             'email' => $student_email,
             'phone_number' => $fields['mobile_phone'],
             'password' => bcrypt($default_password),
@@ -112,7 +140,7 @@ class StudentRegistrationService extends Controller
         $status = new Status;
         $status->student_id = $student->id;
         $status->user_id = $student->user->id; // Link to the user who created the status
-        $status->is_active = true; // Default status is active
+        $status->is_active = false; // Default status is inactive untill payment
         $status->created_by_name = Auth::user()->name; // Set the creator's name
         $status->created_at = now(); // Set the creation timestamp
         $status->save();
@@ -206,7 +234,7 @@ class StudentRegistrationService extends Controller
         $user = $student->user; // Assuming a relationship exists between Student and User
 
         if ($user) {
-            $name = $fields['first_name'].' '.$fields['middle_name'].' '.$fields['last_name'];
+            $name = $fields['first_name'] . ' ' . $fields['middle_name'] . ' ' . $fields['last_name'];
             $student_email = $this->student_email($fields);
 
             $user->update([
@@ -226,7 +254,7 @@ class StudentRegistrationService extends Controller
         do {
             $initialCount = $count ?? Student::max('id');
             $count = $initialCount + 1; // safer than count()
-            $studentUuid = 'SITS-'.str_pad($count, 4, '0', STR_PAD_LEFT).'-'.$year;
+            $studentUuid = 'SITS-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
         } while (User::where('user_uuid', $studentUuid)->exists());
 
         return $studentUuid;
@@ -234,9 +262,9 @@ class StudentRegistrationService extends Controller
 
     public function student_email($fields)
     {
-        $username = $fields['first_name'].' '.$fields['middle_name'];
+        $username = $fields['first_name'] . ' ' . $fields['middle_name'];
 
-        $email = strtolower(str_replace(' ', '.', $username)).'@sits.edu.et';
+        $email = strtolower(str_replace(' ', '.', $username)) . '@sits.edu.et';
 
         return $email;
     }

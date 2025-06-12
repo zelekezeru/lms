@@ -118,7 +118,7 @@ class Student extends Model
 
     public function semesters()
     {
-        return $this->belongsToMany(Semester::class)->withPivot('academic_status');
+        return $this->belongsToMany(Semester::class)->withPivot('academic_status', 'payment_status');
     }
 
     public function centers()

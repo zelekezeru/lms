@@ -24,6 +24,7 @@ class StudentUpdateRequest extends FormRequest
             'marital_status' => 'nullable|string|max:10',
             'sex' => 'required|in:M,F',
             'address' => 'nullable|string|max:200',
+            'old_id' => 'nullable|string|max:20',
 
             // Church Information
             'pastor_name' => 'nullable|string|max:100',

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('id_no', 20)->unique();
+            $table->string('old_id', 20)->nullable();
             $table->string('first_name', 100);
             $table->string('middle_name', 100);
             $table->string('last_name', 100)->nullable();
@@ -26,6 +27,7 @@ return new class extends Migration
 
             $table->string('student_signature', 100)->nullable();
             $table->text('office_use_notes')->nullable();
+            $table->string('payment_code', 100)->nullable();
 
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->foreignId('program_id')->constrained();

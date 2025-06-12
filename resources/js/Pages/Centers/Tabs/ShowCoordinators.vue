@@ -69,7 +69,7 @@ const submitForm = () => {
 };
 
 const submitEditForm = () => {
-    editForm.post(route("coordinators.update", props.coordinator.id), {
+    editForm.post(route("coordinators.update", { coordinator: props.coordinator.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "Coordinator updated.", "success");
             showEditModal.value = false;

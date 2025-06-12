@@ -202,7 +202,30 @@ const addSection = () => {
                         </td>
                     </div>
                     <!-- Default Password -->
-                    <div v-if="student.user.default_password" class="flex flex-col">
+                    <div v-if="student.oldId" class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Old ID</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ student.oldId }}
+                        </span>
+                    </div>
+                    {{ student.center }}
+                    <!-- Default Password -->
+                    <div v-if="student.center" class="flex flex-col">
+                        <span class="text-sm text-gray-500 dark:text-gray-400"
+                            >Old ID</span
+                        >
+                        <span
+                            class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                        >
+                            {{ student.center.name }}
+                        </span>
+                    </div>
+                    <!-- Default Password -->
+                    <div v-if="userCan('default-password') && student.user.default_password" class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
                             >Default Password</span
                         >

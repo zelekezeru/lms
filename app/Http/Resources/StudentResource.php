@@ -18,6 +18,7 @@ class StudentResource extends JsonResource
         return [
             'id' => $this->id,
             'idNo' => $this->id_no,
+            'oldId' => $this->old_id,
             'firstName' => $this->first_name,
             'middleName' => $this->middle_name,
             'lastName' => $this->last_name,
@@ -56,6 +57,7 @@ class StudentResource extends JsonResource
 
             'results' => $this->whenLoaded('results'),
             'grades' => $this->whenLoaded('grades'),
+            'centers' => $this->whenLoaded('centers'),
         ];
     }
 }

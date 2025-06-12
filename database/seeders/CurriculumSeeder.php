@@ -36,33 +36,47 @@ class CurriculumSeeder extends Seeder
         // Prepare an empty array to hold all records before inserting
         $recordsToInsert = [];
 
+        $tracks = 2; // Assuming track_id is 2, adjust as needed
+
         // Define common data that applies to all records
         $commonData = [
-            'track_id'      => 1,
             'study_mode_id' => 1,
             'description'   => 'This Course In This Study MOde And Track Should Be Taken',
             'active'        => 0,
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now(),
         ];
+        
+        for($i = 1; $i <= $tracks; $i++) {
 
-        // Loop through each year level (1 to 4)
-        for ($yearLevel = 1; $yearLevel <= 4; $yearLevel++) {
-            // Loop through each semester (1 to 2) for the current year level
-            for ($semester = 1; $semester <= 2; $semester++) {
-                // Get the specific list of course IDs for the current year and semester
-                $currentCourseIds = $courseIdsByYearSemester[$yearLevel][$semester];
+            if ($i == 1) {
+                $commonData['track_id'] = 1; // Biblical Study Track
+                $commonData['study_mode_id'] = 1; 
+            } else {
+                $commonData['track_id'] = 14; // Adjust for other tracks
+                $commonData['study_mode_id'] = 4; 
+            }
+            
+            // Loop through each year level (1 to 4)
+            for ($yearLevel = 1; $yearLevel <= 4; $yearLevel++) {
+                // Loop through each semester (1 to 2) for the current year level
+                for ($semester = 1; $semester <= 2; $semester++) {
+                    // Get the specific list of course IDs for the current year and semester
+                    $currentCourseIds = $courseIdsByYearSemester[$yearLevel][$semester];
 
-                // Loop through each course ID in the current list
-                foreach ($currentCourseIds as $courseId) {
-                    // Create a new record by merging common data with specific data
-                    $record = array_merge($commonData, [
-                        'course_id'  => $courseId,
-                        'year_level' => $yearLevel,
-                        'semester_level'   => $semester,
-                    ]);
-                    // Add the created record to our collection
-                    $recordsToInsert[] = $record;
+                    // Loop through each course ID in the current list
+                    foreach ($currentCourseIds as $courseId) {
+                        // Create a new record by merging common data with specific data
+                        $record = array_merge($commonData, [
+                            'course_id'  => $courseId,
+                            'year_level' => $yearLevel,
+                            'semester_level'   => $semester,
+                            'study_mode_id' => $commonData['study_mode_id'],
+
+                        ]);
+                        // Add the created record to our collection
+                        $recordsToInsert[] = $record;
+                    }
                 }
             }
         }

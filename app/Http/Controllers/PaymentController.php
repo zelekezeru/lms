@@ -89,14 +89,14 @@ class PaymentController extends Controller
             ->first();
 
         if ($existingCoursePayment) {
-            return back()->withErrors(['error' => 'This Type Of Payment Is Already Pending Please Finish ' . $existingCoursePayment->paymentType->type]);
+            return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'This Type Of Payment Is Already Pending Please Finish ' . $existingCoursePayment->paymentType->type]);
         }
 
         // if payment type is course fee(per-course)
         if ($selectedPayment->duration == 'per-course') {
 
             if ($semesterStudent) {
-                return back()->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
+                return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
             }
 
             if ($data['total_amount'] == $data['paid_amount']) {
@@ -112,7 +112,7 @@ class PaymentController extends Controller
         } else if ($selectedPayment->duration == 'per-semester' && $selectedPayment->type == 'Semester Registration') {
 
             if (! $semesterStudent) {
-                return back()->withErrors(['error' => 'The Student Has Already Payed All Semester Registration Fees']);
+                return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Has Already Payed All Semester Registration Fees']);
             }
             if ($data['total_amount'] == $data['paid_amount']) {
                 $semesterStudent = $semesterStudent->update([

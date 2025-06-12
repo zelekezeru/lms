@@ -39,6 +39,10 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     protected $user_id;
 
+    protected $study_mode_id;
+
+    protected $section;
+
     protected $duplicate_entries = [];
 
     public function __construct($center_id)
@@ -179,7 +183,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                     $data['id_no'] = $userUuid;
                 }
                 if ($firstName) {
-                    $data['first_name'] = $firstName.' '.$middleName;
+                    $data['first_name'] = $firstName;
                 }
                 if ($middleName) {
                     $data['middle_name'] = $middleName;

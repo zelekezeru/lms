@@ -49,6 +49,8 @@ class AutoEnrollmentService
 
       $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
 
+      $total_amount = $semesterRegistrationPaymentType->amount ?? 0;
+      
       $semesterRegistrationPayment = Payment::create([
         'student_id' => $student->id,
         'payment_type_id' => $semesterRegistrationPaymentType?->id,
@@ -57,7 +59,7 @@ class AutoEnrollmentService
         'created_by' => Auth::id(),
         'status' => 'pending',
         'paid_amount' => 0,
-        'total_amount' => $semesterRegistrationPaymentType->amount,
+        'total_amount' => $total_amount,
       ]);
 
       // Ensure student has a SemesterStudent record for the current semester
@@ -94,6 +96,9 @@ class AutoEnrollmentService
       }
 
       $courseFeePaymentType = PaymentType::where('type', 'Course Fee')->where('duration', 'per-course')->where('study_mode_id', $student->study_mode_id)->first();
+      
+      $total_amount = $semesterRegistrationPaymentType->amount ?? 0;
+      
       Payment::create([
         'student_id' => $student->id,
         'payment_type_id' => $courseFeePaymentType?->id,
@@ -103,7 +108,7 @@ class AutoEnrollmentService
         'created_by' => Auth::id(),
         'status' => 'pending',
         'paid_amount' => 0,
-        'total_amount' => $courseFeePaymentType->amount * count($courseOfferingIds),
+        'total_amount' => $total_amount * count($courseOfferingIds),
       ]);
     }
   }

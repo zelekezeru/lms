@@ -36,6 +36,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected $user_id;
 
+    protected $old_id;
+
     protected $duplicate_entries = [];
 
     public function __construct($section_id)
@@ -69,8 +71,10 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'text' => 'Some required fields are missing in this row. Skipping this entry.',
                     ]);
                     
-                    // add the user to duplicate entries
-                    $this->duplicate_entries[] = $row['full_name'];
+                    if (isset($row['full_name'])) {
+                        // add the user to duplicate entries
+                        $this->duplicate_entries[] = $row['full_name'];
+                    }
 
                     continue;
                 }
@@ -163,6 +167,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 // If user already exists, update the user data
                 if ($userUuid) {
                     $data['id_no'] = $userUuid;
+                }
+                if (isset($row['old_id'])) {
+                    $data['old_id'] = $row['old_id'];
                 }
                 if ($firstName) {
                     $data['first_name'] = $firstName.' '.$middleName;

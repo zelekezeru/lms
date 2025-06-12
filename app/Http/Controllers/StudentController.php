@@ -91,7 +91,7 @@ class StudentController extends Controller
             $status->save();
         }
 
-        $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode']));
+        $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode', 'centers']));
 
         $yearLevel = $student->section ? $student->section->yearLevel() : null;
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;

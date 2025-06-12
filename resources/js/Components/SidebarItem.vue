@@ -17,7 +17,7 @@ const isActive = computed(() => currentUrl.startsWith(props.href));
 <template>
     <Link
         :href="href"
-        class="flex items-center p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700"
+        class="flex items-center p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-800 border-t dark:border-gray-600"
         :class="{ 'bg-gray-200 dark:bg-gray-700': isActive }"
     >
         <component

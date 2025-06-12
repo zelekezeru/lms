@@ -130,4 +130,27 @@ class Student extends Model
     {
         return $this->belongsTo(StudyMode::class, 'study_mode');
     }
+
+    public function hasPaidForSemester()
+    {
+        if ($this->status->is_scholarship) {
+            return true;
+        }
+
+        // This Has To Exist.
+        $semesterRegistrationFeeType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $this->study_mode_id)->first();
+
+        if (! $semesterRegistrationFeeType) {
+            return false;
+        }
+
+        $semester = Semester::getActiveSemester();
+
+        $uncompletePaymentExists = $this->payments()
+            ->where('payment_type_id', $semesterRegistrationFeeType->id)
+            ->where('semester_id', $semester->id)
+            ->whereNot('status', 'completed')->exists();
+
+        return $uncompletePaymentExists;
+    }
 }

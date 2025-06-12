@@ -246,6 +246,15 @@ class StudentController extends Controller
                 // If it's already 1, set it to 0
                 $status->{'is_active'} = 0;
             } else {
+                // If Student Has Not Paid For Registration Don't make him active
+                $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
+
+                $payment = $student->payments->where('payment_type_id', $registrationFee->id)->where('status', 'completed')->first();
+
+                if (! $payment) {
+                    return back()->withErrors(['error' => 'Student Has Not Paid For Registration']);
+                }
+
                 // If it's not set, set it to 1
                 $status->{'is_active'} = 1;
             }

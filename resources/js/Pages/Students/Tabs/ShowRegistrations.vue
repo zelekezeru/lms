@@ -1,5 +1,5 @@
 <script setup>
-import { router, useForm } from "@inertiajs/vue3";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import { defineProps, ref } from "vue";
 import {} from "@inertiajs/vue3";
 import Swal from "sweetalert2";
@@ -21,7 +21,6 @@ const student = ref({ ...props.student });
 
 // Submit updated status
 function submitStatusChange(field, value) {
-
     // Prepare the data to send.  Include the student's ID and the specific field being updated.
     const postData = {
         studentId: student.value.id, // Explicitly include student ID
@@ -39,16 +38,24 @@ function submitStatusChange(field, value) {
                     "success"
                 );
             },
+            onError: (errors) => {
+                Swal.fire(
+                    "Failed!",
+                    Object.values(usePage().props.errors).join("\n") ??
+                        "An unexpected error occurred while updating the student validation.",
+                    "error"
+                );
+            },
         }
     );
 }
 
 const updateAndSubmit = (field) => {
-  student.value = {
-    ...student.value,
-    [field]: student.value[field] === 1 ? 0 : 1, // Toggle the value
-  };
-  submitStatusChange(field, student.value[field]);
+    student.value = {
+        ...student.value,
+        [field]: student.value[field] === 1 ? 0 : 1, // Toggle the value
+    };
+    submitStatusChange(field, student.value[field]);
 };
 
 const status = ref({ ...props.status });
@@ -151,7 +158,9 @@ const status = ref({ ...props.status });
                                         <input
                                             type="checkbox"
                                             v-model="student.status.is_active"
-                                            @change="updateAndSubmit('is_active')"
+                                            @change="
+                                                updateAndSubmit('is_active')
+                                            "
                                             class="sr-only peer"
                                         />
 
@@ -302,9 +311,7 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="
-                                                status.is_completed
-                                            "
+                                            v-model="status.is_completed"
                                             @change="
                                                 updateAndSubmit(
                                                     'is_completed',
@@ -320,8 +327,7 @@ const status = ref({ ...props.status });
                                                 'bg-green-500':
                                                     status.is_completed,
                                                 'bg-red-500':
-                                                    !status
-                                                        .is_completed,
+                                                    !status.is_completed,
                                             }"
                                         ></div>
 
@@ -543,9 +549,7 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="
-                                                status.is_graduated
-                                            "
+                                            v-model="status.is_graduated"
                                             @change="
                                                 updateAndSubmit(
                                                     'is_graduated',
@@ -561,8 +565,7 @@ const status = ref({ ...props.status });
                                                 'bg-green-500':
                                                     status.is_graduated,
                                                 'bg-red-500':
-                                                    !status
-                                                        .is_graduated,
+                                                    !status.is_graduated,
                                             }"
                                         ></div>
 
@@ -621,14 +624,11 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="
-                                                status.is_scholarship
-                                            "
+                                            v-model="status.is_scholarship"
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship',
-                                                    status
-                                                        .is_scholarship
+                                                    status.is_scholarship
                                                 )
                                             "
                                             class="sr-only peer"
@@ -638,11 +638,9 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status
-                                                        .is_scholarship,
+                                                    status.is_scholarship,
                                                 'bg-red-500':
-                                                    !status
-                                                        .is_scholarship,
+                                                    !status.is_scholarship,
                                             }"
                                         ></div>
 
@@ -650,8 +648,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status
-                                                        .is_scholarship,
+                                                    status.is_scholarship,
                                             }"
                                         ></div>
                                     </label>
@@ -679,10 +676,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{
-                                        status
-                                            .scholarship_approved_by_name
-                                    }}
+                                    {{ status.scholarship_approved_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -691,16 +685,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status
-                                                    .is_scholarship_approved,
+                                                status.is_scholarship_approved,
                                             'text-red-500 dark:text-red-400':
-                                                !status
-                                                    .is_scholarship_approved,
+                                                !status.is_scholarship_approved,
                                         }"
                                     >
                                         {{
-                                            status
-                                                .is_scholarship_approved
+                                            status.is_scholarship_approved
                                                 ? "Approved"
                                                 : "Not Approved"
                                         }}
@@ -715,14 +706,12 @@ const status = ref({ ...props.status });
                                         <input
                                             type="checkbox"
                                             v-model="
-                                                status
-                                                    .is_scholarship_approved
+                                                status.is_scholarship_approved
                                             "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship_approved',
-                                                    status
-                                                        .is_scholarship_approved
+                                                    status.is_scholarship_approved
                                                 )
                                             "
                                             class="sr-only peer"
@@ -732,11 +721,9 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status
-                                                        .is_scholarship_approved,
+                                                    status.is_scholarship_approved,
                                                 'bg-red-500':
-                                                    !status
-                                                        .is_scholarship_approved,
+                                                    !status.is_scholarship_approved,
                                             }"
                                         ></div>
 
@@ -744,8 +731,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status
-                                                        .is_scholarship_approved,
+                                                    status.is_scholarship_approved,
                                             }"
                                         ></div>
                                     </label>
@@ -767,10 +753,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{
-                                        status
-                                            .scholarship_verified_by_name
-                                    }}
+                                    {{ status.scholarship_verified_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -779,16 +762,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status
-                                                    .is_scholarship_verified,
+                                                status.is_scholarship_verified,
                                             'text-red-500 dark:text-red-400':
-                                                !status
-                                                    .is_scholarship_verified,
+                                                !status.is_scholarship_verified,
                                         }"
                                     >
                                         {{
-                                            status
-                                                .is_scholarship_verified
+                                            status.is_scholarship_verified
                                                 ? "Verified"
                                                 : "Not Verified"
                                         }}
@@ -803,14 +783,12 @@ const status = ref({ ...props.status });
                                         <input
                                             type="checkbox"
                                             v-model="
-                                                status
-                                                    .is_scholarship_verified
+                                                status.is_scholarship_verified
                                             "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship_verified',
-                                                    status
-                                                        .is_scholarship_verified
+                                                    status.is_scholarship_verified
                                                 )
                                             "
                                             class="sr-only peer"
@@ -820,11 +798,9 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status
-                                                        .is_scholarship_verified,
+                                                    status.is_scholarship_verified,
                                                 'bg-red-500':
-                                                    !status
-                                                        .is_scholarship_verified,
+                                                    !status.is_scholarship_verified,
                                             }"
                                         ></div>
 
@@ -832,8 +808,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status
-                                                        .is_scholarship_verified,
+                                                    status.is_scholarship_verified,
                                             }"
                                         ></div>
                                     </label>

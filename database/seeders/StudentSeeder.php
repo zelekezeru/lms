@@ -128,9 +128,26 @@ class StudentSeeder extends Seeder
         $faker = Faker::create();
         for ($i = 2; $i <= 20; $i++) { // Changed loop to start from 2
             $user_uuid = 'SITS-' . str_pad($i, 4, '0', STR_PAD_LEFT) . '-25';
-            $firstName = $faker->firstName;
-            $middleName = $faker->firstName;
-            $lastName = $faker->lastName;
+            // Use Ethiopian names for students
+            $ethiopianFirstNames = [
+                'Abel', 'Mekdes', 'Birhanu', 'Hana', 'Samuel', 'Mulu', 'Tigist', 'Yared', 'Selam', 'Kebede',
+                'Amanuel', 'Marta', 'Fitsum', 'Genet', 'Dawit', 'Rahel', 'Solomon', 'Lulit', 'Tesfaye', 'Ruth',
+                'Sisay', 'Rediet', 'Meklit', 'Nahom', 'Hermela', 'Eyob', 'Bethel', 'Kidist', 'Abraham', 'Saron'
+            ];
+            $ethiopianMiddleNames = [
+                'Abebe', 'Alemayehu', 'Biruk', 'Hailu', 'Kebede', 'Mekonnen', 'Tadesse', 'Tesfaye', 'Wondimu', 'Yohannes',
+                'Zerihun', 'Asfaw', 'Fikre', 'Girma', 'Kidane', 'Negash', 'Getachew', 'Worku', 'Ayalew', 'Gebremedhin',
+                'Tsegaye', 'Hailemariam', 'Mulugeta', 'Demissie', 'Gebrehiwot', 'Gebremariam', 'Gebreselassie', 'Gebremeskel', 'Gebrekidan', 'Gebretsadik'
+            ];
+            $ethiopianLastNames = [
+                'Tadesse', 'Gebre', 'Alemu', 'Bekele', 'Mengistu', 'Wolde', 'Kassa', 'Abebe', 'Demissie', 'Haile',
+                'Fikre', 'Mekonnen', 'Asfaw', 'Tesfahun', 'Kidane', 'Girma', 'Negash', 'Getachew', 'Worku', 'Ayalew',
+                'Gebremedhin', 'Gebremariam', 'Gebreselassie', 'Gebremeskel', 'Gebrekidan', 'Gebretsadik', 'Gebrehiwot', 'Gebreyesus', 'Gebreab', 'Gebreigziabher'
+            ];
+
+            $firstName = $faker->randomElement($ethiopianFirstNames);
+            $middleName = $faker->randomElement($ethiopianMiddleNames);
+            $lastName = $faker->randomElement($ethiopianLastNames);
             $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
             $phone = '0916' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); // Generate a random phone number
             $officePhone = '0462' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);

@@ -18,7 +18,6 @@ class SectionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'code' => $this->code,
-            'user' => new UserResource($this->whenLoaded('user')),
             'students' => StudentResource::collection($this->whenLoaded('students', function () {
                 return $this->students->sortBy('name')->values();
             })),

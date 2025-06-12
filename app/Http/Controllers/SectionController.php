@@ -122,13 +122,12 @@ class SectionController extends Controller
             return $query->where('section_id', $section->id);
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
 
+        $currentSemester = Semester::getActiveSemester();
         $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
-        $currentSemesterLevel = Semester::getActiveSemester()->level;
-        $instructors = InstructorResource::collection(Instructor::with('courses')->get()->sortBy('name'));
+        $currentSemesterLevel = $currentSemester->level;
+        $instructors = InstructorResource::collection(Instructor::with('courses', 'user')->get()->sortBy('name'));
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
-
-        $currentSemester = new SemesterResource($section->semester()->with('year')->first());
 
         return Inertia::render('Sections/Show', [
             'section' => $section,

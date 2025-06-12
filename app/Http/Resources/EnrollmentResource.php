@@ -20,7 +20,9 @@ class EnrollmentResource extends JsonResource
             'course' => new CourseResource($this->courseOffering->course),
             'section' => new SectionResource($this->courseOffering->section),
             'instructor' => new InstructorResource($this->courseOffering->instructor ?? null),
-            'status' => $this->status,
+
+            // if academic status is 'completed' return that and if not return the general status of the course
+            'status' => $this->academic_status == 'completed' ? 'completed' : $this->status,
         ];
     }
 }

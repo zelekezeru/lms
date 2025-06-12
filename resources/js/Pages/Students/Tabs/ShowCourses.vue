@@ -22,6 +22,7 @@ import {
     EyeIcon,
     XCircleIcon,
 } from "@heroicons/vue/24/outline";
+import Form from "@/Pages/Centers/Form.vue";
 
 const props = defineProps({
     student: { type: Object, required: true },
@@ -34,11 +35,12 @@ const unAddableCourses = computed(() =>
     props.student.enrollments
         .filter(
             (enrollment) =>
-                enrollment.status == "Enrolled" ||
-                enrollment.status == "Completed"
+                enrollment.status == "enrolled" ||
+                enrollment.status == "completed"
         )
         .map((e) => e.course.id)
 );
+
 const filteredCoursesList = computed(() =>
     props.courses.filter(
         (course) => !unAddableCourses.value.includes(course.id)
@@ -55,7 +57,7 @@ const enrolledIds = computed(
     () =>
         new Set(
             props.student.enrollments
-                .filter((e) => e.status == "Enrolled")
+                .filter((e) => e.status == "enrolled")
                 .map((e) => e.course.id)
         )
 );
@@ -159,7 +161,9 @@ const dropEnrollment = (enrollmentId) => {
         </div>
 
         <!-- Courses waiting for student to finish payment -->
-        <div>
+        <div
+            class="mb-8 border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
+        >
             <div class="flex items-center gap-3 text-green-600">
                 <ClockIcon class="w-6 h-6" />
                 <h2 class="text-xl font-semibold dark:text-white text-gray-900">
@@ -169,9 +173,9 @@ const dropEnrollment = (enrollmentId) => {
             </div>
             <div
                 v-if="
-                    !student.enrollments.filter(
+                    student.enrollments.filter(
                         (enrollment) => enrollment.status == 'pending'
-                    )
+                    ).length == 0
                 "
                 class="text-center"
             >
@@ -184,7 +188,7 @@ const dropEnrollment = (enrollmentId) => {
                 v-else-if="
                     student.enrollments.filter(
                         (enrollment) => enrollment.status == 'pending'
-                    )
+                    ).length > 0
                 "
                 class="flex flex-col"
             >
@@ -317,9 +321,9 @@ const dropEnrollment = (enrollmentId) => {
         </div>
 
         <!-- Enrolled Courses  -->
-        <div>
+        <div class="border-t border-gray-300 dark:border-gray-600 pt-4 pb-4">
             <div class="flex items-center gap-3 text-green-600">
-                <BookmarkIcon class="w-6 h-6" />
+                <BookmarkIcon class="w-6" />
                 <h2 class="text-xl font-semibold dark:text-white text-gray-900">
                     Enrolled Courses For {{ activeSemester.year.name }} Semester
                     {{ activeSemester.level }}
@@ -327,9 +331,9 @@ const dropEnrollment = (enrollmentId) => {
             </div>
             <div
                 v-if="
-                    !student.enrollments.filter(
+                    student.enrollments.filter(
                         (enrollment) => enrollment.status == 'enrolled'
-                    )
+                    ).length == 0
                 "
                 class="text-center"
             >
@@ -342,12 +346,12 @@ const dropEnrollment = (enrollmentId) => {
                 v-else-if="
                     student.enrollments.filter(
                         (enrollment) => enrollment.status == 'enrolled'
-                    )
+                    ).length > 0
                 "
                 class="flex flex-col"
             >
                 <div
-                    class="mt-10 min-w-[100px] overflow-auto border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
+                    class="mt-5 min-w-[100px] overflow-auto border-gray-300 dark:border-gray-600 pt-4 pb-4"
                 >
                     <table
                         class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
@@ -778,20 +782,31 @@ const dropEnrollment = (enrollmentId) => {
         </div>
 
         <!-- Add Course Modal -->
-        <Modal :show="showAddModal" @close="showAddModal = false">
+        <Modal
+            :show="showAddModal"
+            @close="showAddModal = false"
+            :max-width="'4xl'"
+        >
             <div class="px-8 py-6">
-                <h3 class="text-lg font-semibold mb-4">
-                    Enroll {{ student.name }} to
-                    {{
-                        addForm.course_id
-                            ? courses.find(
-                                  (course) => course.id == addForm.course_id
-                              )?.name
-                            : "New Course"
-                    }}
-                    New Course
+                <h3 class="text-lg text-center font-light mb-4">
+                    Enroll
+                    <span class="font-bold"
+                        >{{ student.firstName }} {{ student.lastName }}</span
+                    >
+                    to
+                    <span class="font-bold underline">
+                        {{
+                            addForm.course_id
+                                ? courses.find(
+                                      (course) => course.id == addForm.course_id
+                                  )?.name
+                                : "New Course"
+                        }}
+                    </span>
                 </h3>
 
+                <p class="text-red-400">{{ addForm.errors.section_id }}</p>
+                <p class="text-red-400">{{ addForm.errors.course_id }}</p>
                 <!-- Course Selection -->
                 <label
                     class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"

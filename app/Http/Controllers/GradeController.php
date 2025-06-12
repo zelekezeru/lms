@@ -52,7 +52,7 @@ class GradeController extends Controller
                     ->where('section_id', $gradeData['section_id'])
                     ->get();
 
-                $sum = $weights->sum(fn ($w) => (int) $w->point);
+                $sum = $weights->sum(fn($w) => (int) $w->point);
 
                 if ($sum !== 100) {
                     throw new \Exception('The sum of the weights must be 100.');
@@ -74,13 +74,13 @@ class GradeController extends Controller
                 $enrollment = $student->enrollments()
                     ->whereHas(
                         'courseOffering',
-                        fn ($q) => $q->where('course_id', $gradeData['course_id'])
+                        fn($q) => $q->where('course_id', $gradeData['course_id'])
                     )
                     ->first();
 
                 if ($enrollment) {
                     $enrollment->update([
-                        'status' => $gradeData['grade_letter'] === 'F' ? 'Failed' : 'Completed',
+                        'academic_status' => $gradeData['grade_letter'] === 'F' ? 'failed' : 'completed',
                     ]);
                 }
             }

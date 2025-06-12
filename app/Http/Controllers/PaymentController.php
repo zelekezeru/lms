@@ -164,7 +164,6 @@ class PaymentController extends Controller
                         'status' => 'enrolled'
                     ]);
                 }
-                dd($enrollments);
             }
         } else if ($payment->paymentType->duration == 'per-semester' && $payment->type == 'Semester Registration') {
             if ($payment->total_amount == $payment->paid_amount) {

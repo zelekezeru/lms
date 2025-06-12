@@ -49,7 +49,9 @@ class StudentResource extends JsonResource
                 });
             }),
 
-            'profileImg' => Storage::url($this->user->profile_img),
+            'profileImg' => $this->whenLoaded('user', function () {
+                return Storage::url($this->profile_img);
+            }),
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 
             'results' => $this->whenLoaded('results'),

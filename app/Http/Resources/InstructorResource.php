@@ -17,8 +17,8 @@ class InstructorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
             'tenant_id' => $this->tenant_id,
+            'user_id' => $this->user_id,
             'name' => $this->user->name,
             'email' => $this->user->email,
             'ContactPhone' => $this->contact_phone,
@@ -28,13 +28,10 @@ class InstructorResource extends JsonResource
             'employmentType' => $this->employment_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            
-            'user' => $this->whenLoaded('user'),
+
+            'user' => new UserResource($this->whenLoaded('user')),
 
             'profileImg' => Storage::url($this->user->profile_img),
-
-            'userRole' => $this->user && $this->user->roles()->first() ? $this->user->roles()->first()->name : null,
-
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'classSchedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
             'classSessions' => ClassSessionResource::collection($this->whenLoaded('classSessions')),

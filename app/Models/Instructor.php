@@ -21,6 +21,8 @@ class Instructor extends Model
         'profile_image',
     ];
 
+    protected $with = ['user'];
+
     // BelongsTo relationships
     public function user()
     {

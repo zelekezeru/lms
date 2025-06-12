@@ -42,9 +42,21 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(User $user)
+    {
+        $user = new UserResource($user->load('tenant', 'roles'));
+
+        return inertia('Users/Show', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         $fields = $request->validated();
 
@@ -71,19 +83,9 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        return inertia('Users/Show', [
-            'user' => new UserResource($user),
-        ]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(UserUpdateRequest $request, User $user)
     {
         $roles = Role::all();
         $user->load('tenant', 'roles');
@@ -100,23 +102,6 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user)
     {
         $fields = $request->validated();
-
-        // Handle profile image upload
-        $profileImg = $request->file('profile_img');
-
-        if ($profileImg) {
-            // Delete old image if exists
-            if ($user->profile_img) {
-                Storage::disk('public')->delete($user->profile_img);
-            }
-
-            $imageName = Str::uuid() . '.' . $profileImg->getClientOriginalExtension();
-            $path = storage_path('app/public/profile-images/' . $imageName);
-
-            Image::make($profileImg)->resize(300, 300)->save($path);
-
-            $user->profile_img = 'profile-images/' . $imageName;
-        }
 
         $user->syncRoles($fields['roles']);
 
@@ -181,14 +166,16 @@ class UserController extends Controller
 
     public function updateProfilePicture(Request $request, User $user)
         {
-
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'profile_image' => 'required|image|max:10240|mimes:jpeg,png,jpg,gif,svg,webp',
+            'profile_image' => 'required|image|max:10240|mimes:jpeg,png,jpg,JPG,gif,svg,webp',
         ]);
 
         $user = User::findOrFail($request->user_id);
-        
+        dd($user);
+        if (!$user) {
+            return redirect()->back()->withErrors(['error' => 'User not found']);
+        }
         $image = $request->file('profile_image');
         
         $img = Image::make($image)->fit(300, 300, function ($constraint) {

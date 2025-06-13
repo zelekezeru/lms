@@ -67,9 +67,21 @@ class InstructorSeeder extends Seeder
         ];
 
         for ($i = 1; $i <= 7; $i++) {
-            $name = fake()->name;
-            $firstName = explode(' ', $name)[0]; // Extract the first name
-            $lastName = explode(' ', $name)[1] ?? ''; // Extract the last name (if available)
+            $ethiopianFirstNames = [
+                'Abebe', 'Alemu', 'Bekele', 'Chala', 'Desta', 'Eshetu', 'Fikru',
+                'Girma', 'Haile', 'Kebede', 'Lemma', 'Mulugeta', 'Negash', 'Samuel',
+                'Tadesse', 'Yared', 'Zewdu', 'Solomon', 'Tesfaye', 'Wondimu'
+            ];
+            $ethiopianLastNames = [
+                'Teshome', 'Gebre', 'Mengistu', 'Worku', 'Ayalew', 'Demissie', 'Gebremariam',
+                'Kassahun', 'Abate', 'Asfaw', 'Belay', 'Endeshaw', 'Fekadu', 'Gizaw',
+                'Hailu', 'Kassa', 'Mekonnen', 'Negussie', 'Sisay', 'Tadesse'
+            ];
+
+            $firstName = $ethiopianFirstNames[array_rand($ethiopianFirstNames)];
+            $lastName = $ethiopianLastNames[array_rand($ethiopianLastNames)];
+            $name = $firstName . ' ' . $lastName;
+
             $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
             $phone = '0911' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $specialization = $specializations[array_rand($specializations)];

@@ -21,7 +21,9 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
+
             'profileImg' => Storage::url($this->profile_img),
+
             'roles' => $this->whenLoaded('roles'),
             'default_password' => $this->default_password,
             'userDocument' => new UserDocumentResource($this->whenLoaded('userDocument')),

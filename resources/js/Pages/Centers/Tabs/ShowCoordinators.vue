@@ -81,19 +81,53 @@ const submitEditForm = () => {
     });
 };
 
-const handleFileChange = (e, targetForm) => {
-    const file = e.target.files[0];
-    targetForm.profile_img = file;
 
+
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    imageLoaded.value = true;
+};
+
+const updateProfileImageModal = ref(false);
+const selectedImagePreview = ref(null);
+
+const profileImageForm = useForm({
+    user_id: props.coordinator.id,
+    profile_img: null,
+    get _preview() {
+        return selectedImagePreview.value || props.coordinator.profileImg;
+    },
+});
+
+const openUploadModal = () => {
+    updateProfileImageModal.value = true;
+};
+
+const closeProfileImageModal = () => {
+    updateProfileImageModal.value = false;
+    profileImageForm.reset();
+    selectedImagePreview.value = null;
+};
+
+const handleProfileImageChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        imagePreview.value = props.coordinator?.profile_img || null;
+        profileImageForm.profile_image = file;
+        selectedImagePreview.value = URL.createObjectURL(file);
     }
+};
+
+const submitProfileImageUpdate = () => {
+    profileImageForm.post(route('users.update.image', { user: props.coordinator.id }), {
+        onSuccess: () => {
+            Swal.fire("Success!", "Profile image updated.", "success");
+            closeProfileImageModal();
+        },
+        onError: () => {
+            Swal.fire("Error!", "Failed to update image.", "error");
+        },
+    });
 };
 </script>
 
@@ -105,18 +139,30 @@ const handleFileChange = (e, targetForm) => {
 
         <!-- Coordinator Info -->
         <div v-if="coordinator">
-            <div class="flex justify-center mb-6">
+            
+            <!-- User Image -->
+            <div class="flex flex-col items-center mb-8 relative">
                 <div
-                    class="rounded-full w-40 h-40 bg-gray-100 dark:bg-gray-700 overflow-hidden flex items-center justify-center"
+                    v-if="!imageLoaded"
+                    class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+                ></div>
+                <img
+                    v-show="imageLoaded"
+                    class="rounded-full w-44 h-44 object-contain bg-gray-400"
+                    :src="profileImageForm._preview"
+                    :alt="`Profile of ` + coordinator.name"
+                    @load="handleImageLoad"
+                />
+                <!-- Profile change icon (edit) below the image -->
+                <button
+                    v-if="userCan && userCan('update-users')"
+                    class="mt-4 bg-white dark:bg-gray-800 rounded-full p-2 shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                    title="Change Profile Picture"
+                    @click="openUploadModal"
+                    type="button"
                 >
-                    <img
-                        v-if="coordinator.profile_img"
-                        :src="coordinator.profile_img"
-                        alt="Profile"
-                        class="object-contain w-full h-full"
-                    />
-                    <PhotoIcon v-else class="w-24 h-24 text-gray-400" />
-                </div>
+                    <PencilIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                </button>
             </div>
 
             <div class="grid sm:grid-cols-2 gap-4">
@@ -363,6 +409,64 @@ const handleFileChange = (e, targetForm) => {
                         </button>
                     </div>
                 </form>
+            </div>
+        </Modal>
+        
+        <!-- Profile Image Modal -->
+        <Modal :show="updateProfileImageModal" @close="closeProfileImageModal">
+            <div class="p-6 space-y-6 bg-gradient-to-br from-white via-blue-50 to-blue-100 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl shadow-xl">
+                <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                    <PencilIcon class="w-6 h-6 text-blue-500 dark:text-blue-300" />
+                    Update Profile Image
+                </h2>
+                <label class="block">
+                    <span class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Choose a new profile picture</span>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        @change="handleProfileImageChange"
+                        class="block w-full text-sm text-gray-700 dark:text-gray-200 file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            dark:file:bg-gray-700 dark:file:text-blue-200 dark:hover:file:bg-gray-600"
+                    />
+                </label>
+                <!-- Preview selected image -->
+                <div v-if="selectedImagePreview" class="flex justify-center">
+                    <img
+                        :src="selectedImagePreview"
+                        alt="Selected Preview"
+                        class="w-32 h-32 rounded-full object-cover border-4 border-blue-300 shadow-lg transition-all duration-300"
+                    />
+                </div>
+                <div v-else class="flex justify-center">
+                    <div class="w-32 h-32 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500 text-4xl">
+                        <PencilIcon class="w-12 h-12" />
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button
+                        @click="closeProfileImageModal"
+                        class="px-5 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition font-semibold"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        @click="submitProfileImageUpdate"
+                        :disabled="profileImageForm.processing"
+                        class="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold shadow hover:from-blue-700 hover:to-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        <span v-if="profileImageForm.processing" class="animate-spin mr-2">
+                            <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                        </span>
+                        Save
+                    </button>
+                </div>
             </div>
         </Modal>
     </div>

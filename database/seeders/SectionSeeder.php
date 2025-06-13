@@ -17,6 +17,8 @@ class SectionSeeder extends Seeder
         $data = [];
         $userId = 2;
         $semesterId = 1;
+        $yearId = 1;
+
 
         for ($i = 1; $i <= 13; $i++) {
             $programId = $i;
@@ -43,6 +45,7 @@ class SectionSeeder extends Seeder
                     'program_id' => $programId,
                     'track_id' => $trackId,
                     'semester_id' => $semesterId,
+                    'semester_id' => $yearId,
                     'study_mode_id' => 1,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),

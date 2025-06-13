@@ -135,7 +135,7 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
-        $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentItems']);
+        $payment->load(['student', 'paymentType', 'paymentCategories', 'paymentScheduleItem', 'paymentItems']);
 
         return Inertia::render('Payments/Show', [
             'payment' => $payment,

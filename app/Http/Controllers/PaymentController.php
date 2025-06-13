@@ -173,6 +173,9 @@ class PaymentController extends Controller
                 }
             }
         } else if ($payment->paymentType->duration == 'per-semester' && $payment->paymentType->type == 'Semester Registration') {
+            if (! $semesterStudent) {
+                return back()->withErrors(['error' => 'Not Registered To A Semester']);
+            }
             if ($payment->total_amount == $payment->paid_amount) {
                 $semesterStudent = $semesterStudent->update([
                     'payment_status' => 'paid'

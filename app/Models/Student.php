@@ -153,4 +153,27 @@ class Student extends Model
 
         return $uncompletePaymentExists;
     }
+
+    public function hasPaidForCourses()
+    {
+        if ($this->status->is_scholarship) {
+            return true;
+        }
+
+        // This Has To Exist.
+        $courseFeeType = PaymentType::where('type', 'Course Fee')->where('study_mode_id', $this->study_mode_id)->first();
+
+        if (! $courseFeeType) {
+            return false;
+        }
+
+        $semester = Semester::getActiveSemester();
+
+        $uncompletePaymentExists = $this->payments()
+            ->where('payment_type_id', $courseFeeType->id)
+            ->where('semester_id', $semester->id)
+            ->whereNot('status', 'completed')->exists();
+
+        return $uncompletePaymentExists;
+    }
 }

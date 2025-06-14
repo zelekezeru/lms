@@ -113,9 +113,11 @@ const submit = () => {
                     </div>
 
                     <!-- Login Button -->
-                    <PrimaryButton type="submit" class="w-full">
-                        {{ $t("login") }}
-                    </PrimaryButton>
+                    <div class="flex justify-center">
+                        <PrimaryButton type="submit" class="w-full">
+                            {{ $t("login") }}
+                        </PrimaryButton>
+                    </div>
                 </form>
 
                 <!-- Links -->
@@ -125,14 +127,6 @@ const submit = () => {
                         class="text-blue-600 hover:underline dark:text-blue-400"
                     >
                         {{ $t("forgot_password") }}
-                    </Link>
-                </p>
-                <p class="mt-2 text-center">
-                    <Link
-                        href="/register"
-                        class="text-blue-600 hover:underline dark:text-blue-400"
-                    >
-                        {{ $t("create_account") }}
                     </Link>
                 </p>
             </div>

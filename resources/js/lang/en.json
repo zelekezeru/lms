@@ -1,4 +1,25 @@
-{  
+{    
+  
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "remember_me": "Remember me",
+  "forgot_password": "Forgot your password?",
+  "create_account": "Create New Account",
+  "welcome_back": "Welcome back!",
+  "submit": "Submit",
+  "forgot_password_title": "Forgot your password?",
+  "forgot_password_info": "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
+  "email_password_reset_link": "Email Password Reset Link",
+  "reset_password": "Reset Password",
+  "reset_password_title": "Reset Password",
+  "reset_password_info": "Enter your new password below.",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "password_reset_success": "Your password has been reset successfully. You can now log in with your new password.",
+  "password_reset_error": "An error occurred while resetting your password. Please try again.",
+  "password_reset_link_sent": "A password reset link has been sent to your email address.",
+
   
   "common": {
     "save": "Save",
@@ -32,6 +53,21 @@
     },
     "actions": "Actions"
   },
+
+  
+  "admin_dashboard": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage the LMS, monitor progress, and review key metrics.",
+    "courses": "Courses",
+    "students": "Students",
+    "instructors": "Instructors",
+    "revenue": "Revenue",
+    "enrollment_chart": "Student Enrollment Over Time",
+    "user_distribution": "User Distribution",
+    "manage_instructors": "Manage Instructors"
+  },
+
+
   "programs": {
     "title": "Programs",
     "search_placeholder": "Search programs...",
@@ -65,6 +101,8 @@
       "added_title": "Added!",
       "added_text": "The study mode has been added successfully."
     },
+
+
     "details": {
       "code": "Code",
       "name": "Name",
@@ -75,6 +113,8 @@
       "delete": "Delete",
       "not_available": "Not available currently"
     },
+
+
     "tracks": {
       "title": "Learning Tracks",
       "create_title": "Add Learning Track",
@@ -140,6 +180,8 @@
     "deleted_title": "Deleted!",
     "deleted_text": "The learning track has been deleted."
   },
+
+
   "tracks": {
     "search_placeholder": "Search learning tracks...",
     "add": "+ Add Learning Track",
@@ -203,6 +245,8 @@
       "students": "Students"
     }
   },
+
+
   "courses": {
     "title": "Courses",
     "no": "No.",
@@ -229,6 +273,8 @@
     "view": "View",
     "edit": "Edit"
   },
+
+
   "sections": {
     "title": "Sections",
     "no": "No.",
@@ -261,6 +307,8 @@
     "view": "View",
     "edit": "Edit"
   },
+
+
   "students": {
     "title": "Students",
     "no": "No.",
@@ -288,6 +336,8 @@
     "success": "Success",
     "student_assigned_successfully": "Student assigned to section successfully"
   },
+
+
   "rooms": {
     "title": "Rooms",
     "search_placeholder": "Search rooms...",
@@ -317,6 +367,8 @@
     "deleted_title": "Deleted!",
     "deleted_text": "The learning track has been deleted."
   },
+
+
   "year": {
     "details_title": "Academic Year {year} Details",
     "name": "Academic Year",
@@ -348,6 +400,8 @@
     "edit_title": "Edit Academic Year",
     "edit_description": "Edit the academic year information."
   },
+
+
   "semester": {
     "details_title": "Semester {semester} of Year {year} Details",
     "name": "Semester",
@@ -384,6 +438,8 @@
     "updated_at": "Updated At",
     "active_semester_title": "Active Semester"
   },
+
+
   "permission": {
     "title": "Permissions",
     "permission": "Permission",
@@ -400,6 +456,8 @@
     "deleted_title": "Deleted!",
     "deleted_text": "The permission has been deleted."
   },
+
+
   "role": {
     "title": "Roles",
     "add": "Add Role",
@@ -424,6 +482,8 @@
     "permissions": "Permissions",
     "no_permissions": "No permissions found."
   },
+
+
   "tenant": {
     "details": "Institution Details",
     "code": "Code",
@@ -455,6 +515,8 @@
     "deleted_text": "The institution has been deleted.",
     "no_results": "No results found."
   },
+
+
   "centers": {
     "no": "No.",
     "title": "Centers",
@@ -492,6 +554,8 @@
     "actions.edit": "Delete",
     "actions.delete": "Delete"
   },
+
+  
   "coordinators": {
     "title": "Coordinators",
     "add": "Add Coordinator",
@@ -513,17 +577,8 @@
     "edit_title": "Edit Coordinator",
     "edit_description": "Edit the coordinator information."
   },
-  "admin_dashboard": {
-    "title": "Admin Dashboard",
-    "subtitle": "Manage the LMS, monitor progress, and review key metrics.",
-    "courses": "Courses",
-    "students": "Students",
-    "instructors": "Instructors",
-    "revenue": "Revenue",
-    "enrollment_chart": "Student Enrollment Over Time",
-    "user_distribution": "User Distribution",
-    "manage_instructors": "Manage Instructors"
-  },
+
+
   "table": {
     "name": "Name",
     "email": "Email",
@@ -531,14 +586,20 @@
     "status": "Status",
     "actions": "Actions"
   },
+
+
   "status": {
     "active": "Active",
     "inactive": "Inactive"
   },
+
+
   "actions": {
     "edit": "Edit",
     "delete": "Delete"
   },
+
+
   "sidebar": {
     "dashboard": "Dashboard",
     "menu": "Menu",
@@ -583,15 +644,44 @@
     "semester": "Semester",
     "actions": "Actions"
   },
-  "login": "Login",
-  "email": "Email",
-  "password": "Password",
-  "remember_me": "Remember me",
-  "forgot_password": "Forgot your password?",
-  "create_account": "Create New Account",
-  "welcome_back": "Welcome back!",
-  "submit": "Submit",
-  "forgot_password_title": "Forgot your password?",
-  "forgot_password_info": "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.",
-  "email_password_reset_link": "Email Password Reset Link"
+
+  "adminSidebar": {
+    "admin_panel": "Admin Panel",
+    "tenants": "Tenants",
+    "manage_tenant": "Manage Tenant",
+    "roles_permissions": "Roles & Permissions",
+    "manage_roles": "Manage Roles",
+    "manage_permissions": "Manage Permissions",
+    "calendar_structure": "Calendar Structure",
+    "manage_years": "Manage Years",
+    "manage_semesters": "Manage Semesters",
+    "manage_calendars": "Manage Calendars",
+    "academic_structure": "Academic Structure",
+    "manage_programs": "Manage Programs",
+    "manage_tracks": "Manage Tracks",
+    "manage_study_modes": "Manage Study Modes",
+    "manage_courses": "Manage Courses",
+    "section_classes": "Section Classes",
+    "manage_sections": "Manage Sections",
+    "manage_rooms": "Manage Rooms",
+    "manage_weights": "Manage Weights",
+    "user_management": "User Management",
+    "manage_instructors": "Manage Instructors",
+    "manage_employees": "Manage Employees",
+    "manage_users": "Manage Users",
+    "student_management": "Student Management",
+    "manage_students": "Manage Students",
+    "register_student": "Register Student",
+    "user_documents": "User Documents",
+    "centers": "Centers",
+    "manage_centers": "Manage Centers",
+    "inventory": "Inventory",
+    "all_inventories": "All Inventories",
+    "inventory_suppliers": "Inventory Suppliers",
+    "inventory_categories": "Inventory Categories",
+    "payment": "Payment",
+    "all_payments": "All Payments",
+    "profile": "Profile",
+    "help": "Help"
+  }
 }

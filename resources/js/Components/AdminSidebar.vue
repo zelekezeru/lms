@@ -46,16 +46,18 @@ const wrapperClasses = computed(() => {
         <div
             class="flex flex-col h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 py-2"
         >
-            <div class="flex items-center justify-center h-16 px-2">
-                <AcademicCapIcon
-                    class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
-                />
-                <span
-                    v-if="isOpen"
-                    class="ml-2 text-xl font-bold text-gray-800 dark:text-white"
-                    >Admin Panel</span
-                >
-            </div>
+            <a :href="route('dashboard')">
+                <div class="flex items-center justify-center h-16 px-2">
+                    <AcademicCapIcon
+                        class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                    />
+                    <span
+                        v-if="isOpen"
+                        class="ml-2 text-xl font-bold text-gray-800 dark:text-white"
+                        >Admin Panel</span
+                    >
+                </div>
+            </a>
 
             <div class="space-y-2 text-sm">
                 <SidebarDropdownMenu

@@ -43,18 +43,20 @@ const wrapperClasses = computed(() => {
     <aside :class="wrapperClasses">
         <div class="flex flex-col h-full ml-2">
             <!-- Logo / Title -->
-            <div class="flex items-center justify-center h-16 px-2">
-                <AcademicCapIcon
-                    class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
-                />
-                <span
-                    v-if="isOpen"
-                    class="ml-2 text-xl font-bold text-gray-800 dark:text-white select-none"
-                >
-                    Registrar
-                </span>
-            </div>
-
+            <a :href="route('dashboard')">
+                <div class="flex items-center justify-center h-16 px-2">
+                    <AcademicCapIcon
+                        class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+                    />
+                    <span
+                        v-if="isOpen"
+                        class="ml-2 text-xl font-bold text-gray-800 dark:text-white select-none"
+                    >
+                        Registrar
+                    </span>
+                </div>
+            </a>
+            
             <!-- Menu items -->
             <nav class="flex-1 px-2 space-y-1 mt-4 max-h-[800px] overflow-auto">
                 <SidebarItem

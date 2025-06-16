@@ -247,11 +247,8 @@ class StudentController extends Controller
                 $status->{'is_active'} = 0;
             } else {
                 // If Student Has Not Paid For Registration Don't make him active
-                $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
 
-                $payment = $student->payments->where('payment_type_id', $registrationFee->id)->where('status', 'completed')->first();
-
-                if (! $payment) {
+                if (! $student->hasPaidForSemester()) {
                     return back()->withErrors(['error' => 'Student Has Not Paid For Registration']);
                 }
 
@@ -281,6 +278,20 @@ class StudentController extends Controller
                     } else {
                         // If it's not set, set it to 1
                         $status->{'is_' . $statusField} = 1;
+                        if ($request->has('is_scholarship')) {
+                            $studentPayments = $student->payments()->where('payments.status', 'pending')->get();
+
+                            foreach ($studentPayments as $studentPayment) {
+                                $studentPayment->update(['status' => 'paid_by_college']);
+                            }
+
+                            $pendingEnrollments = $student->enrollments()->where('status', 'pending')->get();
+                            if ($pendingEnrollments) {
+                                foreach ($pendingEnrollments as $pendingEnrollment) {
+                                    $pendingEnrollment->update(['status' => 'enrolled']);
+                                }
+                            }
+                        }
                     }
                     $status->{$statusField . '_by_name'} = Auth::user()->name;
                     $status->{$statusField . '_at'} = now();
@@ -424,7 +435,7 @@ class StudentController extends Controller
             'course_offering_id' => $courseOffering->id,
             'semester_id' => $semester->id,
         ], [
-            'status' => 'pending',
+            'status' => $student->status->is_scholarship ? 'enrolled' : 'pending',
             'academic_status' => 'in_progress',
         ]);
 
@@ -442,7 +453,7 @@ class StudentController extends Controller
         $existingAmount = $payment->total_amount ?? 0;
         $newAmount = $existingAmount + ($courseFeeType->amount ?? 0);
 
-        $payment->status = 'pending';
+        $payment->status = $student->status->is_scholarship ? 'paid_by_college' : 'pending';
         $payment->total_amount = $newAmount;
         $payment->save();
 

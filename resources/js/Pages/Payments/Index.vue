@@ -4,7 +4,16 @@ import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
-import { Cog6ToothIcon, BookOpenIcon, AcademicCapIcon, UsersIcon, CurrencyDollarIcon, BuildingLibraryIcon, InformationCircleIcon, BanknotesIcon } from "@heroicons/vue/24/outline";
+import {
+    Cog6ToothIcon,
+    BookOpenIcon,
+    AcademicCapIcon,
+    UsersIcon,
+    CurrencyDollarIcon,
+    BuildingLibraryIcon,
+    InformationCircleIcon,
+    BanknotesIcon,
+} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowPayments from "./Tabs/ShowPayments.vue";
@@ -75,22 +84,32 @@ const searchpayments = () => {
     router.get(
         route("payments.index"),
         { ...route().params, search: search.value },
-        { preserveState: true },
+        { preserveState: true }
     );
 };
 
 // Multi nav header options
-const selectedTab = ref('details');
+const selectedTab = ref("details");
 
 const tabs = [
-    { key: 'details', label: 'Details', icon: Cog6ToothIcon },
-    { key: 'payments', label: 'Payments', icon: CurrencyDollarIcon },
-    { key: 'categories', label: 'Categories', icon: BookOpenIcon },
-    { key: 'methods', label: 'Methods', icon: Cog6ToothIcon },
-    { key: 'types', label: 'Types', icon: BanknotesIcon },
-    { key: 'status', label: 'Status', icon: InformationCircleIcon },
-    { key: 'transactions', label: 'Transactions', icon: BuildingLibraryIcon },
+    { key: "details", label: "Details", icon: Cog6ToothIcon },
+    { key: "payments", label: "Payments", icon: CurrencyDollarIcon },
+    { key: "categories", label: "Categories", icon: BookOpenIcon },
+    { key: "methods", label: "Methods", icon: Cog6ToothIcon },
+    { key: "types", label: "Types", icon: BanknotesIcon },
+    { key: "status", label: "Status", icon: InformationCircleIcon },
+    { key: "transactions", label: "Transactions", icon: BuildingLibraryIcon },
 ];
+
+const paymentStatusLabels = {
+    pending: "Pending",
+    completed: "Completed",
+    paid_by_college: "Paid by College",
+    canceled: "Canceled",
+};
+
+// Usage
+const label = statusLabels[payment.status] ?? "Unknown";
 
 const deletePayment = (id) => {
     Swal.fire({
@@ -105,7 +124,11 @@ const deletePayment = (id) => {
         if (result.isConfirmed) {
             router.delete(route("payments.destroy", { payment: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "The payment has been deleted.", "success");
+                    Swal.fire(
+                        "Deleted!",
+                        "The payment has been deleted.",
+                        "success"
+                    );
                 },
             });
         }
@@ -115,7 +138,6 @@ const deletePayment = (id) => {
 
 <template>
     <AppLayout>
-
         <nav
             class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
         >
@@ -144,46 +166,43 @@ const deletePayment = (id) => {
             leave-from-class="opacity-100 scale-100"
             leave-to-class="opacity-0 scale-75"
         >
-        <div
-            :key="selectedTab"
-            class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-        >
-            <ShowDetails 
-                v-if="selectedTab === 'details'"
-                :payments="payments"
-                :paymentCategories="paymentCategories"
-                :paymentMethods="paymentMethods"
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <ShowDetails
+                    v-if="selectedTab === 'details'"
+                    :payments="payments"
+                    :paymentCategories="paymentCategories"
+                    :paymentMethods="paymentMethods"
                 />
-            <ShowPayments
-                v-if="selectedTab === 'payments'"
-                :payments="payments"
-            />
-            <ShowCategories
-                v-else-if="selectedTab === 'categories'"
-                :paymentCategories="paymentCategories"
-            />
-            <ShowMethods
-                v-else-if="selectedTab === 'methods'"
-                :paymentMethods="paymentMethods"
-            />
-            <ShowTypes
-                v-else-if="selectedTab === 'types'"
-                :paymentTypes="paymentTypes"
-                :studyModes="studyModes"
-                :paymentCategories="paymentCategories"
-            />
-            <ShowStatus
-                v-else-if="selectedTab === 'status'"
-                :payments="payments"
-            />
-            <ShowTransactions
-                v-else-if="selectedTab === 'transactions'"
-                :payments="payments"
-            />
-        </div>
-            
+                <ShowPayments
+                    v-if="selectedTab === 'payments'"
+                    :payments="payments"
+                />
+                <ShowCategories
+                    v-else-if="selectedTab === 'categories'"
+                    :paymentCategories="paymentCategories"
+                />
+                <ShowMethods
+                    v-else-if="selectedTab === 'methods'"
+                    :paymentMethods="paymentMethods"
+                />
+                <ShowTypes
+                    v-else-if="selectedTab === 'types'"
+                    :paymentTypes="paymentTypes"
+                    :studyModes="studyModes"
+                    :paymentCategories="paymentCategories"
+                />
+                <ShowStatus
+                    v-else-if="selectedTab === 'status'"
+                    :payments="payments"
+                />
+                <ShowTransactions
+                    v-else-if="selectedTab === 'transactions'"
+                    :payments="payments"
+                />
+            </div>
         </transition>
-
-
     </AppLayout>
 </template>

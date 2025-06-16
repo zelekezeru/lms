@@ -35,6 +35,13 @@ const props = defineProps({
     paymentTypes: Array, // Add prop for payment categories
 });
 
+const paymentStatusLabels = {
+    pending: "Pending",
+    completed: "Completed",
+    paid_by_college: "Paid by College",
+    canceled: "Canceled",
+};
+
 const errors = usePage().props.errors;
 // Refs for controlling modal visibility
 const assignPayments = ref(false);
@@ -386,10 +393,7 @@ const updatePayment = () => {
                                 }"
                                 class="text-sm font-bold"
                             >
-                                {{
-                                    payment.status.charAt(0).toUpperCase() +
-                                    payment.status.slice(1)
-                                }}
+                                {{ paymentStatusLabels[payment.status] }}
                             </p>
                         </div>
                     </div>
@@ -402,10 +406,12 @@ const updatePayment = () => {
                             class="h-full bg-green-500"
                             :style="{
                                 width:
-                                    (payment.paid_amount /
-                                        payment.total_amount) *
-                                        100 +
-                                    '%',
+                                    payment.status == 'paid_by_college'
+                                        ? '100%'
+                                        : (payment.paid_amount /
+                                              payment.total_amount) *
+                                              100 +
+                                          '%',
                             }"
                         ></div>
                     </div>
@@ -513,7 +519,7 @@ const updatePayment = () => {
                                         <tr
                                             v-for="(
                                                 enrollment, index
-                                            ) in student.enrollments"
+                                            ) in unpaidEnrollments"
                                             :key="enrollment.course.id"
                                             class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                                         >

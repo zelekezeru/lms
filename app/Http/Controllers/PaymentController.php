@@ -73,11 +73,15 @@ class PaymentController extends Controller
             'status' => 'required|string|in:pending,completed,canceled',
             'reference_number' => 'nullable|string|max:255',
         ]);
+        $student = Student::find($data['student_id']);
 
         $semester = Semester::getActiveSemester();
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] = Auth::user()->id;
         $data['semester_id'] = $semester->id;
+
+        $status = $data['total_amount'] <= $data['paid_amount'] ? 'completed' : 'pending';
+        $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
 
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $data['student_id'])->where('payment_status', 'unpaid')->first();
 
@@ -99,7 +103,7 @@ class PaymentController extends Controller
                 return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
             }
 
-            if ($data['total_amount'] == $data['paid_amount']) {
+            if ($data['total_amount'] == $data['paid_amount'] || $student->status->is_scholarship) {
                 $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();
 
 
@@ -114,14 +118,13 @@ class PaymentController extends Controller
             if (! $semesterStudent) {
                 return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Has Already Payed All Semester Registration Fees']);
             }
-            if ($data['total_amount'] == $data['paid_amount']) {
+            if ($data['total_amount'] == $data['paid_amount'] || $student->status->is_scholarship) {
                 $semesterStudent = $semesterStudent->update([
                     'payment_status' => 'paid'
                 ]);
             }
         } else if ($selectedPayment->duration == 'one-time' && $selectedPayment->type == 'Registration Fee') {
-            if ($data['total_amount'] == $data['paid_amount']) {
-                $student = Student::find($data['student_id']);
+            if ($data['total_amount'] == $data['paid_amount'] || $student->status->is_scholarship) {
                 $student->status->update([
                     'is_active' => true
                 ]);
@@ -151,10 +154,13 @@ class PaymentController extends Controller
             'description' => 'nullable|string|max:255',
             'payment_reference' => 'nullable|string|max:255',
         ]);
+
+        $student = Student::find($payment->student_id);
+
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['updated_by'] = Auth::user()->id;
-        $data['status'] = $payment->total_amount <= $data['paid_amount'] ? 'completed' : 'pending';
-
+        $status = $payment->total_amount <= $data['paid_amount'] ? 'completed' : 'pending';
+        $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
 
         $semester = Semester::getActiveSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
@@ -162,9 +168,8 @@ class PaymentController extends Controller
         $payment->update($data);
         if ($payment->paymentType->duration == 'per-course') {
 
-            if ($payment->total_amount == $payment->paid_amount) {
+            if ($payment->total_amount == $payment->paid_amount  || $student->status->is_scholarship) {
                 $enrollments = $semester->enrollments()->where('student_id', $payment->student_id)->where('status', 'pending')->get();
-
 
                 foreach ($enrollments as $enrollment) {
                     $enrollment->update([
@@ -176,20 +181,18 @@ class PaymentController extends Controller
             if (! $semesterStudent) {
                 return back()->withErrors(['error' => 'Not Registered To A Semester']);
             }
-            if ($payment->total_amount == $payment->paid_amount) {
+            if ($payment->total_amount == $payment->paid_amount || $student->status->is_scholarship) {
                 $semesterStudent = $semesterStudent->update([
                     'payment_status' => 'paid'
                 ]);
             }
         } else if ($payment->paymentType->duration == 'one-time' && $payment->paymentType->type == 'Registration Fee') {
-            if ($payment->total_amount == $payment->paid_amount) {
-                $student = Student::find($payment->student_id);
+            if ($payment->total_amount == $payment->paid_amount || $student->status->is_scholarship) {
                 $student->status->update([
                     'is_active' => true
                 ]);
             }
         }
-
         return back()->with('success', 'Payment updated successfully.');
     }
 

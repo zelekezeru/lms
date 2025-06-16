@@ -252,7 +252,7 @@ const status = ref({ ...props.status });
                                                 'bg-green-500':
                                                     status.is_approved,
                                                 'bg-red-500':
-                                                    !status.is_approved,
+                                                    !student.status.is_approved,
                                             }"
                                         ></div>
 
@@ -260,7 +260,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_approved,
+                                                    student.status.is_approved,
                                             }"
                                         ></div>
                                     </label>
@@ -282,7 +282,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.completed_by_name }}
+                                    {{ student.status.completed_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -291,13 +291,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_completed,
+                                                student.status.is_completed,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_completed,
+                                                !student.status.is_completed,
                                         }"
                                     >
                                         {{
-                                            status.is_completed
+                                            student.status.is_completed
                                                 ? "Completed"
                                                 : "Not Completed"
                                         }}
@@ -311,11 +311,13 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="status.is_completed"
+                                            v-model="
+                                                student.status.is_completed
+                                            "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_completed',
-                                                    status.is_completed
+                                                    student.status.is_completed
                                                 )
                                             "
                                             class="sr-only peer"
@@ -325,9 +327,10 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_completed,
+                                                    student.status.is_completed,
                                                 'bg-red-500':
-                                                    !status.is_completed,
+                                                    !student.status
+                                                        .is_completed,
                                             }"
                                         ></div>
 
@@ -335,7 +338,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_completed,
+                                                    student.status.is_completed,
                                             }"
                                         ></div>
                                     </label>
@@ -363,7 +366,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.verified_by_name }}
+                                    {{ student.status.verified_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -372,13 +375,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_verified,
+                                                student.status.is_verified,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_verified,
+                                                !student.status.is_verified,
                                         }"
                                     >
                                         {{
-                                            status.is_verified
+                                            student.status.is_verified
                                                 ? "Verified"
                                                 : "Not Verified"
                                         }}
@@ -392,11 +395,11 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="status.is_verified"
+                                            v-model="student.status.is_verified"
                                             @change="
                                                 updateAndSubmit(
                                                     'is_verified',
-                                                    status.is_verified
+                                                    student.status.is_verified
                                                 )
                                             "
                                             class="sr-only peer"
@@ -406,9 +409,9 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_verified,
+                                                    student.status.is_verified,
                                                 'bg-red-500':
-                                                    !status.is_verified,
+                                                    !student.status.is_verified,
                                             }"
                                         ></div>
 
@@ -416,7 +419,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_verified,
+                                                    student.status.is_verified,
                                             }"
                                         ></div>
                                     </label>
@@ -439,7 +442,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.enrolled_by_name }}
+                                    {{ student.status.enrolled_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -448,13 +451,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_enrolled,
+                                                student.status.is_enrolled,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_enrolled,
+                                                !student.status.is_enrolled,
                                         }"
                                     >
                                         {{
-                                            status.is_enrolled
+                                            student.status.is_enrolled
                                                 ? "Enrolled"
                                                 : "Not Enrolled"
                                         }}
@@ -468,11 +471,11 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="status.is_enrolled"
+                                            v-model="student.status.is_enrolled"
                                             @change="
                                                 updateAndSubmit(
                                                     'is_enrolled',
-                                                    status.is_enrolled
+                                                    student.status.is_enrolled
                                                 )
                                             "
                                             class="sr-only peer"
@@ -482,9 +485,9 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_enrolled,
+                                                    student.status.is_enrolled,
                                                 'bg-red-500':
-                                                    !status.is_enrolled,
+                                                    !student.status.is_enrolled,
                                             }"
                                         ></div>
 
@@ -492,7 +495,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_enrolled,
+                                                    student.status.is_enrolled,
                                             }"
                                         ></div>
                                     </label>
@@ -520,7 +523,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.graduated_by_name }}
+                                    {{ student.status.graduated_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -529,13 +532,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_graduated,
+                                                student.status.is_graduated,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_graduated,
+                                                !student.status.is_graduated,
                                         }"
                                     >
                                         {{
-                                            status.is_graduated
+                                            student.status.is_graduated
                                                 ? "Graduated"
                                                 : "Not Graduated"
                                         }}
@@ -549,11 +552,13 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="status.is_graduated"
+                                            v-model="
+                                                student.status.is_graduated
+                                            "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_graduated',
-                                                    status.is_graduated
+                                                    student.status.is_graduated
                                                 )
                                             "
                                             class="sr-only peer"
@@ -563,9 +568,10 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_graduated,
+                                                    student.status.is_graduated,
                                                 'bg-red-500':
-                                                    !status.is_graduated,
+                                                    !student.status
+                                                        .is_graduated,
                                             }"
                                         ></div>
 
@@ -573,7 +579,7 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_graduated,
+                                                    student.status.is_graduated,
                                             }"
                                         ></div>
                                     </label>
@@ -595,7 +601,7 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.scholarship_by_name }}
+                                    {{ student.status.scholarship_by_name }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -604,13 +610,13 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_scholarship,
+                                                student.status.is_scholarship,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_scholarship,
+                                                !student.status.is_scholarship,
                                         }"
                                     >
                                         {{
-                                            status.is_scholarship
+                                            student.status.is_scholarship
                                                 ? "Scholarship"
                                                 : "Not Scholarship"
                                         }}
@@ -624,11 +630,14 @@ const status = ref({ ...props.status });
                                     >
                                         <input
                                             type="checkbox"
-                                            v-model="status.is_scholarship"
+                                            v-model="
+                                                student.status.is_scholarship
+                                            "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship',
-                                                    status.is_scholarship
+                                                    student.status
+                                                        .is_scholarship
                                                 )
                                             "
                                             class="sr-only peer"
@@ -638,9 +647,11 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_scholarship,
+                                                    student.status
+                                                        .is_scholarship,
                                                 'bg-red-500':
-                                                    !status.is_scholarship,
+                                                    !student.status
+                                                        .is_scholarship,
                                             }"
                                         ></div>
 
@@ -648,7 +659,8 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_scholarship,
+                                                    student.status
+                                                        .is_scholarship,
                                             }"
                                         ></div>
                                     </label>
@@ -676,7 +688,10 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.scholarship_approved_by_name }}
+                                    {{
+                                        student.status
+                                            .scholarship_approved_by_name
+                                    }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -685,13 +700,16 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_scholarship_approved,
+                                                student.status
+                                                    .is_scholarship_approved,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_scholarship_approved,
+                                                !student.status
+                                                    .is_scholarship_approved,
                                         }"
                                     >
                                         {{
-                                            status.is_scholarship_approved
+                                            student.status
+                                                .is_scholarship_approved
                                                 ? "Approved"
                                                 : "Not Approved"
                                         }}
@@ -706,12 +724,14 @@ const status = ref({ ...props.status });
                                         <input
                                             type="checkbox"
                                             v-model="
-                                                status.is_scholarship_approved
+                                                student.status
+                                                    .is_scholarship_approved
                                             "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship_approved',
-                                                    status.is_scholarship_approved
+                                                    student.status
+                                                        .is_scholarship_approved
                                                 )
                                             "
                                             class="sr-only peer"
@@ -721,9 +741,11 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_scholarship_approved,
+                                                    student.status
+                                                        .is_scholarship_approved,
                                                 'bg-red-500':
-                                                    !status.is_scholarship_approved,
+                                                    !student.status
+                                                        .is_scholarship_approved,
                                             }"
                                         ></div>
 
@@ -731,7 +753,8 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_scholarship_approved,
+                                                    student.status
+                                                        .is_scholarship_approved,
                                             }"
                                         ></div>
                                     </label>
@@ -753,7 +776,10 @@ const status = ref({ ...props.status });
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
-                                    {{ status.scholarship_verified_by_name }}
+                                    {{
+                                        student.status
+                                            .scholarship_verified_by_name
+                                    }}
                                 </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 text-center dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
@@ -762,13 +788,16 @@ const status = ref({ ...props.status });
                                         class="text-lg mx-4"
                                         :class="{
                                             'text-green-500 dark:text-green-400':
-                                                status.is_scholarship_verified,
+                                                student.status
+                                                    .is_scholarship_verified,
                                             'text-red-500 dark:text-red-400':
-                                                !status.is_scholarship_verified,
+                                                !student.status
+                                                    .is_scholarship_verified,
                                         }"
                                     >
                                         {{
-                                            status.is_scholarship_verified
+                                            student.status
+                                                .is_scholarship_verified
                                                 ? "Verified"
                                                 : "Not Verified"
                                         }}
@@ -783,12 +812,14 @@ const status = ref({ ...props.status });
                                         <input
                                             type="checkbox"
                                             v-model="
-                                                status.is_scholarship_verified
+                                                student.status
+                                                    .is_scholarship_verified
                                             "
                                             @change="
                                                 updateAndSubmit(
                                                     'is_scholarship_verified',
-                                                    status.is_scholarship_verified
+                                                    student.status
+                                                        .is_scholarship_verified
                                                 )
                                             "
                                             class="sr-only peer"
@@ -798,9 +829,11 @@ const status = ref({ ...props.status });
                                             class="w-11 h-6 bg-gray-200 rounded-full peer transition-colors duration-200"
                                             :class="{
                                                 'bg-green-500':
-                                                    status.is_scholarship_verified,
+                                                    student.status
+                                                        .is_scholarship_verified,
                                                 'bg-red-500':
-                                                    !status.is_scholarship_verified,
+                                                    !student.status
+                                                        .is_scholarship_verified,
                                             }"
                                         ></div>
 
@@ -808,7 +841,8 @@ const status = ref({ ...props.status });
                                             class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 transform"
                                             :class="{
                                                 'translate-x-full':
-                                                    status.is_scholarship_verified,
+                                                    student.status
+                                                        .is_scholarship_verified,
                                             }"
                                         ></div>
                                     </label>

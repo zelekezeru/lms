@@ -15,6 +15,7 @@ class PaymentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'payment_date' => $this->payment_date,
             'total_amount' => $this->total_amount,
             'description' => $this->description,
@@ -32,5 +33,16 @@ class PaymentResource extends JsonResource
             'semester' => $this->whenLoaded('semester'),
 
         ];
+    }
+
+    protected function getStatusLabel(): string
+    {
+        return match ($this->status) {
+            'pending' => 'Pending',
+            'completed' => 'Completed',
+            'paid_by_college' => 'Paid by College',
+            'canceled' => 'Canceled',
+            default => 'Unknown',
+        };
     }
 }

@@ -50,14 +50,14 @@ class AutoEnrollmentService
       $semesterRegistrationPaymentType = PaymentType::where('type', 'Semester Registration')->where('study_mode_id', $student->study_mode_id)->first();
 
       $total_amount = $semesterRegistrationPaymentType->amount ?? 0;
-      
+
       $semesterRegistrationPayment = Payment::create([
         'student_id' => $student->id,
         'payment_type_id' => $semesterRegistrationPaymentType?->id,
         'semester_id' => $activeSemester->id,
         'tenant_id' => 1,
         'created_by' => Auth::id(),
-        'status' => 'pending',
+        'status' => $student->status->is_scholarship ? 'paid_by_college' : 'pending',
         'paid_amount' => 0,
         'total_amount' => $total_amount,
       ]);
@@ -67,7 +67,7 @@ class AutoEnrollmentService
         'student_id' => $student->id,
         'semester_id' => $activeSemester->id,
       ], [
-        'payment_status' => 'unpaid',
+        'payment_status' => $student->status->is_scholarship ? 'paid' : 'unpaid',
         'academic_status' => 'in_progress'
       ]);
 
@@ -89,16 +89,16 @@ class AutoEnrollmentService
             'student_id' => $student->id,
             'course_offering_id' => $courseOfferingId,
             'semester_id' => $activeSemester->id,
-            'status' => 'pending',
+            'status' => $student->status->is_scholarship ? 'enrolled' : 'pending',
             'academic_status' => 'in_progress'
           ]);
         }
       }
 
       $courseFeePaymentType = PaymentType::where('type', 'Course Fee')->where('duration', 'per-course')->where('study_mode_id', $student->study_mode_id)->first();
-      
+
       $total_amount = $semesterRegistrationPaymentType->amount ?? 0;
-      
+
       Payment::create([
         'student_id' => $student->id,
         'payment_type_id' => $courseFeePaymentType?->id,
@@ -106,7 +106,7 @@ class AutoEnrollmentService
         'description' => 'Tuition Fee',
         'tenant_id' => 1,
         'created_by' => Auth::id(),
-        'status' => 'pending',
+        'status' => $student->status->is_scholarship ? 'paid_by_college' : 'pending',
         'paid_amount' => 0,
         'total_amount' => $total_amount * count($courseOfferingIds),
       ]);

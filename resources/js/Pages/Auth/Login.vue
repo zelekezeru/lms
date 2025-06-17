@@ -1,4 +1,4 @@
-<script setup>
+11<script setup>
 import Checkbox from "@/Components/Checkbox.vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
@@ -115,7 +115,9 @@ const submit = () => {
                     <!-- Login Button -->
                     <div class="flex text-center">
                         <PrimaryButton type="submit" class="w-full">
-                            <span class="w-full text-center block">{{ $t("login") }}</span>
+                            <span class="w-full text-center block">{{
+                                $t("login")
+                            }}</span>
                         </PrimaryButton>
                     </div>
                 </form>

@@ -113,9 +113,9 @@ const submit = () => {
                     </div>
 
                     <!-- Login Button -->
-                    <div class="flex justify-center">
+                    <div class="flex text-center">
                         <PrimaryButton type="submit" class="w-full">
-                            {{ $t("login") }}
+                            <span class="w-full text-center block">{{ $t("login") }}</span>
                         </PrimaryButton>
                     </div>
                 </form>

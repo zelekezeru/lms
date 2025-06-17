@@ -36,108 +36,51 @@ const searchSemesters = () => {
         <h1
             class="mb-6 text-3xl font-bold text-center text-gray-900 dark:text-white"
         >
-            {{ $t("semester.title") }}
+            {{ $t("semester.calender") }}
         </h1>
 
-        <div class="flex items-center justify-between mb-4">
-            <input
-                type="text"
-                v-model="search"
-                :placeholder="$t('semester.search')"
-                class="p-2 pl-3 text-gray-900 bg-white border border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                @input="searchSemesters"
-            />
-
-            <div class="flex gap-3">
-                <Link
-                    :href="route('semesters.closeForm')"
-                    class="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
-                >
-                    {{ $t("semester.close_current") }}
-                </Link>
-
-                <button
-                    @click="refreshData"
-                    class="flex items-center px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-                >
-                    <ArrowPathIcon
-                        class="w-5 h-5 mr-1"
-                        :class="{ 'animate-spin': refreshing }"
-                    />
-                    {{ $t("semester.refresh") }}
-                </button>
-            </div>
-        </div>
 
         <div class="overflow-x-auto">
-            <table
-                class="min-w-full bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+                <p>{{ semesters.ststus === 'Active' }}</p>
+            <div
+                v-if="semesters && semesters.data && semesters.data.length"
+                class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded shadow p-6"
             >
-                <thead>
-                    <tr class="text-left bg-gray-100 dark:bg-gray-700">
-                        <th class="p-3 text-gray-900 dark:text-white">
-                            {{ $t("semester.name") }}
-                        </th>
-                        <th class="p-3 text-gray-900 dark:text-white">
-                            {{ $t("semester.start_date") }}
-                        </th>
-                        <th class="p-3 text-gray-900 dark:text-white">
-                            {{ $t("semester.end_date") }}
-                        </th>
-                        <th class="p-3 text-gray-900 dark:text-white">
-                            {{ $t("semester.status") }}
-                        </th>
-                        <th class="p-3 text-gray-900 dark:text-white">
-                            {{ $t("semester.action") }}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="semester in semesters.data"
-                        :key="semester.id"
-                        class="border-t border-gray-200 dark:border-gray-700"
+                <div v-for="semester in semesters.data" :key="semester.id">
+                    <div
+                        v-if="semester.is_active"
+                        class="border-l-4 border-blue-600 pl-4 py-2 mb-4 bg-blue-50 dark:bg-blue-900"
                     >
-                        <td class="p-3 text-gray-900 dark:text-white">
-                            {{ semester.name }}
-                        </td>
-                        <td class="p-3 text-gray-900 dark:text-white">
-                            {{ semester.start_date }}
-                        </td>
-                        <td class="p-3 text-gray-900 dark:text-white">
-                            {{ semester.end_date }}
-                        </td>
-                        <td class="p-3">
-                            <span
-                                class="inline-block px-3 py-1 rounded-full text-xs font-semibold"
-                                :class="
-                                    semester.status === 'Active'
-                                        ? 'bg-green-100 text-green-600 dark:bg-green-600 dark:text-green-300'
-                                        : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                                "
-                            >
-                                {{
-                                    semester.status === "Active"
-                                        ? $t("semester.active")
-                                        : $t("semester.inactive")
-                                }}
-                            </span>
-                        </td>
-                        <td class="p-3">
-                            <Link
-                                :href="
-                                    route('semesters.show', {
-                                        semester: semester.id,
-                                    })
-                                "
-                                class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                            </Link>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        <h2 class="text-xl font-semibold text-blue-700 dark:text-blue-300 mb-2">
+                            {{ $t('semester.current_active') }}
+                        </h2>
+                        <div class="text-gray-900 dark:text-gray-100">
+                            <div class="mb-1">
+                                <span class="font-medium">{{ $t('semester.name') }}:</span>
+                                {{ semester.name }}
+                            </div>
+                            <div class="mb-1">
+                                <span class="font-medium">{{ $t('semester.start_date') }}:</span>
+                                {{ semester.start_date }}
+                            </div>
+                            <div class="mb-1">
+                                <span class="font-medium">{{ $t('semester.end_date') }}:</span>
+                                {{ semester.end_date }}
+                            </div>
+                            <div class="mb-1">
+                                <span class="font-medium">{{ $t('semester.status') }}:</span>
+                                <span class="text-green-600 dark:text-green-400">{{ $t('semester.active') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="!semesters.data.some(s => s.is_active)" class="text-center text-gray-500 dark:text-gray-400">
+                    {{ $t('semester.no_active') }}
+                </div>
+            </div>
+            <div v-else class="text-center text-gray-500 dark:text-gray-400">
+                {{ $t('semester.no_data') }}
+            </div>
         </div>
     </AppLayout>
 </template>

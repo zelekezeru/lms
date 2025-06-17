@@ -27,57 +27,23 @@ const props = defineProps({
                     {{ form.errors.name }}
                 </div>
             </div>
-
-            <div>
-                <label
-                    for="status"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >{{ $t('year.status') }}</label>
-                <select
-                    id="status"
-                    v-model="form.status"
-                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                    <option value="Inactive">{{ $t('status.inactive', 'Inactive') }}</option>
-                    <option value="Active">{{ $t('status.active', 'Active') }}</option>
-                </select>
-                <div v-if="form.errors.status" class="text-red-500 text-sm">
-                    {{ form.errors.status }}
-                </div>
-            </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div class="flex items-center gap-2">
-                <input
-                    id="is_approved"
-                    type="checkbox"
-                    v-model="form.is_approved"
-                    class="rounded text-indigo-600 border-gray-300 shadow-sm focus:ring-indigo-500"
-                />
-                <label
-                    for="is_approved"
-                    class="text-sm text-gray-700 dark:text-gray-300"
-                >{{ $t('year.approved', 'Is Approved') }}</label>
-                <div v-if="form.errors.is_approved" class="text-red-500 text-sm">
-                    {{ form.errors.is_approved }}
-                </div>
+        <div class="grid grid-cols-1 mt-4">
+            <div class="flex items-center">
+            <input
+                id="is_approved"
+                type="checkbox"
+                v-model="form.is_approved"
+                class="rounded text-indigo-600 border-gray-300 shadow-sm focus:ring-indigo-500"
+            />
+            <label
+                for="is_approved"
+                class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+            >{{ $t('year.approved', 'Is Approved') }}</label>
             </div>
-
-            <div class="flex items-center gap-2">
-                <input
-                    id="is_completed"
-                    type="checkbox"
-                    v-model="form.is_completed"
-                    class="rounded text-indigo-600 border-gray-300 shadow-sm focus:ring-indigo-500"
-                />
-                <label
-                    for="is_completed"
-                    class="text-sm text-gray-700 dark:text-gray-300"
-                >{{ $t('year.completed', 'Is Completed') }}</label>
-                <div v-if="form.errors.is_completed" class="text-red-500 text-sm">
-                    {{ form.errors.is_completed }}
-                </div>
+            <div v-if="form.errors.is_approved" class="text-red-500 text-sm mt-1">
+            {{ form.errors.is_approved }}
             </div>
         </div>
 

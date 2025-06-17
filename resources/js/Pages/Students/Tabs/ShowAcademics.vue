@@ -133,7 +133,7 @@ const addSection = () => {
                     </div>
                     <div v-if="student.track" class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Section</span
+                            >Track</span
                         >
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"

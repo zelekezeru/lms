@@ -54,221 +54,221 @@ const wrapperClasses = computed(() => {
                     <span
                         v-if="isOpen"
                         class="ml-2 text-xl font-bold text-gray-800 dark:text-white"
-                        >Admin Panel</span
+                        >{{ $t("admin_dashboard.title") }}</span
                     >
                 </div>
             </a>
 
             <div class="space-y-2 text-sm">
                 <SidebarDropdownMenu
-                    label="Tenants"
+                    :label="$t('sidebar.tenants')"
                     :icon="CogIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Tenant"
+                        :label="$t('sidebar.manage_tenant')"
                         :href="route('tenants.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Roles & Permissions"
+                    :label="$t('sidebar.roles_permissions')"
                     :icon="KeyIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Roles"
+                        :label="$t('sidebar.roles')"
                         :href="route('roles.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Permissions"
+                        :label="$t('sidebar.permissions')"
                         :href="route('permissions.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Calendar Structure"
-                    :icon="ClockIcon"
+                    :label="$t('sidebar.calendar_management')"
+                    :icon="CalendarIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CalendarIcon"
-                        label="Manage Years"
+                        :label="$t('sidebar.manage_years')"
                         :href="route('years.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="ChartPieIcon"
-                        label="Manage Semesters"
+                        :label="$t('sidebar.semesters')"
                         :href="route('semesters.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="ClockIcon"
-                        label="Manage Calendars"
+                        :label="$t('sidebar.calendars')"
                         :href="route('calendars.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Academic Structure"
+                        :label="$t('sidebar.academic_structure')"
                     :icon="AcademicCapIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Programs"
+                        :label="$t('sidebar.manage_programs')"
                         :href="route('programs.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BuildingOffice2Icon"
-                        label="Manage Tracks"
+                        :label="$t('sidebar.manage_departments')"
                         :href="route('tracks.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="ClockIcon"
-                        label="Manage Study Modes"
+                        :label="$t('sidebar.manage_study_modes')"
                         :href="route('studyModes.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Courses"
+                        :label="$t('sidebar.manage_courses')"
                         :href="route('courses.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Section Classes"
+                        :label="$t('sidebar.section_classes')"
                     :icon="AcademicCapIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Sections"
+                        :label="$t('sidebar.manage_sections')"
                         :href="route('sections.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Rooms"
+                        :label="$t('sidebar.manage_rooms')"
                         :href="route('rooms.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Weights"
+                        :label="$t('sidebar.manage_weights')"
                         :href="route('weights.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="User Management"
+                        :label="$t('sidebar.user_management')"
                     :icon="UserIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="CogIcon"
-                        label="Manage Instructors"
+                        :label="$t('sidebar.manage_instructors')"
                         :href="route('instructors.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Employees"
+                        :label="$t('sidebar.manage_employees')"
                         :href="route('employees.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Users"
+                        :label="$t('sidebar.manage_users')"
                         :href="route('users.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Student Management"
+                        :label="$t('sidebar.student_management')"
                     :icon="UsersIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="UsersIcon"
-                        label="Manage Students"
+                        :label="$t('sidebar.all_students')"
                         :href="route('students.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="PlusIcon"
-                        label="Register Student"
+                        :label="$t('sidebar.add_student')"
                         :href="route('students.create')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="CogIcon"
-                        label="User Documents"
+                        :label="$t('sidebar.manage_students')"
                         :href="route('userDocuments.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Centers"
+                        :label="$t('sidebar.center_management')"
                     :icon="BuildingOffice2Icon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="BuildingOffice2Icon"
-                        label="Manage Centers"
+                        :label="$t('sidebar.all_centers')"
                         :href="route('centers.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Inventory"
+                        :label="$t('sidebar.inventory_management')"
                     :icon="ArchiveBoxArrowDownIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="HandRaisedIcon"
-                        label="All Inventories"
+                        :label="$t('sidebar.inventories')"
                         :href="route('inventories.index')"
                         :isCollapsed="!isOpen"
                     />
-                    <SidebarItem
+                    <!-- <SidebarItem
                         :icon="HandRaisedIcon"
-                        label="Inventory Suppliers"
+                        :label="$t('sidebar.inventory_items')"
                         :href="route('inventorySuppliers.index')"
                         :isCollapsed="!isOpen"
-                    />
+                    /> -->
                     <SidebarItem
                         :icon="FolderIcon"
-                        label="Inventory Categories"
+                        :label="$t('sidebar.inventory_categories')"
                         :href="route('inventoryCategories.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Payment"
+                        :label="$t('sidebar.payment_management')"
                     :icon="CurrencyDollarIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="BanknotesIcon"
-                        label="All Payments"
+                        :label="$t('sidebar.payments')"
                         :href="route('payments.index')"
                         :isCollapsed="!isOpen"
                     />
@@ -278,13 +278,13 @@ const wrapperClasses = computed(() => {
             <div class="px-2 pb-4 mt-auto">
                 <SidebarItem
                     :icon="CogIcon"
-                    label="Profile"
+                        :label="$t('sidebar.profile')"
                     :href="route('profile.edit')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="QuestionMarkCircleIcon"
-                    label="Help"
+                        :label="$t('sidebar.help')"
                     href="#"
                     :isCollapsed="!isOpen"
                 />

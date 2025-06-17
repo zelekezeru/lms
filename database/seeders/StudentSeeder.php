@@ -187,11 +187,11 @@ class StudentSeeder extends Seeder
                     'sex' => $faker->randomElement(['M', 'F']),
                     'address' => $faker->address,
                     'tenant_id' => 1,
-                    'program_id' => $faker->numberBetween(1, 5), // Adjust based on your program IDs
-                    'track_id' => $faker->numberBetween(1, 3),   // Adjust based on your track IDs
+                    'program_id' => 1, // Adjust based on your program IDs
+                    'track_id' => 1,   // Adjust based on your track IDs
                     'study_mode_id' => 1, // Adjust based on your study mode IDs
                     'year_id' => 1,    // Adjust based on your year IDs
-                    'semester_id' => $faker->numberBetween(1, 2), // Adjust based on your semester IDs
+                    'semester_id' => 1, // Adjust based on your semester IDs
                     'section_id' => 1,  //  Adjust
                     'created_at' => now(),
                     'updated_at' => now(),

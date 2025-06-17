@@ -74,7 +74,7 @@ const deleteSemester = (id) => {
 
                     <!-- Semester Status -->
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('semester.status') }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ $t('common.status') }}</span>
                         <div :class="semester.status === 'Active' ? 'text-green-600' : 'text-red-600'" class="text-lg font-semibold">
                             {{ semester.status === 'Active' ? $t('semester.active') : $t('semester.inactive') }}
                         </div>

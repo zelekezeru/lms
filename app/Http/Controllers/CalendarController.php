@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\SemesterResource;
 use App\Http\Services\AutoEnrollmentService;
 use App\Models\Semester;
+use App\Models\Section;
+use App\Http\Resources\SectionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -31,10 +33,44 @@ class CalendarController extends Controller
             ->paginate(15)
             ->appends($request->query());
 
+        $activeSemester = Semester::where('status', 'Active')->first();
+
+        $activeSemester = $activeSemester ? new SemesterResource($activeSemester->load('year', 'sections', 'grades')) : null;
+
+        $sections = SectionResource::collection(Section::with(['year', 'students', 'semester'])->paginate(30));
+
+        // $submittedGrades = $this->submittedGrades();
+
+        // dd($submittedGrades);
         return Inertia::render('Calendars/Index', [
             'semesters' => $semesters,
+            'activeSemester' => $activeSemester,
             'search' => $request->search,
+            'sections' => $sections,
         ]);
+    }
+
+    public function submittedGrades()
+    {
+        $sections = Section::withCount(['courses as submitted_courses_count' => function ($query) {
+            $query->where('grades_submitted', true);
+        }, 'courses as total_courses_count'])
+        ->get();
+
+        $results = $sections->map(function ($section) {
+            $total = $section->total_courses_count;
+            $submitted = $section->submitted_courses_count;
+            $percentage = $total > 0 ? round(($submitted / $total) * 100, 2) : 0;
+            return [
+                'section_id' => $section->id,
+                'section_name' => $section->name,
+                'submitted_courses' => $submitted,
+                'total_courses' => $total,
+                'percentage_submitted' => $percentage,
+            ];
+        });
+
+        return response()->json($results);
     }
 
     /**

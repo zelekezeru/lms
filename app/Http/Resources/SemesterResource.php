@@ -28,6 +28,7 @@ class SemesterResource extends JsonResource
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'grades' => GradeResource::collection($this->whenLoaded('grades')),
+            'sections' => SectionResource::collection($this->whenLoaded('sections')),
             'year' => new YearResource($this->whenLoaded('year')),
 
         ];

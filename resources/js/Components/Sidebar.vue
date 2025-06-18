@@ -1,5 +1,6 @@
 <script setup>
 import AdminSidebar from "./AdminSidebar.vue";
+import FinanceSidebar from "./FinanceSidebar.vue";
 import InstructorSidebar from "./InstructorSidebar.vue";
 import RegistrarSidebar from "./RegistrarSidebar.vue";
 import StudentSidebar from "./StudentSidebar.vue";
@@ -27,6 +28,12 @@ switch (props.activeRole) {
         break;
     case "REGISTRAR":
         sidebarComponent = RegistrarSidebar;
+        break;
+    case "FINANCE-ADMIN":
+        sidebarComponent = FinanceSidebar;
+        break;
+    case "FINANCE-USER":
+        sidebarComponent = FinanceSidebar;
         break;
     case "STUDENT":
         sidebarComponent = StudentSidebar;

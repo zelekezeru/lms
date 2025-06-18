@@ -85,7 +85,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(UserUpdateRequest $request, User $user)
+    public function edit(User $user)
     {
         $roles = Role::all();
         $user->load('tenant', 'roles');
@@ -104,7 +104,6 @@ class UserController extends Controller
         $fields = $request->validated();
 
         $user->syncRoles($fields['roles']);
-
         $userId = $user->id;
 
         cache()->forget("user_roles_{$userId}");
@@ -165,7 +164,7 @@ class UserController extends Controller
     }
 
     public function updateProfilePicture(Request $request, User $user)
-        {
+    {
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'profile_image' => 'required|image|max:10240|mimes:jpeg,png,jpg,JPG,gif,svg,webp',
@@ -177,24 +176,23 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => 'User not found']);
         }
         $image = $request->file('profile_image');
-        
+
         $img = Image::make($image)->fit(300, 300, function ($constraint) {
             $constraint->upsize();
         });
-        
+
         $name = preg_replace('/\s+/', '', $user->name);
-        
+
         $filename = 'profile_' . strtolower($name) . '.' . $image->getClientOriginalExtension();
         $path = 'profile_images/' . $filename;
-        
+
         Storage::disk('public')->put($path, (string) $img->encode());
-        
+
         if ($user->profile_img && Storage::disk('public')->exists($user->profile_img)) {
             Storage::disk('public')->delete($user->profile_img);
         }
-        
+
         $user->profile_img = $path;
         $user->save();
     }
-
 }

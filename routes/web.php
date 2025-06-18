@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\FinancePortalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstructorPortalController;
@@ -43,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('instructor.dashboard');
         } elseif ($roleName === 'REGISTRAR') {
             return redirect()->route('registrar.dashboard');
+        } elseif ($roleName === 'FINANCE-ADMIN' || $roleName === 'FINANCE-USER') {
+            return redirect()->route('finance.dashboard');
         } else {
             return redirect()->route('admin.dashboard');
         }
@@ -98,6 +101,24 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/calendars', [RegistrarPortalController::class, 'calendar'])->name('instructor.calendar');
         // Route::get('/profile', [RegistrarPortalController::class, 'profile'])->name('instructor.profile');
         // Route::get('/classSchedules', [RegistrarPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
+    });
+
+    Route::group(['prefix' => 'fin-portal', 'middleware' => ['role:FINANCE-ADMIN|FINANCE-USER']], function () {
+        Route::get('/', [FinancePortalController::class, 'index'])->name('finance.dashboard');
+        // Route::get('/courses', [FinancePortalController::class, 'courses'])->name('instructor.courses');
+        // Route::get('/courses/{course}', [FinancePortalController::class, 'courseDetail'])->name('instructor.courses.detail');
+        // Route::get('/sections', [FinancePortalController::class, 'sections'])->name('instructor.sections');
+        // Route::get('/sections/{section}', [FinancePortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
+
+        Route::get('students', [FinancePortalController::class, 'sectionCourseStudents'])->name('finance.students');
+        // Route::get('sections/{section}/courses/{course}/assessments', [FinancePortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
+        // Route::get('sections/{section}/courses/{course}/attendance', [FinancePortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
+        // Route::get('sections/{section}/courses/{course}', [FinancePortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
+
+        // Route::get('/result', [FinancePortalController::class, 'result'])->name('instructor.result');
+        // Route::get('/calendars', [FinancePortalController::class, 'calendar'])->name('instructor.calendar');
+        // Route::get('/profile', [FinancePortalController::class, 'profile'])->name('instructor.profile');
+        // Route::get('/classSchedules', [FinancePortalController::class, 'classSchedules'])->name('instructor.classSchedules');
     });
 
 

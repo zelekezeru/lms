@@ -18,7 +18,7 @@ import SidebarItem from "./SidebarItem.vue";
 
 const props = defineProps({
     isOpen: Boolean,
-    isMobile: Boolean,f
+    isMobile: Boolean,
 });
 
 const wrapperClasses = computed(() => {

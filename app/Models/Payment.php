@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\PaymentCategory;
 
 class Payment extends Model
 {
@@ -46,5 +47,10 @@ class Payment extends Model
     public function semester(): BelongsTo
     {
         return $this->belongsTo(Semester::class);
+    }
+    
+    public function paymentCategory(): BelongsTo
+    {
+        return $this->belongsTo(PaymentCategory::class);
     }
 }

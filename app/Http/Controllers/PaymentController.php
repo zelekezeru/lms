@@ -133,12 +133,12 @@ class PaymentController extends Controller
 
         $payment = Payment::create($data);
 
-        return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.');
+        return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.')->with('reload', true);
     }
 
     public function show(Payment $payment)
     {
-        $payment->load(['student', 'paymentType', 'paymentCategories', 'paymentScheduleItem', 'paymentItems']);
+        $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester']);
 
         return Inertia::render('Payments/Show', [
             'payment' => $payment,

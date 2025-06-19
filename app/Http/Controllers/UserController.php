@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\UserStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Instructor;
 use App\Models\Role;
@@ -171,7 +172,7 @@ class UserController extends Controller
         ]);
 
         $user = User::findOrFail($request->user_id);
-        dd($user);
+        
         if (!$user) {
             return redirect()->back()->withErrors(['error' => 'User not found']);
         }

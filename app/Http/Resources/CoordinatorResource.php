@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CoordinatorResource extends JsonResource
 {
@@ -18,6 +19,10 @@ class CoordinatorResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
+
+            'user' => new UserResource($this->whenLoaded('user')),
+
+            'profileImg' => Storage::url($this->user->profile_img),
         ];
     }
 }

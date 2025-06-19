@@ -4,12 +4,13 @@ import { usePage, router, Link } from "@inertiajs/vue3";
 import { ref } from "vue";
 import { ArrowPathIcon, PresentationChartBarIcon } from "@heroicons/vue/24/solid";
 import Swal from "sweetalert2";
-import { EyeIcon, InformationCircleIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, InformationCircleIcon, LockClosedIcon } from "@heroicons/vue/24/outline";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
+import ShowSemesters from "./Tabs/ShowSemesters.vue";
 
 const props = defineProps({
-    semesters: Object,
+    oldSemesters: Object,
     activeSemester: Object,
     sections: Array,
     search: String,
@@ -39,6 +40,7 @@ const selectedTab = ref("status");
 const tabs = [
     { key: "status", label: "Active Semester", icon: InformationCircleIcon },
     { key: "sections", label: "Active Sections", icon: PresentationChartBarIcon },
+    { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
 ];
 </script>
 
@@ -93,6 +95,14 @@ const tabs = [
                 <ShowSections
                     v-else-if="selectedTab === 'sections'"
                     :sections="props.sections"
+                />
+                <!-- Semesters Panel -->
+                <ShowSemesters
+                    v-else-if="selectedTab === 'semesters'"
+                    :oldSemesters="props.oldSemesters"
+                    :active-semester="props.activeSemester"
+                    :search="search"
+                    @search="searchSemesters"
                 />
             </div>
         </transition>

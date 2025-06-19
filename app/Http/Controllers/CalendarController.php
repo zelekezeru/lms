@@ -7,6 +7,7 @@ use App\Http\Services\AutoEnrollmentService;
 use App\Models\Semester;
 use App\Models\Section;
 use App\Http\Resources\SectionResource;
+use App\Models\Year;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -27,23 +28,23 @@ class CalendarController extends Controller
                 ->orWhere('status', 'LIKE', "%{$search}%");
         }
 
-        $semesters = $query->orderBy('status', 'asc')
+        $oldSemesters = $query->where('is_completed', 1)->orderBy('status', 'asc')
             ->orderByDesc('start_date')
-            ->with('year')
-            ->paginate(15)
-            ->appends($request->query());
-
+            ->get();
+        
+        $oldSemesters = SemesterResource::collection($oldSemesters->load('sections', 'grades', 'year'));
+        
         $activeSemester = Semester::where('status', 'Active')->first();
 
         $activeSemester = $activeSemester ? new SemesterResource($activeSemester->load('year', 'sections', 'grades')) : null;
 
-        $sections = SectionResource::collection(Section::with(['year', 'students', 'semester'])->paginate(30));
+        $sections = SectionResource::collection(Section::with(['year', 'students', 'semester', 'program'])->paginate(30));
 
         // $submittedGrades = $this->submittedGrades();
 
         // dd($submittedGrades);
         return Inertia::render('Calendars/Index', [
-            'semesters' => $semesters,
+            'oldSemesters' => $oldSemesters,
             'activeSemester' => $activeSemester,
             'search' => $request->search,
             'sections' => $sections,
@@ -115,7 +116,6 @@ class CalendarController extends Controller
      */
     public function closeSemester(Request $request)
     {
-
         $request->validate([
             'approval' => 'required|accepted',
             'new_semester_id' => 'required|numeric|exists:semesters,id',
@@ -148,7 +148,7 @@ class CalendarController extends Controller
             AutoEnrollmentService::autoEnroll();
         });
 
-        return redirect()->route('semesters.index')->with('success', 'Semester closed and new semester activated successfully.');
+        return redirect()->route('calendars.index')->with('success', 'Semester closing Instialization successfully Done.');
     }
 
     /**

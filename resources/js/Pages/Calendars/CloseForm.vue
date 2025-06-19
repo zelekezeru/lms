@@ -94,7 +94,11 @@ const submit = () => {
                         class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
                         <!-- Disabled Current Active Semester -->
-                        <option :value="semester.id" disabled>
+                        <option
+                            :value="semester.id"
+                            disabled
+                            class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        >
                             🟢 {{ $t("semester.current_active_option") }} :
                             {{ semester.name }}
                         </option>
@@ -174,7 +178,7 @@ const submit = () => {
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
                     :disabled="form.processing"
                 >
-                    {{ $t("semester.close_semester") }}
+                    {{ $t("semester.initialize_close_semester") }}
                 </button>
             </form>
         </div>

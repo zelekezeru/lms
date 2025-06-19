@@ -4,7 +4,12 @@ import { Link } from '@inertiajs/vue3'
 import { ArrowPathIcon, EyeIcon } from '@heroicons/vue/24/outline'
 
 // Example data, replace with your actual logic
-const activeSemester = ref({ id: 1, name: 'Spring 2024' })
+const props = defineProps({
+    activeSemester: {
+        type: Object,
+        required: false,
+    },
+})
 const refreshing = ref(false)
 
 function refreshData() {
@@ -24,10 +29,18 @@ function refreshData() {
             class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-blue-100 dark:border-gray-700 relative transition-all duration-300 hover:shadow-2xl"
         >
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-200 tracking-wide flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-gradient-to-tr from-blue-400 to-green-400 rounded-full animate-pulse"></span>
-                    {{ activeSemester.name }}
-                </h2>
+                
+                <div class="flex flex-col items-start gap-1">
+                    <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-200 tracking-wide flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-gradient-to-tr from-blue-400 to-green-400 rounded-full animate-pulse"></span>
+                        {{ activeSemester.name }} Semester
+                    </h2>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <span class="font-semibold">{{ activeSemester.year.name }}</span>
+                        <span class="mx-2">|</span>
+                        <span>{{ $t("year.name", { count: activeSemester.sections.length }) }}</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-3">
                     <button
                         @click="refreshData"

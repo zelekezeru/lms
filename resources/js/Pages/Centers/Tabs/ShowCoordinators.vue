@@ -25,7 +25,6 @@ const form = useForm({
     name: "",
     phone: "",
     status: "Active",
-    profile_img: "",
     center_id: props.center.id,
 });
 
@@ -33,7 +32,6 @@ const editForm = useForm({
     name: "",
     phone: "",
     status: "Active",
-    profile_img: "",
     center_id: props.center.id,
 });
 
@@ -81,11 +79,11 @@ const submitEditForm = () => {
     });
 };
 
-
-
 const imageLoaded = ref(false);
 
 const handleImageLoad = () => {
+    console.log("hello");
+
     imageLoaded.value = true;
 };
 
@@ -94,7 +92,8 @@ const selectedImagePreview = ref(null);
 
 const profileImageForm = useForm({
     user_id: props.coordinator.id,
-    profile_img: null,
+    profile_image: null,
+    // Hold the previous image preview if validation fails
     get _preview() {
         return selectedImagePreview.value || props.coordinator.profileImg;
     },
@@ -114,7 +113,7 @@ const handleProfileImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
         profileImageForm.profile_image = file;
-        selectedImagePreview.value = URL.createObjectURL(file);
+        selectedImagePreview.value = URL.createObjectURL(file); // Preview
     }
 };
 
@@ -136,26 +135,27 @@ const submitProfileImageUpdate = () => {
         <h1 class="text-2xl font-bold mb-4 text-center">
             Coordinator Management
         </h1>
-
+        
         <!-- Coordinator Info -->
         <div v-if="coordinator">
-            
-            <!-- User Image -->
+            <!-- coordinator Image -->
             <div class="flex flex-col items-center mb-8 relative">
                 <div
                     v-if="!imageLoaded"
                     class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                 ></div>
+                
                 <img
                     v-show="imageLoaded"
                     class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                    :src="profileImageForm._preview"
-                    :alt="`Profile of ` + coordinator.name"
+                    :src="coordinator.profileImg"
+                    :alt="`Logo of ` + coordinator.name"
                     @load="handleImageLoad"
                 />
+                
                 <!-- Profile change icon (edit) below the image -->
                 <button
-                    v-if="userCan && userCan('update-users')"
+                    v-if="userCan && userCan('update-coordinators')"
                     class="mt-4 bg-white dark:bg-gray-800 rounded-full p-2 shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                     title="Change Profile Picture"
                     @click="openUploadModal"
@@ -412,13 +412,13 @@ const submitProfileImageUpdate = () => {
             </div>
         </Modal>
         
-        <!-- Profile Image Modal -->
         <Modal :show="updateProfileImageModal" @close="closeProfileImageModal">
             <div class="p-6 space-y-6 bg-gradient-to-br from-white via-blue-50 to-blue-100 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl shadow-xl">
                 <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
                     <PencilIcon class="w-6 h-6 text-blue-500 dark:text-blue-300" />
                     Update Profile Image
                 </h2>
+
                 <label class="block">
                     <span class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Choose a new profile picture</span>
                     <input
@@ -433,6 +433,7 @@ const submitProfileImageUpdate = () => {
                             dark:file:bg-gray-700 dark:file:text-blue-200 dark:hover:file:bg-gray-600"
                     />
                 </label>
+
                 <!-- Preview selected image -->
                 <div v-if="selectedImagePreview" class="flex justify-center">
                     <img
@@ -446,6 +447,7 @@ const submitProfileImageUpdate = () => {
                         <PencilIcon class="w-12 h-12" />
                     </div>
                 </div>
+
                 <div class="flex justify-end space-x-3 pt-4">
                     <button
                         @click="closeProfileImageModal"
@@ -453,6 +455,7 @@ const submitProfileImageUpdate = () => {
                     >
                         Cancel
                     </button>
+
                     <button
                         @click="submitProfileImageUpdate"
                         :disabled="profileImageForm.processing"

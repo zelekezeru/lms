@@ -431,6 +431,7 @@
     "completed": "Completed",
     "title": "Semesters",
     "search": "Search semesters...",
+    "isCompleted": "Completed",
     "refresh": "Refresh",
     "toggleView": "Toggle View",
     "semester": "Semester",
@@ -446,6 +447,7 @@
     "select_next_opening": "Select the next semester to open",
     "confirm_close_and_activate": "Are you sure you want to close the current semester and activate the new one?",
     "close_semester": "Close Semester",
+    "initialize_close_semester": "Initialize Semester Closing ",
     "active_semester_title": "Active Semester"
   },
 

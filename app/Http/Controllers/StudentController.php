@@ -14,6 +14,7 @@ use App\Http\Resources\UserDocumentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Http\Services\StudentRegistrationService;
+use App\Http\Services\StudentsFilterService;
 use App\Models\CourseOffering;
 use App\Models\Enrollment;
 use App\Models\Payment;
@@ -56,6 +57,8 @@ class StudentController extends Controller
             });
         }
 
+        $filteredStudents = StudentsFilterService::filterStudents($request, $query);
+
         // Set up sorting
         $allowedSorts = ['first_name', 'middle_name', 'last_name', 'id_no', 'contact_phone'];
         $sortColumn = $request->input('sortColumn', 'first_name');
@@ -70,9 +73,14 @@ class StudentController extends Controller
 
         $students = StudentResource::collection($paginatedStudents);
 
+        $programs = ProgramResource::collection(Program::with('studyModes', 'tracks.sections.studyMode', 'tracks.sections.year')->orderBy('name', 'asc')->get());
+        $years = YearResource::collection(Year::orderBy('name', 'asc')->get());
+
         // Return with Inertia
         return inertia('Students/Index', [
             'students' => $students,
+            'programs' => $programs,
+            'years' => $years,
             'search' => $request->search,
             'sortInfo' => [
                 'currentSortColumn' => $sortColumn,

@@ -16,6 +16,9 @@ defineProps({
         type: Object,
         required: false,
     },
+    programs: Array,
+    tracks: Array,
+    years: Array,
 });
 
 const refreshing = ref(false);
@@ -129,8 +132,10 @@ const deletestudent = (id) => {
         <!-- Student List Component -->
         <StudentList
             :students="students"
+            :programs="programs"
+            :years="years"
             :sort-info="sortInfo"
-            :deletestudent="deleteStudent"
+            :deleteStudent="deleteStudent"
             :search="search"
         />
     </AppLayout>

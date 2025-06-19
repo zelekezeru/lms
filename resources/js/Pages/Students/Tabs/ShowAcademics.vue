@@ -24,14 +24,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    semesters: {
-        type: Array,
-        required: true,
-    },
-    activeSemester: {
-        type: Object,
-        required: true,
-    },
 });
 
 // Multi nav header options
@@ -39,7 +31,6 @@ const selectedTab = ref('academics');
 
 const tabs = [
     { key: 'academics', label: 'Academic Info', icon: AcademicCapIcon },
-    { key: 'semesters', label: 'Semesters', icon: CogIcon },
     { key: 'Results', label: 'results', icon: PresentationChartBarIcon },
     { key: 'grades', label: 'Grades', icon: CheckBadgeIcon },
 
@@ -275,12 +266,6 @@ const addSection = () => {
             </div>
             <!-- Closing the div for Academic Information -->
         </div>
-        <ShowSemesters
-            v-else-if="selectedTab === 'semesters'"
-            :student="student"
-            :semesters="semesters"
-            :activeSemester="activeSemester"
-        />
         <ShowResults
             v-else-if="selectedTab === 'results'"
             :student="student"

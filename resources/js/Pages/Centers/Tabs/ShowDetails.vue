@@ -19,6 +19,10 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    studentsCount: {
+        type: Number,
+        default: 0,
+    },
 });
 
 // Delete function for Center
@@ -98,7 +102,7 @@ const deleteCenter = (id) => {
                     {{ $t('centers.students_count') }}
                 </span>
                 <span class="block text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ center.students_count }}
+                    {{ studentsCount || 0 }}
                 </span>
             </div>
 

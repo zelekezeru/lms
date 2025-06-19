@@ -251,6 +251,8 @@ const deleteStudent = (id) => {
                         v-else-if="selectedTab === 'registrations'"
                         :student="student"
                         :status="status"
+                        :semesters="semesters"
+                        :activeSemester="activeSemester"
                         :showVerifyModal="showVerifyModal"
                     />
 

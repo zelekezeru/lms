@@ -135,6 +135,7 @@ const searchCoordinators = () => {
                 <ShowDetails
                     v-if="selectedTab == 'details'"
                     :center="center"
+                    :studentsCount="students.length"
                     :coordinator="coordinator?.user"
                 />
 

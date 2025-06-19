@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from "@inertiajs/vue3";
 import { defineProps } from "vue";
 
 const props = defineProps({
@@ -27,7 +28,12 @@ const props = defineProps({
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
             >
-                {{ section.name }}
+                <Link
+                    :href="route('sections.show', { section: section.id })"
+                    class="text-blue-600 hover:underline dark:text-blue-400"
+                >
+                    {{ section.name }}
+                </Link>
             </span>
         </div>
 
@@ -51,7 +57,12 @@ const props = defineProps({
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
             >
-                {{ course.name }}
+                <Link
+                    :href="route('courses.show', { course: course.id })"
+                    class="text-blue-600 hover:underline dark:text-blue-400"
+                >
+                    {{ course.name }}
+                </Link>
             </span>
         </div>
 

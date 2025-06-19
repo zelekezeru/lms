@@ -114,7 +114,7 @@ const submitProfileImageUpdate = () => {
                     v-if="!imageLoaded"
                     class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
                 ></div>
-                
+                {{instructor.user}}
                 <img
                     v-show="imageLoaded"
                     class="rounded-full w-44 h-44 object-contain bg-gray-400"

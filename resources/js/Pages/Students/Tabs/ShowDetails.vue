@@ -27,14 +27,6 @@ const props = defineProps({
     },
 });
 
-const imageLoaded = ref(false);
-
-const handleImageLoad = () => {
-    console.log("hello");
-
-    imageLoaded.value = true;
-};
-
 const deleteStudent = (id) => {
     Swal.fire({
         title: "Are you sure?",
@@ -60,7 +52,16 @@ const deleteStudent = (id) => {
 };
 
 const updateProfileImageModal = ref(false);
+
 const selectedImagePreview = ref(null);
+
+const imageLoaded = ref(false);
+
+const handleImageLoad = () => {
+    console.log("hello");
+
+    imageLoaded.value = true;
+};
 
 const profileImageForm = useForm({
     user_id: props.student.user.id,
@@ -109,7 +110,7 @@ const submitProfileImageUpdate = () => {
             v-if="!imageLoaded"
             class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
         ></div>
-
+        
         <img
             v-show="imageLoaded"
             class="rounded-full w-44 h-44 object-contain bg-gray-400"

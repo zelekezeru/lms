@@ -513,17 +513,14 @@ function submitMove() {
                                         </span>
                                     </td>
                                     <td>
-                                        <PrimaryButton
+                                        <button
                                             type="button"
-                                            class="!bg-green-500"
-                                            @click="
-                                                (e) =>
-                                                    openMovePopover(e, course)
-                                            "
+                                            @click="(e) => openMovePopover(e, course)"
+                                            class="flex items-center ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
                                         >
-                                            <ArrowsRightLeftIcon class="w-5" />
-                                            Move
-                                        </PrimaryButton>
+                                            <ArrowsRightLeftIcon class="w-5 h-5" />
+                                            <span>Move</span>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

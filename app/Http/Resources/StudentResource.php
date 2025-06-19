@@ -29,8 +29,7 @@ class StudentResource extends JsonResource
             'dateOfBirth' => $this->date_of_birth,
             'maritalStatus' => $this->marital_status,
             'user_id' => $this->user_id,
-
-            'user' => $this->whenLoaded('user'),
+            
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
             'enrollments' => EnrollmentResource::collection($this->whenLoaded('enrollments')),
@@ -50,9 +49,10 @@ class StudentResource extends JsonResource
                 });
             }),
 
-            'profileImg' => $this->whenLoaded('user', function () {
-                return Storage::url($this->profile_img);
-            }),
+            'user' => new UserResource($this->whenLoaded('user')),
+
+            'profileImg' => Storage::url($this->user->profile_img),
+
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 
             'results' => $this->whenLoaded('results'),

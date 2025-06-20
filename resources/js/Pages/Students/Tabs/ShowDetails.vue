@@ -130,94 +130,69 @@ const submitProfileImageUpdate = () => {
             <PencilIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </button>
     </div>
-
-    <div class="grid grid-cols-2 gap-4">
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Student ID</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Student ID</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.idNo }}
             </span>
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Full Name</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Full Name</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.firstName }}
                 {{ student.middleName }}
                 {{ student.lastName }}
             </span>
         </div>
-        <div v-if="student.user.email" class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ student.user.email }}
-            </span>
-        </div>
         <div v-if="student.mobilePhone" class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Mobile Phone</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Mobile Phone</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.mobilePhone }}
             </span>
         </div>
-        <!-- Closing the div for Mobile Phone -->
         <div v-if="student.officePhone" class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Office Phone</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Office Phone</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.officePhone }}
             </span>
         </div>
-        <!-- Closing the div for Office Phone -->
         <div v-if="student.dateOfBirth" class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Date of Birth</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Date of Birth</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.dateOfBirth }}
             </span>
         </div>
-        <!-- Closing the div for Date of Birth -->
-
-        <!-- Marital Status -->
         <div v-if="student.maritalStatus" class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Marital Status</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Marital Status</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.maritalStatus }}
             </span>
         </div>
-        <!-- Sex -->
         <div v-if="student.sex" class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Sex</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.sex }}
             </span>
         </div>
-
-        <!-- Action Buttons -->
-        <div class="flex justify-end mt-6 space-x-6">
-            <!-- Edit Button -->
+        <div v-if="student.user.email" class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100 break-words max-w-full">
+                {{ student.user.email }}
+            </span>
+        </div>
+        <!-- Action Buttons: span full width on mobile, right on desktop -->
+        <div class="sm:col-span-2 flex flex-col sm:flex-row justify-end mt-6 space-y-3 sm:space-y-0 sm:space-x-6">
             <div v-if="userCan('update-students')">
                 <Link
-                    :href="
-                        route('students.edit', {
-                            student: student.id,
-                        })
-                    "
+                    :href="route('students.edit', { student: student.id })"
                     class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
                 >
                     <PencilIcon class="w-5 h-5" />
                     <span>Edit</span>
                 </Link>
             </div>
-            <!-- Delete Button -->
             <div v-if="userCan('delete-students')">
                 <button
                     @click="deleteStudent(student.id)"

@@ -214,6 +214,12 @@ onMounted(() => {
                         :section="section"
                         :courses="courses"
                     />
+                    
+                    <ShowExcels
+                        v-else-if="selectedTab === 'excels'"
+                        :section="section"
+                        :courses="courses"
+                    />
                 </div>
             </transition>
         </div>

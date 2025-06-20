@@ -104,144 +104,94 @@ const submitProfileImageUpdate = () => {
 </script>
 
 <template>
-    <div>
+    <!-- Instructor Image -->
+    <div class="flex flex-col items-center mb-8 relative">
         <div
-            class="dark:bg-gray-800 shadow-lg rounded-xl p-6 border dark:border-gray-700"
+            v-if="!imageLoaded"
+            class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
+        ></div>
+        <img
+            v-show="imageLoaded"
+            class="rounded-full w-44 h-44 object-contain bg-gray-400"
+            :src="instructor.profileImg"
+            :alt="`Logo of ` + instructor.name"
+            @load="handleImageLoad"
+        />
+        <!-- Profile change icon (edit) below the image -->
+        <button
+            v-if="userCan && userCan('update-instructors')"
+            class="mt-4 bg-white dark:bg-gray-800 rounded-full p-2 shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            title="Change Profile Picture"
+            @click="openUploadModal"
+            type="button"
         >
-            <!-- instructor Image -->
-            <div class="flex flex-col items-center mb-8 relative">
-                <div
-                    v-if="!imageLoaded"
-                    class="rounded-full w-44 h-44 bg-gray-300 dark:bg-gray-700 animate-pulse"
-                ></div>
-                {{instructor.user}}
-                <img
-                    v-show="imageLoaded"
-                    class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                    :src="instructor.profileImg"
-                    :alt="`Logo of ` + instructor.name"
-                    @load="handleImageLoad"
-                />
-                
-                <!-- Profile change icon (edit) below the image -->
-                <button
-                    v-if="userCan && userCan('update-instructors')"
-                    class="mt-4 bg-white dark:bg-gray-800 rounded-full p-2 shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                    title="Change Profile Picture"
-                    @click="openUploadModal"
-                    type="button"
+            <PencilIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Full Name</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ instructor.user.name }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Email</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100 break-words max-w-full">
+                {{ instructor.user.email }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Phone</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ instructor.user.phone }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Employment Type</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ instructor.employmentType }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Bio</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ instructor.bio }}
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Status</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <span v-if="instructor.status == 0" class="text-red-500">Inactive</span>
+                <span v-else class="text-green-500">Active</span>
+            </span>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Default Password</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ instructor.user.default_password }}
+            </span>
+        </div>
+        <!-- Action Buttons: span full width on mobile, right on desktop -->
+        <div class="sm:col-span-2 flex flex-col sm:flex-row justify-end mt-6 space-y-3 sm:space-y-0 sm:space-x-6">
+            <div v-if="userCan('update-instructors')">
+                <Link
+                    :href="route('instructors.edit', { instructor: instructor.id })"
+                    class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
                 >
-                    <PencilIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    <PencilIcon class="w-5 h-5" />
+                    <span>Edit</span>
+                </Link>
+            </div>
+            <div v-if="userCan('delete-instructors')">
+                <button
+                    @click="deleteInstructor(instructor.id)"
+                    class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                >
+                    <TrashIcon class="w-5 h-5" />
+                    <span>Delete</span>
                 </button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <!-- instructor Full Name -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Full Name</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.user.name }}</span
-                    >
-                </div>
-
-                <!-- Email -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Email</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.user.email }}</span
-                    >
-                </div>
-
-                <!-- Phone -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Phone</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.user.phone }}</span
-                    >
-                </div>
-
-                <!-- Employment Type -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Employment Type</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.employmentType }}</span
-                    >
-                </div>
-
-                <!-- Bio -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Bio</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                        >{{ instructor.bio }}</span
-                    >
-                </div>
-
-                <!-- Status -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400"
-                        >Status</span
-                    >
-                    <span
-                        class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                    >
-                        <div v-if="instructor.status == 0" class="text-red-500">
-                            Inactive
-                        </div>
-                        <div v-else class="text-green-500">Active</div>
-                    </span>
-                </div>
-
-                <!-- Default Password -->
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Default Password</span>
-                    <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ instructor.user.default_password }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Edit and Delete Buttons -->
-            <div class="flex justify-end mt-6 space-x-6">
-                <!-- Edit Button, only show if user has permission -->
-                <div v-if="userCan('update-instructors')">
-                    <Link
-                        :href="
-                            route('instructors.edit', {
-                                instructor: instructor.id,
-                            })
-                        "
-                        class="text-blue-500 hover:text-blue-700"
-                    >
-                        <PencilIcon class="w-5 h-5" />
-                        <span>Edit</span>
-                    </Link>
-                </div>
-
-                <!-- Delete Button, only show if user has permission -->
-                <div v-if="userCan('delete-instructors')">
-                    <button
-                        @click="deleteInstructor(instructor.id)"
-                        class="text-red-500 hover:text-red-700"
-                    >
-                        <TrashIcon class="w-5 h-5" />
-                        <span>Delete</span>
-                    </button>
-                </div>
             </div>
         </div>
     </div>

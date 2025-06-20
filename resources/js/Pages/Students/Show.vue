@@ -38,6 +38,7 @@ const props = defineProps({
     paymentMethods: Array,
     paymentTypes: Array,
     semesters: Object,
+    grades: Object,
     activeSemester: Object,
     showVerifyModal: Boolean,
 });
@@ -236,6 +237,7 @@ const deleteStudent = (id) => {
                         :student="student"
                         :sections="sections"
                         :semesters="semesters"
+                        :grades="grades"
                         :activeSemester="activeSemester"
                     />
 

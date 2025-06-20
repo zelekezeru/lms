@@ -115,17 +115,17 @@ const showUpdatePaymentModal = (payment) => {
 };
 
 const closeUpdatePaymentModal = () => {
+    paymentUpdateForm.reset();
     selectedPayment.value = null;
     updatePaymentModal.value = false;
-    paymentUpdateForm.reset();
 };
 const unpaidEnrollments = props.student.enrollments.filter(
     (enrollment) => enrollment.status == "pending"
 );
 
 const closePayment = () => {
-    assignPayments.value = false;
     paymentForm.reset();
+    assignPayments.value = false;
 };
 
 const submitPayment = () => {
@@ -202,24 +202,33 @@ const statusOptions = [
     { label: "completed", value: "completed" },
     { label: "canceled", value: "failed" },
 ];
-
 const submitNewPayment = () => {
     paymentCreationForm.post(
         route("payments.store", { student: props.student.id }),
         {
             onSuccess: () => {
+                paymentCreationForm.reset();
+                // Clear all form fields manually
+                paymentCreationForm.payment_method_id = null;
+                paymentCreationForm.payment_type_id = null;
+                paymentCreationForm.payment_date = new Date().toISOString().slice(0, 10);
+                paymentCreationForm.paid_amount = null;
+                paymentCreationForm.total_amount = null;
+                paymentCreationForm.description = null;
+                paymentCreationForm.status = null;
+                paymentCreationForm.reference_number = null;
+
                 Swal.fire(
                     "Success!",
                     "Payment has been created successfully.",
                     "success"
                 );
                 createPaymentModal.value = false;
-                paymentCreationForm.reset();
             },
             onError: (errors) => {
-                createPaymentModal.value = false;
                 paymentCreationForm.reset();
-                Swal.fire("Error!", errors.error, "error");
+                createPaymentModal.value = false;
+                Swal.fire("Error!", errors.error, "Fill the Payment Form Properly");
             },
         }
     );
@@ -230,6 +239,7 @@ const updatePayment = () => {
         route("payments.update", { payment: selectedPayment.value.id }),
         {
             onSuccess: () => {
+                paymentUpdateForm.reset();
                 closeUpdatePaymentModal();
                 Swal.fire(
                     "Success!",
@@ -238,9 +248,9 @@ const updatePayment = () => {
                 );
             },
             onError: (errors) => {
-                createPaymentModal.value = false;
                 paymentUpdateForm.reset();
-                Swal.fire("Error!", errors.error, "error");
+                createPaymentModal.value = false;
+                Swal.fire("Error!", errors.error, "Fill the Payment Form Properly");
             },
         }
     );

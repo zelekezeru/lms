@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\StudentRegistrationController;
 use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
+use App\Http\Resources\GradeResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StatusResource;
@@ -74,6 +75,7 @@ class StudentController extends Controller
         $students = StudentResource::collection($paginatedStudents);
 
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks.sections.studyMode', 'tracks.sections.year')->orderBy('name', 'asc')->get());
+        
         $years = YearResource::collection(Year::orderBy('name', 'asc')->get());
 
         // Return with Inertia
@@ -139,13 +141,14 @@ class StudentController extends Controller
             ->with(['paymentMethod', 'paymentType', 'enrollment.courseOffering.course', 'semester'])
             ->get();
 
+        $grades = GradeResource::collection(
+            $student->grades()->with(['course', 'section', 'semester'])->get()
+        );
+
         $user = new UserResource($student->user->load('userDocuments'));
 
         $semesters = $student->semesters()
-            ->with([
-                'year',
-                'grades' => fn($q) => $q->with(['course', 'section', 'semester']),
-            ])->get();
+            ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
 
         return Inertia::render('Students/Show', [
             'student' => $student,
@@ -156,6 +159,7 @@ class StudentController extends Controller
             'paymentMethods' => $paymentMethods,
             'payments' => $payments,
             'semesters' => $semesters,
+            'grades' => $grades,
             'activeSemester' => $activeSemester,
         ]);
     }

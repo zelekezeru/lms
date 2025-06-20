@@ -58,6 +58,12 @@ class GradeController extends Controller
                     throw new \Exception('The sum of the weights must be 100.');
                 }
 
+                // Set the 'completed' column of the section's course offering to 1
+                DB::table('course_offerings')
+                    ->where('course_id', $gradeData['course_id'])
+                    ->where('section_id', $gradeData['section_id'])
+                    ->update(['completed' => 1]);
+
                 Grade::updateOrCreate(
                     [
                         'student_id' => $gradeData['student_id'],

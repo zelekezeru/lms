@@ -156,6 +156,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
+    Route::post('/section-grades/import', [ImportController::class, 'gradesImport'])->name('sectionGrades.import');
 
     // Role and Permission Routes
     Route::middleware(['can:view-roles'])->resource('roles', RoleController::class);

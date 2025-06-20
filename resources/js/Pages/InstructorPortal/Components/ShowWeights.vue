@@ -254,12 +254,22 @@ const isWeightFull = computed(() => {
                                             placeholder="Description"
                                             class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
-                                        <PrimaryButton
-                                            class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                        <button
+                                            class="px-4 py-1 h-9 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-all duration-200 flex items-center gap-2"
                                             @click="addWeight"
-                                        > 
+                                        >
                                             Save
-                                        </PrimaryButton>
+                                        </button>
+                                        <button
+                                            class="px-4 py-1 h-9 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 rounded-md shadow-md hover:from-gray-400 hover:to-gray-500 transition-all duration-200 ml-2 flex items-center gap-2"
+                                            @click="createWeight = false"
+                                            type="button"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            <span>Cancel</span>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

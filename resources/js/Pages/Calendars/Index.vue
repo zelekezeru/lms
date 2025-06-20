@@ -14,6 +14,7 @@ const props = defineProps({
     activeSemester: Object,
     sections: Array,
     search: String,
+    gradesPercentage: Object,
 });
 
 const refreshing = ref(false);
@@ -51,7 +52,6 @@ const tabs = [
         >
             {{ $t("semester.calender") }}
         </h1>
-        
         <nav
             class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
         >
@@ -70,7 +70,6 @@ const tabs = [
                 <span>{{ tab.label }}</span>
             </button>
         </nav>
-        
             <!-- Details Panel -->
         <transition
             mode="out-in"
@@ -95,6 +94,7 @@ const tabs = [
                 <ShowSections
                     v-else-if="selectedTab === 'sections'"
                     :sections="props.sections"
+                    :gradesPercentage="props.gradesPercentage"
                 />
                 <!-- Semesters Panel -->
                 <ShowSemesters

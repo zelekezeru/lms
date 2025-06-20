@@ -10,6 +10,5 @@ class StudentsFilterService
 {
     public static function filterStudents(Request $request, $query)
     {
-        dd($request, $query);
     }
 }

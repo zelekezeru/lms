@@ -24,11 +24,11 @@ const props = defineProps({
 
 
 // Multi nav header options
-const selectedTab = ref('documents');
+const selectedTab = ref('transcript');
 
 const tabs = [
-    { key: 'documents', label: 'Documents', icon: ClipboardDocumentListIcon },
     { key: 'transcript', label: 'Transcript', icon: FolderOpenIcon },
+    { key: 'documents', label: 'Documents', icon: ClipboardDocumentListIcon },
 ];
 
 </script>
@@ -68,18 +68,18 @@ const tabs = [
         class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
     >
 
-        <!-- Documents Panel -->
-        <ShowFiles
-            v-if="selectedTab === 'documents'"
-            :student="student"
-            :documents="documents"
-        />
-
         <!-- Church Panel -->
         <ShowTranscript
-            v-else-if="selectedTab === 'transcript'"
+            v-if="selectedTab === 'transcript'"
             :student="student"
             :semesters="semesters"
+        />
+
+        <!-- Documents Panel -->
+        <ShowFiles
+            v-else-if="selectedTab === 'documents'"
+            :student="student"
+            :documents="documents"
         />
 
         </div>

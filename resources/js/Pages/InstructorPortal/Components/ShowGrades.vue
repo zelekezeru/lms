@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import { router } from '@inertiajs/vue3';
 
 // Props from parent (must be passed from the backend)
 const props = defineProps({
@@ -65,7 +66,7 @@ const generateGrades = () => {
             grade_complaint: false,
             grade_comment: "",
             changed_grade: null,
-            grade_status: "Pending",
+            grade_status: "Submitted",
             changed_by: null,
             user_id: authUser.value.id,
             year_id: props.semester.year_id,
@@ -105,6 +106,23 @@ const allWeightsHaveValues = computed(() => {
 // Function to get the grade for a specific student
 const getStudentGrade = (studentId) =>
     props.section.grades.find((g) => g.student_id === studentId);
+
+// Function to handle file importconst fileInput = ref(null);
+const fileInput = ref(null);
+
+const submitImport = () => {
+  const formData = new FormData();
+  formData.append('grades_file', fileInput.value.files[0]);
+  formData.append('course_id', props.course.id);
+  formData.append('section_id', props.section.id);
+  formData.append('semester_id', props.semester.id);
+  formData.append('year_id', props.semester.year_id);
+
+  router.post(route('sectionGrades.import'), formData, {
+    forceFormData: true,
+  });
+};
+
 </script>
 
 <template>
@@ -121,6 +139,33 @@ const getStudentGrade = (studentId) =>
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
                 Grade Generation Form
             </h2>
+
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Import Grades</h2>
+                <form
+                    @submit.prevent="submitImport"
+                    enctype="multipart/form-data"
+                    >
+                    <input
+                        type="file"
+                        ref="fileInput"
+                        name="grades_file"
+                        accept=".csv, .xlsx, .xls"
+                        class="border p-2 rounded text-sm"
+                        required
+                    />
+
+                    <button
+                        type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded ml-2"
+                    >
+                        Import
+                    </button>
+                    </form>
+
+                <p v-if="importSuccess" class="text-green-600 mt-2">{{ importSuccess }}</p>
+                <p v-if="importError" class="text-red-600 mt-2">{{ importError }}</p>
+            </div>
 
             <table
                 class="min-w-full border rounded shadow bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
@@ -151,7 +196,7 @@ const getStudentGrade = (studentId) =>
                     >
                         <td class="px-4 py-2">{{ index + 1 }}</td>
                         <td class="px-4 py-2">
-                            {{ student.firstName }} {{ student.middleName }}
+                            {{ student.firstName }} {{ student.middleName }} 
                         </td>
                         <td class="px-4 py-2 font-semibold">
                             {{ getStudentTotalPoints(student.id) }}

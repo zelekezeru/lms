@@ -695,11 +695,6 @@ const dropEnrollment = (enrollmentId) => {
                             >
                                 Status
                             </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Action
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -766,14 +761,6 @@ const dropEnrollment = (enrollmentId) => {
                                 >
                                     {{ enrollment.status }}
                                 </span>
-                            </td>
-                            <td class="px-4 py-2 text-sm">
-                                <button
-                                    class="flex items-center text-green-600 hover:text-green-800 dark:text-green-300 dark:hover:text-green-400"
-                                >
-                                    <EyeIcon class="w-4 h-4 mr-1" />
-                                    View Results
-                                </button>
                             </td>
                         </tr>
                     </tbody>

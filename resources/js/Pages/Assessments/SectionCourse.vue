@@ -57,15 +57,10 @@ const tabs = [
 const selectedTab = ref("details");
 
 const user = usePage().props.auth.user;
-
-const LayoutComponent = computed(() => {
-    if (user.roles?.includes("INSTRUCTOR")) return InstructorLayout;
-    return AppLayout;
-});
 </script>
 
 <template>
-    <component :is="LayoutComponent">
+    <AppLayout>
         <div class="max-w-5xl mx-auto p-6">
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
@@ -153,5 +148,5 @@ const LayoutComponent = computed(() => {
                 </transition>
             </div>
         </div>
-    </component>
+    </AppLayout>
 </template>

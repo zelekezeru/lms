@@ -163,6 +163,17 @@ watch(
 );
 
 watch(
+    () => paymentUpdateForm.paid_amount,
+    (newVal) => {
+        if (newVal == paymentUpdateForm.total_amount) {
+            paymentUpdateForm.status = "completed";
+        } else {
+            paymentUpdateForm.status = "pending";
+        }
+    }
+);
+
+watch(
     () => paymentCreationForm.status,
     (newVal) => {
         if (newVal == "completed") {
@@ -1124,24 +1135,60 @@ const updatePayment = () => {
 
                 <!-- Last Four Fields in a Responsive Flex Row -->
                 <div class="flex flex-wrap -mx-2">
+                    <!-- Status -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label
-                            for="paid_amount"
+                            for="status"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
-                            Paid Amount
+                            Status
                         </label>
-                        <input
-                            type="number"
-                            v-model="paymentUpdateForm.paid_amount"
-                            id="paid_amount"
-                            class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                        <Select
+                            v-model="paymentUpdateForm.status"
+                            :options="statusOptions"
+                            optionLabel="label"
+                            optionValue="value"
+                            appendTo="self"
+                            placeholder="Select Status"
+                            class="w-full"
                         />
                         <InputError
-                            :message="paymentUpdateForm.errors.paid_amount"
+                            :message="paymentUpdateForm.errors.status"
                             class="mt-2 text-sm text-red-500"
                         />
                     </div>
+
+                    <!-- Paid Amount -->
+                    <Transition
+                        enter-active-class="transition ease-out duration-500"
+                        enter-from-class="opacity-0 -translate-x-6"
+                        enter-to-class="opacity-100 translate-x-0"
+                        leave-active-class="transition ease-in duration-300"
+                        leave-from-class="opacity-100 translate-x-0"
+                        leave-to-class="opacity-0 -translate-x-6"
+                    >
+                        <div
+                            class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4"
+                            v-if="paymentUpdateForm.status !== 'completed'"
+                        >
+                            <label
+                                for="paid_amount"
+                                class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                            >
+                                Paid Amount
+                            </label>
+                            <input
+                                type="number"
+                                v-model="paymentUpdateForm.paid_amount"
+                                id="paid_amount"
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
+                            />
+                            <InputError
+                                :message="paymentUpdateForm.errors.paid_amount"
+                                class="mt-2 text-sm text-red-500"
+                            />
+                        </div>
+                    </Transition>
                     <!-- Payment Date -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label

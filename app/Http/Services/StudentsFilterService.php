@@ -11,12 +11,12 @@ class StudentsFilterService
     public static function filterStudents(Request $request, $query)
     {
         // dd($request->query('payment'));
-        // if ($request->has('payment')) {
-        //     if ($request->query('payment') == 'paid') {
-        //         $query->whereHas('payments', function($q) {
-        //             $q->whereAll('payments.status', )
-        //         })
-        //     }
-        // }
+        if ($request->has('payment')) {
+            if ($request->query('payment') == 'paid') {
+                $query->whereDoesntHave('payments', function ($q) {
+                    $q->where('status', '!=', 'completed');
+                });
+            }
+        }
     }
 }

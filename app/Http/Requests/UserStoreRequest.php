@@ -11,7 +11,7 @@ class UserStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class UserStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [            
+        return [
             // Personal Information
             'name' => ['required', 'string', 'max:255'],
             'roles' => ['required', 'array'],

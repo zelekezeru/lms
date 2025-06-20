@@ -164,7 +164,6 @@ const changeTab = (tabName) => {
                                 "No description available."
                             }}
                         </p>
-                        <p><strong>Instructor:</strong> Dr. Jane Doe</p>
                         <p>
                             <strong>Credits:</strong> {{ course.credit_hours }}
                         </p>

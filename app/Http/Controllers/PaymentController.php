@@ -99,9 +99,9 @@ class PaymentController extends Controller
         // if payment type is course fee(per-course)
         if ($selectedPayment->duration == 'per-course') {
 
-            if ($semesterStudent) {
-                return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
-            }
+            // if ($semesterStudent) {
+            //     return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
+            // }
 
             if ($data['total_amount'] == $data['paid_amount'] || $student->status->is_scholarship) {
                 $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();

@@ -155,13 +155,49 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // cHANGE THE DELETED AT TO THE CURRENT DATE
-        $user->deleted_at = Carbon::now();
-        $user->deleted_by_name = Auth::user()->id;
-        $user->is_deleted = true;
-        $user->save();
+        // Check if the user is the last admin
+        if ($user->hasRole('ADMIN') && User::whereHas('roles', function ($query) {
+            $query->where('name', 'ADMIN');
+        })->count() <= 1) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete the last admin user.']);
+        }
+        // Check if the user is the currently authenticated user
+        elseif ($user->id === Auth::id()) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete the currently authenticated user.']);
+        }
+        // Check if the user has an instructor instance
+        elseif ($user->hasRole('INSTRUCTOR') && $user->instructor) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with an instructor instance.']);
+        }
+        // Check if the user has any associated courses
+        elseif ($user->courses()->count() > 0) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with associated courses.']);
+        }
+        // Check if the user has any associated students
+        elseif ($user->student) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with associated students.']);
+        }
+        // Check if the user has any associated instructors
+        elseif ($user->instructor) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with associated instructors.']);
+        }
+        // Check if the user has any associated roles
+        elseif ($user->roles()->count() > 0) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with associated roles.']);
+        }
+        // Check if the user has any associated permissions
+        elseif ($user->permissions()->count() > 0) {
+            return redirect()->back()->withErrors(['error' => 'Cannot delete a user with associated permissions.']);
+        }
+        elseif ($user->is_deleted) {
+            return redirect()->back()->withErrors(['error' => 'User is already deleted.']);
+        }
+        else {
+            // If no associated roles, permissions, courses, students, instructors, or is_deleted, proceed with deletion
+            $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        }
     }
 
     public function updateProfilePicture(Request $request, User $user)

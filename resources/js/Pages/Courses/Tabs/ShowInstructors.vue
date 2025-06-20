@@ -109,9 +109,7 @@ const submitInstructorAssignment = () => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(
-                                    instructor, index
-                                ) in course.instructors"
+                                v-for="(instructor, index) in [...course.instructors].sort((a, b) => a.name.localeCompare(b.name))"
                                 :key="instructor.id"
                                 :class="
                                     index % 2 === 0

@@ -130,7 +130,7 @@ const wrapperClasses = computed(() => {
                     />
                     <SidebarItem
                         :icon="BuildingOffice2Icon"
-                        :label="$t('sidebar.manage_departments')"
+                        :label="$t('sidebar.manage_tracks')"
                         :href="route('tracks.index')"
                         :isCollapsed="!isOpen"
                     />
@@ -213,12 +213,6 @@ const wrapperClasses = computed(() => {
                         :icon="PlusIcon"
                         :label="$t('sidebar.add_student')"
                         :href="route('students.create')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
-                        :icon="CogIcon"
-                        :label="$t('sidebar.manage_students')"
-                        :href="route('userDocuments.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>

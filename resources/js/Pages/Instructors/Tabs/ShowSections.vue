@@ -95,9 +95,12 @@ const props = defineProps({
                         <td
                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
-                            <Link class="text-green-500 hover:text-green-700">
+                            <Link
+                                :href="route('sections.show', { section: section.id })"
+                                class="text-green-500 hover:text-green-700"
+                            >
                                 <CogIcon class="w-5 h-5 inline-block" />
-                                <span class="inline-block">Assessments</span>
+                                <span class="inline-block">View</span>
                             </Link>
                         </td>
                     </tr>

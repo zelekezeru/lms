@@ -51,8 +51,6 @@ const submit = (id) => {
 
 <template>
     <AppLayout>
-        {{ form }}
-        {{ instructor }}
         <div class="max-w-4xl mx-auto p-6">
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">

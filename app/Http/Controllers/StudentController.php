@@ -157,6 +157,7 @@ class StudentController extends Controller
             'courses' => $courses,
             'paymentTypes' => $paymentTypes,
             'paymentMethods' => $paymentMethods,
+            'user' => $user,
             'payments' => $payments,
             'semesters' => $semesters,
             'grades' => $grades,

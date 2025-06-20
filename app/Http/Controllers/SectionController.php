@@ -209,8 +209,47 @@ class SectionController extends Controller
 
     public function destroy(Section $section)
     {
-        $section->delete();
+        // Check if the section has associated course offerings
+        if ($section->courseOfferings()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated course offerings.');
+        } elseif ($section->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students.');
+        } elseif ($section->classSchedules()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated class schedules.');
+        } elseif ($section->grades()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated grades.');
+        } elseif ($section->user && $section->user->hasRole('INSTRUCTOR')) {
+            return redirect()->back()->with('error', 'Cannot delete section with an associated instructor.');
+        } elseif ($section->program && $section->program->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students in the program.');
+        } elseif ($section->track && $section->track->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students in the track.');
+        } elseif ($section->year && $section->year->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students in the year.');
+        } elseif ($section->semester && $section->semester->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students in the semester.');
+        } elseif ($section->studyMode && $section->studyMode->students()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete section with associated students in the study mode.');
+        }
+        elseif ($section->status === 'active') {
+            return redirect()->back()->with('error', 'Cannot delete section with an active status.');
+        } else {
+            // Delete the section
+            $section->courseOfferings()->delete(); // Delete associated course offerings
+            $section->classSchedules()->delete(); // Delete associated class schedules
+            $section->grades()->delete(); // Delete associated grades
+            $section->students()->detach(); // Detach associated students
+            $section->user()->dissociate(); // Dissociate the user if any
+            $section->user()->delete(); // Delete the associated user if exists
+            $section->program()->dissociate(); // Dissociate the program if any
+            $section->track()->dissociate(); // Dissociate the track if any
+            $section->year()->dissociate(); // Dissociate the year if any
+            $section->semester()->dissociate(); // Dissociate the semester if any
+            $section->studyMode()->dissociate(); // Dissociate the study mode if any
+            $section->instructor()->dissociate(); // Dissociate the instructor if any
+            $section->delete();
 
-        return redirect()->back()->with('success', 'Section deleted successfully.');
+            return redirect()->back()->with('success', 'Section deleted successfully.');
+        }
     }
 }

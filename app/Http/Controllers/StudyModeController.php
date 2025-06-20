@@ -125,9 +125,20 @@ class StudyModeController extends Controller
      */
     public function destroy(StudyMode $studyMode)
     {
-        $studyMode->delete();
+        // Check if the study mode has associated programs or students
+        if ($studyMode->programs()->count() > 0) {
+            return redirect()->route('studyModes.index')->with('error', 'Cannot delete Study Mode with associated programs.');
+        } elseif ($studyMode->students()->count() > 0) {
+            return redirect()->route('studyModes.index')->with('error', 'Cannot delete Study Mode with associated students.');
+        } elseif ($studyMode->status === 'active') {
+            return redirect()->route('studyModes.index')->with('error', 'Cannot delete active Study Mode.');
+        } else {
+            // If no associated programs or students, delete the study mode
+            $studyMode->programs()->detach(); // Detach all programs
+            $studyMode->delete();
 
-        return redirect()->route('studyModes.index')->with('success', 'Study Mode deleted successfully.');
+            return redirect()->route('studyModes.index')->with('success', 'Study Mode deleted successfully.');
+        }
     }
 
     /**

@@ -214,14 +214,27 @@ class TenantController extends Controller
      */
     public function destroy(Tenant $tenant)
     {
-        $tenant->update([
-            'status' => 'inactive',
-            'deleted_at' => now(),
-            'deleted_by' => Auth::user()->id,
-        ]);
+        // Check if the tenant has associated users
+        if ($tenant->users()->count() > 0) {
+            return redirect()->route('tenants.index')->with('error', 'Cannot delete tenant with associated users.');
+        } elseif ($tenant->centers()->count() > 0) {
+            return redirect()->route('tenants.index')->with('error', 'Cannot delete tenant with associated centers.');
+        } elseif ($tenant->status === 'active') {
+            return redirect()->route('tenants.index')->with('error', 'Cannot delete an active tenant.');
+        } else {
+            // If no associated users or centers, proceed with deletion
+            $tenant->users()->each(function ($user) {
+                $user->delete();
+            });
 
-        $tenant->delete();
+            $tenant->centers()->each(function ($center) {
+                $center->delete();
+            });
 
-        return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
+            $tenant->delete();
+
+            return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
+        }
+
     }
 }

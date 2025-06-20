@@ -198,9 +198,25 @@ class TrackController extends Controller
      */
     public function destroy(Track $track)
     {
-        $track->delete();
+        // Check if the track has associated sections or students
+        if ($track->sections()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated sections.');
+        } elseif ($track->students()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated students.');
+        } elseif ($track->curricula()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated curricula.');
+        } elseif ($track->courses()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated courses.');
+        } elseif ($track->programs()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated programs.');
+        } elseif ($track->courseOfferings()->count() > 0) {
+            return redirect()->route('tracks.index')->with('error', 'Cannot delete track with associated course offerings.');
+        } else {
+            $track->delete();
 
-        return redirect(route('tracks.index'))->with('success', 'Track deleted successfully.');
+            return redirect(route('tracks.index'))->with('success', 'Track deleted successfully.');
+        }
+        
     }
 
     public function search(Request $request)

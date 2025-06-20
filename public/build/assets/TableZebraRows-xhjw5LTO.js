@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as o,o as a,p as s}from"./app-DJAR-Nr4.js";const t={},d={class:"odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"};function c(r,n){return a(),o("tr",d,[s(r.$slots,"default")])}const g=e(t,[["render",c]]);export{g as T};

@@ -215,12 +215,16 @@ const applyFilters = () => {
                     :options="[
                         { label: 'Uncompleted (Pending)', value: 'pending' },
                         {
-                            label: 'Completed with Scholarship',
-                            value: 'completed_scholarship',
+                            label: 'All Completed(both Scholarship and self-sponsor)',
+                            value: 'paid',
+                        },
+                        {
+                            label: 'Completed (Only Self Sponsord)',
+                            value: 'paid',
                         },
                         {
                             label: 'Only Scholarship Students',
-                            value: 'scholarship_only',
+                            value: 'is_scholarship',
                         },
                     ]"
                     option-label="label"

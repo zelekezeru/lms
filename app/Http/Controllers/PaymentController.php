@@ -157,11 +157,16 @@ class PaymentController extends Controller
 
         $student = Student::find($payment->student_id);
 
-        $data['tenant_id'] = Auth::user()->tenant_id;
-        $data['updated_by'] = Auth::user()->id;
-        $status = $payment->total_amount <= $data['paid_amount'] ? 'completed' : 'pending';
+        if ($payment->total_amount < $data['paid_amount']) {
+            return redirect()->route('students.show', $payment->student->id)->withErrors(['error' => 'The paid amount can not be more than ' . $payment->total_amount]);
+        }
+
+        $status = $payment->total_amount == $data['paid_amount'] ? 'completed' : 'pending';
         $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
 
+
+        $data['tenant_id'] = Auth::user()->tenant_id;
+        $data['updated_by'] = Auth::user()->id;
         $semester = Semester::getActiveSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
 

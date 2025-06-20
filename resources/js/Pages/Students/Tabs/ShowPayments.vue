@@ -211,24 +211,37 @@ const submitNewPayment = () => {
                 // Clear all form fields manually
                 paymentCreationForm.payment_method_id = null;
                 paymentCreationForm.payment_type_id = null;
-                paymentCreationForm.payment_date = new Date().toISOString().slice(0, 10);
+                paymentCreationForm.payment_date = new Date()
+                    .toISOString()
+                    .slice(0, 10);
                 paymentCreationForm.paid_amount = null;
                 paymentCreationForm.total_amount = null;
                 paymentCreationForm.description = null;
                 paymentCreationForm.status = null;
                 paymentCreationForm.reference_number = null;
+                Swal.fire({
+                    title: "Success!",
+                    text: "Payment has been created successfully.",
+                    icon: "success",
+                    customClass: {
+                        popup: "z-[1100]",
+                    },
+                });
 
-                Swal.fire(
-                    "Success!",
-                    "Payment has been created successfully.",
-                    "success"
-                );
                 createPaymentModal.value = false;
+                paymentCreationForm.reset();
             },
             onError: (errors) => {
-                paymentCreationForm.reset();
-                createPaymentModal.value = false;
-                Swal.fire("Error!", errors.error, "Fill the Payment Form Properly");
+                // paymentCreationForm.reset();
+                // createPaymentModal.value = false;
+                Swal.fire({
+                    title: "Error!",
+                    text: errors.error ?? "Fill the Payment Form Properly",
+                    icon: "error",
+                    customClass: {
+                        popup: "z-[1100]",
+                    },
+                });
             },
         }
     );
@@ -248,9 +261,13 @@ const updatePayment = () => {
                 );
             },
             onError: (errors) => {
-                paymentUpdateForm.reset();
-                createPaymentModal.value = false;
-                Swal.fire("Error!", errors.error, "Fill the Payment Form Properly");
+                // paymentUpdateForm.reset();
+                // createPaymentModal.value = false;
+                Swal.fire(
+                    "Error!",
+                    errors.error,
+                    "Fill the Payment Form Properly"
+                );
             },
         }
     );
@@ -1049,6 +1066,10 @@ const updatePayment = () => {
                 Update {{ selectedPayment.payment_type.type }} Payment for –
                 {{ activeSemester.name }}
             </h1>
+            <h1 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+                Total: {{ selectedPayment.total_amount }}
+            </h1>
+
             <span class="text-red-700 text-lg">{{ errors.error }}</span>
             <form @submit.prevent="updatePayment">
                 <div class="flex flex-wrap -mx-2">

@@ -10,5 +10,13 @@ class StudentsFilterService
 {
     public static function filterStudents(Request $request, $query)
     {
+        // dd($request->query('payment'));
+        // if ($request->has('payment')) {
+        //     if ($request->query('payment') == 'paid') {
+        //         $query->whereHas('payments', function($q) {
+        //             $q->whereAll('payments.status', )
+        //         })
+        //     }
+        // }
     }
 }

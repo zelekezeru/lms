@@ -36,65 +36,10 @@ class GradesImport implements ToCollection, WithHeadingRow
 
             $section = Section::where('id', $this->context['section_id'])->first(); // Make sure 'courses' is eager loaded
 
-            $courses = Course::withExists([
-                'courseOfferings as related_to_course_offering' => fn($q) =>
-                    $q->where('section_id', $section->id)
-            ])
-            ->orderBy('name')
-            ->orderByDesc('related_to_course_offering')
-            ->get();
-            
-            // check if the course is found in the section Courses
-            if (!$courses->contains($course)) {
-                continue; // Skip if the course is not found in the section
-            }
-            
-            // Ensure the student is enrolled in the section
-            if (!$section->students->contains($student)) {
-                continue; // Skip if the student is not enrolled in the section
-            }
-            // Ensuter the student has not already submitted a grade for this course in the current semester and year
-            $existingGrade = Grade::where([
-                'student_id' => $student->id,
-                'course_id' => $course->id,
-            ])->first();
-
-            if ($existingGrade) {
-                continue; // Skip if a grade already exists for this student and course
-            }
-
             // If grade_point is provided and grade_letter is not, calculate grade_letter
             if (isset($row['grade_point']) && empty($row['grade_letter'])) {
                 // Assuming a simple mapping for grade points to letters
-                $row['grade_point'] = floatval($row['grade_point']);
-                $point = $row['grade_point'];
-                if (is_nan($point)) {
-                    $row['grade_letter'] = 'N/A';
-                } elseif ($point >= 94) {
-                    $row['grade_letter'] = 'A';
-                } elseif ($point >= 90) {
-                    $row['grade_letter'] = 'A-';
-                } elseif ($point >= 87) {
-                    $row['grade_letter'] = 'B+';
-                } elseif ($point >= 84) {
-                    $row['grade_letter'] = 'B';
-                } elseif ($point >= 80) {
-                    $row['grade_letter'] = 'B-';
-                } elseif ($point >= 77) {
-                    $row['grade_letter'] = 'C+';
-                } elseif ($point >= 74) {
-                    $row['grade_letter'] = 'C';
-                } elseif ($point >= 70) {
-                    $row['grade_letter'] = 'C-';
-                } elseif ($point >= 67) {
-                    $row['grade_letter'] = 'D+';
-                } elseif ($point >= 64) {
-                    $row['grade_letter'] = 'D';
-                } elseif ($point >= 60) {
-                    $row['grade_letter'] = 'D-';
-                } else {
-                    $row['grade_letter'] = 'F';
-                }
+                $row['grade_letter'] = $this->gradeGeneration($row['grade_point'], $row['grade_letter']);
             }
             
             // If grade_scale is not provided, default to '0'
@@ -158,6 +103,40 @@ class GradesImport implements ToCollection, WithHeadingRow
         return Semester::where('level', $semesterLevel)
             ->whereHas('year', fn($q) => $q->where('name', $semesterYear))
             ->first();
+    }
+
+    public function gradeGeneration($grade_point, $grade_letter)
+    {
+        $point = floatval($grade_point);
+        
+        if (is_nan($point)) {
+            $grade_letter = 'N/A';
+        } elseif ($point >= 94) {
+            $grade_letter = 'A';
+        } elseif ($point >= 90) {
+            $grade_letter = 'A-';
+        } elseif ($point >= 87) {
+            $grade_letter = 'B+';
+        } elseif ($point >= 84) {
+            $grade_letter = 'B';
+        } elseif ($point >= 80) {
+            $grade_letter = 'B-';
+        } elseif ($point >= 77) {
+            $grade_letter = 'C+';
+        } elseif ($point >= 74) {
+            $grade_letter = 'C';
+        } elseif ($point >= 70) {
+            $grade_letter = 'C-';
+        } elseif ($point >= 67) {
+            $grade_letter = 'D+';
+        } elseif ($point >= 64) {
+            $grade_letter = 'D';
+        } elseif ($point >= 60) {
+            $grade_letter = 'D-';
+        } else {
+            $grade_letter = 'F';
+        }
+        return $grade_letter;
     }
     
 }

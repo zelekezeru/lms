@@ -223,9 +223,6 @@ const submitNewPayment = () => {
                     title: "Success!",
                     text: "Payment has been created successfully.",
                     icon: "success",
-                    customClass: {
-                        popup: "z-[1100]",
-                    },
                 });
 
                 createPaymentModal.value = false;
@@ -263,11 +260,16 @@ const updatePayment = () => {
             onError: (errors) => {
                 // paymentUpdateForm.reset();
                 // createPaymentModal.value = false;
-                Swal.fire(
-                    "Error!",
-                    errors.error,
-                    "Fill the Payment Form Properly"
-                );
+                Swal.fire({
+                    title: "Error!",
+                    text: errors.error ?? "Fill the Payment Form Properly",
+                    icon: "error",
+                    target: document.body,
+                    customClass: {
+                        popup: "z-[1100]",
+                        backdrop: "z-[1099]",
+                    },
+                });
             },
         }
     );

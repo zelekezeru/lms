@@ -63,7 +63,7 @@ class PaymentTypeSeeder extends Seeder
                 'amount' => 0.00,
                 'duration' => 'one-time',
                 'is_active' => true,
-                'study_mode_id' => 1-4,
+                'study_mode_id' => 1,
                 'tenant_id' => 1,
                 'created_by' => 1,
                 'payment_category_id' => 2,

@@ -76,8 +76,18 @@ class YearController extends Controller
 
     public function destroy(Year $year)
     {
-        $year->delete();
+        // Check if the year has associated semesters
+        if ($year->semesters()->count() > 0) {
+            return redirect()->route('years.index')->with('error', 'Cannot delete year with associated semesters.');
+        }elseif ($year->status === 'active') {
+            return redirect()->route('years.index')->with('error', 'Cannot delete an active year.');
+        }elseif ($year->status === 'archived') {
+            return redirect()->route('years.index')->with('error', 'Cannot delete an archived year.');
+        } 
+        else {
+            $year->delete();
 
-        return redirect()->route('years.index')->with('success', 'Year deleted successfully.');
+            return redirect()->route('years.index')->with('success', 'Year deleted successfully.');
+        }   
     }
 }

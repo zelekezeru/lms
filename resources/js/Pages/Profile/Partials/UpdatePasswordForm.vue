@@ -115,16 +115,22 @@ const updatePassword = () => {
             </div>
 
             <div class="flex items-center gap-6 mt-6">
-                <PrimaryButton
+                <button
                     :disabled="form.processing"
-                    class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:from-indigo-600 hover:to-purple-600 focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500 transition"
+                    class="relative overflow-hidden bg-indigo-600 dark:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-600 transition-all duration-300 flex items-center gap-2"
                 >
-                    <span v-if="!form.processing">Save</span>
-                    <svg v-else class="animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
-                </PrimaryButton>
+                    <span v-if="form.processing" class="animate-spin mr-2 inline-block align-middle">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                    </span>
+                    <span>Save</span>
+                </button>
 
                 <Transition
                     enter-active-class="transition ease-in-out duration-300"

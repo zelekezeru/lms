@@ -59,8 +59,6 @@ class AssessmentController extends Controller
             return redirect()->back()->with('error', 'Section or Student not found.');
         }
 
-        dd($student);
-
         return inertia('Assessments/SectionStudent', [
             'section' => $section,
             'student' => $student,

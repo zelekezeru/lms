@@ -110,12 +110,32 @@ class SemesterController extends Controller
      */
     public function destroy(Semester $semester)
     {
-        // This could bread the a lot of things
-        // we might want to just redirect back!
-        return back()->withErrors('Not Allowed', 'This Action Is Prohibited');
-        $semester->delete();
+        // Check if the semester is active or has associated data
+        if ($semester->status === 'active') {
+            return back()->withErrors('Not Allowed', 'Cannot delete an active semester.');
+        } elseif ($semester->status === 'archived') {
+            return back()->withErrors('Not Allowed', 'Cannot delete an archived semester.');
+        } elseif ($semester->students()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated students.');
+        } elseif ($semester->courses()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated courses.');
+        } elseif ($semester->results()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated results.');
+        } elseif ($semester->attendance()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated attendance records.');
+        } elseif ($semester->grades()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated grades.');
+        } elseif ($semester->payments()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated payments.');
+        } elseif ($semester->schedules()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated schedules.');
+        } 
+        else{
+            // If all checks pass, delete the semester
+            $semester->delete();
 
-        return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
+            return redirect()->route('semesters.index')->with('success', 'Semester deleted successfully.');
+        }
     }
 
     // Close Semester

@@ -95,9 +95,18 @@ class WeightController extends Controller
 
     public function destroy(Weight $weight)
     {
-        $weight->delete();
-
-        return redirect()->route('weights.index')->with('success', 'Weight deleted successfully.');
+        // Check if the weight has associated course offerings
+        if ($weight->courseOfferings()->count() > 0) {
+            return redirect()->route('weights.index')->with('error', 'Cannot delete weight with associated course offerings.');
+        } elseif ($weight->status === 'active') {
+            return redirect()->route('weights.index')->with('error', 'Cannot delete an active weight.');
+        } elseif ($weight->results()->count() > 0) {
+            return redirect()->route('weights.index')->with('error', 'Cannot delete a weight with results.');
+        } 
+        else {
+            $weight->delete();
+            return redirect()->route('weights.index')->with('error', 'Cannot delete a weight with associated data.');
+        }
     }
 
     public function search(Request $request)

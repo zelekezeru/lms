@@ -204,34 +204,49 @@ const deleteYear = (id) => {
                 </div>
 
                 <!-- Semester Form -->
-                <div v-if="showForm" class="mt-6 bg-gray-50 p-4 rounded shadow dark:bg-gray-700">
+                <div v-if="showForm" class="mt-6 bg-gray-50 dark:bg-gray-700 p-4 rounded shadow">
                     <form @submit.prevent="submitSemester">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ $t('semester.name') }}</label>
-                                <input v-model="semesterForm.name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                                <input
+                                    v-model="semesterForm.name"
+                                    type="text"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                                />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ $t('semester.start_date') }}</label>
-                                <input type="date" v-model="semesterForm.start_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                                <input
+                                    type="date"
+                                    v-model="semesterForm.start_date"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                                />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ $t('semester.end_date') }}</label>
-                                <input type="date" v-model="semesterForm.end_date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                                <input
+                                    type="date"
+                                    v-model="semesterForm.end_date"
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                                />
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="flex items-center space-x-2">
-                                <input type="checkbox" v-model="semesterForm.is_approved" />
+                                <input
+                                    type="checkbox"
+                                    v-model="semesterForm.is_approved"
+                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+                                />
                                 <label class="text-sm text-gray-700 dark:text-gray-200">{{ $t('semester.approved') }}</label>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="checkbox" v-model="semesterForm.is_completed" />
-                                <label class="text-sm text-gray-700 dark:text-gray-200">{{ $t('semester.completed', 'Completed') }}</label>
                             </div>
                         </div>
                         <div class="mt-4 flex justify-end">
-                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            <button
+                                type="submit"
+                                class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-800"
+                            >
                                 {{ isEditing ? $t('semester.update', 'Update Semester') : $t('semester.create', 'Create Semester') }}
                             </button>
                         </div>

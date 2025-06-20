@@ -2,12 +2,9 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, inject } from "vue";
 import { Link, router } from "@inertiajs/vue3";
+import { PencilIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    PencilIcon,
-    TrashIcon,
-} from "@heroicons/vue/24/solid";
 
 // Define props for the center
 const props = defineProps({
@@ -25,23 +22,23 @@ const props = defineProps({
     },
 });
 
-// Delete function for Center
-const deleteCenter = (id) => {
+// Delete function with SweetAlert confirmation
+const deleteCourse = (id) => {
     Swal.fire({
-        title: $t("centers.delete_confirm_title"),
-        text: $t("centers.delete_confirm_text"),
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("actions.yes"),
+        confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("centers.destroy", { center: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("centers.deleted_title"),
-                        $t("centers.deleted_text"),
+                        "Deleted!",
+                        "The center has been deleted.",
                         "success"
                     );
                 },
@@ -136,16 +133,16 @@ const deleteCenter = (id) => {
                     <span>Edit</span>
                 </span>
             </Link>
-            <button
-                v-if="userCan('delete-centers')"
-                @click="deleteEmployee(center.id)"
-                class="text-red-500 hover:text-red-700"
-            >
-                <span class="flex items-center space-x-1">
-                    <TrashIcon class="w-5 h-5" />
-                    <span>Delete</span>
-                </span>
-            </button>
+                <!-- Delete Button, only show if user has permission -->
+                <div v-if="userCan('delete-centers')">
+                    <button
+                        @click="deletecenter(center.id)"
+                        class="flex items-center space-x-1 text-red-500 hover:text-red-700"
+                    >
+                        <TrashIcon class="w-5 h-5" />
+                        <span>Delete</span>
+                    </button>
+                </div>
         </div>
     </div>
 </template>

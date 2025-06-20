@@ -99,17 +99,24 @@ class CenterController extends Controller
 
     public function destroy(Center $center)
     {
-        $center->delete();
-
-        // Delete the coordinator and the related user
-        if ($center->coordinator) {
-            $coordinator = $center->coordinator;
-            if ($coordinator->user) {
-            $coordinator->user->delete();
-            }
-            $coordinator->delete();
+        dd($center);
+        // Check if the center has associated students
+        if ($center->students()->count() > 0) {
+            return redirect()->route('centers.index')->with('error', 'Cannot delete center with associated students.');
+        } elseif ($center->coordinator) {
+            // Check if the center has an associated coordinator
+            return redirect()->route('centers.index')->with('error', 'Cannot delete center with an associated coordinator.');
         }
+        else {
+            // Delete the center record
+            $center->students()->detach(); // Detach all students from the center
+            $center->coordinator()->dissociate(); // Dissociate the coordinator
+            $center->image = null; // Clear the image field
+            $center->save(); // Save the changes before deletion
+            // Finally, delete the center
+            $center->delete();
 
-        return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
+            return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
+        }
     }
 }

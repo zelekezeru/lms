@@ -41,11 +41,6 @@ defineProps({
                 <div>
                     <UpdatePasswordForm class="max-w-xl" />
                 </div>
-
-                <!-- Delete User Form But Removed-->
-                <!-- <div>
-                    <DeleteUserForm class="max-w-xl" />
-                </div> -->
             </div>
         </div>
     </AppLayout>

@@ -36,6 +36,12 @@ class GradesImport implements ToCollection, WithHeadingRow
 
             $section = Section::where('id', $this->context['section_id'])->first(); // Make sure 'courses' is eager loaded
 
+            // If the grade for the student and course already exists, skip to the next row
+            if (Grade::where('student_id', $student->id)
+                ->where('course_id', $course->id)
+                ->exists()) {
+                continue;
+            }
             // If grade_point is provided and grade_letter is not, calculate grade_letter
             if (isset($row['grade_point']) && empty($row['grade_letter'])) {
                 // Assuming a simple mapping for grade points to letters

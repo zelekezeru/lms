@@ -24,7 +24,7 @@ import ShowStatus from "./Tabs/ShowStatus.vue";
 import ShowTransactions from "./Tabs/ShowTransactions.vue";
 import Modal from "@/Components/Modal.vue";
 
-defineProps({
+const props = defineProps({
     payments: {
         type: Object,
         required: true,
@@ -100,16 +100,6 @@ const tabs = [
     { key: "status", label: "Status", icon: InformationCircleIcon },
     { key: "transactions", label: "Transactions", icon: BuildingLibraryIcon },
 ];
-
-const paymentStatusLabels = {
-    pending: "Pending",
-    completed: "Completed",
-    paid_by_college: "Paid by College",
-    canceled: "Canceled",
-};
-
-// Usage
-const label = statusLabels[payment.status] ?? "Unknown";
 
 const deletePayment = (id) => {
     Swal.fire({

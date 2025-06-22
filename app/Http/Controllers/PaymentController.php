@@ -150,7 +150,7 @@ class PaymentController extends Controller
         $data = $request->validate([
             'payment_method_id' => 'nullable|exists:payment_methods,id',
             'payment_date' => 'required|date',
-            'paid_amount' => 'required|numeric|min:0.01',
+            'paid_amount' => 'required|numeric',
             'description' => 'nullable|string|max:255',
             'payment_reference' => 'nullable|string|max:255',
         ]);

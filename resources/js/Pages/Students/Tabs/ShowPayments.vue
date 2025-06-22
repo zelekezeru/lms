@@ -95,6 +95,7 @@ const paymentCreationForm = useForm({
 const paymentUpdateForm = useForm({
     payment_method_id: null,
     description: "",
+    status: null,
     paid_amount: 0,
     payment_date: new Date().toISOString().slice(0, 10),
     reference_number: "",
@@ -109,6 +110,7 @@ const showUpdatePaymentModal = (payment) => {
     paymentUpdateForm.payment_method_id = payment.payment_method_id;
     paymentUpdateForm.description = payment.description;
     paymentUpdateForm.paid_amount = payment.paid_amount;
+    paymentUpdateForm.status = payment.status;
     paymentUpdateForm.reference_number = payment.reference_number;
 
     updatePaymentModal.value = true;
@@ -180,6 +182,19 @@ watch(
             paymentCreationForm.paid_amount = paymentCreationForm.total_amount;
         } else {
             paymentCreationForm.paid_amount = 0;
+        }
+    }
+);
+
+watch(
+    () => paymentUpdateForm.status,
+    (newVal) => {
+        if (newVal == "completed") {
+            console.log(paymentUpdateForm.paid_amount);
+            paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
+            console.log(paymentUpdateForm.paid_amount);
+        } else {
+            paymentUpdateForm.paid_amount = 0;
         }
     }
 );
@@ -260,6 +275,8 @@ const updatePayment = () => {
         route("payments.update", { payment: selectedPayment.value.id }),
         {
             onSuccess: () => {
+                console.log(paymentUpdateForm.paid_amount);
+
                 paymentUpdateForm.reset();
                 closeUpdatePaymentModal();
                 Swal.fire(

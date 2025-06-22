@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\WeightResource;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\Weight;
 
 class AssessmentController extends Controller
 {
@@ -27,7 +29,9 @@ class AssessmentController extends Controller
 
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
 
-        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
+        $weights = Weight::with(['results'])->where([
+            ['section_id', $section->id],
+            ['course_id', $course->id], ])->get();
 
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
@@ -41,7 +45,7 @@ class AssessmentController extends Controller
             'section' => $section,
             'course' => $course,
             'semester' => $semester,
-            'weights' => $weights,
+            'weights' => WeightResource::collection($weights),
             'instructor' => $instructor,
             'grades' => $grades,
             'students' => $students,

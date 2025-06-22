@@ -11,7 +11,7 @@ const props = defineProps({
     section: Object,
     course: Object,
     semester: Object,
-    weights: Array,
+    weights: Object,
     instructor: Object,
     studentsList: Object
 });
@@ -148,6 +148,7 @@ const getResultPoint = (weight, studentId) => {
                 </tr>
             </thead>
             <tbody>
+                
                 <tr v-for="(student, index) in studentsList" :key="student.id"
                     :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
                     class="border-b border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300">
@@ -165,6 +166,7 @@ const getResultPoint = (weight, studentId) => {
                             <span v-if="getResultPoint(weight, student.id) !== null" class="text-gray-900 dark:text-gray-100">
                                 {{ getResultPoint(weight, student.id) }}
                             </span>
+                            
                             <span v-else class="text-gray-400">N/A</span>
                         </span>
                     </td>
@@ -186,7 +188,7 @@ const getResultPoint = (weight, studentId) => {
                     <td colspan="100%" class="px-4 py-3 text-center bg-gray-50 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-600">
                         <button v-if="activeWeightId" @click="submitWeightResults"
                             class="text-sm px-4 py-2 rounded text-white bg-green-600 hover:bg-green-700">
-                            Save Results
+                            Save Results``
                         </button>
                     </td>
                 </tr>

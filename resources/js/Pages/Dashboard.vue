@@ -129,15 +129,6 @@ onMounted(createCharts);
             </div>
           </div>
         </div>
-        <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
-          <div class="flex items-center space-x-4">
-            <CurrencyDollarIcon class="w-8 h-8 text-purple-500" />
-            <div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin_dashboard.revenue') }}</p>
-              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">$45,000</h2>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Charts Section -->

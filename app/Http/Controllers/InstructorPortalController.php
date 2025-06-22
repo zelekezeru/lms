@@ -172,19 +172,23 @@ class InstructorPortalController extends Controller
         $instructor = new InstructorResource(
             request()->user()->instructor->load('user')
         );
+
+        $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student', 'classSchedules.room', 'classSessions.room', 'classSessions.attendances.student');
+
         if (! CourseOffering::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
             abort(500);
         }
 
-        $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student', 'classSchedules.room', 'classSessions.room', 'classSessions.attendances.student');
-
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
-        $grades = $section->grades()->where('course_id', $course->id)->get();
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
-        // This fetches all students that learn $course in $section which means
-        $students = StudentResource::collection($courseOffering->enrollments->pluck('student'));
+        $grades = $section->grades()->where('course_id', $course->id)->get();
+
+        $students = StudentResource::collection(
+            $courseOffering->enrollments->where('status', 'enrolled')->pluck('student')
+        );
+
         $activeSemester = Semester::getActiveSemester();
         $classSchedules = ClassScheduleResource::collection($courseOffering->classSchedules);
         $classSessions = ClassSessionResource::collection($courseOffering->classSessions);
@@ -195,11 +199,11 @@ class InstructorPortalController extends Controller
             'course' => $course,
             'students' => $students,
             'semester' => $semester,
-            'grades' => $grades,
             'classSchedules' => $classSchedules,
             'classSessions' => $classSessions,
             'rooms' => $rooms,
             'weights' => $weights,
+            'grades' => $grades,
             'instructor' => $instructor,
         ]);
     }

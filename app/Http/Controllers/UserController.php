@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = UserResource::collection(User::paginate(15));
+        $users = UserResource::collection(User::orderBy('name')->paginate(15));
 
         return inertia('Users/Index', [
             'users' => $users,
@@ -202,6 +202,7 @@ class UserController extends Controller
 
     public function updateProfilePicture(Request $request, User $user)
     {
+        dd($request->all());
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'profile_image' => 'required|image|max:10240|mimes:jpeg,png,jpg,JPG,gif,svg,webp',

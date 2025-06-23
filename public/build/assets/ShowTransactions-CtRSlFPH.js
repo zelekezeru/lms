@@ -1,0 +1,1 @@
+import{c as e,o as s,a}from"./app-DLtq1iBM.js";const l={__name:"ShowTransactions",setup(o){return(r,t)=>(s(),e("div",null,t[0]||(t[0]=[a("h1",{class:"text-2xl font-bold text-gray-900 dark:text-white"}," Transactions ",-1),a("p",{class:"text-gray-500 dark:text-gray-400"}," No transactions available at the moment. ",-1)])))}};export{l as default};

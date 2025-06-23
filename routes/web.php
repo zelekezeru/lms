@@ -20,6 +20,7 @@ use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\StudyModeController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\StatusController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -188,6 +189,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
     Route::post('/students/{student}/verify', [StudentController::class, 'verify'])->name('students.verify');
     Route::get('/students/{student}/transcript', [StudentController::class, 'transcript'])->name('students.transcript');
+
+    // Student Scholarship 
+    Route::post('/students/{student}/request-scholarship', [StatusController::class, 'requestScholarship'])->name('students.request-scholarship');
+    Route::post('/students/{student}/approve-scholarship', [StatusController::class, 'approveScholarship'])->name('students.approve-scholarship');
+    Route::post('/students/{student}/reject-scholarship', [StatusController::class, 'rejectScholarship'])->name('students.reject-scholarship');
 
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');

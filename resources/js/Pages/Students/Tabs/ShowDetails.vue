@@ -91,7 +91,7 @@ const handleProfileImageChange = (event) => {
 };
 
 const submitProfileImageUpdate = () => {
-    profileImageForm.post(route('users.update.image', { user: props.student.id }), {
+    profileImageForm.post(route('users.update.image', { user: props.student.user.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "Profile image updated.", "success");
             closeProfileImageModal();

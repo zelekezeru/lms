@@ -41,7 +41,7 @@ class StudyModeController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $studyModes = StudyModeResource::collection($query->paginate(15));
+        $studyModes = StudyModeResource::collection($query->paginate(30));
 
         return inertia('StudyModes/Index', [
             'studyModes' => $studyModes, // Corrected to return the studyModes collection

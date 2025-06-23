@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\WeightResource;
+use App\Http\Resources\CourseResource;
+use App\Http\Resources\SectionResource;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Section;
@@ -26,27 +28,24 @@ class AssessmentController extends Controller
         $course = $courseOffering->course;
 
         $instructor = new InstructorResource($courseOffering->instructor);
-
+        $course = new CourseResource($course);
+        $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
-
-        $weights = Weight::with(['results'])->where([
-            ['section_id', $section->id],
-            ['course_id', $course->id], ])->get();
-
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection(
-            $enrollments->where('status', 'enrolled')->pluck('student')
+            $courseOffering->enrollments->where('status', 'enrolled')->pluck('student')
         );
         
         return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,
             'semester' => $semester,
-            'weights' => WeightResource::collection($weights),
             'instructor' => $instructor,
+            'weights' => $weights,
             'grades' => $grades,
             'students' => $students,
         ]);

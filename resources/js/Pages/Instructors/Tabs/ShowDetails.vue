@@ -91,7 +91,7 @@ const handleProfileImageChange = (event) => {
 };
 
 const submitProfileImageUpdate = () => {
-    profileImageForm.post(route('users.update.image', { user: props.instructor.id }), {
+    profileImageForm.post(route('users.update.image', { user: props.instructor.user.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "Profile image updated.", "success");
             closeProfileImageModal();
@@ -128,7 +128,7 @@ const submitProfileImageUpdate = () => {
             <PencilIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </button>
     </div>
-
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Full Name</span>

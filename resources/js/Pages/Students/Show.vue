@@ -111,6 +111,8 @@ const deleteStudent = (id) => {
 <template>
     <Head title="Student Details" />
     <AppLayout>
+        
+    
         <div class="max-w-8xl mx-auto p-6 relative">
             <!-- 🔘 Drawer Toggle Button (mobile only) -->
             <div class="flex justify-end mb-4 md:hidden">

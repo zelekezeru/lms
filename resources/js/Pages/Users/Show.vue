@@ -21,6 +21,8 @@ const props = defineProps({
 const imageLoaded = ref(false);
 
 const handleImageLoad = () => {
+    console.log("hello");
+
     imageLoaded.value = true;
 };
 
@@ -29,7 +31,8 @@ const selectedImagePreview = ref(null);
 
 const profileImageForm = useForm({
     user_id: props.user.id,
-    profile_img: null,
+    profile_image: null,
+    // Hold the previous image preview if validation fails
     get _preview() {
         return selectedImagePreview.value || props.user.profileImg;
     },
@@ -48,8 +51,8 @@ const closeProfileImageModal = () => {
 const handleProfileImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-        profileImageForm.profile_img = file;
-        selectedImagePreview.value = URL.createObjectURL(file);
+        profileImageForm.profile_image = file;
+        selectedImagePreview.value = URL.createObjectURL(file); // Preview
     }
 };
 
@@ -107,8 +110,8 @@ const deleteUser = (id) => {
                     <img
                         v-show="imageLoaded"
                         class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                        :src="profileImageForm._preview"
-                        :alt="`Profile of ` + user.name"
+                        :src="user.profileImg"
+                        :alt="`Logo of ` + user.name"
                         @load="handleImageLoad"
                     />
                     <!-- Profile change icon (edit) below the image -->
@@ -124,7 +127,7 @@ const deleteUser = (id) => {
                 </div>
                 <div class="overflow-x-auto">
                     <div class="mt-8 pt-4 pb-4">
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- Name -->
                             <div class="flex flex-col">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">Name</span>
@@ -150,7 +153,7 @@ const deleteUser = (id) => {
                             <div class="flex flex-col">
                                 <span class="text-sm text-gray-500 dark:text-gray-400">User ID</span>
                                 <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    {{ user.user_uuid }}
+                                    {{ user.userId }}
                                 </span>
                             </div>
                             <!-- Status -->
@@ -161,6 +164,29 @@ const deleteUser = (id) => {
                                     <span v-else class="text-green-500">Active</span>
                                 </span>
                             </div>
+                            <!-- Role -->
+                            <div class="flex flex-col h-full">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Role</span>
+                                <span class="text-lg font-medium text-gray-900 dark:text-gray-100 break-words">
+                                    <span v-if="user.roles && user.roles.length">
+                                        <span v-for="(role, idx) in user.roles" :key="role.id">
+                                            {{ role.name }}<span v-if="idx < user.roles.length - 1">, </span>
+                                        </span>
+                                    </span>
+                                    <span v-else>No Role Assigned</span>
+                                </span>
+                            </div>
+                            <!-- Default Password -->
+                            <div v-if="userCan('default-password') && user.default_password" class="flex flex-col">
+                                <span class="text-sm text-gray-500 dark:text-gray-400"
+                                    >Default Password</span
+                                >
+                                <span
+                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                >
+                                    {{ user.default_password }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,15 +195,15 @@ const deleteUser = (id) => {
                     <Link
                         v-if="userCan('update-users')"
                         :href="route('users.edit', { user: user.id })"
-                        class="text-blue-500 hover:text-blue-700"
+                        class="inline-flex items-center text-blue-500 hover:text-blue-700"
                     >
-                        <PencilIcon class="w-5 h-5" />
+                        <PencilIcon class="w-5 h-5 mr-1" />
                         <span>Edit</span>
                     </Link>
                     <button
                         v-if="userCan('delete-users')"
                         @click="deleteUser(user.id)"
-                        class="text-red-500 hover:text-red-700"
+                        class="inline-flex items-center text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
                         <span>Delete</span>
@@ -185,13 +211,14 @@ const deleteUser = (id) => {
                 </div>
             </div>
         </div>
-        <!-- Profile Image Modal -->
+
         <Modal :show="updateProfileImageModal" @close="closeProfileImageModal">
             <div class="p-6 space-y-6 bg-gradient-to-br from-white via-blue-50 to-blue-100 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl shadow-xl">
                 <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
                     <PencilIcon class="w-6 h-6 text-blue-500 dark:text-blue-300" />
                     Update Profile Image
                 </h2>
+
                 <label class="block">
                     <span class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Choose a new profile picture</span>
                     <input
@@ -206,6 +233,7 @@ const deleteUser = (id) => {
                             dark:file:bg-gray-700 dark:file:text-blue-200 dark:hover:file:bg-gray-600"
                     />
                 </label>
+
                 <!-- Preview selected image -->
                 <div v-if="selectedImagePreview" class="flex justify-center">
                     <img
@@ -219,6 +247,7 @@ const deleteUser = (id) => {
                         <PencilIcon class="w-12 h-12" />
                     </div>
                 </div>
+
                 <div class="flex justify-end space-x-3 pt-4">
                     <button
                         @click="closeProfileImageModal"
@@ -226,6 +255,7 @@ const deleteUser = (id) => {
                     >
                         Cancel
                     </button>
+
                     <button
                         @click="submitProfileImageUpdate"
                         :disabled="profileImageForm.processing"

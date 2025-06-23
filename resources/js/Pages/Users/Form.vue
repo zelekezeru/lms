@@ -56,18 +56,6 @@ const handleFileChange = (e) => {
             </div>
 
             <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    type="email"
-                    v-model="form.email"
-                    required
-                    class="w-full"
-                />
-                <InputError :message="form.errors.email" />
-            </div>
-
-            <div>
                 <InputLabel for="roles" value="Select Role" />
                 <MultiSelect
                     id="roles"

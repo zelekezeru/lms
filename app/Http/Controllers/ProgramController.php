@@ -45,7 +45,7 @@ class ProgramController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $programs = ProgramResource::collection($query->paginate(15));
+        $programs = ProgramResource::collection($query->paginate(30));
 
         return inertia('Programs/Index', [
             'programs' => $programs, // Corrected to return the programs collection

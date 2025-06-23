@@ -269,6 +269,11 @@ class RolePermissionSeeder extends Seeder
             'update-password',
             'update-profile',
             'update-profile-image',
+
+            // Scholarship related
+            'view-scholarships',
+            'request-scholarship',
+            'approve-scholarship',
         ];
 
         // Create all permissions
@@ -537,6 +542,11 @@ class RolePermissionSeeder extends Seeder
                     'default-password',
                     'reset-password',
                     'update-profile',
+
+                    // Scholarship related
+                    'view-scholarships',
+                    'request-scholarship',
+                    'approve-scholarship',
                 ]);
                 $role->syncPermissions($studentPermissions);
             } elseif (in_array($roleName, ['INSTRUCTOR'])) {
@@ -712,6 +722,11 @@ class RolePermissionSeeder extends Seeder
                     'view-password',
                     'default-password',
                     'reset-password',
+
+                    // Scholarship related
+                    'view-scholarships',
+                    'request-scholarship',
+                    'approve-scholarship',
 
                 ]);
                 $role->syncPermissions($instructorPermissions);
@@ -932,6 +947,11 @@ class RolePermissionSeeder extends Seeder
                     'default-password',
                     'reset-password',
                     'update-password',
+
+                    // Scholarship related
+                    'view-scholarships',
+                    'request-scholarship',
+                    'approve-scholarship',
 
                 ]);
                 $role->syncPermissions($employeePermissions);
@@ -1156,6 +1176,11 @@ class RolePermissionSeeder extends Seeder
                     'default-password',
                     'reset-password',
                     'update-profile',
+
+                    // Scholarship related
+                    'view-scholarships',
+                    'request-scholarship',
+                    // 'approve-scholarship',
                 ]);
                 $role->syncPermissions($employeePermissions);
             }
@@ -1337,6 +1362,11 @@ class RolePermissionSeeder extends Seeder
                     'default-password',
                     'reset-password',
                     'update-password',
+
+                    // Scholarship related
+                    'view-scholarships',
+                    'request-scholarship',
+                    'approve-scholarship',
 
                 ]);
                 $role->syncPermissions($financeAdminPermissions);

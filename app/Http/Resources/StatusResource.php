@@ -25,7 +25,8 @@ class StatusResource extends JsonResource
             'is_graduated' => $this->is_graduated,
             'is_scholarship' => $this->is_scholarship,
             'is_scholarship_approved' => $this->is_scholarship_approved,
-            'is_scholarship_verified' => $this->is_scholarship_verified,
+            'is_scholarship_requested' => $this->is_scholarship_requested,
+            'is_scholarship_rejected' => $this->is_scholarship_rejected,
 
             'created_by_name' => $this->created_by_name,
             'updated_by_name' => $this->updated_by_name,
@@ -37,7 +38,10 @@ class StatusResource extends JsonResource
             'graduated_by_name' => $this->graduated_by_name,
             'scholarship_by_name' => $this->scholarship_by_name,
             'scholarship_approved_by_name' => $this->scholarship_approved_by_name,
-            'scholarship_verified_by_name' => $this->scholarship_verified_by_name,
+            'scholarship_requested_by_name' => $this->scholarship_requested_by_name,
+            'scholarship_reason' => $this->scholarship_reason,
+            'scholarship_rejected_reason' => $this->scholarship_rejected_reason,
+            'scholarship_rejected_by_name' => $this->scholarship_rejected_by_name,
 
             'approved_at' => $this->approved_at,
             'completed_at' => $this->completed_at,
@@ -46,7 +50,8 @@ class StatusResource extends JsonResource
             'graduated_at' => $this->graduated_at,
             'scholarship_at' => $this->scholarship_at,
             'scholarship_approved_at' => $this->scholarship_approved_at,
-            'scholarship_verified_at' => $this->scholarship_verified_at,
+            'scholarship_requested_at' => $this->scholarship_requested_at,
+            'scholarship_rejected_at' => $this->scholarship_rejected_at,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

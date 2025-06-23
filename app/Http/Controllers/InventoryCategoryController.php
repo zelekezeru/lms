@@ -14,7 +14,7 @@ class InventoryCategoryController extends Controller
      */
     public function index()
     {
-        $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::paginate(15));
+        $inventoryCategories = InventoryCategoryResource::collection(InventoryCategory::paginate(30));
 
         return inertia('InventoryCategories/Index', [
             'inventoryCategories' => $inventoryCategories,

@@ -35,7 +35,7 @@ class StudentRegistrationService extends Controller
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
 
         DB::beginTransaction();
-
+        
         try {
 
             $user = $this->createStudentUser($fields, $student_email);

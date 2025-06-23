@@ -32,7 +32,7 @@ class RoomController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $rooms = RoomResource::collection($query->paginate(15));
+        $rooms = RoomResource::collection($query->paginate(30));
 
         return inertia('Rooms/Index', [
             'rooms' => $rooms,

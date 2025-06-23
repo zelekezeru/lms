@@ -10,9 +10,9 @@ import { Listbox } from "primevue";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import ShowRegistrationDetails from "./Registrations/ShowRegistrationDetails.vue";
+import ShowScholarship from "./Registrations/ShowScholarship.vue";
 import ShowRegisteredSemesters from "./Registrations/ShowRegisteredSemesters.vue";
-import { AcademicCapIcon, CogIcon } from "@heroicons/vue/24/outline";
+import { AcademicCapIcon, CheckBadgeIcon, CogIcon } from "@heroicons/vue/24/outline";
 
 // Initial data
 const props = defineProps({
@@ -74,7 +74,7 @@ const selectedTab = ref('semesters');
 
 const tabs = [
     { key: 'semesters', label: 'Semester Registrations', icon: CogIcon },
-    { key: 'details', label: 'Registration Info', icon: AcademicCapIcon },
+    { key: 'scholarship', label: 'Scholarship Status', icon: CheckBadgeIcon },
 
 ];
 </script>
@@ -99,7 +99,7 @@ const tabs = [
         </button>
     </nav>
     
-    <!-- Details Panel -->
+    <!-- scholarship Panel -->
     <transition
         mode="out-in"
         enter-active-class="transition duration-300 ease-out"
@@ -118,14 +118,16 @@ const tabs = [
         <ShowRegisteredSemesters
             v-if="selectedTab === 'semesters'"
             :student="student"
+            :status="status"
             :semesters="semesters"
             :active-semester="activeSemester"
             :update-route="updateRoute"
         />
         <!-- Documents Panel -->
-        <ShowRegistrationDetails
-            v-else-if="selectedTab === 'details'"
+        <ShowScholarship
+            v-else-if="selectedTab === 'scholarship'"
             :student="student"
+            :status="status"
             :update-route="updateRoute"
         />
 

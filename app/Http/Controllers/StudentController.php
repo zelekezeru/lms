@@ -99,6 +99,8 @@ class StudentController extends Controller
             $status->student_id = $student->id;
             $status->user_id = Auth::user()->id; // Assuming you want to set the current user as the one who created the status
             $status->save();
+        } else {
+            $status = new StatusResource($student->status);
         }
 
         $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode', 'centers']));
@@ -152,6 +154,7 @@ class StudentController extends Controller
 
         return Inertia::render('Students/Show', [
             'student' => $student,
+            'status' => $status,
             'sections' => $sections,
             'studyModes' => $studyModes,
             'courses' => $courses,
@@ -466,7 +469,7 @@ class StudentController extends Controller
         $existingAmount = $payment->total_amount ?? 0;
         $newAmount = $existingAmount + ($courseFeeType->amount ?? 0);
 
-        $payment->status = $student->status->is_scholarship ? 'paid_by_college' : 'pending';
+        $payment->status = $student->status->is_scholarship ? 'paid_by_college' : 'completed';
         $payment->total_amount = $newAmount;
         $payment->save();
 

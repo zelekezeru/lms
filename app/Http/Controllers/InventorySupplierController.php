@@ -14,7 +14,7 @@ class InventorySupplierController extends Controller
      */
     public function index()
     {
-        $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::paginate(15));
+        $inventorySuppliers = InventorySupplierResource::collection(InventorySupplier::paginate(30));
 
         return inertia('InventorySuppliers/Index', [
             'inventorySuppliers' => $inventorySuppliers,

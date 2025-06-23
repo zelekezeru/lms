@@ -262,13 +262,11 @@ const deleteStudent = (id) => {
                     <ShowPayments
                         v-else-if="selectedTab === 'payments'"
                         :student="student"
-                        :status="status"
                         :semesters="semesters"
                         :payments="payments"
                         :active-semester="activeSemester"
                         :paymentMethods="paymentMethods"
                         :paymentTypes="paymentTypes"
-                        :showVerifyModal="showVerifyModal"
                     />
 
                     <ShowChurches

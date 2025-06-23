@@ -107,6 +107,7 @@ const updatePaymentModal = ref(false);
 
 const showUpdatePaymentModal = (payment) => {
     selectedPayment.value = payment;
+
     paymentUpdateForm.payment_method_id = payment.payment_method_id;
     paymentUpdateForm.description = payment.description;
     paymentUpdateForm.paid_amount = payment.paid_amount;
@@ -1089,7 +1090,7 @@ const updatePayment = () => {
         :maxWidth="'6xl'"
         class="p-6"
     >
-        <div class="w-full px-8 py-6">
+        <div class="w-full px-8 py-6" v-if="selectedPayment">
             <h1
                 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100"
             >
@@ -1263,7 +1264,7 @@ const updatePayment = () => {
 
                     <button
                         type="button"
-                        @click="closeCreatePaymentModal"
+                        @click="closeUpdatePaymentModal"
                         class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg shadow-md transition"
                     >
                         Close

@@ -75,7 +75,7 @@ class StudentController extends Controller
         $students = StudentResource::collection($paginatedStudents);
 
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks.sections.studyMode', 'tracks.sections.year')->orderBy('name', 'asc')->get());
-        
+
         $years = YearResource::collection(Year::orderBy('name', 'asc')->get());
 
         // Return with Inertia
@@ -174,7 +174,7 @@ class StudentController extends Controller
         $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
-        
+
         $studyModes = StudyModeResource::collection(StudyMode::all());
 
         return inertia('Students/Create', [
@@ -288,7 +288,7 @@ class StudentController extends Controller
                     if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
                         $status->{'is_' . $statusField} = 0;
-                    } 
+                    }
 
                     $status->{$statusField . '_by_name'} = Auth::user()->name;
                     $status->{$statusField . '_at'} = now();
@@ -450,7 +450,9 @@ class StudentController extends Controller
         $existingAmount = $payment->total_amount ?? 0;
         $newAmount = $existingAmount + ($courseFeeType->amount ?? 0);
 
-        $payment->status = $student->status->is_scholarship ? 'paid_by_college' : 'completed';
+        $payment->status = $student->status->is_scholarship ? 'paid_by_college' : 'pending';
+        $payment->created_by = $request->user()->id;
+        $payment->paid_amount = $payment->exists ? $payment->paid_amount : 0;
         $payment->total_amount = $newAmount;
         $payment->save();
 

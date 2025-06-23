@@ -173,8 +173,8 @@ class StudentController extends Controller
 
         $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
-        $years = YearResource::collection(Year::with('semesters')->orderBy('name')->get());
-
+        $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
+        
         $studyModes = StudyModeResource::collection(StudyMode::all());
 
         return inertia('Students/Create', [
@@ -276,12 +276,9 @@ class StudentController extends Controller
             $statuses = [
                 'approved',
                 'completed',
-                'verified',
+                'approved',
                 'enrolled',
                 'graduated',
-                'scholarship',
-                'scholarship_approved',
-                'scholarship_verified',
             ];
 
             // Check if any of the status fields are present in the request
@@ -291,24 +288,8 @@ class StudentController extends Controller
                     if ($status->{'is_' . $statusField} == 1) {
                         // If it's already 1, set it to 0
                         $status->{'is_' . $statusField} = 0;
-                    } else {
-                        // If it's not set, set it to 1
-                        $status->{'is_' . $statusField} = 1;
-                        if ($request->has('is_scholarship')) {
-                            $studentPayments = $student->payments()->where('payments.status', 'pending')->get();
+                    } 
 
-                            foreach ($studentPayments as $studentPayment) {
-                                $studentPayment->update(['status' => 'paid_by_college']);
-                            }
-
-                            $pendingEnrollments = $student->enrollments()->where('status', 'pending')->get();
-                            if ($pendingEnrollments) {
-                                foreach ($pendingEnrollments as $pendingEnrollment) {
-                                    $pendingEnrollment->update(['status' => 'enrolled']);
-                                }
-                            }
-                        }
-                    }
                     $status->{$statusField . '_by_name'} = Auth::user()->name;
                     $status->{$statusField . '_at'} = now();
                 }

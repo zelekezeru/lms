@@ -41,13 +41,6 @@ class StatusController extends Controller
     {
         $status = $student->status;
 
-        if (! $status) {
-            // Create a new status record if it doesn't exist
-            $status = new Status;
-            $status->student_id = $student->id;
-            $status->user_id = Auth::user()->id; // Assuming you want to set the current user as the one who created the status
-        }
-
         // If it's not set, set it to 1
         $status->is_scholarship = 1;
         $status->is_scholarship_approved = 1;
@@ -90,12 +83,6 @@ class StatusController extends Controller
     public function rejectScholarship(Request $request, Student $student)
     {
         $status = $student->status;
-        if (! $status) {
-            // Create a new status record if it doesn't exist
-            $status = new Status;
-            $status->student_id = $student->id;
-            $status->user_id = Auth::user()->id; // Assuming you want to set the current user as the one who created the status
-        }
         
         // Set the scholarship rejected status to 0 (rejected)
         $status->is_scholarship = 0;

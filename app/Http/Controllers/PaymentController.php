@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PaymentResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\PaymentTypeResource; // Import PaymentTypeResource
@@ -22,7 +23,10 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $payments = Payment::get();
+        $payments = PaymentResource::collection(
+            Payment::with(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester'])
+            ->paginate(30)
+        );
 
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();

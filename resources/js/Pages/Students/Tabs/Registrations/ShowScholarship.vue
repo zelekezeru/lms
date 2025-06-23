@@ -183,16 +183,7 @@ function rejectScholarship() {
             <div v-show="userCanAny(['request-scholarship', 'approve-scholarship'])"
                     class="flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700 w-full h-full">
                 <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 text-center">Scholarship Request</span>
-                <template v-if="!status.is_scholarship_requested">
-                    <button
-                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-200"
-                        @click="requestScholarship"
-                    >
-                        <AcademicCapIcon class="w-5 h-5" />
-                        <span>Request Scholarship</span>
-                    </button>
-                </template>
-                <template v-else>
+                <template v-if="status.is_scholarship_requested">
                     <span class="text-sm text-green-500 dark:text-green-400">Scholarship request already submitted.</span>
                     <div class="w-full mt-2 p-3 bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400 rounded">
                         <span class="font-semibold text-yellow-800 dark:text-yellow-200">Reason:</span>
@@ -201,13 +192,39 @@ function rejectScholarship() {
                         </span>
                     </div>
                 </template>
+                <template v-else>
+                    <button
+                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-all duration-200"
+                        @click="requestScholarship"
+                    >
+                        <AcademicCapIcon class="w-5 h-5" />
+                        <span>Request Scholarship</span>
+                    </button>
+                </template>
             </div>
             <div v-show="userCanAny(['approve-scholarship'])"
                 v-if="status.is_scholarship_requested"
                 class="flex flex-col items-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700">
                 <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 text-center">Scholarship Approval</span>
                 <div class="flex flex-col w-full gap-2">
-                    <div  v-if="!status.is_scholarship_approved">
+                    <div  v-if="status.is_scholarship_approved">
+                        <button v-if="!status.is_scholarship_rejected"
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white font-semibold rounded-lg shadow-lg hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-200"
+                            @click="rejectScholarship"
+                        >
+                            <CogIcon class="w-5 h-5" />
+                            <span>Reject Scholarship</span>
+                        </button>
+                        
+                        <span v-if="status.is_scholarship_approved" class="text-sm text-green-500 dark:text-green-400">
+                            <span class="text-sm text-green-500 dark:text-green-400">
+                                <CheckIcon class="w-5 h-5 inline" /> Approved by: {{ status.scholarship_approved_by_name }}
+                                <br>
+                                <ClockIcon class="w-5 h-5 inline" /> Approved on: {{ new Date(status.scholarship_approved_at).toLocaleDateString() }}
+                            </span>
+                        </span>
+                    </div>
+                    <div v-else>
                         <button
                             class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition-all duration-200"
                             @click="approveScholarship"
@@ -222,23 +239,6 @@ function rejectScholarship() {
                                     <br>
                                     <ClockIcon class="w-5 h-5 inline" /> Rejected on: {{ new Date(status.scholarship_rejected_at).toLocaleDateString() }}
                                 </span>
-                            </span>
-                        </span>
-                    </div>
-                    <div v-else>
-                        <button v-if="!status.is_scholarship_rejected"
-                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white font-semibold rounded-lg shadow-lg hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-200"
-                            @click="rejectScholarship"
-                        >
-                            <CogIcon class="w-5 h-5" />
-                            <span>Reject Scholarship</span>
-                        </button>
-                        
-                        <span v-if="status.is_scholarship_approved" class="text-sm text-green-500 dark:text-green-400">
-                            <span class="text-sm text-green-500 dark:text-green-400">
-                                <CheckIcon class="w-5 h-5 inline" /> Approved by: {{ status.scholarship_approved_by_name }}
-                                <br>
-                                <ClockIcon class="w-5 h-5 inline" /> Approved on: {{ new Date(status.scholarship_approved_at).toLocaleDateString() }}
                             </span>
                         </span>
                     </div>

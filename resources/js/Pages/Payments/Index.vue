@@ -64,6 +64,8 @@ const props = defineProps({
     showVerifyModal: Boolean,
 });
 
+const payments = ref(props.payments);
+
 const refreshing = ref(false);
 
 const refreshData = () => {
@@ -93,7 +95,7 @@ const selectedTab = ref("details");
 
 const tabs = [
     { key: "details", label: "Details", icon: Cog6ToothIcon },
-    { key: "payments", label: "Payments", icon: CurrencyDollarIcon },
+    // { key: "payments", label: "Payments", icon: CurrencyDollarIcon },
     { key: "categories", label: "Categories", icon: BookOpenIcon },
     { key: "methods", label: "Methods", icon: Cog6ToothIcon },
     { key: "types", label: "Types", icon: BanknotesIcon },
@@ -124,6 +126,8 @@ const deletePayment = (id) => {
         }
     });
 };
+
+const total = (payments.value.data || []).reduce((sum, payment) => sum + payment.amount, 0);
 </script>
 
 <template>
@@ -166,10 +170,10 @@ const deletePayment = (id) => {
                     :paymentCategories="paymentCategories"
                     :paymentMethods="paymentMethods"
                 />
-                <ShowPayments
+                <!-- <ShowPayments
                     v-if="selectedTab === 'payments'"
                     :payments="payments"
-                />
+                /> -->
                 <ShowCategories
                     v-else-if="selectedTab === 'categories'"
                     :paymentCategories="paymentCategories"
@@ -194,5 +198,11 @@ const deletePayment = (id) => {
                 />
             </div>
         </transition>
+        <!-- Example usage in template -->
+        <ul>
+            <li v-for="payment in payments.data" :key="payment.id">
+                {{ payment.amount }}
+            </li>
+        </ul>
     </AppLayout>
 </template>

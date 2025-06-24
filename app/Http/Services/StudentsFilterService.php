@@ -10,12 +10,19 @@ class StudentsFilterService
 {
     public static function filterStudents(Request $request, $query)
     {
-        // dd($request->query('payment'));
         if ($request->has('payment')) {
-            if ($request->query('payment') == 'paid') {
+            $paymentFilterValue = $request->query('payment');
+            if ($paymentFilterValue === 'paid') {
                 $query->whereDoesntHave('payments', function ($q) {
-                    $q->where('status', '!=', 'completed');
+                    $q->whereIn('status', ['pending']);
                 });
+            } elseif ($paymentFilterValue === 'pending') {
+                $query->whereHas('payments', function ($q) {
+                    $q->where('status', 'pending');
+                })
+                    ->whereDoesntHave('payments', function ($q) {
+                        $q->where('status', '!=', 'pending');
+                    });
             }
         }
     }

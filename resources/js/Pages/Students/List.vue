@@ -219,10 +219,6 @@ const applyFilters = () => {
                             value: 'paid',
                         },
                         {
-                            label: 'Completed (Only Self Sponsord)',
-                            value: 'paid',
-                        },
-                        {
                             label: 'Only Scholarship Students',
                             value: 'is_scholarship',
                         },
@@ -259,16 +255,6 @@ const applyFilters = () => {
                             v-model="filterForm.statuses"
                         />
                         Graduated
-                    </label>
-                    <label
-                        class="flex items-center gap-2 text-gray-600 dark:text-gray-300"
-                    >
-                        <input
-                            type="checkbox"
-                            value="dropped"
-                            v-model="filterForm.statuses"
-                        />
-                        Dropped
                     </label>
                 </div>
             </div>

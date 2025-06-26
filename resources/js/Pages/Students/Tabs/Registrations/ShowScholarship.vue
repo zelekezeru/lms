@@ -149,37 +149,7 @@ function rejectScholarship() {
     >
             <!-- The cards go here (move the 3 card divs inside this grid) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-800 dark:text-gray-200">
-            <div v-show="userCanAny(['view-scholarships'])"
-
-                class="flex flex-col items-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700 w-full h-full">
-                <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 text-center">Student Scholarship Status</span>
-                <span
-                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold justify-center w-full"
-                    :class="status.is_scholarship
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200 border border-green-300 dark:border-green-700'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200 border border-red-300 dark:border-red-700'"
-                >
-                    <svg v-if="status.is_scholarship" class="w-4 h-4 mr-1 text-green-500 dark:text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    
-                    <svg v-else class="w-4 h-4 mr-1 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                    {{ status.is_scholarship ? 'Scholarship Student' : 'Not a Scholarship Student' }}
-                </span>
-                <span v-if="status.scholarship_requested_by_name" class="flex items-center justify-center mt-2">
-                    <div class="flex flex-col gap-2 my-4 w-full">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r text-white font-bold shadow-lg border-2 border-green-200 dark:border-green-400">
-                            <AcademicCapIcon class="w-4 h-4" />
-                            Requested by:
-                            <span class="ml-1">
-                                {{ status.scholarship_requested_by_name || 'N/A' }}
-                            </span>
-                        </span>
-                    </div>
-                </span>
-            </div>
+            
             <div v-show="userCanAny(['request-scholarship', 'approve-scholarship'])"
                     class="flex flex-col items-center justify-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700 w-full h-full">
                 <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 text-center">Scholarship Request</span>
@@ -202,47 +172,77 @@ function rejectScholarship() {
                     </button>
                 </template>
             </div>
+            <div v-show="userCanAny(['view-scholarships'])"
+
+                class="flex flex-col items-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700 w-full h-full">
+                <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 text-center">Student Scholarship Status</span>
+                <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold justify-center w-full"
+                    :class="status.is_scholarship
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200 border border-green-300 dark:border-green-700'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200 border border-red-300 dark:border-red-700'"
+                >
+                    <svg v-if="status.is_scholarship" class="w-4 h-4 mr-1 text-green-500 dark:text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span v-if="status.is_scholarship">Scholarship Given Student</span>
+                    
+                    <svg v-else class="w-4 h-4 mr-1 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    <span v-else>Not a Scholarship Student</span>
+                    
+                </span>
+                <span v-if="status.scholarship_requested_by_name" class="flex items-center justify-center mt-2">
+                    <div class="flex flex-col gap-2 my-4 w-full">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r text-white font-bold shadow-lg border-2 border-green-200 dark:border-green-400">
+                            <AcademicCapIcon class="w-4 h-4" />
+                            Requested by:
+                            <span class="ml-1">
+                                {{ status.scholarship_requested_by_name || 'N/A' }}
+                            </span>
+                        </span>
+                    </div>
+                </span>
+            </div>
             <div v-show="userCanAny(['approve-scholarship'])"
-                v-if="status.is_scholarship_requested"
                 class="flex flex-col items-center bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700">
                 <span class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1 text-center">Scholarship Approval</span>
-                <div class="flex flex-col w-full gap-2">
-                    <div  v-if="status.is_scholarship_approved">
-                        <button v-if="!status.is_scholarship_rejected"
-                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white font-semibold rounded-lg shadow-lg hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-200"
-                            @click="rejectScholarship"
-                        >
-                            <CogIcon class="w-5 h-5" />
-                            <span>Reject Scholarship</span>
-                        </button>
-                        
-                        <span v-if="status.is_scholarship_approved" class="text-sm text-green-500 dark:text-green-400">
-                            <span class="text-sm text-green-500 dark:text-green-400">
-                                <CheckIcon class="w-5 h-5 inline" /> Approved by: {{ status.scholarship_approved_by_name }}
-                                <br>
-                                <ClockIcon class="w-5 h-5 inline" /> Approved on: {{ new Date(status.scholarship_approved_at).toLocaleDateString() }}
-                            </span>
-                        </span>
-                    </div>
-                    <div v-else>
-                        <button
-                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition-all duration-200"
-                            @click="approveScholarship"
-                        >
-                            <AcademicCapIcon class="w-5 h-5" />
-                            <span>Approve Scholarship</span>
-                        </button>
-                        <span v-if="status.is_scholarship_rejected" class="text-sm text-red-500 dark:text-red-400">
-                            <span class="text-sm text-green-500 dark:text-green-400">
-                                <span class="text-sm text-red-500 dark:text-red-400">
-                                    <XCircleIcon class="w-5 h-5 inline" /> Rejected by: {{ status.scholarship_rejected_by_name }}
-                                    <br>
-                                    <ClockIcon class="w-5 h-5 inline" /> Rejected on: {{ new Date(status.scholarship_rejected_at).toLocaleDateString() }}
-                                </span>
-                            </span>
-                        </span>
-                    </div>
+                
+                <div class="flex flex-col w-full gap-2"
+                    v-if="status.is_scholarship_requested && !status.is_scholarship_approved && !status.is_scholarship_rejected"
+                    >
+                    <button
+                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 transition-all duration-200"
+                        @click="approveScholarship"
+                    >
+                        <AcademicCapIcon class="w-5 h-5" />
+                        <span>Approve Scholarship</span>
+                    </button>
+                    <button class="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white font-semibold rounded-lg shadow-lg hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 transition-all duration-200"
+                        @click="rejectScholarship"
+                    >
+                        <CogIcon class="w-5 h-5" />
+                        <span>Reject Scholarship</span>
+                    </button>                        
                 </div>
+                    
+                <span v-if="status.is_scholarship_approved" class="text-sm text-green-500 dark:text-green-400">
+                    <span class="text-sm text-green-500 dark:text-green-400">
+                        <CheckIcon class="w-5 h-5 inline" /> Approved by: {{ status.scholarship_approved_by_name }}
+                        <br>
+                        <ClockIcon class="w-5 h-5 inline" /> Approved on: {{ new Date(status.scholarship_approved_at).toLocaleDateString() }}
+                    </span>
+                </span>
+                <span v-if="status.is_scholarship_rejected" class="text-sm text-red-500 dark:text-red-400">
+                    <span class="text-sm text-green-500 dark:text-green-400">
+                        <span class="text-sm text-red-500 dark:text-red-400">
+                            <XCircleIcon class="w-5 h-5 inline" /> Rejected by: {{ status.scholarship_rejected_by_name }}
+                            <br>
+                            <ClockIcon class="w-5 h-5 inline" /> Rejected on: {{ new Date(status.scholarship_rejected_at).toLocaleDateString() }}
+                        </span>
+                    </span>
+                </span>
             </div>
         </div>
     </div>

@@ -15,7 +15,7 @@ class StatusController extends Controller
         $request->validate([
             'scholarship_reason' => 'required|string|max:255',
         ]);
-        
+
         $status = $student->status;
         if (! $status) {
             // Create a new status record if it doesn't exist
@@ -29,11 +29,11 @@ class StatusController extends Controller
         $status->scholarship_requested_at = now();
         // Save the status record
         $status->save();
-        
+
         // Reload the student and status relationships to ensure fresh data
         $student->refresh();
         $student->load('status');
-        
+
         return redirect()->route('students.show', $student)->with('success', 'Scholarship request submitted successfully.');
     }
 
@@ -52,7 +52,7 @@ class StatusController extends Controller
         $status->scholarship_rejected_reason = null;
         $status->scholarship_rejected_by_name = null;
         $status->scholarship_rejected_at = null;
-        
+
         // Check if the scholarship status is already set to 1
         if ($status->is_scholarship == 1) {
 
@@ -72,18 +72,14 @@ class StatusController extends Controller
 
         // Save the status record
         $status->save();
-        
-        // Reload the student and status relationships to ensure fresh data
-        $student->refresh();
-        $student->load('status');
-        
+        $student;
         return redirect()->route('students.show', $student)->with('success', 'Student status updated successfully.');
     }
 
     public function rejectScholarship(Request $request, Student $student)
     {
         $status = $student->status;
-        
+
         // Set the scholarship rejected status to 0 (rejected)
         $status->is_scholarship = 0;
         $status->is_scholarship_rejected = 1;
@@ -95,7 +91,7 @@ class StatusController extends Controller
         $status->is_scholarship_approved = 0;
         $status->scholarship_approved_by_name = null;
         $status->scholarship_approved_at = null;
-        
+
         // Save the status record
         $status->save();
 

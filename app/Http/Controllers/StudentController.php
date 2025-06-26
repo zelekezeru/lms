@@ -262,8 +262,6 @@ class StudentController extends Controller
                 // If it's already 1, set it to 0
                 $status->{'is_active'} = 0;
             } else {
-                // If Student Has Not Paid For Registration Don't make him active
-
                 if (! $student->hasPaidForSemester()) {
                     return back()->withErrors(['error' => 'Student Has Not Paid For Registration']);
                 }
@@ -274,7 +272,6 @@ class StudentController extends Controller
         } else {
 
             $statuses = [
-                'approved',
                 'completed',
                 'approved',
                 'enrolled',

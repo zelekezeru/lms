@@ -42,5 +42,25 @@ class StudentsFilterService
                 }
             });
         }
+
+        if ($request->has('year')) {
+            $query->where('year_id', $request->input('year'));
+        }
+
+        if ($request->has('program')) {
+            $query->where('program_id', $request->input('program'));
+        }
+
+        if ($request->has('track')) {
+            $query->where('track_id', $request->input('track'));
+        }
+
+        if ($request->has('study_mode')) {
+            $query->where('study_mode_id', $request->input('study_mode'));
+        }
+
+        if ($request->has('section')) {
+            $query->where('section_id', $request->input('section'));
+        }
     }
 }

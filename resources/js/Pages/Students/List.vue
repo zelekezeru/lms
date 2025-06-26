@@ -21,13 +21,25 @@ const props = defineProps({
 
 const showFilterModal = ref(false);
 
+const params = new URLSearchParams(window.location.search);
+
 const filterForm = useForm({
-    payment: null,
+    payment: params.has("payment") ? params.get("payment") : null,
     statuses: [],
-    year: null,
-    program: null,
-    track: null,
-    study_mode: null,
+    year: params.has("year")
+        ? props.years.find((year) => year.id == params.get("year"))
+        : null,
+    program: params.has("program")
+        ? props.programw.find((program) => program.id == params.get("program"))
+        : null,
+    track: params.has("track")
+        ? props.tracks.find((track) => track.id == params.get("track"))
+        : null,
+    study_mode: params.has("study_mode")
+        ? props.studyModes.find(
+              (studyMode) => studyMode.id == params.get("study_mode")
+          )
+        : null,
     section: null,
 });
 
@@ -53,6 +65,7 @@ const selectedTrackSections = computed(() => {
     const selectedTrack = selectedProgramTracks.value?.find(
         (track) => track.id == trackId
     );
+
     if (!selectedTrack) return [];
 
     // If no study mode selected, return all sections for the track

@@ -17,12 +17,12 @@ const props = defineProps({
         type: Object,
     },
     reloadOnly: {
-      type: String,
-    }
+        type: String,
+    },
 });
 
-// This variable stores which props to reload after sorting in addition to the 
-const reloadOnly = route().current().split('.')[0];
+// This variable stores which props to reload after sorting in addition to the
+const reloadOnly = route().current().split(".")[0];
 const sort = () => {
     let sortDirection = "desc";
 

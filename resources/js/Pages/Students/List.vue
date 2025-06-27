@@ -1,8 +1,8 @@
 <script setup>
-import { defineProps, ref, computed } from "vue";
+import { defineProps, ref, computed, watch } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { EyeIcon, FunnelIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
@@ -24,23 +24,15 @@ const showFilterModal = ref(false);
 const params = new URLSearchParams(window.location.search);
 
 const filterForm = useForm({
-    payment: params.has("payment") ? params.get("payment") : null,
-    statuses: [],
-    year: params.has("year")
-        ? props.years.find((year) => year.id == params.get("year"))
-        : null,
-    program: params.has("program")
-        ? props.programw.find((program) => program.id == params.get("program"))
-        : null,
-    track: params.has("track")
-        ? props.tracks.find((track) => track.id == params.get("track"))
-        : null,
+    payment: params.get("payment") || null,
+    statuses: params.getAll("statuses") || [],
+    year: params.has("year") ? Number(params.get("year")) : null,
+    program: params.has("program") ? Number(params.get("program")) : null,
+    track: params.has("track") ? Number(params.get("track")) : null,
     study_mode: params.has("study_mode")
-        ? props.studyModes.find(
-              (studyMode) => studyMode.id == params.get("study_mode")
-          )
+        ? Number(params.get("study_mode"))
         : null,
-    section: null,
+    section: params.has("section") ? Number(params.get("section")) : null,
 });
 
 const selectedProgramTracks = computed(() => {
@@ -90,6 +82,62 @@ const applyFilters = () => {
         onSuccess: () => (showFilterModal.value = false),
     });
 };
+
+watch(
+    () => filterForm.program,
+    (newVal) => {
+        if (!newVal) {
+            filterForm.study_mode = null;
+            filterForm.track = null;
+        }
+    }
+);
+
+watch(
+    () => filterForm.track,
+    (newVal) => {
+        if (!newVal) {
+            filterForm.section = null;
+        }
+    }
+);
+const hasActiveFilters = computed(() => {
+    return (
+        filterForm.payment ||
+        filterForm.year ||
+        filterForm.program ||
+        filterForm.track ||
+        filterForm.study_mode ||
+        filterForm.section
+    );
+});
+
+// Helper functions to get names
+const getProgramName = (id) => {
+    return props.programs.find((p) => p.id == id)?.name || "Unknown";
+};
+
+const getYearName = (id) => {
+    return props.years.find((y) => y.id == id)?.name || "Unknown";
+};
+
+const getTrackName = (id) => {
+    const program = props.programs.find((p) => p.id == filterForm.program);
+    return program?.tracks.find((t) => t.id == id)?.name || "Unknown";
+};
+
+const getStudyModeName = (id) => {
+    const program = props.programs.find((p) => p.id == filterForm.program);
+    return program?.studyModes.find((s) => s.id == id)?.name || "Unknown";
+};
+
+const getSectionName = (id) => {
+    const track = selectedProgramTracks.value.find(
+        (t) => t.id == filterForm.track
+    );
+    const sections = track?.sections || [];
+    return sections.find((s) => s.id == id)?.name || "Unknown";
+};
 </script>
 
 <template>
@@ -103,6 +151,128 @@ const applyFilters = () => {
                 <FunnelIcon class="w-5 h-5 mr-2" />
                 Filters
             </button>
+        </div>
+
+        <!-- Active Filters Summary -->
+        <div
+            v-if="hasActiveFilters"
+            class="mb-4 bg-gray-100 dark:bg-gray-800 p-4 rounded shadow-sm"
+        >
+            <h2 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                Active Filters:
+            </h2>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <span
+                    v-if="filterForm.payment"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Payment: <strong>{{ filterForm.payment }}</strong>
+                    <XMarkIcon
+                        @click="filterForm.payment = null"
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+
+                <span
+                    v-if="filterForm.year"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Year: <strong>{{ getYearName(filterForm.year) }}</strong>
+                    <XMarkIcon
+                        @click="
+                            () => {
+                                filterForm.year = null;
+                                filterForm.get(route('students.index'), {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }
+                        "
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+
+                <span
+                    v-if="filterForm.program"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Program:
+                    <strong>{{ getProgramName(filterForm.program) }}</strong>
+                    <XMarkIcon
+                        @click="
+                            () => {
+                                filterForm.program = null;
+                                filterForm.get(route('students.index'), {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }
+                        "
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+
+                <span
+                    v-if="filterForm.track"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Track: <strong>{{ getTrackName(filterForm.track) }}</strong>
+                    <XMarkIcon
+                        @click="
+                            () => {
+                                filterForm.track = null;
+                                filterForm.get(route('students.index'), {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }
+                        "
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+
+                <span
+                    v-if="filterForm.study_mode"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Study Mode:
+                    <strong>{{
+                        getStudyModeName(filterForm.study_mode)
+                    }}</strong>
+                    <XMarkIcon
+                        @click="
+                            () => {
+                                filterForm.study_mode = null;
+                                filterForm.get(route('students.index'), {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }
+                        "
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+
+                <span
+                    v-if="filterForm.section"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded-full shadow"
+                >
+                    Section:
+                    <strong>{{ getSectionName(filterForm.section) }}</strong>
+                    <XMarkIcon
+                        @click="
+                            () => {
+                                filterForm.section = null;
+                                filterForm.get(route('students.index'), {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                });
+                            }
+                        "
+                        class="w-4 h-4 cursor-pointer text-gray-500 hover:text-red-500 transition"
+                    />
+                </span>
+            </div>
         </div>
 
         <Table>
@@ -226,6 +396,7 @@ const applyFilters = () => {
                     append-to="self"
                     v-model="filterForm.payment"
                     :options="[
+                        { label: 'All', value: null },
                         { label: 'Uncompleted (Pending)', value: 'pending' },
                         {
                             label: 'All Completed(both Scholarship and self-sponsor)',
@@ -278,10 +449,11 @@ const applyFilters = () => {
                         class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
                         >Year</label
                     >
+
                     <Select
                         append-to="self"
                         v-model="filterForm.year"
-                        :options="years"
+                        :options="[{ name: 'All', value: null }, ...years]"
                         option-label="name"
                         option-value="id"
                         placeholder="Select year"
@@ -296,7 +468,7 @@ const applyFilters = () => {
                     <Select
                         append-to="self"
                         v-model="filterForm.program"
-                        :options="programs"
+                        :options="[{ name: 'All', value: null }, ...programs]"
                         option-label="name"
                         option-value="id"
                         placeholder="Select program"
@@ -311,7 +483,10 @@ const applyFilters = () => {
                     <Select
                         append-to="self"
                         v-model="filterForm.track"
-                        :options="selectedProgramTracks"
+                        :options="[
+                            { name: 'All', value: null },
+                            ...selectedProgramTracks,
+                        ]"
                         option-label="name"
                         option-value="id"
                         placeholder="Select track"
@@ -326,7 +501,10 @@ const applyFilters = () => {
                     <Select
                         append-to="self"
                         v-model="filterForm.study_mode"
-                        :options="selectedProgramStudyModes"
+                        :options="[
+                            { name: 'All', value: null },
+                            ...selectedProgramStudyModes,
+                        ]"
                         option-label="name"
                         option-value="id"
                         placeholder="Select Study Mode"
@@ -341,7 +519,10 @@ const applyFilters = () => {
                     <Select
                         append-to="self"
                         v-model="filterForm.section"
-                        :options="selectedTrackSections"
+                        :options="[
+                            { name: 'All', value: null },
+                            ...selectedTrackSections,
+                        ]"
                         option-label="name"
                         option-value="id"
                         placeholder="Select section"

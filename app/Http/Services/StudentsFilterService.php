@@ -43,23 +43,23 @@ class StudentsFilterService
             });
         }
 
-        if ($request->has('year')) {
+        if ($request->input('year')) {
             $query->where('year_id', $request->input('year'));
         }
 
-        if ($request->has('program')) {
+        if ($request->input('program')) {
             $query->where('program_id', $request->input('program'));
         }
 
-        if ($request->has('track')) {
+        if ($request->input('track')) {
             $query->where('track_id', $request->input('track'));
         }
 
-        if ($request->has('study_mode')) {
+        if ($request->input('study_mode')) {
             $query->where('study_mode_id', $request->input('study_mode'));
         }
 
-        if ($request->has('section')) {
+        if ($request->input('section')) {
             $query->where('section_id', $request->input('section'));
         }
     }

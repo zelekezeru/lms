@@ -43,15 +43,14 @@ const sort = () => {
         sortDirection = "asc";
     }
 
-    // keep the search param accross all sorts
-    const search = route().queryParams["search"]
-        ? { search: route().queryParams["search"] }
-        : {};
+    const currentParams = new URLSearchParams(window.location.search);
+
+    const queries = Object.fromEntries(currentParams.entries());
 
     router.get(
         route(route().current()),
         {
-            ...search,
+            ...queries,
             sortColumn: props.sortColumn,
             sortDirection: sortDirection,
         },

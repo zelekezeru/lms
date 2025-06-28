@@ -5,12 +5,8 @@ import { Link, useForm } from "@inertiajs/vue3";
 import LanguageToggle from "@/Components/LanguageToggle.vue";
 
 defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+    canResetPassword: Boolean,
+    status: String,
 });
 
 const form = useForm({
@@ -28,18 +24,28 @@ const submit = () => {
 
 <template>
     <div
-        class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900"
+        class="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4"
     >
-        <div class="w-full max-w-md px-6 py-4">
-            <!-- Language toggle outside the card -->
-            <div class="flex justify-end mb-4">
+        <div class="w-full max-w-md relative">
+            <!-- Floating blobs -->
+            <span
+                class="absolute -top-10 -left-10 w-24 h-24 bg-gradient-to-tr from-blue-200 via-blue-400 to-blue-600 opacity-30 rounded-full blur-3xl animate-pulse"
+            ></span>
+            <span
+                class="absolute -bottom-10 -right-10 w-24 h-24 bg-gradient-to-br from-purple-200 via-purple-400 to-purple-600 opacity-30 rounded-full blur-3xl animate-pulse"
+            ></span>
+
+            <!-- Language Toggle -->
+            <div class="flex justify-end mb-4 z-10 relative">
                 <LanguageToggle />
             </div>
 
-            <!-- Login Card -->
-            <div class="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <!-- Card -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 relative z-6 border border-blue-100 dark:border-gray-700"
+            >
                 <h2
-                    class="mb-6 text-3xl font-bold text-center text-gray-800 dark:text-white"
+                    class="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-blue-400 mb-6 drop-shadow-md"
                 >
                     {{ $t("login") }}
                 </h2>
@@ -49,7 +55,7 @@ const submit = () => {
                     <div>
                         <label
                             for="email"
-                            class="block mb-1 text-sm text-gray-700 dark:text-gray-300"
+                            class="text-sm text-gray-700 dark:text-gray-300 mb-1 block"
                         >
                             {{ $t("email") }}
                         </label>
@@ -57,12 +63,12 @@ const submit = () => {
                             id="email"
                             v-model="form.email"
                             required
-                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                             placeholder="you@example.com"
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white"
                         />
                         <span
                             v-if="form.errors.email"
-                            class="text-red-500 text-sm"
+                            class="text-red-500 text-sm mt-1 block"
                         >
                             {{ form.errors.email }}
                         </span>
@@ -72,7 +78,7 @@ const submit = () => {
                     <div>
                         <label
                             for="password"
-                            class="block mb-1 text-sm text-gray-700 dark:text-gray-300"
+                            class="text-sm text-gray-700 dark:text-gray-300 mb-1 block"
                         >
                             {{ $t("password") }}
                         </label>
@@ -81,12 +87,12 @@ const submit = () => {
                             id="password"
                             v-model="form.password"
                             required
-                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                             placeholder="••••••••"
+                            class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white"
                         />
                         <span
                             v-if="form.errors.password"
-                            class="text-red-500 text-sm"
+                            class="text-red-500 text-sm mt-1 block"
                         >
                             {{ form.errors.password }}
                         </span>
@@ -108,17 +114,15 @@ const submit = () => {
                         </label>
                     </div>
 
-                    <!-- Login Button -->
-                    <div class="flex text-center">
-                        <PrimaryButton type="submit" class="w-full">
-                            <span class="w-full text-center block">{{
-                                $t("login")
-                            }}</span>
+                    <!-- Button -->
+                    <div class="pt-2">
+                        <PrimaryButton type="submit">
+                            {{ $t("login") }}
                         </PrimaryButton>
                     </div>
                 </form>
 
-                <!-- Links -->
+                <!-- Forgot Password -->
                 <p class="mt-4 text-center">
                     <Link
                         href="/forgot-password"

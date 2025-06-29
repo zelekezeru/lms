@@ -143,7 +143,7 @@ const isWeightFull = computed(() => {
                             <th
                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                             >
-                                Weight
+                                Title
                             </th>
                             <th
                                 class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"

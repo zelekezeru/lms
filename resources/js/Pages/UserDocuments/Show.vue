@@ -131,7 +131,7 @@ const deleteDocument = (id) => {
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- No File or Image -->
                 <div v-else>
                     <span class="text-sm text-gray-500 dark:text-gray-400">No file or image uploaded</span>

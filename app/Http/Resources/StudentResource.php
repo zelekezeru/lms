@@ -29,6 +29,8 @@ class StudentResource extends JsonResource
             'dateOfBirth' => $this->date_of_birth,
             'maritalStatus' => $this->marital_status,
             'user_id' => $this->user_id,
+
+            'paymentCode' => $this->payment_code,
             
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),

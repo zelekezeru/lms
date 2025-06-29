@@ -29,6 +29,7 @@ import ShowDocuments from "./Tabs/ShowDocuments.vue";
 const props = defineProps({
     student: Object,
     user: Object,
+    documents: Array,
     status: Object,
     studyModes: Array,
     sections: Array,
@@ -274,7 +275,7 @@ const deleteStudent = (id) => {
                     <ShowDocuments
                         v-else-if="selectedTab === 'documents'"
                         :student="student"
-                        :documents="user.userDocuments"
+                        :documents="documents"
                         :semesters="semesters"
                     />
                 </div>

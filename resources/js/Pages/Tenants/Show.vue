@@ -25,20 +25,20 @@ const handleImageLoad = () => {
 // Delete function with SweetAlert confirmation
 const deleteTenant = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: $t("tenant.delete_confirm_title"),
+        text: $t("tenant.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: $t("tenant.delete_confirm_confirm"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tenants.destroy", { tenant: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The tenant has been deleted.",
+                        $t("tenant.delete_success_title"),
+                        $t("tenant.delete_success_text"),
                         "success"
                     );
                 },
@@ -151,24 +151,28 @@ const deleteTenant = (id) => {
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             <div v-if="tenant.status == 0" class="text-red-500">
-                                Inactive
+                                {{ $t("tenant.inactive") }}
                             </div>
-                            <div v-else class="text-green-500">Active</div>
+                            <div v-else class="text-green-500">
+                                {{ $t("tenant.active") }}
+                            </div>
                         </span>
                     </div>
 
                     <!-- Payment -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ $t("tenant.payment") }}
+                            {{ $t("tenant.paid_status") }}
                         </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             <div v-if="tenant.paid == 0" class="text-red-500">
-                                Not Paid
+                                {{ $t("tenant.not_paid") }}
                             </div>
-                            <div v-else class="text-green-500">Paid</div></span
+                            <div v-else class="text-green-500">
+                                {{ $t("tenant.paid") }}
+                            </div></span
                         >
                     </div>
 
@@ -211,7 +215,7 @@ const deleteTenant = (id) => {
                             class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
                         >
                             <PencilIcon class="w-5 h-5" />
-                            <span>Edit</span>
+                            <span>{{ $t("tenant.edit") }}</span>
                         </Link>
                     </div>
                     <!-- Delete Button -->
@@ -221,7 +225,7 @@ const deleteTenant = (id) => {
                             class="flex items-center space-x-1 text-red-500 hover:text-red-700"
                         >
                             <TrashIcon class="w-5 h-5" />
-                            <span>Delete</span>
+                            <span>{{ $t("tenant.delete") }}</span>
                         </button>
                     </div>
                 </div>

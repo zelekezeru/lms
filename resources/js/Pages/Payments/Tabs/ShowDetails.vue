@@ -12,6 +12,7 @@ import {
     CategoryScale,
     LinearScale,
 } from "chart.js";
+import { Link } from "@inertiajs/vue3";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -135,6 +136,7 @@ const filteredPayments = computed(() => {
                     <thead>
                         <tr class="bg-gray-50 dark:bg-gray-700">
                             <th class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">No.</th>
+                            <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Paid By</th>
                             <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Date</th>
                             <th class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Amount (Birr)</th>
                             <th class="w-40 px-4 py-2 text-center text-sm font-medium text-gray-700 dark:text-gray-200 border-r">
@@ -145,23 +147,26 @@ const filteredPayments = computed(() => {
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                                         </svg>
                                     </span>
-                                    <div class="relative mt-1">
+                                    <div class="relative mt-1 flex items-center">
+                                        <svg class="absolute left-3 w-4 h-4 text-blue-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10l4 4 4-4" />
+                                        </svg>
                                         <select
                                             v-model="selectedStatus"
-                                            class="appearance-none pl-10 pr-4 py-1.5 rounded-full border border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 font-semibold shadow focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition text-center"
+                                            class="appearance-none py-1.5 rounded-full border border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 font-semibold shadow focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition text-center"
                                         >
-                                            <option value="">All</option>
+                                            <option value="">All Statuses</option>
                                             <option value="completed">Completed</option>
                                             <option value="pending">Pending</option>
                                             <option value="paid_by_college">Scholarship</option>
                                         </select>
-                                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <svg class="absolute right-3 w-4 h-4 text-blue-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 10l4 4 4-4" />
                                         </svg>
                                     </div>
                                 </div>
                             </th>
-                            <th class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Reference</th>
+                            <th class="w-20 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r">Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,6 +177,10 @@ const filteredPayments = computed(() => {
                             class="border-b border-gray-300 dark:border-gray-600"
                         >
                             <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">{{ index + 1 }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">
+                                <span v-if="payment.student">{{ payment.student.firstName }} {{ payment.student.middleName }} {{ payment.student.lastName }} </span>
+                                <span v-else class="text-gray-400 italic">N/A</span>
+                            </td>
                             <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">{{ payment.payment_date }}</td>
                             <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">{{ formatNumber(payment.total_amount) }}.00</td>
                             <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">
@@ -188,7 +197,19 @@ const filteredPayments = computed(() => {
                                     <span v-else><b>{{ payment.status }}</b></span>
                                 </span>
                             </td>
-                            <td class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r">{{ payment.payment_reference }}</td>
+                            <td>
+                                <Link
+                                v-if="payment.status === 'completed' || payment.status === 'paid_by_college'"
+                                :href="
+                                    route('payments.show', {
+                                        payment: payment.id,
+                                    })
+                                "
+                                class="px-3 py-1 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-800 dark:text-white dark:hover:bg-indigo-700"
+                            >
+                                Receipt
+                            </Link>
+                        </td>
                         </tr>
                     </tbody>
                 </table>

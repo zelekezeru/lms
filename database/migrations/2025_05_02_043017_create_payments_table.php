@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete();
 
             $table->enum('status', ['pending', 'completed', 'paid_by_college', 'canceled'])->nullable()->default('pending');
-            $table->string('reference_number')->nullable();
+            $table->string('payment_reference')->nullable();
             $table->decimal('paid_amount', 10, 2);
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->string('description')->nullable();

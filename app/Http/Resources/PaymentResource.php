@@ -31,6 +31,7 @@ class PaymentResource extends JsonResource
             'paymentMethod' => $this->whenLoaded('paymentMethod'),
             'paymentType' => $this->whenLoaded('paymentType'),
             'semester' => $this->whenLoaded('semester'),
+            'student' => new StudentResource($this->whenLoaded('student')),
 
         ];
     }

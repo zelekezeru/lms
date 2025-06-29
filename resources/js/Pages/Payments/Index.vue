@@ -20,7 +20,6 @@ import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowCategories from "./Tabs/ShowCategories.vue";
 import ShowMethods from "./Tabs/ShowMethods.vue";
 import ShowTypes from "./Tabs/ShowTypes.vue";
-import ShowStatus from "./Tabs/ShowStatus.vue";
 import ShowTransactions from "./Tabs/ShowTransactions.vue";
 import Modal from "@/Components/Modal.vue";
 
@@ -99,7 +98,6 @@ const tabs = [
     { key: "categories", label: "Categories", icon: BookOpenIcon },
     { key: "methods", label: "Methods", icon: Cog6ToothIcon },
     { key: "types", label: "Types", icon: BanknotesIcon },
-    { key: "status", label: "Status", icon: InformationCircleIcon },
     { key: "transactions", label: "Transactions", icon: BuildingLibraryIcon },
 ];
 
@@ -188,13 +186,10 @@ const total = (payments.value.data || []).reduce((sum, payment) => sum + payment
                     :studyModes="studyModes"
                     :paymentCategories="paymentCategories"
                 />
-                <ShowStatus
-                    v-else-if="selectedTab === 'status'"
-                    :payments="payments"
-                />
                 <ShowTransactions
                     v-else-if="selectedTab === 'transactions'"
                     :payments="payments"
+                    :paymentMethods="paymentMethods"
                 />
             </div>
         </transition>

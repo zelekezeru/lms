@@ -147,20 +147,23 @@ class StudentController extends Controller
             $student->grades()->with(['course', 'section', 'semester'])->get()
         );
 
-        $user = new UserResource($student->user->load('userDocuments'));
+        $user = new UserResource($student->user);
 
+        $documents = UserDocumentResource::collection($student->user->userDocuments);
+        
         $semesters = $student->semesters()
             ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
 
         return Inertia::render('Students/Show', [
             'student' => $student,
+            'user' => $user,
+            'documents' => $documents,
             'status' => $status,
             'sections' => $sections,
             'studyModes' => $studyModes,
             'courses' => $courses,
             'paymentTypes' => $paymentTypes,
             'paymentMethods' => $paymentMethods,
-            'user' => $user,
             'payments' => $payments,
             'semesters' => $semesters,
             'grades' => $grades,
@@ -182,6 +185,19 @@ class StudentController extends Controller
             'years' => $years,
             'studyModes' => $studyModes,
         ]);
+    }
+
+    public function generatePaymentCode(Request $request, Student $student)
+    {
+        $request->validate([
+            'paymentCode' => 'required|string|min:5|max:20|unique:students,payment_code,' . $student->id,
+        ]);
+
+        $student->update([
+            'payment_code' => $request->paymentCode,
+        ]);
+
+        return redirect()->back()->with('success', 'Payment Code Generated Successfully.');
     }
 
     // Store the student innformation to the store method in Auth/StudentRegistrationController

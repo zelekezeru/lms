@@ -148,7 +148,8 @@ Route::middleware(['auth'])->group(function () {
 
     // User Profile Picture Update
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
-
+    
+    Route::post('/students/{student}/payment-code', [StudentController::class, 'generatePaymentCode'])->name('students.payment-code');
 
     // Excel Operation Routes
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');

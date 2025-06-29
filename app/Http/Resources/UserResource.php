@@ -26,7 +26,7 @@ class UserResource extends JsonResource
 
             'roles' => $this->whenLoaded('roles'),
             'default_password' => $this->default_password,
-            'userDocument' => new UserDocumentResource($this->whenLoaded('userDocument')),
+            'userDocuments' => new UserDocumentResource($this->whenLoaded('userDocument')),
         ];
     }
 }

@@ -77,6 +77,7 @@ class PaymentController extends Controller
             'status' => 'required|string|in:pending,completed,canceled',
             'reference_number' => 'nullable|string|max:255',
         ]);
+
         $student = Student::find($data['student_id']);
 
         $semester = Semester::getActiveSemester();
@@ -85,6 +86,7 @@ class PaymentController extends Controller
         $data['semester_id'] = $semester->id;
 
         $status = $data['total_amount'] <= $data['paid_amount'] ? 'completed' : 'pending';
+
         $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
 
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $data['student_id'])->where('payment_status', 'unpaid')->first();
@@ -102,10 +104,6 @@ class PaymentController extends Controller
 
         // if payment type is course fee(per-course)
         if ($selectedPayment->duration == 'per-course') {
-
-            // if ($semesterStudent) {
-            //     return redirect()->route('students.show', $request->student_id)->withErrors(['error' => 'The Student Needs To Pay Registration Fee Of ' . $semester->year->name . ' Semester ' . $semester->level . ' Before Paying For This Courses']);
-            // }
 
             if ($data['total_amount'] == $data['paid_amount'] || $student->status->is_scholarship) {
                 $enrollments = $semester->enrollments()->where('student_id', $data['student_id'])->where('status', 'pending')->get();
@@ -136,16 +134,19 @@ class PaymentController extends Controller
         }
 
         $payment = Payment::create($data);
-
+        
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.')->with('reload', true);
     }
 
     public function show(Payment $payment)
     {
-        $payment->load(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester']);
+        $payment = new PaymentResource($payment->load(['paymentType.paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester']));
+
+        $student = new StudentResource($payment->student->load(['program', 'status', 'year', 'semester']));
 
         return Inertia::render('Payments/Show', [
             'payment' => $payment,
+            'student' => $student,
         ]);
     }
 
@@ -153,12 +154,13 @@ class PaymentController extends Controller
     {
         $data = $request->validate([
             'payment_method_id' => 'nullable|exists:payment_methods,id',
+            'payment_type_id' => 'nullable|exists:payment_types,id',
             'payment_date' => 'required|date',
             'paid_amount' => 'required|numeric',
             'description' => 'nullable|string|max:255',
             'payment_reference' => 'nullable|string|max:255',
         ]);
-
+        
         $student = Student::find($payment->student_id);
 
         if ($payment->total_amount < $data['paid_amount']) {
@@ -167,6 +169,8 @@ class PaymentController extends Controller
 
         $status = $payment->total_amount == $data['paid_amount'] ? 'completed' : 'pending';
         $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
+        $data['payment_method_id'] = $payment->payment_method_id; 
+        $data['updated_by'] = Auth::user()->id;
 
 
         $data['tenant_id'] = Auth::user()->tenant_id;
@@ -207,6 +211,13 @@ class PaymentController extends Controller
 
     public function destroy(Payment $payment)
     {
+        // Check if the payment has any related records that prevent deletion
+        if ($payment->enrollments()->exists()) {
+            return redirect()->route('payments.index')->withErrors(['error' => 'Cannot delete this payment because it has associated enrollments.']);
+        }
+        if ($payment->semesterStudent()->exists()) {
+            return redirect()->route('payments.index')->withErrors(['error' => 'Cannot delete this payment because it has associated semester student records.']);
+        }   
         $payment->delete();
 
         return redirect()->route('payments.index')->with('success', 'Payment deleted successfully.');

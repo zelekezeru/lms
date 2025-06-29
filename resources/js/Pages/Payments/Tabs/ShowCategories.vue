@@ -154,7 +154,23 @@ const closeEditModal = () => {
                             <td class="px-6 py-4">{{ category.name }}</td>
                             <td class="px-6 py-4">{{ category.description }}</td>
                             <td class="px-6 py-4">
-                                {{ category.is_active == "1" ? "Active" : "Inactive" }}
+                                <span
+                                    v-if="category.is_deleted"
+                                    class="inline-block px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded dark:bg-red-900 dark:text-red-200"
+                                >
+                                    Deleted
+                                </span>
+                                <span v-else>
+                                    <span
+                                        :class="{
+                                            'inline-block px-2 py-1 text-xs font-semibold rounded': true,
+                                            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': category.is_active == '1',
+                                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': category.is_active != '1'
+                                        }"
+                                    >
+                                        {{ category.is_active == "1" ? "Active" : "Inactive" }}
+                                    </span>
+                                </span>
                             </td>
                             <td class="px-6 py-4 flex justify-start space-x-4">
                                 <button

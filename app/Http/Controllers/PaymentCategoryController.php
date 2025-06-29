@@ -57,7 +57,19 @@ class PaymentCategoryController extends Controller
 
     public function destroy(PaymentCategory $paymentCategory)
     {
-        $paymentCategory->delete();
+        // if it has relationships, you might want to handle them first
+        if ($paymentCategory->paymentTypes()->exists()) {
+            return redirect()->back()->with('error', 'Cannot delete this category because it has associated payments.');
+        }
+
+        // Soft delete the payment category
+        $paymentCategory->is_deleted = true;
+        $paymentCategory->deleted_at = now();
+        $paymentCategory->deleted_by = Auth::user()->id;
+
+        $paymentCategory->is_active = false;
+
+        $paymentCategory->save();
 
         return redirect()->back()->with('success', 'Payment category deleted successfully.');
     }

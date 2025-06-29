@@ -94,22 +94,86 @@ const paymentCreationForm = useForm({
 
 const paymentUpdateForm = useForm({
     payment_method_id: null,
-    description: "",
-    status: null,
-    paid_amount: 0,
+    payment_type_id: props.payments[0]?.payment_type_id || null,
+    description: props.payments[0]?.description || "",
+    status: props.payments[0]?.status || "pending",
+    paid_amount: props.payments[0]?.paid_amount || 0,
     payment_date: new Date().toISOString().slice(0, 10),
-    reference_number: "",
+    reference_number: props.payments[0]?.reference_number || "",
     _method: "PATCH",
 });
 
 const selectedPayment = ref(null);
 const updatePaymentModal = ref(false);
+const addCode = ref(false);
+
+const paymentCodeForm = useForm({
+  student_id: props.student.id,
+  paymentCode: props.student.paymentCode || "",
+});
+
+const closeCode = () => {
+    addCode.value = false;
+};
+
+const submitPaymentCode = () => {
+  if (!paymentCodeForm.paymentCode.trim()) {
+    Swal.fire({
+      icon: "error",
+      title: "Missing Code",
+      text: "Please enter a valid payment code.",
+    });
+    return;
+    }
+
+    if (paymentCodeForm.paymentCode.length < 5) {
+        Swal.fire({
+        icon: "error",
+        title: "Invalid Code",
+        text: "Payment code must be at least 5 characters long.",
+        });
+        return;
+    }
+    closeCode();
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This will Add the payment code for the student.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Create it",
+        cancelButtonText: "Cancel",
+    }).then((result) => {
+        if (result.isConfirmed) {
+        paymentCodeForm.post(route("students.payment-code", props.student.id), {
+            onSuccess: () => {
+            Swal.fire({
+                icon: "success",
+                title: "Created!",
+                text: "Payment code saved successfully.",
+            });
+            closeCode();
+            // Optionally refresh the student paymentCode
+            props.student.paymentCode = paymentCodeForm.paymentCode;
+            },
+            onError: (errors) => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: errors.error ?? "Could not save payment code. Check your input if repeated.",
+            });
+            },
+        });
+        }
+    });
+};
 
 const showUpdatePaymentModal = (payment) => {
     selectedPayment.value = payment;
-
-    paymentUpdateForm.payment_method_id = payment.payment_method_id;
+    
+    paymentUpdateForm.payment_type_id = payment.payment_type_id;
     paymentUpdateForm.description = payment.description;
+    paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10),
     paymentUpdateForm.paid_amount = payment.paid_amount;
     paymentUpdateForm.status = payment.status;
     paymentUpdateForm.reference_number = payment.reference_number;
@@ -142,6 +206,7 @@ const submitPayment = () => {
     });
 };
 const perCoursePaymentType = ref(false);
+
 const closeCreatePaymentModal = () => {
     createPaymentModal.value = false;
     paymentCreationForm.reset();
@@ -182,7 +247,7 @@ watch(
         if (newVal == "completed") {
             paymentCreationForm.paid_amount = paymentCreationForm.total_amount;
         } else {
-            paymentCreationForm.paid_amount = 0;
+            paymentCreationForm.paid_amount = props.payments[0]?.paid_amount || 0;
         }
     }
 );
@@ -195,7 +260,7 @@ watch(
             paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
             console.log(paymentUpdateForm.paid_amount);
         } else {
-            paymentUpdateForm.paid_amount = 0;
+            paymentUpdateForm.paid_amount = props.payments[0]?.paid_amount || 0;
         }
     }
 );
@@ -225,9 +290,9 @@ watch(
 );
 
 const statusOptions = [
-    { label: "pending", value: "pending" },
-    { label: "completed", value: "completed" },
-    { label: "canceled", value: "failed" },
+    { label: "Pending", value: "pending" },
+    { label: "Completed", value: "completed" },
+    { label: "Canceled", value: "failed" },
 ];
 const submitNewPayment = () => {
     paymentCreationForm.post(
@@ -323,15 +388,37 @@ const updatePayment = () => {
                         : ""
                 }}
             </h2>
-            <button
-                @click="createPaymentModal = !createPaymentModal"
-                class="flex items-center text-green-600 hover:text-green-800"
-            >
-                <PlusCircleIcon class="mx-2 w-6 h-6" />
-                <span class="font-medium">Create Payment</span>
-            </button>
+            <template v-if="student.paymentCode == null">
+                <button
+                    @click="addCode = true"
+                    class="inline-flex items-center px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-bold shadow-md border border-blue-600 hover:from-blue-600 hover:to-blue-800 transition"
+                >
+                    <CogIcon class="w-5 h-5 mr-2" />
+                    <span>Add Payment Code</span>
+                </button>
+            </template>
+            <template v-else>
+                <button
+                    @click="createPaymentModal = !createPaymentModal"
+                    class="flex items-center text-green-600 hover:text-green-800"
+                >
+                    <PlusCircleIcon class="mx-2 w-6 h-6" />
+                    <span class="font-medium">Create Payment</span>
+                </button>
+            </template>
+            
         </div>
 
+        <div class="my-4 ml-4 flex items-center space-x-2 ">
+            <template v-if="student.paymentCode">
+                <span class="inline-flex items-center px-4 py-3 py-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse">
+                    <svg class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4 -4" />
+                    </svg>
+                    Payment Code: {{ student.paymentCode }}
+                </span>
+            </template>            
+        </div>
         <!-- Filters -->
         <div class="mb-6 space-y-4">
             <div>
@@ -465,13 +552,12 @@ const updatePayment = () => {
                             :style="{
                                 width:
                                     payment.status == 'paid_by_college'
-                                        ? '100%'
-                                        : (payment.paid_amount /
-                                              payment.total_amount) *
-                                              100 +
-                                          '%',
-                            }"
-                        ></div>
+                                    ? '100%'
+                                    : (payment.paid_amount /
+                                            payment.total_amount) *
+                                            100 +
+                                        '%', }">
+                        </div>
                     </div>
 
                     <!-- Actions -->
@@ -488,21 +574,16 @@ const updatePayment = () => {
                         </button>
                         <div class="space-x-2 flex flex-wrap">
                             <Link
+                                v-if="payment.status === 'completed' || payment.status === 'paid_by_college'"
                                 :href="
                                     route('payments.show', {
                                         payment: payment.id,
                                     })
                                 "
-                                class="px-3 py-1 text-sm font-medium rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-                            >
-                                View
-                            </Link>
-                            <button
-                                @click="downloadReceipt(payment.id)"
                                 class="px-3 py-1 text-sm font-medium rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-800 dark:text-white dark:hover:bg-indigo-700"
                             >
                                 Receipt
-                            </button>
+                            </Link>
                             <button
                                 v-if="payment.status === 'pending'"
                                 @click="showUpdatePaymentModal(payment)"
@@ -1097,9 +1178,29 @@ const updatePayment = () => {
                 Update {{ selectedPayment.payment_type.type }} Payment for –
                 {{ activeSemester.name }}
             </h1>
-            <h1 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-                Total: {{ selectedPayment.total_amount }}
-            </h1>
+            <div class="flex flex-wrap gap-6 mb-6">
+                <!-- Total Amount -->
+                <div class="flex-1 min-w-[180px] bg-blue-50 dark:bg-blue-900 rounded-xl p-4 shadow text-center">
+                    <div class="text-xs uppercase text-blue-700 dark:text-blue-200 font-semibold mb-1">Total Payment</div>
+                    <div class="text-2xl font-bold text-blue-800 dark:text-blue-100">
+                        {{ selectedPayment.total_amount }} <span class="text-base font-normal">ETB</span>
+                    </div>
+                </div>
+                <!-- Paid Amount -->
+                <div class="flex-1 min-w-[180px] bg-green-50 dark:bg-green-900 rounded-xl p-4 shadow text-center">
+                    <div class="text-xs uppercase text-green-700 dark:text-green-200 font-semibold mb-1">Already Paid</div>
+                    <div class="text-2xl font-bold text-green-800 dark:text-green-100">
+                        {{ selectedPayment.paid_amount }} <span class="text-base font-normal">ETB</span>
+                    </div>
+                </div>
+                <!-- Remaining Amount -->
+                <div class="flex-1 min-w-[180px] bg-yellow-50 dark:bg-yellow-900 rounded-xl p-4 shadow text-center">
+                    <div class="text-xs uppercase text-yellow-700 dark:text-yellow-200 font-semibold mb-1">Remaining Amount</div>
+                    <div class="text-2xl font-bold text-yellow-800 dark:text-yellow-100">
+                        {{ selectedPayment.total_amount - selectedPayment.paid_amount }} <span class="text-base font-normal">ETB</span>
+                    </div>
+                </div>
+            </div>
 
             <span class="text-red-700 text-lg">{{ errors.error }}</span>
             <form @submit.prevent="updatePayment">
@@ -1113,7 +1214,7 @@ const updatePayment = () => {
                             Payment Method
                         </label>
                         <Select
-                            v-model="paymentCreationForm.payment_method_id"
+                            v-model="paymentUpdateForm.payment_method_id"
                             :options="paymentMethods"
                             optionLabel="bank_name"
                             optionValue="id"
@@ -1123,7 +1224,7 @@ const updatePayment = () => {
                         />
                         <InputError
                             :message="
-                                paymentCreationForm.errors.payment_method_id
+                                paymentUpdateForm.errors.payment_method_id
                             "
                             class="mt-2 text-sm text-red-500"
                         />
@@ -1162,7 +1263,7 @@ const updatePayment = () => {
                             Status
                         </label>
                         <Select
-                            v-model="paymentUpdateForm.status"
+                            v-model="selectedPayment.status"
                             :options="statusOptions"
                             optionLabel="label"
                             optionValue="value"
@@ -1197,7 +1298,9 @@ const updatePayment = () => {
                             </label>
                             <input
                                 type="number"
-                                v-model="paymentUpdateForm.paid_amount"
+                                v-model.number="paymentUpdateForm.paid_amount"
+                                :max="selectedPayment.total_amount"
+                                min="0"
                                 id="paid_amount"
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                             />
@@ -1205,6 +1308,9 @@ const updatePayment = () => {
                                 :message="paymentUpdateForm.errors.paid_amount"
                                 class="mt-2 text-sm text-red-500"
                             />
+                            <div v-if="paymentUpdateForm.paid_amount > (selectedPayment.total_amount)" class="text-red-500 text-xs mt-1">
+                                Paid amount cannot exceed the remaining amount ({{ selectedPayment.total_amount - selectedPayment.paid_amount }} ETB).
+                            </div>
                         </div>
                     </Transition>
                     <!-- Payment Date -->
@@ -1233,7 +1339,7 @@ const updatePayment = () => {
                             for="reference_number"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
-                            Reference Number (Optional)
+                            Reference Number
                         </label>
                         <input
                             type="text"
@@ -1270,6 +1376,53 @@ const updatePayment = () => {
                         Close
                     </button>
                 </div>
+            </form>
+        </div>
+    </Modal>
+
+    
+    <Modal :show="addCode" @close="closeCode" maxWidth="sm">
+        <div class="px-6 py-4">
+            <h2 class="text-lg font-bold mb-4">Add / Update Payment Code</h2>
+
+            <form @submit.prevent="submitPaymentCode" class="space-y-4">
+            <div>
+                <label
+                for="paymentCode"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                Payment Code
+                </label>
+                <input
+                id="paymentCode"
+                type="text"
+                v-model="paymentCodeForm.paymentCode"
+                maxlength="20"
+                placeholder="e.g. ABC12345"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 shadow-sm focus:ring focus:ring-blue-300"
+                />
+                <p class="text-xs text-gray-500 mt-1">
+                This code should be unique to the student.
+                </p>
+                <InputError :message="paymentCodeForm.errors.paymentCode" class="mt-2" />
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button
+                type="button"
+                @click="closeCode"
+                class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
+                >
+                Cancel
+                </button>
+                <button
+                type="submit"
+                :disabled="paymentCodeForm.processing"
+                class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white"
+                >
+                {{ paymentCodeForm.processing ? "Saving..." : "Save" }}
+                </button>
+            </div>
             </form>
         </div>
     </Modal>

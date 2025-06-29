@@ -108,15 +108,27 @@ const deleteDocument = (id) => {
                 <div v-else-if="userDocument.image">
                     
                     <span class="text-sm text-gray-500 dark:text-gray-400 mb-2 block">Uploaded Image</span>
-                    <div class="flex justify-START items-START min-h-[180px]">
-                        <div v-if="!imageLoaded" class="w-full h-48 bg-gray-300 dark:bg-gray-700 animate-pulse rounded-md"></div>
-                        <img
-                            v-show="imageLoaded"
-                            :src="userDocument.image"
-                            :alt="`Image of ` + userDocument.title"
-                            @load="handleImageLoad"
-                            class="rounded-xl shadow-md max-h-[300px] object-contain transition-transform hover:scale-105"
-                        />
+                    <div class="flex justify-center items-center min-h-[220px] bg-gradient-to-br from-gray-100 via-white to-gray-200 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl shadow-inner overflow-hidden relative group">
+                        <transition name="fade" mode="out-in">
+                            <div v-if="!imageLoaded" key="loader" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 animate-pulse z-10">
+                                <svg class="w-12 h-12 text-gray-400 dark:text-gray-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
+                            </div>
+                            <img
+                                v-else
+                                key="image"
+                                :src="userDocument.image"
+                                :alt="`Image of ` + userDocument.title"
+                                @load="handleImageLoad"
+                                class="rounded-xl shadow-lg object-contain transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl"
+                                style="width: 595px; height: 842px; max-width: 100%; max-height: 80vh;"
+                            />
+                        </transition>
+                        <div class="absolute bottom-2 right-2 bg-white/80 dark:bg-gray-900/70 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-200 shadow backdrop-blur-sm">
+                            {{ userDocument.title }}
+                        </div>
                     </div>
                 </div>
 

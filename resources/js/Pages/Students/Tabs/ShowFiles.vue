@@ -56,7 +56,7 @@ const deleteDocument = (id) => {
         <h2 id="student-documents-heading" class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
             Student Documents
         </h2>
-
+{{ student.user.documents }}
         <div class="mb-4">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
                 <Link

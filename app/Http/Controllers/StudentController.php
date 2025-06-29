@@ -153,7 +153,7 @@ class StudentController extends Controller
         
         $semesters = $student->semesters()
             ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
-
+        
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => $user,

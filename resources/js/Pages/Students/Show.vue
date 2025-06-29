@@ -209,7 +209,7 @@ const deleteStudent = (id) => {
                 {{ student.firstName }} {{ student.middleName }}
                 {{ student.lastName }}
             </h1>
-
+            
             <!-- 🌐 Main Content -->
             <transition
                 mode="out-in"

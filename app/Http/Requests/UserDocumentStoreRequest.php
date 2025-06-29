@@ -17,8 +17,8 @@ class UserDocumentStoreRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:10260',
-            'file' => 'nullable|file|mimes:pdf,docx,doc,xlsx,xls,ppt,pptx,txt|max:20420',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:20480',
+            'file' => 'nullable|file|mimes:pdf,docx,doc,xlsx,xls,ppt,pptx,txt|max:20480',
         ];
     }
 }

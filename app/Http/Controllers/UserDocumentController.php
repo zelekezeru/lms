@@ -97,22 +97,26 @@ class UserDocumentController extends Controller
 
         // Handle image upload with Intervention Image
         if ($image = $request->file('image')) {
-            $filename = 'image_'.time().'.'.$image->getClientOriginalExtension();
-            $path = public_path('images/'.$filename);
+            // Prepare filename based on user name if available, else use timestamp
+            $user = isset($fields['user_id']) ? User::find($fields['user_id']) : null;
+            $name = $user ? preg_replace('/\s+/', '', $user->name) : 'userdoc_' . time();
+            $filename = 'userdoc_' . strtolower($name) . '.png';
+            $path = 'user-documents/images/' . $filename;
 
-            // Ensure the directory exists and save resized image
-            if (! file_exists(dirname($path))) {
-                mkdir(dirname($path), 0755, true);
-            }
+            // Resize and fit image to 595x842 (A4 portrait), prevent upsize
+            $img = Image::make($image)->fit(595, 842, function ($constraint) {
+            $constraint->upsize();
+            });
 
-            Image::make($image)->resize(800, 400)->save($path);
-            $fields['image'] = '/images/'.$filename;
+            Storage::disk('public')->put($path, (string) $img->encode('png'));
+
+            $fields['image'] = '/storage/' . $path;
         }
 
         // Handle file upload
         if ($file = $request->file('file')) {
             $storedPath = $file->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/'.$storedPath;
+            $fields['file'] = '/storage/' . $storedPath;
         }
 
         // Save to database
@@ -156,33 +160,34 @@ class UserDocumentController extends Controller
         if ($image = $request->file('image')) {
             // Delete old image if exists
             if ($userDocument->image) {
-                $oldImagePath = public_path($userDocument->image);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+            Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->image));
             }
 
-            $filename = 'image_'.time().'.'.$image->getClientOriginalExtension();
-            $path = public_path('images/'.$filename);
+            // Prepare filename based on user name if available, else use timestamp
+            $user = isset($fields['user_id']) ? User::find($fields['user_id']) : null;
+            $name = $user ? preg_replace('/\s+/', '', $user->name) : 'userdoc_' . time();
+            $filename = 'userdoc_' . strtolower($name) . '.png';
+            $path = 'user-documents/images/' . $filename;
 
-            // Ensure the directory exists and save resized image
-            if (! file_exists(dirname($path))) {
-                mkdir(dirname($path), 0755, true);
-            }
+            // Resize and fit image to 595x842 (A4 portrait), prevent upsize
+            $img = Image::make($image)->fit(595, 842, function ($constraint) {
+            $constraint->upsize();
+            });
 
-            Image::make($image)->resize(800, 400)->save($path);
-            $fields['image'] = '/images/'.$filename;
+            Storage::disk('public')->put($path, (string) $img->encode('png'));
+
+            $fields['image'] = '/storage/' . $path;
         }
 
         // Handle file upload
         if ($file = $request->file('file')) {
             // Delete old file if exists
             if ($userDocument->file) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->file));
+            Storage::disk('public')->delete(str_replace('/storage/', '', $userDocument->file));
             }
 
             $storedPath = $file->store('user-documents/files', 'public');
-            $fields['file'] = '/storage/'.$storedPath;
+            $fields['file'] = '/storage/' . $storedPath;
         }
 
         // Update the user document record

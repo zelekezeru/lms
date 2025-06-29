@@ -70,9 +70,17 @@ const getStudentGradeLetter = (studentId) => {
 };
 
 const getResultValue = (studentId, weightId) => {
+    // If value is already in the form (edited or entered), return it
     if (resultForm.value[weightId]?.[studentId] !== undefined) return resultForm.value[weightId][studentId];
+
+    // Try to fetch from the latest data in props.weights (in case of updates)
     const weight = props.weights.find(w => w.id === weightId);
-    if (weight) {
+    if (weight && Array.isArray(weight.results)) {
+        // If results are not loaded, fetch them (simulate fetch if needed)
+        if (weight.results.length === 0) {
+            // You can add an API call here if needed to fetch results for this weight
+            // Example: fetchResultsForWeight(weightId);
+        }
         const existing = weight.results.find(r => r.student_id === studentId);
         return existing ? existing.point : '';
     }
@@ -172,7 +180,8 @@ const getResultPoint = (weight, studentId) => {
                     </td>
                     <td class="px-4 py-2">{{ getStudentTotalPoints(student.id) }}</td>
                     <td class="px-4 py-2">
-                        <span :class="{
+                        <!-- if result is null dont show grade -->
+                        <span v-if="getStudentGradeLetter(student.id) !== null" :class="{
                             'text-green-600 font-semibold': getStudentGradeLetter(student.id).startsWith('A'),
                             'text-yellow-600 font-semibold': getStudentGradeLetter(student.id).startsWith('B'),
                             'text-orange-600 font-semibold': getStudentGradeLetter(student.id).startsWith('C'),

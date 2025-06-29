@@ -1,1 +1,0 @@
-import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as r,o as s,a as o,p as a,I as n}from"./app-oxZXhdOW.js";const c={},d={class:"flex justify-center"};function f(e,i){return s(),r("div",d,[o("button",n({class:"px-4 py-2 bg-green-600 text-white rounded"},e.$attrs),[a(e.$slots,"default")],16)])}const _=t(c,[["render",f]]);export{_ as P};

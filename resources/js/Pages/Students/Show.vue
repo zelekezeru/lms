@@ -50,13 +50,48 @@ const toggleDrawer = () => {
 };
 
 const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "academics", label: "Academics", icon: BookOpenIcon },
-    { key: "courses", label: "Courses", icon: AcademicCapIcon },
-    { key: "registrations", label: "Registration", icon: UsersIcon },
-    { key: "payments", label: "Payment", icon: CurrencyDollarIcon },
-    { key: "church", label: "Church", icon: HomeModernIcon },
-    { key: "documents", label: "Documents", icon: PaperClipIcon },
+    {
+        key: "details",
+        label: "Details",
+        icon: CogIcon,
+        permission: "view-students",
+    },
+    {
+        key: "academics",
+        label: "Academics",
+        icon: BookOpenIcon,
+        permission: "view-students",
+    },
+    {
+        key: "courses",
+        label: "Courses",
+        icon: AcademicCapIcon,
+        permission: "create-students",
+    },
+    {
+        key: "registrations",
+        label: "Registration",
+        icon: UsersIcon,
+        permission: "create-students",
+    },
+    {
+        key: "payments",
+        label: "Payment",
+        icon: CurrencyDollarIcon,
+        permission: "view-payments",
+    },
+    {
+        key: "church",
+        label: "Church",
+        icon: HomeModernIcon,
+        permission: "view-students",
+    },
+    {
+        key: "documents",
+        label: "Documents",
+        icon: PaperClipIcon,
+        permission: "view-students",
+    },
 ];
 
 const imageLoaded = ref(false);
@@ -185,20 +220,22 @@ const deleteStudent = (id) => {
                 :class="isOverflowing ? 'justify-start' : 'justify-center'"
             >
                 <div class="flex space-x-4 min-w-max">
-                    <button
-                        v-for="tab in tabs"
-                        :key="tab.key"
-                        @click="selectedTab = tab.key"
-                        class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
-                        :class="
-                            selectedTab === tab.key
-                                ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                        "
-                    >
-                        <component :is="tab.icon" class="w-5 h-5" />
-                        <span>{{ tab.label }}</span>
-                    </button>
+                    <template v-for="tab in tabs" :key="tab.key">
+                        <button
+                            v-if="userCan(tab.permission)"
+                            @click="selectedTab = tab.key"
+                            type="button"
+                            class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                            :class="
+                                selectedTab === tab.key
+                                    ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                            "
+                        >
+                            <component :is="tab.icon" class="w-5 h-5" />
+                            <span>{{ tab.label }}</span>
+                        </button>
+                    </template>
                 </div>
             </nav>
 

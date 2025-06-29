@@ -83,54 +83,58 @@ const tabs = [
 </script>
 
 <template>
-    <nav
-        class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
-    >
-        <button
-            v-for="tab in tabs"
-            :key="tab.key"
-            @click="selectedTab = tab.key"
-            class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
-            :class="
-                selectedTab === tab.key
-                    ? 'border-b-2 border-indigo-500 text-indigo-600'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-            "
+    <div v-if="hasAnyRole(['REGISTRAR', 'ADMIN', 'SUPER-ADMIN'])">
+        <nav
+            class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
         >
-            <component :is="tab.icon" class="w-5 h-5" />
-            <span>{{ tab.label }}</span>
-        </button>
-    </nav>
+            <button
+                v-for="tab in tabs"
+                :key="tab.key"
+                @click="selectedTab = tab.key"
+                class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                :class="
+                    selectedTab === tab.key
+                        ? 'border-b-2 border-indigo-500 text-indigo-600'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                "
+            >
+                <component :is="tab.icon" class="w-5 h-5" />
+                <span>{{ tab.label }}</span>
+            </button>
+        </nav>
 
-    <!-- scholarship Panel -->
-    <transition
-        mode="out-in"
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0 scale-75"
-        enter-to-class="opacity-100 scale-100"
-        leave-active-class="transition duration-200 ease-in"
-        leave-from-class="opacity-100 scale-100"
-        leave-to-class="opacity-0 scale-75"
-    >
-        <div
-            :key="selectedTab"
-            class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+        <!-- scholarship Panel -->
+        <transition
+            mode="out-in"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-75"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-75"
         >
-            <!-- Church Panel -->
-            <ShowRegisteredSemesters
-                v-if="selectedTab === 'semesters'"
-                :student="student"
-                :status="status"
-                :semesters="semesters"
-                :active-semester="activeSemester"
-                :update-route="updateRoute"
-            />
-            <!-- Documents Panel -->
-            <ShowScholarship
-                v-else-if="selectedTab === 'scholarship'"
-                :student="student"
-                :status="status"
-            />
-        </div>
-    </transition>
+            <div
+                :key="selectedTab"
+                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
+            >
+                <!-- Church Panel -->
+                <ShowRegisteredSemesters
+                    v-if="selectedTab === 'semesters'"
+                    :student="student"
+                    :status="status"
+                    :semesters="semesters"
+                    :active-semester="activeSemester"
+                    :update-route="updateRoute"
+                />
+                <!-- Documents Panel -->
+                <ShowScholarship
+                    v-else-if="selectedTab === 'scholarship'"
+                    :student="student"
+                    :status="status"
+                />
+            </div>
+        </transition>
+    </div>
+
+    <div>Unavailable!</div>
 </template>

@@ -122,6 +122,31 @@ class InstructorSeeder extends Seeder
             ]);
         }
 
+        Instructor::insert([
+            [
+                'id' => 9,
+                'user_id' => 39,
+                'specialization' => 'Counseling',
+                'employment_type' => 'FULL-TIME',
+                'hire_date' => '2024-01-02',
+                'status' => 'Active',
+                'bio' => 'Instructor at SITS',
+                'created_at' => '2025-06-23 05:03:56',
+                'updated_at' => '2025-06-23 05:03:56',
+            ],
+            [
+                'id' => 10,
+                'user_id' => 42,
+                'specialization' => 'New Testament',
+                'employment_type' => 'FULL-TIME',
+                'hire_date' => '2024-01-01',
+                'status' => 'Active',
+                'bio' => 'Instructor at SITS',
+                'created_at' => '2025-06-23 05:06:24',
+                'updated_at' => '2025-06-23 05:06:24',
+            ],
+        ]);
+
         DB::table('course_instructor')->insert([
             [
                 'course_id' => 1,
@@ -131,13 +156,13 @@ class InstructorSeeder extends Seeder
             ],
             [
                 'course_id' => 2,
-                'instructor_id' => 2,
+                'instructor_id' => 9,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'course_id' => 3,
-                'instructor_id' => 3,
+                'instructor_id' => 10,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

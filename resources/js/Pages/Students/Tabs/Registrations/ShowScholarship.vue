@@ -187,7 +187,7 @@ function rejectScholarship() {
                     class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-3 text-center"
                     >Scholarship Request</span
                 >
-                <template v-if="status.is_scholarship_requested">
+                <template v-if="status.is_scholarship_requested == 1">
                     <span class="text-sm text-green-500 dark:text-green-400"
                         >Scholarship request already submitted.</span
                     >
@@ -199,7 +199,7 @@ function rejectScholarship() {
                             >Reason:</span
                         >
                         <span
-                            v-if="status.scholarship_reason"
+                            v-if="status.scholarship_reason != null"
                             class="text-sm text-yellow-700 dark:text-yellow-100 ml-2"
                         >
                             {{ status.scholarship_reason }}
@@ -233,7 +233,7 @@ function rejectScholarship() {
                     "
                 >
                     <svg
-                        v-if="status.is_scholarship"
+                        v-if="status.is_scholarship == 1"
                         class="w-4 h-4 mr-1 text-green-500 dark:text-green-300"
                         fill="none"
                         stroke="currentColor"
@@ -246,7 +246,7 @@ function rejectScholarship() {
                             d="M5 13l4 4L19 7"
                         />
                     </svg>
-                    <span v-if="status.is_scholarship"
+                    <span v-if="status.is_scholarship == 1"
                         >Scholarship Given Student</span
                     >
 
@@ -267,7 +267,7 @@ function rejectScholarship() {
                     <span v-else>Not a Scholarship Student</span>
                 </span>
                 <span
-                    v-if="status.scholarship_requested_by_name"
+                    v-if="status.scholarship_requested_by_name != null"
                     class="flex items-center justify-center mt-2"
                 >
                     <div class="flex flex-col gap-2 my-4 w-full">
@@ -298,9 +298,9 @@ function rejectScholarship() {
                 <div
                     class="flex flex-col w-full gap-2"
                     v-if="
-                        status.is_scholarship_requested &&
-                        !status.is_scholarship_approved &&
-                        !status.is_scholarship_rejected
+                        status.is_scholarship_requested == 1 &&
+                        status.is_scholarship_approved == 0 &&
+                        status.is_scholarship_rejected == 0
                     "
                 >
                     <button
@@ -320,7 +320,7 @@ function rejectScholarship() {
                 </div>
 
                 <span
-                    v-if="status.is_scholarship_approved"
+                    v-if="status.is_scholarship_approved == 1"
                     class="text-sm text-green-500 dark:text-green-400"
                 >
                     <span class="text-sm text-green-500 dark:text-green-400">
@@ -336,7 +336,7 @@ function rejectScholarship() {
                     </span>
                 </span>
                 <span
-                    v-if="status.is_scholarship_rejected"
+                    v-if="status.is_scholarship_rejected == 1"
                     class="text-sm text-red-500 dark:text-red-400"
                 >
                     <span class="text-sm text-green-500 dark:text-green-400">

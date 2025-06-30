@@ -108,8 +108,8 @@ const updatePaymentModal = ref(false);
 const addCode = ref(false);
 
 const paymentCodeForm = useForm({
-  student_id: props.student.id,
-  paymentCode: props.student.paymentCode || "",
+    student_id: props.student.id,
+    paymentCode: props.student.paymentCode || "",
 });
 
 const closeCode = () => {
@@ -117,20 +117,20 @@ const closeCode = () => {
 };
 
 const submitPaymentCode = () => {
-  if (!paymentCodeForm.paymentCode.trim()) {
-    Swal.fire({
-      icon: "error",
-      title: "Missing Code",
-      text: "Please enter a valid payment code.",
-    });
-    return;
+    if (!paymentCodeForm.paymentCode.trim()) {
+        Swal.fire({
+            icon: "error",
+            title: "Missing Code",
+            text: "Please enter a valid payment code.",
+        });
+        return;
     }
 
     if (paymentCodeForm.paymentCode.length < 5) {
         Swal.fire({
-        icon: "error",
-        title: "Invalid Code",
-        text: "Payment code must be at least 5 characters long.",
+            icon: "error",
+            title: "Invalid Code",
+            text: "Payment code must be at least 5 characters long.",
         });
         return;
     }
@@ -145,36 +145,41 @@ const submitPaymentCode = () => {
         cancelButtonText: "Cancel",
     }).then((result) => {
         if (result.isConfirmed) {
-        paymentCodeForm.post(route("students.payment-code", props.student.id), {
-            onSuccess: () => {
-            Swal.fire({
-                icon: "success",
-                title: "Created!",
-                text: "Payment code saved successfully.",
-            });
-            closeCode();
-            // Optionally refresh the student paymentCode
-            props.student.paymentCode = paymentCodeForm.paymentCode;
-            },
-            onError: (errors) => {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: errors.error ?? "Could not save payment code. Check your input if repeated.",
-            });
-            },
-        });
+            paymentCodeForm.post(
+                route("students.payment-code", props.student.id),
+                {
+                    onSuccess: () => {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Created!",
+                            text: "Payment code saved successfully.",
+                        });
+                        closeCode();
+                        // Optionally refresh the student paymentCode
+                        props.student.paymentCode = paymentCodeForm.paymentCode;
+                    },
+                    onError: (errors) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text:
+                                errors.error ??
+                                "Could not save payment code. Check your input if repeated.",
+                        });
+                    },
+                }
+            );
         }
     });
 };
 
 const showUpdatePaymentModal = (payment) => {
     selectedPayment.value = payment;
-    
+
     paymentUpdateForm.payment_type_id = payment.payment_type_id;
     paymentUpdateForm.description = payment.description;
-    paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10),
-    paymentUpdateForm.paid_amount = payment.paid_amount;
+    (paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10)),
+        (paymentUpdateForm.paid_amount = payment.paid_amount);
     paymentUpdateForm.status = payment.status;
     paymentUpdateForm.reference_number = payment.reference_number;
 
@@ -247,7 +252,8 @@ watch(
         if (newVal == "completed") {
             paymentCreationForm.paid_amount = paymentCreationForm.total_amount;
         } else {
-            paymentCreationForm.paid_amount = props.payments[0]?.paid_amount || 0;
+            paymentCreationForm.paid_amount =
+                props.payments[0]?.paid_amount || 0;
         }
     }
 );
@@ -371,7 +377,10 @@ const updatePayment = () => {
 </script>
 
 <template>
-    <div class="max-w-5xl mx-auto">
+    <div
+        class="max-w-5xl mx-auto"
+        v-if="userCanAny(['create-payments', 'update-payments'])"
+    >
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ selectedStatus.toUpperCase() }} Payments Of
@@ -406,18 +415,29 @@ const updatePayment = () => {
                     <span class="font-medium">Create Payment</span>
                 </button>
             </template>
-            
         </div>
 
-        <div class="my-4 ml-4 flex items-center space-x-2 ">
+        <div class="my-4 ml-4 flex items-center space-x-2">
             <template v-if="student.paymentCode">
-                <span class="inline-flex items-center px-4 py-3 py-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse">
-                    <svg class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4 -4" />
+                <span
+                    class="inline-flex items-center px-4 py-3 py-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse"
+                >
+                    <svg
+                        class="w-4 h-4 mr-2 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9 12l2 2l4 -4"
+                        />
                     </svg>
                     Payment Code: {{ student.paymentCode }}
                 </span>
-            </template>            
+            </template>
         </div>
         <!-- Filters -->
         <div class="mb-6 space-y-4">
@@ -552,12 +572,13 @@ const updatePayment = () => {
                             :style="{
                                 width:
                                     payment.status == 'paid_by_college'
-                                    ? '100%'
-                                    : (payment.paid_amount /
-                                            payment.total_amount) *
-                                            100 +
-                                        '%', }">
-                        </div>
+                                        ? '100%'
+                                        : (payment.paid_amount /
+                                              payment.total_amount) *
+                                              100 +
+                                          '%',
+                            }"
+                        ></div>
                     </div>
 
                     <!-- Actions -->
@@ -574,7 +595,10 @@ const updatePayment = () => {
                         </button>
                         <div class="space-x-2 flex flex-wrap">
                             <Link
-                                v-if="payment.status === 'completed' || payment.status === 'paid_by_college'"
+                                v-if="
+                                    payment.status === 'completed' ||
+                                    payment.status === 'paid_by_college'
+                                "
                                 :href="
                                     route('payments.show', {
                                         payment: payment.id,
@@ -721,6 +745,8 @@ const updatePayment = () => {
             </div>
         </transition>
     </div>
+
+    <div v-else>Unavalilable!</div>
     <Modal
         :show="assignPayments"
         @close="assignPayments = false"
@@ -1180,24 +1206,54 @@ const updatePayment = () => {
             </h1>
             <div class="flex flex-wrap gap-6 mb-6">
                 <!-- Total Amount -->
-                <div class="flex-1 min-w-[180px] bg-blue-50 dark:bg-blue-900 rounded-xl p-4 shadow text-center">
-                    <div class="text-xs uppercase text-blue-700 dark:text-blue-200 font-semibold mb-1">Total Payment</div>
-                    <div class="text-2xl font-bold text-blue-800 dark:text-blue-100">
-                        {{ selectedPayment.total_amount }} <span class="text-base font-normal">ETB</span>
+                <div
+                    class="flex-1 min-w-[180px] bg-blue-50 dark:bg-blue-900 rounded-xl p-4 shadow text-center"
+                >
+                    <div
+                        class="text-xs uppercase text-blue-700 dark:text-blue-200 font-semibold mb-1"
+                    >
+                        Total Payment
+                    </div>
+                    <div
+                        class="text-2xl font-bold text-blue-800 dark:text-blue-100"
+                    >
+                        {{ selectedPayment.total_amount }}
+                        <span class="text-base font-normal">ETB</span>
                     </div>
                 </div>
                 <!-- Paid Amount -->
-                <div class="flex-1 min-w-[180px] bg-green-50 dark:bg-green-900 rounded-xl p-4 shadow text-center">
-                    <div class="text-xs uppercase text-green-700 dark:text-green-200 font-semibold mb-1">Already Paid</div>
-                    <div class="text-2xl font-bold text-green-800 dark:text-green-100">
-                        {{ selectedPayment.paid_amount }} <span class="text-base font-normal">ETB</span>
+                <div
+                    class="flex-1 min-w-[180px] bg-green-50 dark:bg-green-900 rounded-xl p-4 shadow text-center"
+                >
+                    <div
+                        class="text-xs uppercase text-green-700 dark:text-green-200 font-semibold mb-1"
+                    >
+                        Already Paid
+                    </div>
+                    <div
+                        class="text-2xl font-bold text-green-800 dark:text-green-100"
+                    >
+                        {{ selectedPayment.paid_amount }}
+                        <span class="text-base font-normal">ETB</span>
                     </div>
                 </div>
                 <!-- Remaining Amount -->
-                <div class="flex-1 min-w-[180px] bg-yellow-50 dark:bg-yellow-900 rounded-xl p-4 shadow text-center">
-                    <div class="text-xs uppercase text-yellow-700 dark:text-yellow-200 font-semibold mb-1">Remaining Amount</div>
-                    <div class="text-2xl font-bold text-yellow-800 dark:text-yellow-100">
-                        {{ selectedPayment.total_amount - selectedPayment.paid_amount }} <span class="text-base font-normal">ETB</span>
+                <div
+                    class="flex-1 min-w-[180px] bg-yellow-50 dark:bg-yellow-900 rounded-xl p-4 shadow text-center"
+                >
+                    <div
+                        class="text-xs uppercase text-yellow-700 dark:text-yellow-200 font-semibold mb-1"
+                    >
+                        Remaining Amount
+                    </div>
+                    <div
+                        class="text-2xl font-bold text-yellow-800 dark:text-yellow-100"
+                    >
+                        {{
+                            selectedPayment.total_amount -
+                            selectedPayment.paid_amount
+                        }}
+                        <span class="text-base font-normal">ETB</span>
                     </div>
                 </div>
             </div>
@@ -1308,8 +1364,19 @@ const updatePayment = () => {
                                 :message="paymentUpdateForm.errors.paid_amount"
                                 class="mt-2 text-sm text-red-500"
                             />
-                            <div v-if="paymentUpdateForm.paid_amount > (selectedPayment.total_amount)" class="text-red-500 text-xs mt-1">
-                                Paid amount cannot exceed the remaining amount ({{ selectedPayment.total_amount - selectedPayment.paid_amount }} ETB).
+                            <div
+                                v-if="
+                                    paymentUpdateForm.paid_amount >
+                                    selectedPayment.total_amount
+                                "
+                                class="text-red-500 text-xs mt-1"
+                            >
+                                Paid amount cannot exceed the remaining amount
+                                ({{
+                                    selectedPayment.total_amount -
+                                    selectedPayment.paid_amount
+                                }}
+                                ETB).
                             </div>
                         </div>
                     </Transition>
@@ -1380,49 +1447,51 @@ const updatePayment = () => {
         </div>
     </Modal>
 
-    
     <Modal :show="addCode" @close="closeCode" maxWidth="sm">
         <div class="px-6 py-4">
             <h2 class="text-lg font-bold mb-4">Add / Update Payment Code</h2>
 
             <form @submit.prevent="submitPaymentCode" class="space-y-4">
-            <div>
-                <label
-                for="paymentCode"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                Payment Code
-                </label>
-                <input
-                id="paymentCode"
-                type="text"
-                v-model="paymentCodeForm.paymentCode"
-                maxlength="20"
-                placeholder="e.g. ABC12345"
-                class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 shadow-sm focus:ring focus:ring-blue-300"
-                />
-                <p class="text-xs text-gray-500 mt-1">
-                This code should be unique to the student.
-                </p>
-                <InputError :message="paymentCodeForm.errors.paymentCode" class="mt-2" />
-            </div>
+                <div>
+                    <label
+                        for="paymentCode"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                        Payment Code
+                    </label>
+                    <input
+                        id="paymentCode"
+                        type="text"
+                        v-model="paymentCodeForm.paymentCode"
+                        maxlength="20"
+                        placeholder="e.g. ABC12345"
+                        class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 shadow-sm focus:ring focus:ring-blue-300"
+                    />
+                    <p class="text-xs text-gray-500 mt-1">
+                        This code should be unique to the student.
+                    </p>
+                    <InputError
+                        :message="paymentCodeForm.errors.paymentCode"
+                        class="mt-2"
+                    />
+                </div>
 
-            <div class="flex justify-end gap-3">
-                <button
-                type="button"
-                @click="closeCode"
-                class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
-                >
-                Cancel
-                </button>
-                <button
-                type="submit"
-                :disabled="paymentCodeForm.processing"
-                class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white"
-                >
-                {{ paymentCodeForm.processing ? "Saving..." : "Save" }}
-                </button>
-            </div>
+                <div class="flex justify-end gap-3">
+                    <button
+                        type="button"
+                        @click="closeCode"
+                        class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        :disabled="paymentCodeForm.processing"
+                        class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white"
+                    >
+                        {{ paymentCodeForm.processing ? "Saving..." : "Save" }}
+                    </button>
+                </div>
             </form>
         </div>
     </Modal>

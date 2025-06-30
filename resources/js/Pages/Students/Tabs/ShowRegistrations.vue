@@ -83,7 +83,7 @@ const tabs = [
 </script>
 
 <template>
-    <div v-if="hasAnyRole(['REGISTRAR', 'ADMIN', 'SUPER-ADMIN'])">
+    <div v-if="userCanAny(['create-students'])">
         <nav
             class="flex justify-center space-x-4 overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
         >
@@ -136,5 +136,5 @@ const tabs = [
         </transition>
     </div>
 
-    <div>Unavailable!</div>
+    <div v-else>Unavailable!</div>
 </template>

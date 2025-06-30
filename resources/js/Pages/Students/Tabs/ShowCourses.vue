@@ -145,7 +145,7 @@ const dropEnrollment = (enrollmentId) => {
 </script>
 
 <template>
-    <div>
+    <div v-if="userCanAny([])">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Courses
@@ -767,121 +767,121 @@ const dropEnrollment = (enrollmentId) => {
                 </table>
             </div>
         </div>
-
-        <!-- Add Course Modal -->
-        <Modal
-            :show="showAddModal"
-            @close="showAddModal = false"
-            :max-width="'4xl'"
-        >
-            <div class="px-8 py-6">
-                <h3 class="text-lg text-center font-light mb-4">
-                    Enroll
-                    <span class="font-bold"
-                        >{{ student.firstName }} {{ student.lastName }}</span
-                    >
-                    to
-                    <span class="font-bold underline">
-                        {{
-                            addForm.course_id
-                                ? courses.find(
-                                      (course) => course.id == addForm.course_id
-                                  )?.name
-                                : "New Course"
-                        }}
-                    </span>
-                </h3>
-
-                <p class="text-red-400">{{ addForm.errors.section_id }}</p>
-                <p class="text-red-400">{{ addForm.errors.course_id }}</p>
-                <!-- Course Selection -->
-                <label
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                >
-                    Course
-                </label>
-                <p class="text-sm text-gray-500 mb-2">
-                    Choose a course the student hasn’t taken yet.
-                </p>
-                <Listbox
-                    v-model="addForm.course_id"
-                    :options="filteredCoursesList"
-                    checkmark
-                    optionLabel="name"
-                    option-value="id"
-                    filter
-                    placeholder="Select Course"
-                    class="w-full mb-4"
-                />
-
-                <!-- Study Mode Selection -->
-                <label
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                >
-                    Study Mode
-                </label>
-                <p class="text-sm text-gray-500 mb-2">
-                    Select how the course will be attended (e.g. regular,
-                    weekend).
-                </p>
-                <Select
-                    v-model="selectedStudyModeId"
-                    :options="props.studyModes"
-                    placeholder="Select Study Mode"
-                    option-label="name"
-                    append-to="self"
-                    option-value="id"
-                    class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                />
-
-                <!-- Section Selection -->
-                <label
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                >
-                    Section
-                </label>
-                <p class="text-sm text-gray-500 mb-2">
-                    Pick the section where the student will take the given
-                    course in the given study mode.
-                </p>
-
-                <Select
-                    v-model="addForm.section_id"
-                    :options="sectionOptions"
-                    :placeholder="`This course is available in (${sectionOptions.length})`"
-                    empty-message="no available section!"
-                    option-label="name"
-                    append-to="self"
-                    option-value="id"
-                    class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-                >
-                    <template #option="slotProps">
-                        {{ slotProps.option.name }} In
-                        {{ slotProps.option.studyMode.name }}
-                        <span class="text-sm">
-                            ({{ slotProps.option.program.name }} in
-                            {{ slotProps.option.track.name }})
-                        </span>
-                    </template>
-                </Select>
-
-                <!-- Action Buttons -->
-                <div class="flex justify-end">
-                    <button
-                        @click="submitAdd"
-                        :disabled="addForm.processing"
-                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded mr-3"
-                    >
-                        {{ addForm.processing ? "Adding..." : "Add" }}
-                    </button>
-                    <button
-                        @click="showAddModal = false"
-                        class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </Modal>
     </div>
+
+    <div v-else>Unavalilable!</div>
+    <!-- Add Course Modal -->
+    <Modal
+        :show="showAddModal"
+        @close="showAddModal = false"
+        :max-width="'4xl'"
+    >
+        <div class="px-8 py-6">
+            <h3 class="text-lg text-center font-light mb-4">
+                Enroll
+                <span class="font-bold"
+                    >{{ student.firstName }} {{ student.lastName }}</span
+                >
+                to
+                <span class="font-bold underline">
+                    {{
+                        addForm.course_id
+                            ? courses.find(
+                                  (course) => course.id == addForm.course_id
+                              )?.name
+                            : "New Course"
+                    }}
+                </span>
+            </h3>
+
+            <p class="text-red-400">{{ addForm.errors.section_id }}</p>
+            <p class="text-red-400">{{ addForm.errors.course_id }}</p>
+            <!-- Course Selection -->
+            <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+            >
+                Course
+            </label>
+            <p class="text-sm text-gray-500 mb-2">
+                Choose a course the student hasn’t taken yet.
+            </p>
+            <Listbox
+                v-model="addForm.course_id"
+                :options="filteredCoursesList"
+                checkmark
+                optionLabel="name"
+                option-value="id"
+                filter
+                placeholder="Select Course"
+                class="w-full mb-4"
+            />
+
+            <!-- Study Mode Selection -->
+            <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+            >
+                Study Mode
+            </label>
+            <p class="text-sm text-gray-500 mb-2">
+                Select how the course will be attended (e.g. regular, weekend).
+            </p>
+            <Select
+                v-model="selectedStudyModeId"
+                :options="props.studyModes"
+                placeholder="Select Study Mode"
+                option-label="name"
+                append-to="self"
+                option-value="id"
+                class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            />
+
+            <!-- Section Selection -->
+            <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+            >
+                Section
+            </label>
+            <p class="text-sm text-gray-500 mb-2">
+                Pick the section where the student will take the given course in
+                the given study mode.
+            </p>
+
+            <Select
+                v-model="addForm.section_id"
+                :options="sectionOptions"
+                :placeholder="`This course is available in (${sectionOptions.length})`"
+                empty-message="no available section!"
+                option-label="name"
+                append-to="self"
+                option-value="id"
+                class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+            >
+                <template #option="slotProps">
+                    {{ slotProps.option.name }} In
+                    {{ slotProps.option.studyMode.name }}
+                    <span class="text-sm">
+                        ({{ slotProps.option.program.name }} in
+                        {{ slotProps.option.track.name }})
+                    </span>
+                </template>
+            </Select>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end">
+                <button
+                    @click="submitAdd"
+                    :disabled="addForm.processing"
+                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded mr-3"
+                >
+                    {{ addForm.processing ? "Adding..." : "Add" }}
+                </button>
+                <button
+                    @click="showAddModal = false"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded"
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </Modal>
 </template>

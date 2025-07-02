@@ -33,6 +33,11 @@ class Semester extends Model
         return $this->hasMany(Program::class);
     }
 
+    public function studyModes()
+    {
+        return $this->belongsToMany(StudyMode::class)->withPivot(['start_date', 'end_date']);
+    }
+
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);

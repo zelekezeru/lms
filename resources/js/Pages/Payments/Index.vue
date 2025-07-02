@@ -1,27 +1,20 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { usePage, Link, router } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import {
     Cog6ToothIcon,
     BookOpenIcon,
-    AcademicCapIcon,
-    UsersIcon,
-    CurrencyDollarIcon,
     BuildingLibraryIcon,
-    InformationCircleIcon,
     BanknotesIcon,
 } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import ShowDetails from "./Tabs/ShowDetails.vue";
-import ShowPayments from "./Tabs/ShowPayments.vue";
 import ShowCategories from "./Tabs/ShowCategories.vue";
 import ShowMethods from "./Tabs/ShowMethods.vue";
 import ShowTypes from "./Tabs/ShowTypes.vue";
 import ShowTransactions from "./Tabs/ShowTransactions.vue";
-import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     payments: {
@@ -125,7 +118,10 @@ const deletePayment = (id) => {
     });
 };
 
-const total = (payments.value.data || []).reduce((sum, payment) => sum + payment.amount, 0);
+const total = (payments.value.data || []).reduce(
+    (sum, payment) => sum + payment.amount,
+    0
+);
 </script>
 
 <template>

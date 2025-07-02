@@ -1,28 +1,19 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head, Link, router } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
 import Select from "primevue/select";
 import Listbox from "primevue/listbox";
-import { defineProps, ref, computed, watch, onMounted, nextTick } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
-import {
-    CogIcon,
-    PencilSquareIcon,
-    XMarkIcon,
-    PlusCircleIcon,
-    MinusCircleIcon,
-} from "@heroicons/vue/24/solid";
+import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/vue/24/solid";
 import {
     BookmarkIcon,
     CheckCircleIcon,
     ClockIcon,
-    EyeIcon,
     XCircleIcon,
 } from "@heroicons/vue/24/outline";
-import Form from "@/Pages/Centers/Form.vue";
 
 const props = defineProps({
     student: { type: Object, required: true },

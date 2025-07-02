@@ -15,6 +15,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrarPortalController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\StudyModeController;
@@ -141,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/close', [CalendarController::class, 'closeSemesterForm'])->name('closeForm');
         Route::post('/close', [CalendarController::class, 'closeSemester'])->name('close');
         Route::get('/{semester}', [CalendarController::class, 'show'])->name('show');
+        Route::post('syncStudyModes/{semester}', [SemesterController::class, 'syncStudyModes'])->name('syncStudyModes');
     });
 
     // Student Semester Registration
@@ -148,7 +150,7 @@ Route::middleware(['auth'])->group(function () {
 
     // User Profile Picture Update
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
-    
+
     Route::post('/students/{student}/payment-code', [StudentController::class, 'generatePaymentCode'])->name('students.payment-code');
 
     // Excel Operation Routes

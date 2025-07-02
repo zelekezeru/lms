@@ -1,22 +1,10 @@
 <script setup>
-import { router, useForm, usePage } from "@inertiajs/vue3";
 import { defineProps, ref } from "vue";
 import {} from "@inertiajs/vue3";
-import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Modal from "@/Components/Modal.vue";
-import InputError from "@/Components/InputError.vue";
-import { Listbox } from "primevue";
-import { TrashIcon } from "@heroicons/vue/24/solid";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ShowScholarship from "./Registrations/ShowScholarship.vue";
 import ShowRegisteredSemesters from "./Registrations/ShowRegisteredSemesters.vue";
-import {
-    AcademicCapIcon,
-    CheckBadgeIcon,
-    CogIcon,
-} from "@heroicons/vue/24/outline";
+import { CheckBadgeIcon, CogIcon } from "@heroicons/vue/24/outline";
 
 // Initial data
 const props = defineProps({

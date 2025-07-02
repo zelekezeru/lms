@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SemesterResource;
+use App\Http\Resources\StudyModeResource;
 use App\Models\Semester;
+use App\Models\StudyMode;
 use App\Models\Year;
 use Illuminate\Http\Request;
 
@@ -35,12 +38,12 @@ class SemesterController extends Controller
     public function show(Semester $semester)
     {
         // Format the dates
-        $semester->created_at_formatted = \Carbon\Carbon::parse($semester->created_at)->format('F j, Y');
-        $semester->updated_at_formatted = \Carbon\Carbon::parse($semester->updated_at)->format('F j, Y');
+        $semester = new SemesterResource($semester->load('year', 'studyModes'));
+        $studyModes = StudyModeResource::collection(StudyMode::all());
 
         return inertia('Semesters/Show', [
             'semester' => $semester,
-            'year' => $semester->year,
+            'studyModes' => $studyModes
         ]);
     }
 
@@ -129,8 +132,7 @@ class SemesterController extends Controller
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated payments.');
         } elseif ($semester->schedules()->count() > 0) {
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated schedules.');
-        } 
-        else{
+        } else {
             // If all checks pass, delete the semester
             $semester->delete();
 
@@ -138,6 +140,10 @@ class SemesterController extends Controller
         }
     }
 
-    // Close Semester
-    public function close(Semester $semester) {}
+    public function syncStudyModes(Request $request, Semester $semester)
+    {
+        $semester->studyModes()->sync($request->studyModes);
+
+        return redirect()->back()->with('success', 'Changes Applied Successfully');
+    }
 }

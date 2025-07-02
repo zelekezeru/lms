@@ -261,7 +261,7 @@ function submitMove() {
                     class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     <option
-                        v-for="i in parseInt(section.track.duration)"
+                        v-for="i in section.track.duration"
                         :key="i"
                         :value="i"
                     >
@@ -515,10 +515,15 @@ function submitMove() {
                                     <td>
                                         <button
                                             type="button"
-                                            @click="(e) => openMovePopover(e, course)"
+                                            @click="
+                                                (e) =>
+                                                    openMovePopover(e, course)
+                                            "
                                             class="flex items-center ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold shadow-md transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400"
                                         >
-                                            <ArrowsRightLeftIcon class="w-5 h-5" />
+                                            <ArrowsRightLeftIcon
+                                                class="w-5 h-5"
+                                            />
                                             <span>Move</span>
                                         </button>
                                     </td>

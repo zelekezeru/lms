@@ -4,7 +4,7 @@ import { defineProps, ref, watch } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { TrashIcon } from "@heroicons/vue/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { DatePicker, Listbox, MultiSelect } from "primevue";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/vue/24/outline";
 
@@ -377,7 +377,17 @@ const deleteSemester = (id) => {
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end pt-4">
+                <div class="flex justify-end pt-4 gap-5">
+                    <Link
+                        v-if="userCan('update-semesters')"
+                        :href="
+                            route('semesters.edit', { semester: semester.id })
+                        "
+                        class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
+                    >
+                        <PencilIcon class="w-5 h-5" />
+                        <span>Edit</span>
+                    </Link>
                     <button
                         v-if="userCan('delete-semesters')"
                         @click="deleteSemester(semester.id)"

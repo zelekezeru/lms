@@ -11,6 +11,7 @@ use App\Models\Year;
 use Carbon\Carbon;
 use Database\Seeders\YearSeeder;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SemesterController extends Controller
 {
@@ -69,6 +70,11 @@ class SemesterController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
+
+        if (Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists()) {
+            return redirect()->back()->withErrors(['level' => 'There is Already A semester in the given year with level ' . $validated['level']]);
+        }
+
         $start = Carbon::parse($validated['start_date']);
         $end = Carbon::parse($validated['end_date']);
         // Replace fields
@@ -98,12 +104,17 @@ class SemesterController extends Controller
     public function update(Request $request, Semester $semester)
     {
         $validated = $request->validate([
-            'name' => 'required|string|unique:semesters,name',
+            'name' => ['required', 'string', Rule::unique('semesters')->ignore($semester->id)],
             'level' => 'required|integer',
             'year_id' => 'required|exists:years,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
+
+        dd(Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists());
+        if (Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists()) {
+            return redirect()->back()->withErrors('level', 'There is Already A semester in the given year with level ' . $validated['level']);
+        }
 
         // Update the semester record
         $semester->update(

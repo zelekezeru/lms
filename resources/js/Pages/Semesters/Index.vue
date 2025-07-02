@@ -106,6 +106,13 @@ const searchSemesters = () => {
 
             <!-- Actions -->
             <div class="flex gap-2">
+                <Link
+                    v-if="userCan('create-semesters')"
+                    :href="route('semesters.create')"
+                    class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-green-600 rounded-md hover:bg-green-700"
+                >
+                    + Add Semester
+                </Link>
                 <!-- Refresh -->
                 <button
                     @click="refreshData"

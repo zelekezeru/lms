@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('is_approved')->default(1);
             $table->boolean('is_completed')->default(0);
             $table->timestamps();
+
+            $table->unique(['year_id', 'level']);
         });
     }
 

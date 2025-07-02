@@ -2,6 +2,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@inertiajs/vue3";
 import Form from "./Form.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     semester: Object,
@@ -14,7 +15,7 @@ const form = useForm({
     level: props.semester.level,
     start_date: props.semester.start_date,
     end_date: props.semester.end_date,
-    _method: "PATCH",
+    _method: "PUT",
 });
 
 const submit = () => {

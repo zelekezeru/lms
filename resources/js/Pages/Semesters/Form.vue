@@ -27,6 +27,7 @@ const emits = defineEmits(["submit"]);
                     v-model="form.name"
                     required
                     autofocus
+                    placeholder="Name"
                     autocomplete="name"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 />
@@ -47,18 +48,19 @@ const emits = defineEmits(["submit"]);
                     type="number"
                     v-model="form.level"
                     required
+                    placeholder="Level"
                     autofocus
                     autocomplete="level"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                 />
                 <InputError
-                    :message="form.errors.name"
+                    :message="form.errors.level"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
 
             <div>
-                <InputLabel for="year_id" value="Select Registration Year" />
+                <InputLabel for="year_id" value="Select Year" />
                 <Select
                     id="year_id"
                     v-model="form.year_id"
@@ -76,7 +78,7 @@ const emits = defineEmits(["submit"]);
                     v-model="form.start_date"
                     dateFormat="yy-mm-dd"
                     showIcon
-                    placeholder="Select Date of Birth"
+                    placeholder="Select Start Date"
                 />
                 <InputError :message="form.errors?.start_date" class="mt-2" />
             </div>
@@ -87,7 +89,7 @@ const emits = defineEmits(["submit"]);
                     v-model="form.end_date"
                     dateFormat="yy-mm-dd"
                     showIcon
-                    placeholder="Select Date of Birth"
+                    placeholder="Select End Date"
                 />
                 <InputError :message="form.errors?.end_date" class="mt-2" />
             </div>

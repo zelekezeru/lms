@@ -328,6 +328,7 @@ const deleteSemester = (id) => {
                                                         studyMode.id
                                                     ].start_date
                                                 "
+                                                date-format="dd/mm/yy"
                                                 show-icon
                                                 class="w-full"
                                             />
@@ -346,6 +347,7 @@ const deleteSemester = (id) => {
                                                         studyMode.id
                                                     ].end_date
                                                 "
+                                                date-format="dd/mm/yy"
                                                 show-icon
                                                 class="w-full"
                                             />

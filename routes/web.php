@@ -141,7 +141,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/active', [CalendarController::class, 'showActive'])->name('showActive');
         Route::get('/close', [CalendarController::class, 'closeSemesterForm'])->name('closeForm');
         Route::post('/close', [CalendarController::class, 'closeSemester'])->name('close');
-        Route::get('/{semester}', [CalendarController::class, 'show'])->name('show');
         Route::post('syncStudyModes/{semester}', [SemesterController::class, 'syncStudyModes'])->name('syncStudyModes');
     });
 

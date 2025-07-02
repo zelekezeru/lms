@@ -47,6 +47,10 @@ class SemesterController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        // return inertia('Smesters/Create');
+    }
     /**
      * Store a new semester for the assigned year.
      */

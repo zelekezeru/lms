@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\StudyModeResource;
+use App\Http\Resources\YearResource;
 use App\Models\Semester;
 use App\Models\StudyMode;
 use App\Models\Year;
+use Carbon\Carbon;
+use Database\Seeders\YearSeeder;
 use Illuminate\Http\Request;
 
 class SemesterController extends Controller
@@ -49,7 +52,9 @@ class SemesterController extends Controller
 
     public function create()
     {
-        // return inertia('Smesters/Create');
+        $years = YearResource::collection(Year::all());
+
+        return inertia('Semesters/Create', compact('years'));
     }
     /**
      * Store a new semester for the assigned year.
@@ -57,34 +62,29 @@ class SemesterController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|unique:semesters,name',
+            'level' => 'required|integer',
             'year_id' => 'required|exists:years,id',
-            'status' => 'required|string|in:Active,Inactive',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'is_approved' => 'required|boolean',
-            'is_completed' => 'required|boolean',
         ]);
-
+        $start = Carbon::parse($validated['start_date']);
+        $end = Carbon::parse($validated['end_date']);
+        // Replace fields
+        $validated['start_date'] = $start->toDateString();         // YYYY-MM-DD
+        $validated['end_date'] = $end->toDateString();         // YYYY-MM-DD
         // Create the semester with the year_id
-        $semester = Semester::create([
-            'name' => $request->name,
-            'status' => $request->status,
-            'is_approved' => $request->is_approved,
-            'is_completed' => $request->is_completed,
-            'year_id' => $request->year_id,
-        ]);
-
-        $year = Year::find($request->year_id);
+        $semester = Semester::create($validated);
 
         // Redirect to the semester's show page
-        return redirect()->back()->with('success', 'Semester created successfully.');
+        return to_route('semesters.show', $semester)->with('success', 'Semester created successfully.');
     }
 
     public function edit(Semester $semester)
     {
-        $years = Year::all(); // Fetch all years for the dropdown
+        $semester->load('year');
+        $years = YearResource::collection(Year::all()); // Fetch all years for the dropdown
 
         return inertia('Semesters/Edit', [
             'semester' => $semester,
@@ -97,18 +97,18 @@ class SemesterController extends Controller
      */
     public function update(Request $request, Semester $semester)
     {
-        $request->validate([
-            'name' => 'required|string|unique:semesters,name,' . $semester->id,
+        $validated = $request->validate([
+            'name' => 'required|string|unique:semesters,name',
+            'level' => 'required|integer',
             'year_id' => 'required|exists:years,id',
-            'status' => 'required|string|in:Active,Inactive',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'is_approved' => 'required|boolean',
-            'is_completed' => 'required|boolean',
         ]);
 
         // Update the semester record
-        $semester->update($request->only(['name', 'year_id', 'status', 'start_date', 'end_date', 'is_approved', 'is_completed']));
+        $semester->update(
+            $validated
+        );
 
         return redirect()->route('semesters.show', $semester)->with('success', 'Semester updated successfully.');
     }

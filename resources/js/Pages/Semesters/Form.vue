@@ -10,6 +10,7 @@ const props = defineProps({
     form: Object,
     years: Array,
     studyModes: Array,
+    semester: Object,
 });
 
 const formatToYMD = (date) => {
@@ -17,19 +18,45 @@ const formatToYMD = (date) => {
     return date.toISOString().split("T")[0]; // returns 'YYYY-MM-DD'
 };
 
-const selectedStudyModes = ref([]);
+const selectedStudyModes = ref(
+    props.semester
+        ? props.semester.studyModes.map((studyMode) => studyMode.id)
+        : []
+);
 
-watch(selectedStudyModes, (modes) => {
-    // modes is a collection of selected study mode ids
-    props.form.study_modes = modes.reduce((acc, m) => {
-        acc[m] = {
-            start_date: props.form.start_date,
-            end_date: props.form.end_date,
-        };
+watch(
+    selectedStudyModes,
+    (modes) => {
+        // modes is a collection of selected study mode ids
+        props.form.study_modes = modes.reduce((acc, m) => {
+            acc[m] = {
+                start_date: props.form.study_modes[m]
+                    ? props.form.study_modes[m].start_date
+                    : props.semester &&
+                      props.semester.studyModes.find(
+                          (studyMode) => studyMode.id == m
+                      )
+                    ? props.semester.studyModes.find(
+                          (studyMode) => studyMode.id == m
+                      ).semester_start_date
+                    : props.form.start_date,
+                end_date: props.form.study_modes[m]
+                    ? props.form.study_modes[m].end_date
+                    : props.semester &&
+                      props.semester.studyModes.find(
+                          (studyMode) => studyMode.id == m
+                      )
+                    ? props.semester.studyModes.find(
+                          (studyMode) => studyMode.id == m
+                      ).semester_end_date
+                    : props.form.end_date,
+            };
 
-        return acc;
-    }, {});
-});
+            return acc;
+        }, {});
+    },
+    { immediate: true }
+);
 
 const emits = defineEmits(["submit"]);
 </script>
@@ -98,7 +125,7 @@ const emits = defineEmits(["submit"]);
                 <InputLabel for="start_date" value="Start Date" />
                 <DatePicker
                     v-model="form.start_date"
-                    dateFormat="yy-mm-dd"
+                    dateFormat="dd-mm-yy"
                     showIcon
                     placeholder="Select Start Date"
                 />
@@ -109,7 +136,7 @@ const emits = defineEmits(["submit"]);
                 <InputLabel for="end_date" value="End Date" />
                 <DatePicker
                     v-model="form.end_date"
-                    dateFormat="yy-mm-dd"
+                    dateFormat="dd-mm-yy"
                     showIcon
                     placeholder="Select End Date"
                 />
@@ -181,7 +208,7 @@ const emits = defineEmits(["submit"]);
                                             form.study_modes[studyMode.id]
                                                 .start_date
                                         "
-                                        date-format="dd/mm/yy"
+                                        date-format="dd-mm-yy"
                                         show-icon
                                         class="w-full"
                                     />
@@ -198,7 +225,7 @@ const emits = defineEmits(["submit"]);
                                             form.study_modes[studyMode.id]
                                                 .end_date
                                         "
-                                        date-format="dd/mm/yy"
+                                        date-format="dd-mm-yy"
                                         show-icon
                                         class="w-full"
                                     />

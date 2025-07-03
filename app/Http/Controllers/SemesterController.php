@@ -63,8 +63,6 @@ class SemesterController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
-
         $validated = $request->validate([
             'name' => 'required|string|unique:semesters,name',
             'level' => 'required|integer',
@@ -77,6 +75,7 @@ class SemesterController extends Controller
             return redirect()->back()->withErrors(['level' => 'There is Already A semester in the given year with level ' . $validated['level']]);
         }
 
+
         $start = Carbon::parse($validated['start_date']);
         $end = Carbon::parse($validated['end_date']);
         // Replace fields
@@ -85,18 +84,23 @@ class SemesterController extends Controller
         // Create the semester with the year_id
         $semester = Semester::create($validated);
 
+        if ($request->input('study_modes')) {
+            $semester->studyModes()->sync($request->study_modes);
+        }
         // Redirect to the semester's show page
         return to_route('semesters.show', $semester)->with('success', 'Semester created successfully.');
     }
 
     public function edit(Semester $semester)
     {
-        $semester->load('year');
+        $semester = new SemesterResource($semester->load('year', 'studyModes'));
+        $studyModes = StudyModeResource::collection(StudyMode::all());
         $years = YearResource::collection(Year::all()); // Fetch all years for the dropdown
 
         return inertia('Semesters/Edit', [
             'semester' => $semester,
             'years' => $years,
+            'studyModes' => $studyModes,
         ]);
     }
 
@@ -105,6 +109,7 @@ class SemesterController extends Controller
      */
     public function update(Request $request, Semester $semester)
     {
+        dd($request->study_modes);
         $validated = $request->validate([
             'name' => ['required', 'string', Rule::unique('semesters')->ignore($semester->id)],
             'level' => 'required|integer',
@@ -113,7 +118,6 @@ class SemesterController extends Controller
             'end_date' => 'required|date|after:start_date',
         ]);
 
-        dd(Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists());
         if (Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists()) {
             return redirect()->back()->withErrors('level', 'There is Already A semester in the given year with level ' . $validated['level']);
         }

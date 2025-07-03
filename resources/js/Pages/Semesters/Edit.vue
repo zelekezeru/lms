@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 const props = defineProps({
     semester: Object,
+    studyModes: Array,
     years: Array,
 });
 
@@ -15,10 +16,28 @@ const form = useForm({
     level: props.semester.level,
     start_date: props.semester.start_date,
     end_date: props.semester.end_date,
+    study_modes: {},
     _method: "PUT",
 });
 
 const submit = () => {
+    for (const key in form.study_modes) {
+        const studyMode = form.study_modes[key];
+
+        // Only convert if it's a Date object, otherwise leave as is
+        if (studyMode.start_date instanceof Date) {
+            form.study_modes[key].start_date = studyMode.start_date
+                .toISOString()
+                .slice(0, 10);
+        }
+
+        if (studyMode.end_date instanceof Date) {
+            form.study_modes[key].end_date = studyMode.end_date
+                .toISOString()
+                .slice(0, 10);
+        }
+    }
+
     form.post(route("semesters.update", { semester: props.semester.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "The semester has been updated.", "success");
@@ -44,7 +63,13 @@ const submit = () => {
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form :form="form" @submit="submit" :years="years" />
+                <Form
+                    :form="form"
+                    @submit="submit"
+                    :years="years"
+                    :semester="semester"
+                    :study-modes="studyModes"
+                />
             </div>
         </div>
     </AppLayout>

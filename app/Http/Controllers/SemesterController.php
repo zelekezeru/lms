@@ -54,14 +54,16 @@ class SemesterController extends Controller
     public function create()
     {
         $years = YearResource::collection(Year::all());
+        $studyModes = StudyModeResource::collection(StudyMode::all());
 
-        return inertia('Semesters/Create', compact('years'));
+        return inertia('Semesters/Create', compact('years', 'studyModes'));
     }
     /**
      * Store a new semester for the assigned year.
      */
     public function store(Request $request)
     {
+        dd($request);
 
         $validated = $request->validate([
             'name' => 'required|string|unique:semesters,name',

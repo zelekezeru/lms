@@ -5,6 +5,7 @@ import Form from "./Form.vue";
 
 const props = defineProps({
     years: Array,
+    studyModes: Array,
 });
 
 const form = useForm({
@@ -13,9 +14,26 @@ const form = useForm({
     level: "",
     start_date: null,
     end_date: null,
+    study_modes: {},
 });
 
 const submit = () => {
+    for (const key in form.study_modes) {
+        const studyMode = form.study_modes[key];
+
+        // Only convert if it's a Date object, otherwise leave as is
+        if (studyMode.start_date instanceof Date) {
+            form.study_modes[key].start_date = studyMode.start_date
+                .toISOString()
+                .slice(0, 10);
+        }
+
+        if (studyMode.end_date instanceof Date) {
+            form.study_modes[key].end_date = studyMode.end_date
+                .toISOString()
+                .slice(0, 10);
+        }
+    }
     form.post(route("semesters.store"), {
         onSuccess: () => {
             Swal.fire("Success!", "The semester has been created.", "success");
@@ -41,7 +59,12 @@ const submit = () => {
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form :form="form" @submit="submit" :years="years" />
+                <Form
+                    :form="form"
+                    @submit="submit"
+                    :years="years"
+                    :study-modes="studyModes"
+                />
             </div>
         </div>
     </AppLayout>

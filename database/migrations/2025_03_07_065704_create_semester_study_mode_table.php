@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('study_mode_id')->constrained()->cascadeOnDelete();
             $table->date('start_date');
             $table->date('end_date');
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
 
             // Ensure only one (semester_id, study_mode_id) combination

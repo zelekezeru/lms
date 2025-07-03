@@ -2,11 +2,33 @@
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { DatePicker, Select } from "primevue";
+import { DatePicker, Listbox, Select } from "primevue";
+import Swal from "sweetalert2";
+import { ref, watch } from "vue";
 
 const props = defineProps({
     form: Object,
     years: Array,
+    studyModes: Array,
+});
+
+const formatToYMD = (date) => {
+    if (!(date instanceof Date)) return "";
+    return date.toISOString().split("T")[0]; // returns 'YYYY-MM-DD'
+};
+
+const selectedStudyModes = ref([]);
+
+watch(selectedStudyModes, (modes) => {
+    // modes is a collection of selected study mode ids
+    props.form.study_modes = modes.reduce((acc, m) => {
+        acc[m] = {
+            start_date: props.form.start_date,
+            end_date: props.form.end_date,
+        };
+
+        return acc;
+    }, {});
 });
 
 const emits = defineEmits(["submit"]);
@@ -95,6 +117,98 @@ const emits = defineEmits(["submit"]);
             </div>
         </div>
 
+        <!-- Study Mode Application -->
+        <div class="border-t pt-6 dark:border-gray-700">
+            <div class="space-y-10">
+                <!-- Listbox Section -->
+                <div>
+                    <h2
+                        class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100"
+                    >
+                        This semester is applied in...
+                    </h2>
+                    <Listbox
+                        v-model="selectedStudyModes"
+                        :options="studyModes"
+                        checkmark
+                        optionLabel="name"
+                        option-value="id"
+                        filter
+                        multiple
+                        placeholder="Select study modes"
+                        class="w-full"
+                    />
+                </div>
+
+                <!-- Duration Picker -->
+                <div>
+                    <h2
+                        class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100"
+                    >
+                        Pick duration in each study mode
+                    </h2>
+
+                    <div
+                        v-if="selectedStudyModes.length === 0"
+                        class="text-gray-500 italic dark:text-gray-400"
+                    >
+                        No study mode selected
+                    </div>
+
+                    <div v-else class="space-y-6">
+                        <div
+                            v-for="studyMode in studyModes.filter((m) =>
+                                selectedStudyModes.includes(m.id)
+                            )"
+                            :key="studyMode.id"
+                            class="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700"
+                        >
+                            <h3
+                                class="text-base font-semibold mb-4 text-gray-800 dark:text-gray-100"
+                            >
+                                {{ studyMode.name }}
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-sm text-gray-600 dark:text-gray-400 mb-1"
+                                    >
+                                        Start Date
+                                    </label>
+                                    <DatePicker
+                                        v-model="
+                                            form.study_modes[studyMode.id]
+                                                .start_date
+                                        "
+                                        date-format="dd/mm/yy"
+                                        show-icon
+                                        class="w-full"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-sm text-gray-600 dark:text-gray-400 mb-1"
+                                    >
+                                        End Date
+                                    </label>
+                                    <DatePicker
+                                        v-model="
+                                            form.study_modes[studyMode.id]
+                                                .end_date
+                                        "
+                                        date-format="dd/mm/yy"
+                                        show-icon
+                                        class="w-full"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="mt-6 flex justify-center">
             <button
                 type="submit"

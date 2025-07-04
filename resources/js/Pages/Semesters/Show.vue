@@ -30,7 +30,6 @@ const studyModeRelationsForm = useForm({
             start_date: m.semester_start_date,
             end_date: m.semester_end_date,
         };
-
         return acc;
     }, {}),
 });
@@ -315,11 +314,10 @@ const deleteSemester = (id) => {
                                             </label>
                                             <DatePicker
                                                 :modelValue="
-                                                    new Date(
-                                                        studyModeRelationsForm.study_modes[
-                                                            studyMode.id
-                                                        ].start_date
-                                                    )
+                                                    studyModeRelationsForm
+                                                        .study_modes[
+                                                        studyMode.id
+                                                    ].start_date
                                                 "
                                                 @update:modelValue="
                                                     (value) => {
@@ -344,11 +342,10 @@ const deleteSemester = (id) => {
                                             </label>
                                             <DatePicker
                                                 :modelValue="
-                                                    new Date(
-                                                        studyModeRelationsForm.study_modes[
-                                                            studyMode.id
-                                                        ].end_date
-                                                    )
+                                                    studyModeRelationsForm
+                                                        .study_modes[
+                                                        studyMode.id
+                                                    ].end_date
                                                 "
                                                 @update:modelValue="
                                                     (value) => {

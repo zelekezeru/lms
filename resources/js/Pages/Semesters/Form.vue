@@ -32,15 +32,6 @@ watch(
     (modes) => {
         // modes is a collection of selected study mode ids
         props.form.study_modes = modes.reduce((acc, m) => {
-            console.log(m);
-
-            console.log(
-                props.semester.studyModes.find((studyMode) => studyMode.id == m)
-                    .semester_start_date,
-                props.semester.studyModes.find((studyMode) => studyMode.id == m)
-                    .semester_end_date
-            );
-
             acc[m] = {
                 start_date: props.form.study_modes[m]
                     ? props.form.study_modes[m].start_date
@@ -138,7 +129,9 @@ const emits = defineEmits(["submit"]);
                 <DatePicker
                     dateFormat="dd-mm-yy"
                     showIcon
-                    :modelValue="new Date(form.start_date)"
+                    :modelValue="
+                        form.start_date ? new Date(form.start_date) : ''
+                    "
                     @update:modelValue="
                         (value) => {
                             form.start_date = dateWithoutTimezone(value);
@@ -152,7 +145,7 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel for="end_date" value="End Date" />
                 <DatePicker
-                    :modelValue="new Date(form.end_date)"
+                    :modelValue="form.end_date ? new Date(form.end_date) : ''"
                     @update:modelValue="
                         (value) => {
                             form.end_date = dateWithoutTimezone(value);
@@ -230,11 +223,8 @@ const emits = defineEmits(["submit"]);
                                         show-icon
                                         class="w-full"
                                         :modelValue="
-                                            new Date(
-                                                form.study_modes[
-                                                    studyMode.id
-                                                ].start_date
-                                            )
+                                            form.study_modes[studyMode.id]
+                                                .start_date
                                         "
                                         @update:modelValue="
                                             (value) => {
@@ -258,11 +248,8 @@ const emits = defineEmits(["submit"]);
                                         show-icon
                                         class="w-full"
                                         :modelValue="
-                                            new Date(
-                                                form.study_modes[
-                                                    studyMode.id
-                                                ].end_date
-                                            )
+                                            form.study_modes[studyMode.id]
+                                                .end_date
                                         "
                                         @update:modelValue="
                                             (value) => {

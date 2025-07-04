@@ -314,10 +314,11 @@ const deleteSemester = (id) => {
                                             </label>
                                             <DatePicker
                                                 :modelValue="
-                                                    studyModeRelationsForm
-                                                        .study_modes[
-                                                        studyMode.id
-                                                    ].start_date
+                                                    new Date(
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].start_date
+                                                    )
                                                 "
                                                 @update:modelValue="
                                                     (value) => {
@@ -342,10 +343,11 @@ const deleteSemester = (id) => {
                                             </label>
                                             <DatePicker
                                                 :modelValue="
-                                                    studyModeRelationsForm
-                                                        .study_modes[
-                                                        studyMode.id
-                                                    ].end_date
+                                                    new Date(
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].end_date
+                                                    )
                                                 "
                                                 @update:modelValue="
                                                     (value) => {

@@ -2,9 +2,16 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import { ref } from "vue";
-import { ArrowPathIcon, PresentationChartBarIcon } from "@heroicons/vue/24/solid";
+import {
+    ArrowPathIcon,
+    PresentationChartBarIcon,
+} from "@heroicons/vue/24/solid";
 import Swal from "sweetalert2";
-import { EyeIcon, InformationCircleIcon, LockClosedIcon } from "@heroicons/vue/24/outline";
+import {
+    EyeIcon,
+    InformationCircleIcon,
+    LockClosedIcon,
+} from "@heroicons/vue/24/outline";
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
 import ShowSemesters from "./Tabs/ShowSemesters.vue";
@@ -15,6 +22,10 @@ const props = defineProps({
     sections: Array,
     search: String,
     gradesPercentage: Object,
+    studyModes: {
+        required: true,
+        type: Array,
+    },
 });
 
 const refreshing = ref(false);
@@ -40,7 +51,11 @@ const selectedTab = ref("status");
 
 const tabs = [
     { key: "status", label: "Active Semester", icon: InformationCircleIcon },
-    { key: "sections", label: "Active Sections", icon: PresentationChartBarIcon },
+    {
+        key: "sections",
+        label: "Active Sections",
+        icon: PresentationChartBarIcon,
+    },
     { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
 ];
 </script>
@@ -70,7 +85,7 @@ const tabs = [
                 <span>{{ tab.label }}</span>
             </button>
         </nav>
-            <!-- Details Panel -->
+        <!-- Details Panel -->
         <transition
             mode="out-in"
             enter-active-class="transition duration-300 ease-out"

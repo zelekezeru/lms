@@ -21,6 +21,7 @@ class StudyModeResource extends JsonResource
             'programs' => ProgramResource::collection($this->whenLoaded('programs')),
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
+            'semesters' => SemesterResource::collection($this->whenLoaded('semesters')),
             'duration' => $this->whenPivotLoaded('program_study_mode', function () {
                 return $this->pivot->duration;
             }),

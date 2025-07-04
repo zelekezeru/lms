@@ -33,4 +33,9 @@ class StudyMode extends Model
     {
         return $this->hasMany(PaymentType::class);
     }
+
+    public function semesters()
+    {
+        return $this->belongsToMany(Semester::class)->withPivot('start_date', 'end_date');
+    }
 }

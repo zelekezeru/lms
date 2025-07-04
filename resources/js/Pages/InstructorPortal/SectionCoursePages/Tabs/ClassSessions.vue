@@ -635,6 +635,15 @@ onMounted(() => {
                                 </td>
                             </tr>
 
+                            <tr
+                                colspan="1"
+                                v-if="showForm && form.hasErrors"
+                                class="text-red-500"
+                            >
+                                {{
+                                    form.errors.end_time
+                                }}
+                            </tr>
                             <!-- The Form Row -->
                             <transition
                                 enter-active-class="transition duration-300 ease-out"

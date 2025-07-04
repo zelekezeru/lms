@@ -1,9 +1,8 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import { ref, onMounted, watch, computed } from "vue";
-import Calendar from "primevue/calendar";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { Select } from "primevue";
+import { DatePicker, Select } from "primevue";
 
 const props = defineProps({
     section: { required: true, type: Object },
@@ -23,6 +22,8 @@ const markAllAs = ref("");
 
 function toggleForm() {
     showForm.value = !showForm.value;
+
+    console.log(showForm.value);
 }
 
 function viewDetails(session) {
@@ -501,9 +502,12 @@ onMounted(() => {
             <!-- Default View (Session List & Form) -->
             <div v-else key="list">
                 <div class="flex justify-end mb-4">
-                    <PrimaryButton @click="toggleForm">
+                    <button
+                        class="px-4 py-2 bg-green-600 text-white rounded"
+                        @click="toggleForm"
+                    >
                         {{ showForm ? "Cancel" : "Add Class Session" }}
-                    </PrimaryButton>
+                    </button>
                 </div>
 
                 <div
@@ -646,7 +650,7 @@ onMounted(() => {
                                 >
                                     <td class="px-1 py-2">
                                         <div>Start date and time</div>
-                                        <Calendar
+                                        <DatePicker
                                             v-model="form.start_date_time"
                                             showTime
                                             placeholder="Select Start Date & Time"
@@ -654,7 +658,7 @@ onMounted(() => {
                                         />
                                         -
                                         <div>End time</div>
-                                        <Calendar
+                                        <DatePicker
                                             v-model="form.end_time"
                                             showTime
                                             :minDate="startDateOnlyMin"

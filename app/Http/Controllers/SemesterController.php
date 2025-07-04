@@ -67,8 +67,8 @@ class SemesterController extends Controller
             'name' => 'required|string|unique:semesters,name',
             'level' => 'required|integer',
             'year_id' => 'required|exists:years,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'start_date' => 'required',
+            'end_date' => 'required|after:start_date',
         ]);
 
         if (Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists()) {
@@ -78,15 +78,25 @@ class SemesterController extends Controller
 
         $start = Carbon::parse($validated['start_date']);
         $end = Carbon::parse($validated['end_date']);
+
         // Replace fields
         $validated['start_date'] = $start->toDateString();         // YYYY-MM-DD
         $validated['end_date'] = $end->toDateString();         // YYYY-MM-DD
         // Create the semester with the year_id
         $semester = Semester::create($validated);
 
-        if ($request->input('study_modes')) {
-            $semester->studyModes()->sync($request->study_modes);
+
+        $studyModesData = [];
+
+        foreach ($request->study_modes as $studyModeId => $data) {
+            $studyModesData[$studyModeId] = [
+                'start_date' => Carbon::parse($data['start_date'])->format('Y-m-d H:i:s'),
+                'end_date' => Carbon::parse($data['end_date'])->format('Y-m-d H:i:s'),
+            ];
         }
+
+        $semester->studyModes()->sync($studyModesData);
+
         // Redirect to the semester's show page
         return to_route('semesters.show', $semester)->with('success', 'Semester created successfully.');
     }
@@ -109,7 +119,6 @@ class SemesterController extends Controller
      */
     public function update(Request $request, Semester $semester)
     {
-        dd($request->study_modes);
         $validated = $request->validate([
             'name' => ['required', 'string', Rule::unique('semesters')->ignore($semester->id)],
             'level' => 'required|integer',
@@ -118,14 +127,29 @@ class SemesterController extends Controller
             'end_date' => 'required|date|after:start_date',
         ]);
 
-        if (Semester::where('year_id', $validated['year_id'])->where('level', $validated['level'])->exists()) {
+        $semesterWithSameLevel = Semester::where('year_id', $validated['year_id'])->where('level', $validated['level']);
+
+        if ($semesterWithSameLevel->exists() && $semesterWithSameLevel->first()->id !== $semester->id) {
             return redirect()->back()->withErrors('level', 'There is Already A semester in the given year with level ' . $validated['level']);
         }
+
 
         // Update the semester record
         $semester->update(
             $validated
         );
+
+
+        $studyModesData = [];
+
+        foreach ($request->study_modes as $studyModeId => $data) {
+            $studyModesData[$studyModeId] = [
+                'start_date' => Carbon::parse($data['start_date'])->format('Y-m-d H:i:s'),
+                'end_date' => Carbon::parse($data['end_date'])->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $semester->studyModes()->sync($studyModesData);
 
         return redirect()->route('semesters.show', $semester)->with('success', 'Semester updated successfully.');
     }
@@ -163,7 +187,17 @@ class SemesterController extends Controller
 
     public function syncStudyModes(Request $request, Semester $semester)
     {
-        $semester->studyModes()->sync($request->studyModes);
+
+        $studyModesData = [];
+
+        foreach ($request->study_modes as $studyModeId => $data) {
+            $studyModesData[$studyModeId] = [
+                'start_date' => Carbon::parse($data['start_date'])->format('Y-m-d H:i:s'),
+                'end_date' => Carbon::parse($data['end_date'])->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $semester->studyModes()->sync($studyModesData);
 
         return redirect()->back()->with('success', 'Changes Applied Successfully');
     }

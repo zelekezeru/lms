@@ -12,28 +12,12 @@ const form = useForm({
     name: "",
     year_id: "",
     level: "",
-    start_date: null,
-    end_date: null,
+    start_date: "",
+    end_date: "",
     study_modes: {},
 });
 
 const submit = () => {
-    for (const key in form.study_modes) {
-        const studyMode = form.study_modes[key];
-
-        // Only convert if it's a Date object, otherwise leave as is
-        if (studyMode.start_date instanceof Date) {
-            form.study_modes[key].start_date = studyMode.start_date
-                .toISOString()
-                .slice(0, 10);
-        }
-
-        if (studyMode.end_date instanceof Date) {
-            form.study_modes[key].end_date = studyMode.end_date
-                .toISOString()
-                .slice(0, 10);
-        }
-    }
     form.post(route("semesters.store"), {
         onSuccess: () => {
             Swal.fire("Success!", "The semester has been created.", "success");

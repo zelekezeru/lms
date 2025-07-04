@@ -20,17 +20,12 @@ const props = defineProps({
     },
 });
 
-const formatToYMD = (date) => {
-    if (!(date instanceof Date)) return "";
-    return date.toISOString().split("T")[0]; // returns 'YYYY-MM-DD'
-};
-
 const selectedStudyModes = ref(
     props.semester.studyModes.map((studyMode) => studyMode.id)
 );
 
-const studyModeRelations = useForm({
-    studyModes: props.semester.studyModes.reduce((acc, m) => {
+const studyModeRelationsForm = useForm({
+    study_modes: props.semester.studyModes.reduce((acc, m) => {
         acc[m.id] = {
             start_date: m.semester_start_date,
             end_date: m.semester_end_date,
@@ -42,18 +37,22 @@ const studyModeRelations = useForm({
 
 watch(selectedStudyModes, (modes) => {
     // modes is a collection of selected study mode ids
-    studyModeRelations.studyModes = modes.reduce((acc, m) => {
+    studyModeRelationsForm.study_modes = modes.reduce((acc, m) => {
         acc[m] = {
-            start_date: props.semester.studyModes.find(
-                (studyMode) => studyMode.id == m
-            )
+            start_date: studyModeRelationsForm.study_modes[m]
+                ? studyModeRelationsForm.study_modes[m].start_date
+                : props.semester.studyModes.find(
+                      (studyMode) => studyMode.id == m
+                  )
                 ? props.semester.studyModes.find(
                       (studyMode) => studyMode.id == m
                   ).semester_start_date
                 : props.semester.start_date,
-            end_date: props.semester.studyModes.find(
-                (studyMode) => studyMode.id == m
-            )
+            end_date: studyModeRelationsForm.study_modes[m]
+                ? studyModeRelationsForm.study_modes[m].end_date
+                : props.semester.studyModes.find(
+                      (studyMode) => studyMode.id == m
+                  )
                 ? props.semester.studyModes.find(
                       (studyMode) => studyMode.id == m
                   ).semester_end_date
@@ -63,6 +62,14 @@ watch(selectedStudyModes, (modes) => {
         return acc;
     }, {});
 });
+
+const dateWithoutTimezone = (date) => {
+    const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    const withoutTimezone = new Date(date.valueOf() - tzoffset)
+        .toISOString()
+        .slice(0, -1);
+    return withoutTimezone;
+};
 
 const cancelChanges = () => {
     Swal.fire({
@@ -75,7 +82,7 @@ const cancelChanges = () => {
         confirmButtonText: "Yes, Revert My Changes!",
     }).then((result) => {
         if (result.isConfirmed) {
-            studyModeRelations.reset();
+            studyModeRelationsForm.reset();
             selectedStudyModes.value = [];
         }
     });
@@ -91,22 +98,7 @@ const applyChanges = () => {
         confirmButtonText: "Yes, Apply My Changes!",
     }).then((result) => {
         if (result.isConfirmed) {
-            for (const key in studyModeRelations.studyModes) {
-                const studyMode = studyModeRelations.studyModes[key];
-
-                // Only convert if it's a Date object, otherwise leave as is
-                if (studyMode.start_date instanceof Date) {
-                    studyModeRelations.studyModes[key].start_date =
-                        studyMode.start_date.toISOString().slice(0, 10);
-                }
-
-                if (studyMode.end_date instanceof Date) {
-                    studyModeRelations.studyModes[key].end_date =
-                        studyMode.end_date.toISOString().slice(0, 10);
-                }
-            }
-
-            studyModeRelations.post(
+            studyModeRelationsForm.post(
                 route("semesters.syncStudyModes", {
                     semester: props.semester.id,
                 }),
@@ -322,13 +314,23 @@ const deleteSemester = (id) => {
                                                 Start Date
                                             </label>
                                             <DatePicker
-                                                v-model="
-                                                    studyModeRelations
-                                                        .studyModes[
-                                                        studyMode.id
-                                                    ].start_date
+                                                :modelValue="
+                                                    new Date(
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].start_date
+                                                    )
                                                 "
-                                                date-format="dd/mm/yy"
+                                                @update:modelValue="
+                                                    (value) => {
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].start_date =
+                                                            dateWithoutTimezone(
+                                                                value
+                                                            );
+                                                    }
+                                                "
                                                 show-icon
                                                 class="w-full"
                                             />
@@ -341,13 +343,23 @@ const deleteSemester = (id) => {
                                                 End Date
                                             </label>
                                             <DatePicker
-                                                v-model="
-                                                    studyModeRelations
-                                                        .studyModes[
-                                                        studyMode.id
-                                                    ].end_date
+                                                :modelValue="
+                                                    new Date(
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].end_date
+                                                    )
                                                 "
-                                                date-format="dd/mm/yy"
+                                                @update:modelValue="
+                                                    (value) => {
+                                                        studyModeRelationsForm.study_modes[
+                                                            studyMode.id
+                                                        ].end_date =
+                                                            dateWithoutTimezone(
+                                                                value
+                                                            );
+                                                    }
+                                                "
                                                 show-icon
                                                 class="w-full"
                                             />

@@ -13,22 +13,34 @@ const props = defineProps({
     semester: Object,
 });
 
-const formatToYMD = (date) => {
-    if (!(date instanceof Date)) return "";
-    return date.toISOString().split("T")[0]; // returns 'YYYY-MM-DD'
-};
-
 const selectedStudyModes = ref(
     props.semester
         ? props.semester.studyModes.map((studyMode) => studyMode.id)
         : []
 );
 
+const dateWithoutTimezone = (date) => {
+    const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    const withoutTimezone = new Date(date.valueOf() - tzoffset)
+        .toISOString()
+        .slice(0, -1);
+    return withoutTimezone;
+};
+
 watch(
     selectedStudyModes,
     (modes) => {
         // modes is a collection of selected study mode ids
         props.form.study_modes = modes.reduce((acc, m) => {
+            console.log(m);
+
+            console.log(
+                props.semester.studyModes.find((studyMode) => studyMode.id == m)
+                    .semester_start_date,
+                props.semester.studyModes.find((studyMode) => studyMode.id == m)
+                    .semester_end_date
+            );
+
             acc[m] = {
                 start_date: props.form.study_modes[m]
                     ? props.form.study_modes[m].start_date
@@ -124,9 +136,14 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel for="start_date" value="Start Date" />
                 <DatePicker
-                    v-model="form.start_date"
                     dateFormat="dd-mm-yy"
                     showIcon
+                    :modelValue="new Date(form.start_date)"
+                    @update:modelValue="
+                        (value) => {
+                            form.start_date = dateWithoutTimezone(value);
+                        }
+                    "
                     placeholder="Select Start Date"
                 />
                 <InputError :message="form.errors?.start_date" class="mt-2" />
@@ -135,7 +152,12 @@ const emits = defineEmits(["submit"]);
             <div>
                 <InputLabel for="end_date" value="End Date" />
                 <DatePicker
-                    v-model="form.end_date"
+                    :modelValue="new Date(form.end_date)"
+                    @update:modelValue="
+                        (value) => {
+                            form.end_date = dateWithoutTimezone(value);
+                        }
+                    "
                     dateFormat="dd-mm-yy"
                     showIcon
                     placeholder="Select End Date"
@@ -204,13 +226,24 @@ const emits = defineEmits(["submit"]);
                                         Start Date
                                     </label>
                                     <DatePicker
-                                        v-model="
-                                            form.study_modes[studyMode.id]
-                                                .start_date
-                                        "
                                         date-format="dd-mm-yy"
                                         show-icon
                                         class="w-full"
+                                        :modelValue="
+                                            new Date(
+                                                form.study_modes[
+                                                    studyMode.id
+                                                ].start_date
+                                            )
+                                        "
+                                        @update:modelValue="
+                                            (value) => {
+                                                form.study_modes[
+                                                    studyMode.id
+                                                ].start_date =
+                                                    dateWithoutTimezone(value);
+                                            }
+                                        "
                                     />
                                 </div>
 
@@ -221,13 +254,24 @@ const emits = defineEmits(["submit"]);
                                         End Date
                                     </label>
                                     <DatePicker
-                                        v-model="
-                                            form.study_modes[studyMode.id]
-                                                .end_date
-                                        "
                                         date-format="dd-mm-yy"
                                         show-icon
                                         class="w-full"
+                                        :modelValue="
+                                            new Date(
+                                                form.study_modes[
+                                                    studyMode.id
+                                                ].end_date
+                                            )
+                                        "
+                                        @update:modelValue="
+                                            (value) => {
+                                                form.study_modes[
+                                                    studyMode.id
+                                                ].end_date =
+                                                    dateWithoutTimezone(value);
+                                            }
+                                        "
                                     />
                                 </div>
                             </div>

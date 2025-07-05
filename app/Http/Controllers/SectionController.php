@@ -108,11 +108,13 @@ class SectionController extends Controller
             'track',
             'year',
             'semester',
+            'studyMode',
             'studyMode.semesters.year',
             'students',
             'grades',
             'courseOfferings.course',
             'courseOfferings.instructor',
+            'classSchedules' => fn($q) => $q->where('semester_id', $section->studyMode->activeSemester()->id),
             'classSchedules.courseOffering',
             'classSchedules.semester',
             'classSchedules.room',
@@ -171,7 +173,7 @@ class SectionController extends Controller
                     ],
                     [
                         'year_level' => $curriculum->year_level ?? null,
-                        'semester_level' => $curriculum->semester ?? null,
+                        'semester_level' => $curriculum->semester_level ?? null,
                     ]
                 );
             }

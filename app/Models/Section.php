@@ -48,12 +48,13 @@ class Section extends Model
 
     public function classSchedules()
     {
-        return $this->hasManyThrough(ClassSchedule::class, CourseOffering::class)->where('semester_id', Semester::getActiveSemester()->id);
+        return $this->hasManyThrough(ClassSchedule::class, CourseOffering::class);
     }
+
 
     public function classSessions()
     {
-        return $this->hasManyThrough(ClassSchedule::class, CourseOffering::class)->where('semester_id', Semester::getActiveSemester()->id);
+        return $this->hasManyThrough(ClassSchedule::class, CourseOffering::class);
     }
 
     public function instructors(): BelongsToMany

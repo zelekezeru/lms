@@ -25,31 +25,31 @@ const form = useForm({
     name: "",
     phone: "",
     status: "Active",
-    center_id: props.center.id,
+    center_id: props.center && props.center.id ? props.center.id : "",
 });
 
 const editForm = useForm({
     name: "",
     phone: "",
     status: "Active",
-    center_id: props.center.id,
+    center_id: props.center && props.center.id ? props.center.id : "",
 });
 
 const openCreateModal = () => {
     imagePreview.value = null;
     form.reset();
-    form.center_id = props.center.id;
+    form.center_id = props.center && props.center.id ? props.center.id : "";
     showCreateModal.value = true;
 };
 
 const openEditModal = (coordinator) => {
-    imagePreview.value = coordinator.profile_img || null;
+    imagePreview.value = coordinator?.profile_img || null;
     editForm.reset();
-    editForm.name = coordinator.name;
-    editForm.phone = coordinator.phone;
-    editForm.status = coordinator.status || "Active";
+    editForm.name = coordinator?.name;
+    editForm.phone = coordinator?.phone;
+    editForm.status = coordinator?.status || "Active";
     editForm.profile_img = "";
-    editForm.center_id = coordinator.center_id || props.center.id;
+    editForm.center_id = coordinator?.center_id || (props.center && props.center.id ? props.center.id : "");
     showEditModal.value = true;
 };
 
@@ -67,7 +67,7 @@ const submitForm = () => {
 };
 
 const submitEditForm = () => {
-    editForm.post(route("coordinators.update", { coordinator: props.coordinator.id }), {
+    editForm.post(route("coordinators.update", { coordinator: props.coordinator?.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "Coordinator updated.", "success");
             showEditModal.value = false;
@@ -91,11 +91,11 @@ const updateProfileImageModal = ref(false);
 const selectedImagePreview = ref(null);
 
 const profileImageForm = useForm({
-    user_id: props.coordinator.id,
+    user_id: props.coordinator?.id,
     profile_image: null,
     // Hold the previous image preview if validation fails
     get _preview() {
-        return selectedImagePreview.value || props.coordinator.profileImg;
+        return selectedImagePreview.value || props.coordinator?.profileImg;
     },
 });
 
@@ -118,7 +118,7 @@ const handleProfileImageChange = (event) => {
 };
 
 const submitProfileImageUpdate = () => {
-    profileImageForm.post(route('users.update.image', { user: props.coordinator.id }), {
+    profileImageForm.post(route('users.update.image', { user: props.coordinator?.id }), {
         onSuccess: () => {
             Swal.fire("Success!", "Profile image updated.", "success");
             closeProfileImageModal();
@@ -148,8 +148,8 @@ const submitProfileImageUpdate = () => {
                 <img
                     v-show="imageLoaded"
                     class="rounded-full w-44 h-44 object-contain bg-gray-400"
-                    :src="coordinator.profileImg"
-                    :alt="`Logo of ` + coordinator.name"
+                    :src="coordinator?.profileImg"
+                    :alt="`Logo of ` + coordinator?.name"
                     @load="handleImageLoad"
                 />
                 
@@ -169,25 +169,25 @@ const submitProfileImageUpdate = () => {
                 <div>
                     <span class="text-sm text-gray-500">Full Name</span>
                     <div class="text-lg font-medium">
-                        {{ coordinator.name }}
+                        {{ coordinator?.name }}
                     </div>
                 </div>
                 <div>
                     <span class="text-sm text-gray-500">Email</span>
                     <div class="text-lg font-medium">
-                        {{ coordinator.email }}
+                        {{ coordinator?.email }}
                     </div>
                 </div>
                 <div>
                     <span class="text-sm text-gray-500">Phone</span>
                     <div class="text-lg font-medium">
-                        {{ coordinator.phone || "N/A" }}
+                        {{ coordinator?.phone || "N/A" }}
                     </div>
                 </div>
                 <div>
                     <span class="text-sm text-gray-500">Status</span>
                     <div class="text-lg font-medium">
-                        {{ coordinator.status }}
+                        {{ coordinator?.status }}
                     </div>
                 </div>
             </div>
@@ -294,20 +294,30 @@ const submitProfileImageUpdate = () => {
                         </div>
                     </div>
 
-                    <div class="flex justify-end space-x-2">
+                    <div class="flex justify-end space-x-3 pt-4">
                         <button
                             type="button"
                             @click="showCreateModal = false"
-                            class="btn-secondary"
+                            class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 text-gray-800 dark:text-gray-100 font-semibold shadow-md hover:from-gray-300 hover:to-gray-500 dark:hover:from-gray-600 dark:hover:to-gray-800 transition-all duration-200 group overflow-hidden"
                         >
-                            Cancel
+                            <span class="absolute left-0 top-0 w-0 h-full bg-gray-400 dark:bg-gray-600 opacity-20 group-hover:w-full transition-all duration-300"></span>
+                            <span class="relative z-10">Cancel</span>
                         </button>
                         <button
                             type="submit"
-                            class="btn-primary"
+                            class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-green-600 via-green-500 to-green-400 text-white font-semibold shadow-lg hover:from-green-700 hover:via-green-600 hover:to-green-500 transition-all duration-200 group overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                             :disabled="form.processing"
                         >
-                            {{ form.processing ? "Saving..." : "Save" }}
+                            <span class="absolute left-0 top-0 w-0 h-full bg-white opacity-10 group-hover:w-full transition-all duration-300"></span>
+                            <span class="relative z-10 flex items-center justify-center">
+                                <span v-if="form.processing" class="animate-spin mr-2">
+                                    <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
+                                {{ form.processing ? "Saving..." : "Save" }}
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -392,20 +402,30 @@ const submitProfileImageUpdate = () => {
                         </div>
                     </div>
 
-                    <div class="flex justify-end space-x-2">
+                    <div class="flex justify-end space-x-3 pt-4">
                         <button
                             type="button"
                             @click="showEditModal = false"
-                            class="btn-secondary"
+                            class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 text-gray-800 dark:text-gray-100 font-semibold shadow-md hover:from-gray-300 hover:to-gray-500 dark:hover:from-gray-600 dark:hover:to-gray-800 transition-all duration-200 group overflow-hidden"
                         >
-                            Cancel
+                            <span class="absolute left-0 top-0 w-0 h-full bg-gray-400 dark:bg-gray-600 opacity-20 group-hover:w-full transition-all duration-300"></span>
+                            <span class="relative z-10">Cancel</span>
                         </button>
                         <button
                             type="submit"
-                            class="btn-primary"
+                            class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white font-semibold shadow-lg hover:from-blue-700 hover:via-blue-600 hover:to-blue-500 transition-all duration-200 group overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                             :disabled="editForm.processing"
                         >
-                            {{ editForm.processing ? "Updating..." : "Update" }}
+                            <span class="absolute left-0 top-0 w-0 h-full bg-white opacity-10 group-hover:w-full transition-all duration-300"></span>
+                            <span class="relative z-10 flex items-center justify-center">
+                                <span v-if="editForm.processing" class="animate-spin mr-2">
+                                    <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
+                                {{ editForm.processing ? "Updating..." : "Update" }}
+                            </span>
                         </button>
                     </div>
                 </form>
@@ -451,23 +471,27 @@ const submitProfileImageUpdate = () => {
                 <div class="flex justify-end space-x-3 pt-4">
                     <button
                         @click="closeProfileImageModal"
-                        class="px-5 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition font-semibold"
+                        class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 text-gray-800 dark:text-gray-100 font-semibold shadow-md hover:from-gray-300 hover:to-gray-500 dark:hover:from-gray-600 dark:hover:to-gray-800 transition-all duration-200 group overflow-hidden"
                     >
-                        Cancel
+                        <span class="absolute left-0 top-0 w-0 h-full bg-gray-400 dark:bg-gray-600 opacity-20 group-hover:w-full transition-all duration-300"></span>
+                        <span class="relative z-10">Cancel</span>
                     </button>
 
                     <button
                         @click="submitProfileImageUpdate"
                         :disabled="profileImageForm.processing"
-                        class="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold shadow hover:from-blue-700 hover:to-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                        class="relative px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white font-semibold shadow-lg hover:from-blue-700 hover:via-blue-600 hover:to-blue-500 transition-all duration-200 group overflow-hidden disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        <span v-if="profileImageForm.processing" class="animate-spin mr-2">
-                            <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                            </svg>
+                        <span class="absolute left-0 top-0 w-0 h-full bg-white opacity-10 group-hover:w-full transition-all duration-300"></span>
+                        <span class="relative z-10 flex items-center justify-center">
+                            <span v-if="profileImageForm.processing" class="animate-spin mr-2">
+                                <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
+                            </span>
+                            Save
                         </span>
-                        Save
                     </button>
                 </div>
             </div>

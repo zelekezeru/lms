@@ -102,7 +102,7 @@ function submit() {
                         >Section:</span
                     >
                     <span class="text-lg font-semibold">
-                        {{ props.center.name }}</span
+                        {{ props.center?.name || 'N/A' }}</span
                     >
                 </div>
                 <div
@@ -113,7 +113,7 @@ function submit() {
                         >Code</span
                     >
                     <span class="text-lg font-semibold">{{
-                        props.center.code
+                        props.center?.code || 'N/A'
                     }}</span>
                 </div>
                 <div
@@ -124,7 +124,7 @@ function submit() {
                         >Coordinator</span
                     >
                     <span class="text-lg font-semibold"
-                        >{{ props.coordinator.name }}
+                        >{{ props.coordinator?.name || 'N/A' }}
                     </span>
                 </div>
             </div>

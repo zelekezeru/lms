@@ -67,6 +67,7 @@ const assignStudentToSection = (studentId) => {
                         <Thead>Student Name</Thead>
                         <Thead>ID Number</Thead>
                         <Thead>Phone</Thead>
+                        <Thead>Program</Thead>
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
@@ -85,6 +86,7 @@ const assignStudentToSection = (studentId) => {
                         </th>
                         <td class="px-6 py-4">{{ student.idNo }}</td>
                         <td class="px-6 py-4">{{ student.mobilePhone }}</td>
+                        <td class="px-6 py-4">{{ student.program?.name }}</td>
                         <td class="px-6 py-4 flex space-x-6">
                             <div v-if="userCan('view-students')">
                                 <Link :href="route('students.show', { student: student.id })" class="text-blue-500 hover:text-blue-700">

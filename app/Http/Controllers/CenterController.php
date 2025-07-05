@@ -44,7 +44,7 @@ class CenterController extends Controller
         $center = new CenterResource($center);
 
         $students = StudentResource::collection(
-            $center->students()->with(['user'])->get()
+            $center->students()->with(['user', 'program'])->get()
         );
         
         if($center->coordinator){

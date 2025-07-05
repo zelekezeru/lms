@@ -59,20 +59,42 @@ class CenterImport implements ToCollection, WithHeadingRow
         ]));
 
         $study_mode = StudyMode::where('name', 'DISTANCE')->first();
-        $program = $study_mode->programs->first();
-        $track = $program->tracks->first();
 
         $this->center_id = $center->id;
         $this->tenant_id = $center->coordinator->user->tenant_id; // assuming user relation carries tenant
         $this->user_id = $center->coordinator->user->id;
         $this->study_mode_id = $study_mode->id;
-        $this->program_id = $program ? $program->id : null;
-        $this->track_id = $track ? $track->id : null;
-        $this->section = $track->sections->first();
-        
-        DB::transaction(function () use ($rows) {
-            
+
+        DB::transaction(function () use ($rows, $study_mode) {
+
             foreach ($rows as $row) {
+
+                if (isset($row['program'])) {
+                    
+                    $program = Program::where('code', $row['program'])->first();
+
+                    if (!$program) {
+                        session()->flash('sweet_alert', [
+                            'type' => 'error',
+                            'title' => 'Program Not Found',
+                            'text' => 'The program '.$row['program'].' does not exist. Please check the program name.',
+                        ]);
+                        continue;
+                    }
+                } else {
+                    session()->flash('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'Program Not Found',
+                        'text' => 'Program field is missing. Please check the program name.',
+                    ]);
+                    continue;
+                }
+
+                $track = $program->tracks->first();
+
+                $this->program_id = $program ? $program->id : null;
+                $this->track_id = $track ? $track->id : null;
+                $this->section = $track ? $track->sections->first() : null;
                 
                 // Validate row data
                 if (! isset($row['full_name']) || ! isset($row['phone']) || ! isset($row['sex'])) {
@@ -155,7 +177,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                         'updated_at' => now(),
                     ]);
 
-                    $academicYear = substr($row['entry_year'], -2); // Get last two digits of the entry year
+                    $academicYear = substr( $year->name, -2); // Get last two digits of the entry year
                 }
 
                 // 👤 Generate custom user_uuid
@@ -286,6 +308,12 @@ class CenterImport implements ToCollection, WithHeadingRow
         }else{
             $pastor_phone = null;
         }
+
+        // if no church address is provided, set it to Center_distance
+        if (!isset($fields['church_address']) || empty($fields['church_address'])) {
+            $fields['church_address'] = $fields['center_distance'] ?? null;
+        }
+        
         $church_data = [
             'student_id' => $student->id,
             'pastor_name' => $fields['pastor_name'] ?? null,

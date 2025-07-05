@@ -15,8 +15,16 @@ class PaymentMethodSeeder extends Seeder
         DB::table('payment_methods')->insert([
             [
                 'payment_type' => 'Bank Transfer',
-                'bank_name' => 'CBE',
+                'bank_name' => 'Birhan Bank',
                 'account_number' => '1234567890',
+                'is_active' => true,
+                'tenant_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'payment_type' => 'Cheque',
+                'bank_name' => 'Birhan Bank',
+                'account_number' => '10203040506070',
                 'is_active' => true,
                 'tenant_id' => 1,
                 'created_by' => 1,
@@ -33,14 +41,6 @@ class PaymentMethodSeeder extends Seeder
                 'payment_type' => 'Mobile Payment',
                 'bank_name' => 'Telebirr',
                 'account_number' => '0911121314',
-                'is_active' => true,
-                'tenant_id' => 1,
-                'created_by' => 1,
-            ],
-            [
-                'payment_type' => 'Cheque',
-                'bank_name' => 'Birhan Bank',
-                'account_number' => '10203040506070',
                 'is_active' => true,
                 'tenant_id' => 1,
                 'created_by' => 1,

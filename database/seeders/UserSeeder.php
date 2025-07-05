@@ -189,33 +189,44 @@ class UserSeeder extends Seeder
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 3, // The user ID
             ],
+            
             [
-                'role_id' => 13, // FINANCE role ID
+                'role_id' => 9, // EMPLOYEE role ID
+                'model_type' => 'App\Models\User', // The model type for the user
+                'model_id' => 3, // The user ID
+            ],
+            [
+                'role_id' => 14, // FINANCE role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 4, // The user ID
             ],
             [
-                'role_id' => 6, // SUPER-ADMIN role ID
+                'role_id' => 9, // EMPLOYEE role ID
+                'model_type' => 'App\Models\User', // The model type for the user
+                'model_id' => 4, // The user ID
+            ],
+            [
+                'role_id' => 6, // INSTRUCTOR role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 41, // The user ID
             ],
             [
-                'role_id' => 7, // SUPER-ADMIN role ID
+                'role_id' => 7, // INSTRUCTOR role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 39, // The user ID
             ],
             [
-                'role_id' => 7, // SUPER-ADMIN role ID
+                'role_id' => 7, // INSTRUCTOR role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 42, // The user ID
             ],
             [
-                'role_id' => 7, // SUPER-ADMIN role ID
+                'role_id' => 7, // INSTRUCTOR role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 43, // The user ID
             ],
             [
-                'role_id' => 13, // FINANCE role ID
+                'role_id' => 14, // FINANCE role ID
                 'model_type' => 'App\Models\User', // The model type for the user
                 'model_id' => 44, // The user ID
             ],

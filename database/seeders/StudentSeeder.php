@@ -226,9 +226,39 @@ class StudentSeeder extends Seeder
                 'Gebreigziabher'
             ];
 
-            $firstName = $faker->randomElement($ethiopianFirstNames);
-            $middleName = $faker->randomElement($ethiopianMiddleNames);
-            $lastName = $faker->randomElement($ethiopianLastNames);
+            // Ensure no repetitions by removing used names from arrays
+            static $usedFirstNames = [];
+            static $usedMiddleNames = [];
+            static $usedLastNames = [];
+
+            // Get available names by filtering out used ones
+            $availableFirstNames = array_values(array_diff($ethiopianFirstNames, $usedFirstNames));
+            $availableMiddleNames = array_values(array_diff($ethiopianMiddleNames, $usedMiddleNames));
+            $availableLastNames = array_values(array_diff($ethiopianLastNames, $usedLastNames));
+
+            // If we run out of unique names, reset the used arrays (optional)
+            if (empty($availableFirstNames)) {
+                $usedFirstNames = [];
+                $availableFirstNames = $ethiopianFirstNames;
+            }
+            if (empty($availableMiddleNames)) {
+                $usedMiddleNames = [];
+                $availableMiddleNames = $ethiopianMiddleNames;
+            }
+            if (empty($availableLastNames)) {
+                $usedLastNames = [];
+                $availableLastNames = $ethiopianLastNames;
+            }
+
+            // Pick random names from the available ones
+            $firstName = $faker->randomElement($availableFirstNames);
+            $middleName = $faker->randomElement($availableMiddleNames);
+            $lastName = $faker->randomElement($availableLastNames);
+
+            // Mark names as used
+            $usedFirstNames[] = $firstName;
+            $usedMiddleNames[] = $middleName;
+            $usedLastNames[] = $lastName;
             $email = strtolower($firstName) . '.' . strtolower($lastName) . '@sits.edu.et';
             $phone = '0916' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT); // Generate a random phone number
             $officePhone = '0462' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);

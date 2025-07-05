@@ -153,13 +153,13 @@ const searchPrograms = () => {
                             sortColumn="name"
                             >{{ $t('programs.name') }}</Thead
                         >
+                        <Thead>{{ $t('programs.code') }}</Thead>
                         <Thead
                             :sortable="true"
                             :sort-info="sortInfo"
                             sortColumn="language"
                             >{{ $t('programs.language') }}</Thead
                         >
-                        <Thead>{{ $t('programs.duration') }}</Thead>
                         <Thead>{{ $t('programs.action') }}</Thead>
                     </tr>
                 </TableHeader>
@@ -181,8 +181,8 @@ const searchPrograms = () => {
                                 >{{ program.name }}</Link
                             >
                         </th>
+                        <td class="px-6 py-4">{{ program.code }}</td>
                         <td class="px-6 py-4">{{ program.language }}</td>
-                        <td class="px-6 py-4">{{ program.duration }}</td>
                         <td class="flex px-6 py-4 space-x-2">
                             <Link
                                 v-if="userCan('view-programs')"

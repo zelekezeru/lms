@@ -36,6 +36,11 @@ class StudyMode extends Model
 
     public function semesters()
     {
-        return $this->belongsToMany(Semester::class)->withPivot('start_date', 'end_date');
+        return $this->belongsToMany(Semester::class)->withPivot('start_date', 'end_date', 'status');
+    }
+
+    public function activeSemester()
+    {
+        return $this->semesters()->wherePivot('status', 'active')->with('year')->first();
     }
 }

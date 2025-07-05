@@ -8,6 +8,7 @@ import {
 } from "@heroicons/vue/24/solid";
 import Swal from "sweetalert2";
 import {
+    ArrowDownOnSquareIcon,
     EyeIcon,
     InformationCircleIcon,
     LockClosedIcon,
@@ -15,6 +16,7 @@ import {
 import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
 import ShowSemesters from "./Tabs/ShowSemesters.vue";
+import ShowCloseForm from "./Tabs/ShowCloseForm.vue";
 
 const props = defineProps({
     oldSemesters: Object,
@@ -51,6 +53,11 @@ const selectedTab = ref("status");
 
 const tabs = [
     { key: "status", label: "Active Semester", icon: InformationCircleIcon },
+    {
+        key: "closeForm",
+        label: "Close Semesters",
+        icon: ArrowDownOnSquareIcon,
+    },
     {
         key: "sections",
         label: "Active Sections",
@@ -101,8 +108,14 @@ const tabs = [
             >
                 <ShowDetails
                     v-if="selectedTab === 'status'"
-                    :course="course"
+                    :studyModes="studyModes"
                     :active-semester="props.activeSemester"
+                />
+
+                <!-- Courses Panel -->
+                <ShowCloseForm
+                    v-else-if="selectedTab === 'closeForm'"
+                    :studyModes="studyModes"
                 />
 
                 <!-- Courses Panel -->
@@ -111,6 +124,7 @@ const tabs = [
                     :sections="props.sections"
                     :gradesPercentage="props.gradesPercentage"
                 />
+
                 <!-- Semesters Panel -->
                 <ShowSemesters
                     v-else-if="selectedTab === 'semesters'"

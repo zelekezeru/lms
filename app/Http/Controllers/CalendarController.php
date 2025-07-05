@@ -44,7 +44,7 @@ class CalendarController extends Controller
 
         $gradesPercentage = null;
 
-        $studyModes = StudyModeResource::collection(StudyMode::with('semesters')->get());
+        $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
 
         if ($activeSemester) {
             foreach ($activeSemester->sections as $section) {
@@ -112,6 +112,7 @@ class CalendarController extends Controller
     public function closeSemesterForm()
     {
         $activeSemester = Semester::where('status', 'Active')->with('year')->first();
+        $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
 
         if (! $activeSemester) {
             return redirect()->back()->with('error', 'No active semester to close.');
@@ -121,8 +122,10 @@ class CalendarController extends Controller
             Semester::where('status', 'Inactive')->with('year')->orderByDesc('name')->get()
         );
 
+
         return Inertia::render('Calendars/CloseForm', [
             'semester' => $activeSemester,
+            'studyModes' => $studyModes,
             'semesters' => $semesters,
         ]);
     }
@@ -132,36 +135,29 @@ class CalendarController extends Controller
      */
     public function closeSemester(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'approval' => 'required|accepted',
             'new_semester_id' => 'required|numeric|exists:semesters,id',
-            'new_semester_start_date' => 'required|',
-            'new_semester_end_date' => 'required|date|after:new_semester_start_date',
+            'study_mode_id' => 'required|numeric|exists:study_modes,id',
         ]);
 
-        $activeSemester = Semester::where('status', 'Active')->first();
 
-        $newSemester = Semester::find($request->new_semester_id);
-
-        if (! $activeSemester || ! $newSemester) {
-            return redirect()->back()->with('error', 'No active semester to close.');
-        } elseif ($newSemester->status == 'Active') {
-            return redirect()->back()->with('error', 'The selected semester is already active.');
-        } elseif ($newSemester->id == $activeSemester->id) {
-            return redirect()->back()->with('error', 'The selected semester is the same as the current one.');
+        $selectedStudyMode = StudyMode::find($validated['study_mode_id']);
+        if (! $selectedStudyMode->semesters()->where('semesters.id', $validated['new_semester_id'])->exists()) {
+            return redirect()->back()->withErrors(['something went wrong!']);
         }
 
-        DB::transaction(function () use ($request, $activeSemester, $newSemester) {
-            // Close current semester
-            $activeSemester->update(['status' => 'Inactive']);
+        $activeSemester = $selectedStudyMode->activeSemester();
 
-            $newSemester->update([
-                'status' => 'Active',
-                'start_date' => $request->new_semester_start_date,
-                'end_date' => $request->new_semester_end_date,
-            ]);
+        DB::transaction(function () use ($validated, $selectedStudyMode, $activeSemester) {
+            // Set the active semester of the study mode to inactive (if the studymode has an active semester)
+            if ($activeSemester) {
+                $selectedStudyMode->semesters()->syncWithoutDetaching([$activeSemester->id => ['status' => 'inactive']]);
+            }
 
-            AutoEnrollmentService::autoEnroll();
+            // set the selected semesters as the new active semester for the selected studymode
+            $selectedStudyMode->semesters()->syncWithoutDetaching([$validated['new_semester_id'] => ['status' => 'active']]);
+            // AutoEnrollmentService::autoEnroll();
         });
 
         return redirect()->route('calendars.index')->with('success', 'Semester closing Instialization successfully Done.');

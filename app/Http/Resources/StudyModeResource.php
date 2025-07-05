@@ -27,6 +27,10 @@ class StudyModeResource extends JsonResource
             }),
 
             // only when semester is loaded with their studymodes
+            'activeSemester' => $this->whenLoaded('semesters', function () {
+                return new SemesterResource($this->activeSemester());
+            }),
+
             'semester_start_date' => $this->whenPivotLoaded('semester_study_mode', function () {
                 return Carbon::parse($this->pivot->start_date)->format('d-m-Y');
             }),

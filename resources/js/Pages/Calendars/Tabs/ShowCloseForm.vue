@@ -6,6 +6,11 @@ import Select from "primevue/select";
 
 const props = defineProps({
     studyModes: Array, // e.g. [{ id, name, activeSemester, semesters: [] }]
+    setSemesterOf: {
+        required: false,
+        type: Number,
+        default: null,
+    },
 });
 
 const selectedStudyMode = ref(null);
@@ -13,7 +18,7 @@ const selectedStudyMode = ref(null);
 const form = useForm({
     approval: false,
     new_semester_id: null,
-    study_mode_id: null,
+    study_mode_id: props.setSemesterOf ? props.setSemesterOf : null,
 });
 
 const selectedSemesters = computed(() => {
@@ -26,7 +31,8 @@ watch(
         selectedStudyMode.value = props.studyModes.find(
             (studyMode) => studyMode.id == newVal
         );
-    }
+    },
+    { immediate: true }
 );
 const submit = () => {
     form.post(route("semesters.close"), {
@@ -75,7 +81,7 @@ const submit = () => {
                 <!-- Current Semester Info -->
                 <div class="mt-2">
                     <p
-                        class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                        class="text-lg font-medium text-gray-700 dark:text-gray-300"
                     >
                         Current Active Semester:
                         <span v-if="selectedStudyMode.activeSemester">

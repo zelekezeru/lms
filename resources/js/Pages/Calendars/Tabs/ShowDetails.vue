@@ -12,6 +12,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    showCloseSemester: {
+        type: Function,
+        required: true,
+    },
 });
 
 const refreshing = ref(false);
@@ -123,12 +127,8 @@ function refreshData() {
                 </div>
 
                 <div class="flex justify-center mt-4">
-                    <Link
-                        :href="
-                            route('semesters.closeForm', {
-                                study_mode: studyMode.id,
-                            })
-                        "
+                    <button
+                        @click="showCloseSemester(studyMode.id)"
                         class="flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-red-500 to-red-700 rounded-xl shadow hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200"
                     >
                         <svg
@@ -145,7 +145,7 @@ function refreshData() {
                             />
                         </svg>
                         <span>Close Semester</span>
-                    </Link>
+                    </button>
                 </div>
             </div>
 
@@ -171,11 +171,12 @@ function refreshData() {
                         operations.
                     </p>
 
-                    <Link
+                    <button
+                        @click="showCloseSemester(studyMode.id)"
                         class="inline-flex items-center px-5 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold rounded-md shadow transition"
                     >
                         Set Active Semester
-                    </Link>
+                    </button>
                 </div>
             </div>
         </div>

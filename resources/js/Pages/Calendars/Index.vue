@@ -65,6 +65,12 @@ const tabs = [
     },
     { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
 ];
+
+const setSemesterOf = ref(null);
+
+const showCloseForm = (studyModeId) => {
+    (setSemesterOf.value = studyModeId), (selectedTab.value = "closeForm");
+};
 </script>
 
 <template>
@@ -110,12 +116,14 @@ const tabs = [
                     v-if="selectedTab === 'status'"
                     :studyModes="studyModes"
                     :active-semester="props.activeSemester"
+                    :show-close-semester="showCloseForm"
                 />
 
                 <!-- Courses Panel -->
                 <ShowCloseForm
                     v-else-if="selectedTab === 'closeForm'"
                     :studyModes="studyModes"
+                    :setSemesterOf="setSemesterOf"
                 />
 
                 <!-- Courses Panel -->

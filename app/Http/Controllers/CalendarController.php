@@ -149,7 +149,7 @@ class CalendarController extends Controller
 
         $activeSemester = $selectedStudyMode->activeSemester();
 
-        $isAlreadyActive = $activeSemester->id == $validated['new_semester_id'];
+        $isAlreadyActive = $activeSemester && $activeSemester->id == $validated['new_semester_id'];
         $isClosed = $selectedStudyMode->semesters()->where('semesters.id', $validated['new_semester_id'])->wherePivot('status', 'closed')->exists();
 
         if ($isAlreadyActive) {

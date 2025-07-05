@@ -22,8 +22,6 @@ const props = defineProps({
     },
 });
 
-
-
 const sectionForm = useForm({
     name: "",
     track_id: props.track.id,
@@ -40,9 +38,18 @@ const createSection = ref(false);
 
 // watch and updated the list of semsters
 watch(
-    () => sectionForm.year_id,
-    () => {
-        selectedYearSemesters.value = props.years.find(year => year.id == sectionForm.year_id) ? props.years.find(year => year.id == sectionForm.year_id).semesters : [];
+    () => [sectionForm.year_id, sectionForm.study_mode_id],
+    ([newYearId, newStudyModeId]) => {
+        if (newYearId && newStudyModeId) {
+            const selectedStudyMode = props.track.program.studyModes.find(
+                (studyMode) => studyMode.id == newStudyModeId
+            );
+
+            selectedYearSemesters.value =
+                selectedStudyMode?.semesters.filter(
+                    (semester) => semester.year.id == sectionForm.year_id
+                ) || [];
+        }
     }
 );
 
@@ -57,7 +64,7 @@ const addSection = () => {
                 Swal.fire(
                     "Added!",
                     "Study Section added successfully.",
-                    "success",
+                    "success"
                 );
                 sectionForm.reset();
                 createSection.value = false;
@@ -71,14 +78,14 @@ const addSection = () => {
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t('sections.title') }}
+                {{ $t("sections.title") }}
             </h2>
             <button
                 @click="createSection = !createSection"
                 class="flex items-center space-x-6 text-indigo-600 hover:text-indigo-800 transition"
             >
                 <PlusCircleIcon class="w-8 h-8" />
-                <span class="hidden sm:inline">{{ $t('sections.add') }}</span>
+                <span class="hidden sm:inline">{{ $t("sections.add") }}</span>
             </button>
         </div>
         <div class="overflow-x-auto">
@@ -87,23 +94,35 @@ const addSection = () => {
             >
                 <thead>
                     <tr class="bg-gray-50 dark:bg-gray-700">
-                        <th class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('sections.no') }}
+                        <th
+                            class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{ $t("sections.no") }}
                         </th>
-                        <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('sections.name') }}
+                        <th
+                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{ $t("sections.name") }}
                         </th>
-                        <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ $t('sections.study_mode') }}
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{ $t("sections.study_mode") }}
                         </th>
-                        <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('sections.year') }}
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                        >
+                            {{ $t("sections.year") }}
                         </th>
-                        <th class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('sections.semester') }}
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                        >
+                            {{ $t("sections.semester") }}
                         </th>
-                        <th class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            {{ $t('sections.actions') }}
+                        <th
+                            class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                        >
+                            {{ $t("sections.actions") }}
                         </th>
                     </tr>
                 </thead>
@@ -118,27 +137,55 @@ const addSection = () => {
                         "
                         class="border-b border-gray-300 dark:border-gray-600"
                     >
-                        <td class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                        <td
+                            class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
                             {{ index + 1 }}
                         </td>
-                        <td class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            <Link :href="route('sections.show', { section: section.id })">
+                        <td
+                            class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            <Link
+                                :href="
+                                    route('sections.show', {
+                                        section: section.id,
+                                    })
+                                "
+                            >
                                 {{ section.name }}
                             </Link>
                         </td>
-                        <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            {{ section.studyMode ? section.studyMode.name : $t('sections.na') }}
+                        <td
+                            class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{
+                                section.studyMode
+                                    ? section.studyMode.name
+                                    : $t("sections.na")
+                            }}
                         </td>
-                        <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                        <td
+                            class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
                             {{ section.year.name }}
                         </td>
-                        <td class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                        <td
+                            class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
                             {{ section.semester.name }}
                         </td>
-                        <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
-                            <div class="flex items-center justify-center h-full">
+                        <td
+                            class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            <div
+                                class="flex items-center justify-center h-full"
+                            >
                                 <Link
-                                    :href="route('sections.show', { section: section.id })"
+                                    :href="
+                                        route('sections.show', {
+                                            section: section.id,
+                                        })
+                                    "
                                     class="text-blue-500 hover:text-blue-700"
                                 >
                                     <EyeIcon class="w-5 h-5" />
@@ -176,7 +223,9 @@ const addSection = () => {
                                     option-label="name"
                                     checkmark
                                     filter
-                                    :placeholder="$t('sections.select_study_mode')"
+                                    :placeholder="
+                                        $t('sections.select_study_mode')
+                                    "
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />
@@ -204,18 +253,20 @@ const addSection = () => {
                                     option-label="name"
                                     checkmark
                                     filter
-                                    :placeholder="$t('sections.select_semester')"
+                                    :placeholder="
+                                        $t('sections.select_semester')
+                                    "
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />
                             </td>
                             <td>
-                                <PrimaryButton
+                                <button
                                     class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
                                     @click="addSection"
                                 >
-                                    {{ $t('common.save') }}
-                                </PrimaryButton>
+                                    {{ $t("common.save") }}
+                                </button>
                             </td>
                         </tr>
                     </transition>

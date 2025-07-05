@@ -83,7 +83,7 @@ class SectionController extends Controller
                     ],
                     [
                         'year_level' => $curriculum->year_level ?? null,
-                        'semester_level' => $curriculum->semester ?? null,
+                        'semester_level' => $curriculum->semester_level ?? null,
                     ],
                 );
             }
@@ -230,8 +230,7 @@ class SectionController extends Controller
             return redirect()->back()->with('error', 'Cannot delete section with associated students in the semester.');
         } elseif ($section->studyMode && $section->studyMode->students()->count() > 0) {
             return redirect()->back()->with('error', 'Cannot delete section with associated students in the study mode.');
-        }
-        elseif ($section->status === 'active') {
+        } elseif ($section->status === 'active') {
             return redirect()->back()->with('error', 'Cannot delete section with an active status.');
         } else {
             // Delete the section

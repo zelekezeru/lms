@@ -108,7 +108,7 @@ class StudentController extends Controller
         $yearLevel = $student->section ? $student->section->yearLevel() : null;
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
 
-        $activeSemester = Semester::getActiveSemester();
+        $activeSemester = $student->studyMode->activeSemester();
         $studyModes = StudyMode::with(['sections.courseOfferings', 'sections.studyMode', 'sections.track', 'sections.program'])->get();
 
         $studyModes->each(function ($studyMode) use ($activeSemester) {
@@ -150,10 +150,10 @@ class StudentController extends Controller
         $user = new UserResource($student->user);
 
         $documents = UserDocumentResource::collection($student->user->userDocuments);
-        
+
         $semesters = $student->semesters()
             ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
-        
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => $user,

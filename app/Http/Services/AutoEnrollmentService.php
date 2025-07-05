@@ -9,15 +9,16 @@ use App\Models\PaymentType;
 use App\Models\Semester;
 use App\Models\SemesterStudent;
 use App\Models\Student;
+use App\Models\StudyMode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AutoEnrollmentService
 {
-  public static function autoEnroll()
+  public static function autoEnroll($studyModeId)
   {
-    $activeSemester = Semester::getActiveSemester();
-    $students = Student::getActiveStudents();
+    $activeSemester = StudyMode::find($studyModeId)->activeSemester();
+    $students = Student::getActiveForStudyMode($studyModeId);
 
     foreach ($students as $student) {
       if (! $student->section) continue;

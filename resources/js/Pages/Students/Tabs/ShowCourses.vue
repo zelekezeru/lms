@@ -136,7 +136,7 @@ const dropEnrollment = (enrollmentId) => {
 </script>
 
 <template>
-    <div v-if="userCanAny([])">
+    <div v-if="userCanAny(['create-students'])">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Courses

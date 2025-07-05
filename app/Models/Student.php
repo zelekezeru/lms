@@ -16,11 +16,13 @@ class Student extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function getActiveStudents()
+    public static function getActiveForStudyMode($studyModeId)
     {
         return Student::whereHas('status', function ($q) {
             $q->where('is_active', true);
-        })->get();
+        })
+            ->where('study_mode_id', $studyModeId)
+            ->get();
     }
 
     public function status()

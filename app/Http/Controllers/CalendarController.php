@@ -166,7 +166,7 @@ class CalendarController extends Controller
 
             // set the selected semesters as the new active semester for the selected studymode
             $selectedStudyMode->semesters()->syncWithoutDetaching([$validated['new_semester_id'] => ['status' => 'active']]);
-            // AutoEnrollmentService::autoEnroll();
+            AutoEnrollmentService::autoEnroll($validated['study_mode_id']);
         });
 
         return redirect()->route('calendars.index')->with('success', 'Semester closing Instialization successfully Done.');

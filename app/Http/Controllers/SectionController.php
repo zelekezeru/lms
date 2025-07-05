@@ -108,7 +108,7 @@ class SectionController extends Controller
             'track',
             'year',
             'semester',
-            'studyMode',
+            'studyMode.semesters.year',
             'students',
             'grades',
             'courseOfferings.course',
@@ -122,8 +122,8 @@ class SectionController extends Controller
             return $query->where('section_id', $section->id);
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
 
-        $currentSemester = Semester::getActiveSemester();
-        $currentYearLevel = intval(Year::getCurrentYear()->name) - intval($section->year->name) + 1;
+        $currentSemester = $section->studyMode->activeSemester();
+        $currentYearLevel = intval($currentSemester->year->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $currentSemester->level;
         $instructors = InstructorResource::collection(Instructor::with('courses', 'user')->get()->sortBy('name'));
 

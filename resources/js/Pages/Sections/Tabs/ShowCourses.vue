@@ -58,14 +58,6 @@ const filteredCourses = computed(() => {
     } else {
         // Show courses based on selected filters
         courses = courses.filter((course) => {
-            console.log(
-                "type of selectedYearLevel: " + typeof selectedYearLevel.value
-            );
-            console.log(
-                "type of selectedSemester: " + typeof selectedSemester.value
-            );
-            console.log("type of course.yearLevel: " + typeof course.yearLevel);
-            console.log("type of course.semester: " + typeof course.semester);
             return (
                 course.yearLevel == selectedYearLevel.value &&
                 course.semester == selectedSemester.value
@@ -77,8 +69,6 @@ const filteredCourses = computed(() => {
 
     return courses;
 });
-console.log(props.section.courses);
-console.log(filteredCourses.value);
 
 const assignInstructor = ref(false);
 const assignCourses = ref(false);
@@ -261,7 +251,7 @@ function submitMove() {
                     class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                     <option
-                        v-for="i in section.track.duration"
+                        v-for="i in parseInt(section.track.duration)"
                         :key="i"
                         :value="i"
                     >
@@ -283,7 +273,11 @@ function submitMove() {
                     v-model="selectedSemester"
                     class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                    <option v-for="i in 3" :key="i" :value="i">
+                    <option
+                        v-for="i in parseInt(section.studyMode.noOfSemesters)"
+                        :key="i"
+                        :value="i"
+                    >
                         Semester {{ i }}
                     </option>
                 </select>
@@ -569,7 +563,11 @@ function submitMove() {
                     class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                     <option disabled value="">Select semester</option>
-                    <option v-for="s in 3" :key="s" :value="s">
+                    <option
+                        v-for="s in parseInt(section.studyMode.noOfSemesters)"
+                        :key="s"
+                        :value="s"
+                    >
                         Semester {{ s }}
                     </option>
                 </select>

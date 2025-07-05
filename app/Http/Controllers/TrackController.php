@@ -85,7 +85,7 @@ class TrackController extends Controller
         $fields = $request->validated();
         $year = substr(Carbon::now()->year, -2);
 
-        $track_id = 'DP'.'/'.str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
+        $track_id = 'DP' . '/' . str_pad(Track::count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         $fields['code'] = $track_id;
         DB::beginTransaction();
@@ -98,7 +98,7 @@ class TrackController extends Controller
             $sections = $studyModes->map(function ($studyModeId) use ($fields, $track, $year) {
                 return Section::create([
                     'name' => 'Section-1',
-                    'code' => 'SC'.'-'.$year.'-'.str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                    'code' => 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $fields['program_id'],
                     'track_id' => $track->id,
                     'study_mode_id' => $studyModeId,
@@ -137,7 +137,7 @@ class TrackController extends Controller
      */
     public function show(Track $track)
     {
-        $track = new TrackResource($track->load('program', 'program.studyModes', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode', 'curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
+        $track = new TrackResource($track->load('program', 'program.studyModes.semesters', 'courses', 'sections', 'sections.semester', 'sections.year', 'sections.studyMode', 'curricula', 'curricula.course', 'curricula.studyMode', 'students', 'students.section'));
 
         $courses = CourseResource::collection(
             Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
@@ -184,7 +184,7 @@ class TrackController extends Controller
         // Optionally regenerate the track code if needed
         if (! $track->code) {
             $year = substr(Carbon::now()->year, -2);
-            $track_id = 'DP'.'/'.str_pad(Track::count(), 3, '0', STR_PAD_LEFT).'/'.$year;
+            $track_id = 'DP' . '/' . str_pad(Track::count(), 3, '0', STR_PAD_LEFT) . '/' . $year;
             $fields['code'] = $track_id;
         }
 
@@ -216,7 +216,6 @@ class TrackController extends Controller
 
             return redirect(route('tracks.index'))->with('success', 'Track deleted successfully.');
         }
-        
     }
 
     public function search(Request $request)

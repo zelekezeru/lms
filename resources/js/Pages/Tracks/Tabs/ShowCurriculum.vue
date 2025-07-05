@@ -53,9 +53,13 @@ const { t } = useI18n();
 const buildGroupedCurricula = (selectedStudyModeId) => {
     const groups = [];
 
+    const selectedStudyMode = studyModes.find(
+        (studyMode) => studyMode.id == selectedStudyModeId
+    );
+
     for (let i = 1; i <= programDuration; i++) {
         const semesterGroups = [];
-        for (let j = 1; j <= 3; j++) {
+        for (let j = 1; j <= selectedStudyMode.noOfSemesters; j++) {
             const semesterCurricula = props.track.curricula.filter(
                 (curriculum) =>
                     curriculum.semesterLevel == j &&
@@ -137,6 +141,7 @@ const curriculaForm = useForm({
 watch(selectedStudyModeId, () => {
     groupedCurricula.value = buildGroupedCurricula(selectedStudyModeId.value);
     curriculaForm.reset();
+    curriculaForm.study_mode_id = selectedStudyModeId;
     editSemisterCurricula.value = false;
 });
 
@@ -363,6 +368,8 @@ const sortedCourses = computed(() => {
                                                 (curriculum) =>
                                                     curriculum.course.id ===
                                                         option.id &&
+                                                    curriculum.studyMode.id ==
+                                                        selectedStudyModeId &&
                                                     (curriculum.yearLevel !=
                                                         curriculaForm.year_level ||
                                                         curriculaForm.semester_level !=
@@ -386,6 +393,9 @@ const sortedCourses = computed(() => {
                                                                 .id ===
                                                                 slotProps.option
                                                                     .id &&
+                                                            curriculum.studyMode
+                                                                .id ==
+                                                                selectedStudyModeId &&
                                                             (curriculum.yearLevel !=
                                                                 curriculaForm.year_level ||
                                                                 curriculaForm.semester_level !=

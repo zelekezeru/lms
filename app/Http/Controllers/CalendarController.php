@@ -44,7 +44,7 @@ class CalendarController extends Controller
 
         $gradesPercentage = null;
 
-        $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
+        $studyModes = StudyModeResource::collection(StudyMode::with(['semesters' => fn($q) => $q->wherePivot('status', 'inactive')->orderBy('created_at'), 'semesters.year'])->get());
 
         if ($activeSemester) {
             foreach ($activeSemester->sections as $section) {
@@ -144,15 +144,24 @@ class CalendarController extends Controller
 
         $selectedStudyMode = StudyMode::find($validated['study_mode_id']);
         if (! $selectedStudyMode->semesters()->where('semesters.id', $validated['new_semester_id'])->exists()) {
-            return redirect()->back()->withErrors(['something went wrong!']);
+            return redirect()->back()->withErrors(['common' => 'the provided semester is not not applied to this semester!']);
         }
 
         $activeSemester = $selectedStudyMode->activeSemester();
 
+        $isAlreadyActive = $activeSemester->id == $validated['new_semester_id'];
+        $isClosed = $selectedStudyMode->semesters()->where('semesters.id', $validated['new_semester_id'])->wherePivot('status', 'closed')->exists();
+
+        if ($isAlreadyActive) {
+            return redirect()->back()->withErrors(['new_semester_id' => 'The semester is already active!']);
+        } elseif ($isClosed) {
+            return redirect()->back()->withErrors(['new_semester_id' => 'The semester is closed!']);
+        }
+
         DB::transaction(function () use ($validated, $selectedStudyMode, $activeSemester) {
             // Set the active semester of the study mode to inactive (if the studymode has an active semester)
             if ($activeSemester) {
-                $selectedStudyMode->semesters()->syncWithoutDetaching([$activeSemester->id => ['status' => 'inactive']]);
+                $selectedStudyMode->semesters()->syncWithoutDetaching([$activeSemester->id => ['status' => 'closed']]);
             }
 
             // set the selected semesters as the new active semester for the selected studymode

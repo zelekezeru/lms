@@ -11,6 +11,7 @@ const props = defineProps({
         type: Number,
         default: null,
     },
+    backToStatus: Function,
 });
 
 const selectedStudyMode = ref(null);
@@ -39,8 +40,8 @@ const submit = () => {
         onSuccess: () => {
             form.reset();
             selectedStudyMode.value = null;
+            props.backToStatus();
         },
-        preserveState: false,
     });
 };
 </script>
@@ -110,10 +111,26 @@ const submit = () => {
                         :options="selectedSemesters"
                         optionLabel="name"
                         optionValue="id"
+                        emptyMessage="There are no available inactive semesters for this study mode!"
+                        filter
+                        :filterFields="['level']"
+                        filterPlaceholder="Filter by level... eg 1 , 2, 3"
                         placeholder="Choose Semester"
                         class="w-full"
                         panelClass="z-[1000]"
-                    />
+                    >
+                        <template #option="slotProps">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{
+                                    slotProps.option.name
+                                }}</span>
+                                <span class="text-sm text-gray-500"
+                                    >Level: {{ slotProps.option.level }}</span
+                                >
+                            </div>
+                        </template>
+                    </Select>
+
                     <p
                         class="text-sm text-red-500 mt-1"
                         v-if="form.errors.new_semester_id"

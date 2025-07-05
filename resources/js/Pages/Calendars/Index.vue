@@ -71,6 +71,10 @@ const setSemesterOf = ref(null);
 const showCloseForm = (studyModeId) => {
     (setSemesterOf.value = studyModeId), (selectedTab.value = "closeForm");
 };
+
+const backToStatus = () => {
+    selectedTab.value = "status";
+};
 </script>
 
 <template>
@@ -124,6 +128,7 @@ const showCloseForm = (studyModeId) => {
                     v-else-if="selectedTab === 'closeForm'"
                     :studyModes="studyModes"
                     :setSemesterOf="setSemesterOf"
+                    :back-to-status="backToStatus"
                 />
 
                 <!-- Courses Panel -->

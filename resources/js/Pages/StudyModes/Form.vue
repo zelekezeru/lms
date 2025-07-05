@@ -27,12 +27,7 @@ defineProps({
                 <Select
                     id="modesList"
                     v-model="form.name"
-                    :options="[
-                        'REGULAR',
-                        'EXTENSION', 
-                        'DISTANCE', 
-                        'ONLINE' 
-                    ]"
+                    :options="['REGULAR', 'EXTENSION', 'DISTANCE', 'ONLINE']"
                     checkmark
                     filter
                     placeholder="Select Study Mode Name"
@@ -42,10 +37,30 @@ defineProps({
                     class="mt-2 text-sm text-red-500"
                 />
             </div>
+            <div>
+                <InputLabel
+                    for="no_of_semesters"
+                    value="Insert the number of semesters this study Mode Will have"
+                    class="block mb-1 text-gray-200"
+                />
+                <TextInput
+                    id="no_of_semesters"
+                    type="number"
+                    v-model="form.no_of_semesters"
+                    required
+                    placeholder="No of semesters"
+                    autocomplete="no_of_semesters"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                />
+                <InputError
+                    :message="form.errors.no_of_semesters"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
         </div>
         <!-- Submit Button -->
         <div class="mt-6 flex justify-center">
-            <button 
+            <button
                 type="submit"
                 :disabled="form.processing"
                 class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

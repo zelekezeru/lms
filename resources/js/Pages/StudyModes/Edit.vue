@@ -4,8 +4,7 @@ import Form from "./Form.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 
-
-defineProps({
+const props = defineProps({
     studyMode: {
         type: Object,
         required: true,
@@ -13,7 +12,8 @@ defineProps({
 });
 
 const form = useForm({
-    name: usePage().props.studyMode.name,
+    name: props.studyMode.name,
+    no_of_semesters: props.studyMode.noOfSemesters,
 });
 
 const submit = (id) => {

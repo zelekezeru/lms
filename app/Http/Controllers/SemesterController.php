@@ -27,15 +27,22 @@ class SemesterController extends Controller
                 ->orWhere('status', 'LIKE', "%{$search}%");
         }
 
-        // Paginate the results
-        $semesters = $query->orderBy('status', 'asc')
-            ->orderByDesc('start_date')
-            ->with('year')->paginate(15)->appends($request->query());
+        $allowedSorts = ['name', 'level'];
+        $sortColumn = $request->sortColumn;
+        $sortDirection = $request->sortDirection;
 
-        // Return inertia view with data
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        $semesters = SemesterResource::collection($query->with('year')->paginate(30));
+
         return inertia('Semesters/Index', [
-            'semesters' => $semesters,
-            'search' => $request->search, // Pass search term to the frontend
+            'semesters' => $semesters, // Corrected to return the semesters collection
+            'sortInfo' => [
+                'currentSortColumn' => $sortColumn,
+                'currentSortDirection' => $sortDirection,
+            ],
         ]);
     }
 

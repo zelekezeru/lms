@@ -23,6 +23,7 @@ class StudyModeStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:study_modes',
+            'no_of_semesters' => 'required|integer',
         ];
     }
 }

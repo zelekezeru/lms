@@ -71,8 +71,6 @@ class StudyModeController extends Controller
     {
         $fields = $request->validated();
 
-        $fields['created_at'] = now();
-
         $studyMode = StudyMode::create($fields);
 
         return to_route('studyModes.show', $studyMode)->with('success', 'Study Mode created successfully.');
@@ -111,8 +109,6 @@ class StudyModeController extends Controller
     public function update(StudyModeUpdateRequest $request, StudyMode $studyMode)
     {
         $fields = $request->validated();
-
-        $fields['updated_at'] = now();
 
         // Update the study mode record
         $studyMode->update($fields);

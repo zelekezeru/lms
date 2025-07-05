@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('study_modes', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->integer('no_of_semesters')->default(2);
             $table->timestamps();
         });
     }

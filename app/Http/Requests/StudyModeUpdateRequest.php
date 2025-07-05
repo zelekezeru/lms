@@ -29,6 +29,7 @@ class StudyModeUpdateRequest extends FormRequest
                 'string',
                 Rule::unique('study_modes')->ignore($this['studyMode']->id),
             ],
+            'no_of_semesters' => 'required|integer',
         ];
     }
 }

@@ -5,6 +5,7 @@ import { useForm } from "@inertiajs/vue3";
 
 const form = useForm({
     name: "",
+    no_of_semesters: "",
 });
 
 const submit = () => form.post(route("studyModes.store"));
@@ -27,10 +28,7 @@ const submit = () => form.post(route("studyModes.store"));
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form
-                    :form="form"
-                    @submit="submit"
-                />
+                <Form :form="form" @submit="submit" />
             </div>
         </div>
     </AppLayout>

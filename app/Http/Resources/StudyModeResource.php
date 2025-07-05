@@ -18,6 +18,7 @@ class StudyModeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'noOfSemesters' => $this->no_of_semesters,
             'programs' => ProgramResource::collection($this->whenLoaded('programs')),
             'students' => StudentResource::collection($this->whenLoaded('students')),
             'sections' => SectionResource::collection($this->whenLoaded('sections')),

@@ -99,7 +99,6 @@ class CenterController extends Controller
 
     public function destroy(Center $center)
     {
-        dd($center);
         // Check if the center has associated students
         if ($center->students()->count() > 0) {
             return redirect()->route('centers.index')->with('error', 'Cannot delete center with associated students.');

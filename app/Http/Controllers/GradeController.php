@@ -63,7 +63,7 @@ class GradeController extends Controller
                     ->where('course_id', $gradeData['course_id'])
                     ->where('section_id', $gradeData['section_id'])
                     ->update(['completed' => 1]);
-                dd($gradeData);
+                    
                 Grade::updateOrCreate(
                     [
                         'student_id' => $gradeData['student_id'],

@@ -157,7 +157,10 @@ const dropEnrollment = (enrollmentId) => {
         >
             <div class="flex items-center gap-3 text-green-600">
                 <ClockIcon class="w-6 h-6" />
-                <h2 class="text-xl font-semibold dark:text-white text-gray-900">
+                <h2
+                    v-if="activeSemester && activeSemester.year"
+                    class="text-xl font-semibold dark:text-white text-gray-900"
+                >
                     Pending Courses For {{ activeSemester.year.name }} Semester
                     {{ activeSemester.level }}
                 </h2>

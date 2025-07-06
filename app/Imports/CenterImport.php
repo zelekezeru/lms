@@ -61,8 +61,9 @@ class CenterImport implements ToCollection, WithHeadingRow
         $study_mode = StudyMode::where('name', 'DISTANCE')->first();
 
         $this->center_id = $center->id;
-        $this->tenant_id = $center->coordinator->user->tenant_id; // assuming user relation carries tenant
-        $this->user_id = $center->coordinator->user->id;
+        $this->tenant_id = $center->coordinator && $center->coordinator->user
+            ? $center->coordinator->user->tenant_id
+            : Auth::user()->tenant_id;
         $this->study_mode_id = $study_mode->id;
 
         DB::transaction(function () use ($rows, $study_mode) {
@@ -111,10 +112,31 @@ class CenterImport implements ToCollection, WithHeadingRow
                 }
 
                 $fullNameParts = explode(' ', $row['full_name']);
-                $firstName = $fullNameParts[0] ?? '';
-                $middleName = $fullNameParts[1] ?? '';
-                $lastName = $fullNameParts[2] ?? '';
+                
+                if (count($fullNameParts) == 3) {
+                
+                    $firstName = $fullNameParts[0] ?? '';
+                    $middleName = $fullNameParts[1] ?? '';
+                    $lastName = $fullNameParts[2] ?? '';
+                }
+                elseif (count($fullNameParts) == 2) {
+                    $firstName = $fullNameParts[0] ?? '';
+                    $middleName = 'Unknown';
+                    $lastName = $fullNameParts[1] ?? '';
+                } else {
+                    // If the full name does not match expected format, skip this row
+                    session()->flash('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'Invalid Full Name Format',
+                        'text' => 'Full name must be in "First Middle Last" format. Skipping this entry.',
+                    ]);
+                    
+                    // add the user to duplicate entries
+                    $this->duplicate_entries[] = $row['full_name'];
 
+                    continue;
+                }
+                
                 $email = strtolower(Str::slug($firstName).'.'.Str::slug($middleName)).'@sits.edu.et';
                 
                 // Check if the email already exists

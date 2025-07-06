@@ -39,7 +39,7 @@ const props = defineProps({
           >
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ index + 1 }}</td>
             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
-              {{ student.firstName }} {{ student.lastName }}
+              {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
             </td>
             <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
               {{ student.idNo }}

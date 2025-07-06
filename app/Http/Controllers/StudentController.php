@@ -109,16 +109,21 @@ class StudentController extends Controller
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
 
         $activeSemester = $student->studyMode->activeSemester();
+
         $studyModes = StudyMode::with(['sections.courseOfferings', 'sections.studyMode', 'sections.track', 'sections.program'])->get();
 
         $studyModes->each(function ($studyMode) {
-            // dump($studyMode->name, $studyMode->activeSemester());
-            $studyMode->sections->each(function ($section) use ($studyMode) {
-                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($studyMode, $section) {
-                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $studyMode->activeSemester()->level;
-                });
+            // Check if activeSemester exists before accessing its properties
+            $activeSemester = $studyMode->activeSemester();
+            if (!$activeSemester) {
+            return;
+            }
+            $studyMode->sections->each(function ($section) use ($studyMode, $activeSemester) {
+            $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($section, $activeSemester) {
+                return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $activeSemester->level;
+            });
 
-                $section->setRelation('courseOfferings', $filteredCourseOfferings);
+            $section->setRelation('courseOfferings', $filteredCourseOfferings);
             });
         });
         // dd($studyModes);
@@ -376,9 +381,15 @@ class StudentController extends Controller
         // retrieve the section of the student and the year level and semester of the section he/she belongs too
         $section = $student->section;
         $semester = Semester::find($fields['semester_id']);
+
+        if (!$section) {
+            return back()->withErrors(['error' => 'Student does not have a section assigned.']);
+        }
+        
         $year = $semester->year;
 
         $semesterLevel = $semester->level;
+        
         $yearLevel = intval($year->name) - intval($section->year->name) + 1;
 
         // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)

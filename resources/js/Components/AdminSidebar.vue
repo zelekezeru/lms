@@ -18,6 +18,7 @@ import {
     BanknotesIcon,
     CogIcon,
     QuestionMarkCircleIcon,
+    QueueListIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarItem from "./SidebarItem.vue";
@@ -150,7 +151,7 @@ const wrapperClasses = computed(() => {
 
                 <SidebarDropdownMenu
                         :label="$t('sidebar.section_classes')"
-                    :icon="AcademicCapIcon"
+                    :icon="QueueListIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem

@@ -44,6 +44,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    studentResults: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Tabs
@@ -121,6 +125,7 @@ const user = usePage().props.auth.user;
                             :instructor="instructor"
                             :weights="weights"
                             :studentsList="students"
+                            :studentResults="studentResults"
                         />
 
                         <!-- Weights Panel -->

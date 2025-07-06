@@ -32,6 +32,10 @@ class SectionSeeder extends Seeder
                 7 => 12,
                 8 => 13,
                 9 => 14,
+                10 => 15,
+                11 => 16,
+                12 => 17,
+                13 => 18,
                 default => null, // Handle cases beyond 8 if needed
             };
 

@@ -12,7 +12,7 @@ class SemesterSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($year = 2025, $yearId = 6; $year >= 2020; $year--, $yearId--) {
+        for ($year = 2025, $yearId = 1; $year >= 2020; $year--, $yearId++) {
             DB::table('semesters')->insert([
                 [
                     'name' => "1st Semester of $year",

@@ -111,15 +111,17 @@ class StudentController extends Controller
         $activeSemester = $student->studyMode->activeSemester();
         $studyModes = StudyMode::with(['sections.courseOfferings', 'sections.studyMode', 'sections.track', 'sections.program'])->get();
 
-        $studyModes->each(function ($studyMode) use ($activeSemester) {
-            $studyMode->sections->each(function ($section) use ($activeSemester) {
-                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($activeSemester, $section) {
-                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $activeSemester->level;
+        $studyModes->each(function ($studyMode) {
+            // dump($studyMode->name, $studyMode->activeSemester());
+            $studyMode->sections->each(function ($section) use ($studyMode) {
+                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($studyMode, $section) {
+                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $studyMode->activeSemester()->level;
                 });
 
                 $section->setRelation('courseOfferings', $filteredCourseOfferings);
             });
         });
+        // dd($studyModes);
 
         $studyModes = StudyModeResource::collection($studyModes);
 

@@ -36,11 +36,7 @@ class AssessmentController extends Controller
 
         $enrollments = $courseOffering->enrollments;
 
-        $students = StudentResource::collection(
-            $enrollments = $courseOffering->enrollments()
-                ->where('status', 'enrolled')->orderBy('firstName', 'asc')
-                ->with('student')->get()->pluck('student'));
-
+        $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
         
         $studentResults = [];
         foreach ($students as $student) {

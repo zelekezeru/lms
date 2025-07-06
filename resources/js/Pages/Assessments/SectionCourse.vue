@@ -1,157 +1,197 @@
 <script setup>
-import { defineProps, ref, computed } from "vue";
-import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    CogIcon,
-    DocumentTextIcon,
-    PresentationChartBarIcon,
-    CheckBadgeIcon,
-} from "@heroicons/vue/24/solid";
-import ShowDetails from "./Tabs/ShowDetails.vue";
-import ShowResults from "../InstructorPortal/Components/ShowResults.vue";
-import ShowWeights from "../InstructorPortal/Components/ShowWeights.vue";
-import ShowGrades from "../InstructorPortal/Components/ShowGrades.vue";
-import AppLayout from "@/Layouts/AppLayout.vue"; // default
-import { usePage } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+import { useForm, router } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
-// Props
 const props = defineProps({
-    section: {
-        type: Object,
-        required: true,
-    },
-    course: {
-        type: Object,
-        required: true,
-    },
-    semester: {
-        type: Object,
-        required: true,
-    },
-    weights: {
-        type: Array,
-        required: true,
-    },
-    instructor: {
-        type: Object,
-        required: true,
-    },
-    grades: {
-        type: Array,
-        required: true,
-    },
-    students: {
-        type: Object,
-        required: true,
-    },
-    studentResults: {
-        type: Object,
-        required: true,
-    },
+  section: Object,
+  course: Object,
+  semester: Object,
+  weights: Array,
+  instructor: Object,
+  studentsList: Array,
+  studentResults: Object, // <-- This comes from your controller
 });
 
-// Tabs
-const tabs = [
-    { key: "details", label: "Details", icon: CogIcon },
-    { key: "results", label: "results", icon: DocumentTextIcon },
-    { key: "weights", label: "weights", icon: PresentationChartBarIcon },
-    { key: "grades", label: "Grades", icon: CheckBadgeIcon },
-];
+const sumOfWeightPoints = computed(() =>
+  props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
+);
 
-const selectedTab = ref("details");
+const authUser = ref({ id: props.instructor.id });
 
-const user = usePage().props.auth.user;
+const gradeForm = useForm({ grades: [] });
+
+// ✅ Get total for a student from your `studentResults`
+const getStudentTotalPoints = (studentId) => {
+  let total = 0;
+  props.weights.forEach((weight) => {
+    const result = props.studentResults[studentId][weight.id];
+    if (result && result.point) {
+      total += parseFloat(result.point);
+    }
+  });
+  return total.toFixed(2);
+};
+
+// ✅ Get grade letter
+const getGradeLetter = (point) => {
+  point = parseFloat(point);
+  if (isNaN(point)) return "N/A";
+  if (point >= 94) return "A";
+  if (point >= 90) return "A-";
+  if (point >= 87) return "B+";
+  if (point >= 84) return "B";
+  if (point >= 80) return "B-";
+  if (point >= 77) return "C+";
+  if (point >= 74) return "C";
+  if (point >= 70) return "C-";
+  if (point >= 67) return "D+";
+  if (point >= 64) return "D";
+  if (point >= 60) return "D-";
+  return "F";
+};
+
+// ✅ Create grades payload
+const generateGrades = () => {
+  const gradesPayload = props.studentsList.map((student) => {
+    const totalPoint = getStudentTotalPoints(student.id);
+    return {
+      student_id: student.id,
+      grade_point: totalPoint,
+      grade_letter: getGradeLetter(totalPoint),
+      grade_scale: sumOfWeightPoints.value.toString(),
+      grade_status: "Submitted",
+      user_id: authUser.value.id,
+      year_id: props.semester.year_id,
+      semester_id: props.semester.id,
+      section_id: props.section.id,
+      course_id: props.course.id,
+    };
+  });
+
+  gradeForm.grades = gradesPayload;
+
+  gradeForm.post(route("grades.store"), {
+    onSuccess: () => {
+      Swal.fire("Success", "Grades successfully submitted!", "success");
+      gradeForm.reset();
+    },
+    onError: () => {
+      Swal.fire("Error", "Failed to submit grades.", "error");
+    },
+  });
+};
+
+// ✅ Ensure all weights are filled
+const allWeightsHaveValues = computed(() =>
+  props.studentsList.every((student) =>
+    props.weights.every(
+      (weight) =>
+        props.studentResults[student.id][weight.id]?.point !== null &&
+        props.studentResults[student.id][weight.id]?.point !== undefined
+    )
+  )
+);
+
+// ✅ Get submitted grade
+const getStudentGrade = (studentId) =>
+  props.section.grades.find((g) => g.student_id === studentId);
+
+// ✅ Import grades file
+const fileInput = ref(null);
+
+const submitImport = () => {
+  const formData = new FormData();
+  formData.append("grades_file", fileInput.value.files[0]);
+  formData.append("course_id", props.course.id);
+  formData.append("section_id", props.section.id);
+  formData.append("semester_id", props.semester.id);
+  formData.append("year_id", props.semester.year_id);
+
+  router.post(route("sectionGrades.import"), formData, {
+    forceFormData: true,
+  });
+};
 </script>
 
 <template>
-    <AppLayout>
-        <div class="max-w-5xl mx-auto p-6">
-            <h1
-                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
-            >
-                {{ section.name }} - {{ course.name }} Course Assessments
-            </h1>
+  <div class="overflow-x-auto px-4 py-6">
+    <!-- Show grade generation if grades not submitted -->
+    <div v-if="!props.section.grades || props.section.grades.filter(g => g.course_id === props.course.id).length === 0">
+      <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
 
-            <nav
-                class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
-            >
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.key"
-                    @click="selectedTab = tab.key"
-                    :class="[
-                        'flex items-center px-4 py-2 space-x-2 text-sm font-medium transition',
-                        selectedTab === tab.key
-                            ? 'border-b-2 border-indigo-500 text-indigo-600'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200',
-                    ]"
-                >
-                    <component :is="tab.icon" class="w-5 h-5" />
-                    <span>{{ tab.label }}</span>
-                </button>
-            </nav>
+      <!-- Import file -->
+      <form @submit.prevent="submitImport" enctype="multipart/form-data" class="mb-4">
+        <input type="file" ref="fileInput" accept=".csv,.xlsx,.xls" class="border p-2 rounded text-sm" required>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Import</button>
+      </form>
 
-            <div
-                class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-            >
-                <transition
-                    mode="out-in"
-                    enter-active-class="transition duration-300 ease-out"
-                    enter-from-class="opacity-0 scale-75"
-                    enter-to-class="opacity-100 scale-100"
-                    leave-active-class="transition duration-200 ease-in"
-                    leave-from-class="opacity-100 scale-100"
-                    leave-to-class="opacity-0 scale-75"
-                >
-                    <div
-                        :key="selectedTab"
-                        class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
-                    >
-                        <!-- Details Panel -->
-                        <ShowDetails
-                            v-if="selectedTab == 'details'"
-                            :section="section"
-                            :course="course"
-                            :semester="semester"
-                            :instructor="instructor"
-                        />
+      <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
+        <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
+          <tr>
+            <th class="px-4 py-2">#</th>
+            <th class="px-4 py-2 text-left">Student</th>
+            <th v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">
+              {{ weight.name }} ({{ weight.point }}pt)
+            </th>
+            <th class="px-4 py-2">Total ({{ sumOfWeightPoints }}pt)</th>
+            <th class="px-4 py-2">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+            <td class="px-4 py-2">{{ index + 1 }}</td>
+            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
+            <td v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">
+              {{
+                props.studentResults[student.id][weight.id]?.point ??
+                "N/A"
+              }}
+            </td>
+            <td class="px-4 py-2 font-semibold">{{ getStudentTotalPoints(student.id) }}</td>
+            <td class="px-4 py-2">{{ getGradeLetter(getStudentTotalPoints(student.id)) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="100%" class="text-center py-4">
+              <button
+                v-if="allWeightsHaveValues"
+                @click="generateGrades"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+              >
+                Submit Grades
+              </button>
+              <p v-else class="text-sm text-red-600">
+                Please enter all required weight values before submitting.
+              </p>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
 
-                        <!-- Results Panel -->
-                        <ShowResults
-                            v-else-if="selectedTab == 'results'"
-                            :section="section"
-                            :course="course"
-                            :semester="semester"
-                            :instructor="instructor"
-                            :weights="weights"
-                            :studentsList="students"
-                            :studentResults="studentResults"
-                        />
-
-                        <!-- Weights Panel -->
-                        <ShowWeights
-                            v-else-if="selectedTab == 'weights'"
-                            :weights="weights"
-                            :section="section"
-                            :course="course"
-                            :semester="semester"
-                            :instructor="instructor"
-                        />
-
-                        <!-- Grades Panel -->
-                        <ShowGrades
-                            v-else-if="selectedTab == 'grades'"
-                            :section="section"
-                            :weights="weights"
-                            :course="course"
-                            :semester="semester"
-                            :instructor="instructor"
-                            :grades="grades"
-                            :studentsList="students"
-                        />
-                    </div>
-                </transition>
-            </div>
-        </div>
-    </AppLayout>
+    <!-- Already submitted grades -->
+    <div v-else>
+      <h2 class="text-xl font-bold mb-4">Submitted Grades</h2>
+      <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
+        <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
+          <tr>
+            <th class="px-4 py-2">#</th>
+            <th class="px-4 py-2 text-left">Student</th>
+            <th class="px-4 py-2">Total</th>
+            <th class="px-4 py-2">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+            <td class="px-4 py-2">{{ index + 1 }}</td>
+            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
+            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_point ?? "N/A" }}</td>
+            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>

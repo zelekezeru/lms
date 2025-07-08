@@ -44,7 +44,11 @@ class CenterController extends Controller
         $center = new CenterResource($center);
 
         $students = StudentResource::collection(
-            $center->students()->with(['user', 'program'])->get()
+            $center->students()
+            ->with(['user', 'program'])
+            ->orderBy('first_name')
+            ->orderBy('middle_name')
+            ->get()
         );
         
         if($center->coordinator){

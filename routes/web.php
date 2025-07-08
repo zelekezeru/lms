@@ -22,6 +22,7 @@ use App\Http\Controllers\StudyModeController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StatusController;
+use App\Http\Middleware\ActiveSemesterIsSet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -241,19 +242,37 @@ Route::middleware(['auth'])->group(function () {
         $singularCapitalized = ucfirst($singular);
         $controller = "App\\Http\\Controllers\\{$singularCapitalized}Controller";
 
-        Route::middleware("can:create-$route")->post("$route", [$controller, 'store'])->name("$route.store");
-        Route::middleware("can:create-$route")->get("$route/create", [$controller, 'create'])->name("$route.create");
+        $createMiddlewares = ["can:create-$route"];
+        if ($singular !== 'calendar') {
+            $createMiddlewares[] = ActiveSemesterIsSet::class;
+        }
 
-        Route::middleware("can:view-$route")->get("$route", [$controller, 'index'])->name("$route.index");
-        Route::middleware("can:view-$route")->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
+        $viewMiddlewares = ["can:view-$route"];
+        if ($singular !== 'calendar') {
+            $viewMiddlewares[] = ActiveSemesterIsSet::class;
+        }
+        $updateMiddlewares = ["can:update-$route"];
+        if ($singular !== 'calendar') {
+            $updateMiddlewares[] = ActiveSemesterIsSet::class;
+        }
+        $deleteMiddlewares = ["can:delete-$route"];
+        if ($singular !== 'calendar') {
+            $deleteMiddlewares[] = ActiveSemesterIsSet::class;
+        }
 
-        Route::middleware("can:update-$route")
+        Route::middleware($createMiddlewares)->post("$route", [$controller, 'store'])->name("$route.store");
+        Route::middleware($createMiddlewares)->get("$route/create", [$controller, 'create'])->name("$route.create");
+
+        Route::middleware($viewMiddlewares)->get("$route", [$controller, 'index'])->name("$route.index");
+        Route::middleware($viewMiddlewares)->get("$route/{{$singular}}", [$controller, 'show'])->name("$route.show");
+
+        Route::middleware($updateMiddlewares)
             ->match(['put', 'patch'], "$route/{{$singular}}", [$controller, 'update'])
             ->name("$route.update");
 
-        Route::middleware("can:update-$route")->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
+        Route::middleware($updateMiddlewares)->get("$route/{{$singular}}/edit", [$controller, 'edit'])->name("$route.edit");
 
-        Route::middleware("can:delete-$route")->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
+        Route::middleware($deleteMiddlewares)->delete("$route/{{$singular}}", [$controller, 'destroy'])->name("$route.destroy");
     }
     Route::resource('curricula', CurriculumController::class);
 });

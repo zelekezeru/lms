@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import {
     ArrowPathIcon,
     EyeIcon,
     ExclamationTriangleIcon,
 } from "@heroicons/vue/24/outline";
+import { ExclamationCircleIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     studyModes: {
@@ -33,6 +34,15 @@ function refreshData() {
         class="overflow-x-auto py-8 bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-[300px]"
     >
         <!-- Common warning -->
+        <div
+            v-if="usePage().props.errors['no-active-semester']"
+            class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-red-100 dark:border-red-700 mb-10 text-lg"
+        >
+            <div class="flex flex-col items-center">
+                <ExclamationCircleIcon class="w-14 text-red-600 items-center" />
+                <span>{{ usePage().props.errors["no-active-semester"] }}</span>
+            </div>
+        </div>
         <div
             class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-yellow-100 dark:border-yellow-700 mb-10"
         >

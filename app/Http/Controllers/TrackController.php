@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TrackStoreRequest;
 use App\Http\Requests\TrackUpdateRequest;
+use App\Http\Resources\CenterResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\CurriculumResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Models\Center;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Curriculum;
@@ -149,11 +151,14 @@ class TrackController extends Controller
 
         $years = YearResource::collection(Year::all());
 
+        $centers = CenterResource::collection(Center::all());
+
         $curriculums = CurriculumResource::collection(Curriculum::all());
 
         return inertia('Tracks/Show', [
             'track' => $track,
             'courses' => $courses,
+            'centers' => $centers,
             'years' => $years,
             'curriculums' => $curriculums,
 

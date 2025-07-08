@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { computed, defineProps, ref, watch } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -20,6 +20,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    centers: {
+        type: Array,
+        required: true,
+    },
 });
 
 const sectionForm = useForm({
@@ -29,12 +33,14 @@ const sectionForm = useForm({
     user_id: "",
     year_id: "",
     semester_id: "",
+    center_id: "",
     study_mode_id: "",
     fees: "",
 });
 
 const selectedYearSemesters = ref();
 const createSection = ref(false);
+const showCenters = computed(() => sectionForm.study_mode_id == 4);
 
 // watch and updated the list of semsters
 watch(
@@ -229,6 +235,21 @@ const addSection = () => {
                                     :maxSelectevdLabels="3"
                                     class="w-40"
                                 />
+                                <Select
+                                    v-if="showCenters"
+                                    id="centers"
+                                    v-model="sectionForm.center_id"
+                                    :options="centers"
+                                    option-value="id"
+                                    option-label="name"
+                                    checkmark
+                                    filter
+                                    :placeholder="
+                                        $t('sections.select_study_mode')
+                                    "
+                                    :maxSelectevdLabels="3"
+                                    class="w-40 mt-4"
+                                />
                             </td>
                             <td class="px-4 py-2">
                                 <Select
@@ -244,7 +265,9 @@ const addSection = () => {
                                     class="w-40"
                                 />
                             </td>
-                            <td class="px-4 py-2 flex justify-between">
+                            <td
+                                class="px-4 py-2 flex justify-between item-center"
+                            >
                                 <Select
                                     id="semstersList"
                                     v-model="sectionForm.semester_id"

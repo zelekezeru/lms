@@ -18,6 +18,7 @@ const props = defineProps({
     track: { type: Object, required: true },
     courses: { type: Object, required: true },
     years: { type: Object, required: true },
+    centers: { type: Array, required: true },
     curriculums: { type: Object, required: true },
 });
 
@@ -167,6 +168,7 @@ const toggleDrawer = () => {
                         :track="track"
                         :years="years"
                         :courses="courses"
+                        :centers="centers"
                     />
                     <ShowStudents
                         v-else-if="selectedTab === 'students'"

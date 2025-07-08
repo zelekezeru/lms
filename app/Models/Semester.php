@@ -43,9 +43,14 @@ class Semester extends Model
         return $this->hasMany(Enrollment::class);
     }
 
-    public static function getActiveSemester()
+    public static function getActiveSemester($studyModeId)
     {
-        $activeSemester = Semester::where('status', 'active')->with('year')->first();
+        $studyMode = StudyMode::where('id', $studyModeId)->first();
+
+        if (! $studyMode) {
+            return;
+        }
+        $activeSemester = $studyMode->activeSemester();
 
         return $activeSemester;
     }

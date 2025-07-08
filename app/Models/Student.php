@@ -146,7 +146,7 @@ class Student extends Model
             return false;
         }
 
-        $semester = Semester::getActiveSemester();
+        $semester = $this->studyMode->activeSemester();
 
         $uncompletePaymentExists = $this->payments()
             ->where('payment_type_id', $semesterRegistrationFeeType->id)
@@ -169,7 +169,7 @@ class Student extends Model
             return false;
         }
 
-        $semester = Semester::getActiveSemester();
+        $semester = $this->studyMode->activeSemester();
 
         $uncompletePaymentExists = $this->payments()
             ->where('payment_type_id', $courseFeeType->id)

@@ -104,7 +104,7 @@ class Section extends Model
 
     public function yearLevel(): int
     {
-        $yearLevel = intval(Semester::getActiveSemester()->year->name) - intval($this->year->name) + 1; // plus one because if currentyear is 2025 and the batch year of the section is also 2025 we want to get 1 instead of 0
+        $yearLevel = intval($this->studyMode->activeSemester()->year->name) - intval($this->year->name) + 1; // plus one because if currentyear is 2025 and the batch year of the section is also 2025 we want to get 1 instead of 0
 
         return $yearLevel;
     }
@@ -112,7 +112,7 @@ class Section extends Model
     public function getActiveCurricula()
     {
         $curricula = Curriculum::where('year_level', $this->yearLevel())
-            ->where('semester_level', Semester::getActiveSemester()->level)
+            ->where('semester_level', $this->studyMode->activeSemester()->level)
             ->where('track_id', $this->track_id)
             ->with(['course' => function ($q) {
                 $q->with(['courseOfferings' => fn($q) => $q->where('section_id', $this->id)->with('instructor')]);

@@ -38,9 +38,21 @@ class Track extends Model
         return $this->hasMany(Curriculum::class);
     }
 
-    public function getActiveCurricula()
+    public function getActiveCurricula($studyModeId)
     {
-        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester_level', Semester::getActiveSemester()->level)->with('course')->where('track_id', $this->id)->get();
+        $studyMode = StudyMode::find($studyModeId);
+
+        if (! $studyMode) {
+            return [];
+        }
+
+        $activeSemester = $studyMode->activeSemester();
+
+        if (!$activeSemester) {
+            return [];
+        }
+
+        $curricula = Curriculum::where('year_level', $this->yearLevel())->where('semester_level', $activeSemester->level)->with('course')->where('track_id', $this->id)->get();
 
         return $curricula;
     }

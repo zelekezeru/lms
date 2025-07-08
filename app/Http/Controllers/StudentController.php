@@ -114,16 +114,16 @@ class StudentController extends Controller
 
         $studyModes->each(function ($studyMode) {
             // Check if activeSemester exists before accessing its properties
-            $activeSemester = $studyMode->activeSemester();
-            if (!$activeSemester) {
-            return;
+            $studyModeActiveSemester = $studyMode->activeSemester();
+            if (!$studyModeActiveSemester) {
+                return;
             }
-            $studyMode->sections->each(function ($section) use ($studyMode, $activeSemester) {
-            $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($section, $activeSemester) {
-                return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $activeSemester->level;
-            });
+            $studyMode->sections->each(function ($section) use ($studyMode, $studyModeActiveSemester) {
+                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($section, $studyModeActiveSemester) {
+                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $studyModeActiveSemester->level;
+                });
 
-            $section->setRelation('courseOfferings', $filteredCourseOfferings);
+                $section->setRelation('courseOfferings', $filteredCourseOfferings);
             });
         });
         // dd($studyModes);
@@ -385,11 +385,11 @@ class StudentController extends Controller
         if (!$section) {
             return back()->withErrors(['error' => 'Student does not have a section assigned.']);
         }
-        
+
         $year = $semester->year;
 
         $semesterLevel = $semester->level;
-        
+
         $yearLevel = intval($year->name) - intval($section->year->name) + 1;
 
         // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
@@ -451,7 +451,7 @@ class StudentController extends Controller
             return back()->withErrors(['course_id' => 'The given course is not being taken in the given section.']);
         }
 
-        $semester = Semester::getActiveSemester();
+        $semester = $student->studyMode->activeSemester();
         // Prevent duplicate entries
         Enrollment::updateOrCreate([
             'student_id' => $student->id,
@@ -498,7 +498,7 @@ class StudentController extends Controller
 
         $courseFeeType = PaymentType::where('type', 'Course Fee')->where('study_mode_id', $student->study_mode_id)->first();
         if ($enrollment->status == 'pending') {
-            $semester = Semester::getActiveSemester();
+            $semester = $student->studyMode->activeSemester();
             $payment = Payment::firstOrNew([
                 'student_id' => $student->id,
                 'semester_id' => $semester->id,

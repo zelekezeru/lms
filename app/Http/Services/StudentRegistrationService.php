@@ -35,7 +35,7 @@ class StudentRegistrationService extends Controller
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
 
         DB::beginTransaction();
-        
+
         try {
 
             $user = $this->createStudentUser($fields, $student_email);
@@ -48,7 +48,7 @@ class StudentRegistrationService extends Controller
             // Create the student record
             $student = $this->createStudent($fields);
 
-            $activeSemester = Semester::getActiveSemester();
+            $activeSemester = $student->studyMode->activeSemester();
             $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
 
             Payment::create([

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Imports;
 
 use App\Models\Grade;
@@ -39,7 +40,8 @@ class GradesImport implements ToCollection, WithHeadingRow
             // If the grade for the student and course already exists, skip to the next row
             if (Grade::where('student_id', $student->id)
                 ->where('course_id', $course->id)
-                ->exists()) {
+                ->exists()
+            ) {
                 continue;
             }
             // If grade_point is provided and grade_letter is not, calculate grade_letter
@@ -47,7 +49,7 @@ class GradesImport implements ToCollection, WithHeadingRow
                 // Assuming a simple mapping for grade points to letters
                 $row['grade_letter'] = $this->gradeGeneration($row['grade_point'], $row['grade_letter']);
             }
-            
+
             // If grade_scale is not provided, default to '0'
             elseif (empty($row['grade_point'])) {
                 $row['grade_point'] = '0.00';
@@ -59,11 +61,10 @@ class GradesImport implements ToCollection, WithHeadingRow
 
             $offeredSemester = $this->getSemesterCourseOfferedToSection($section, $course);
 
-            if (!$offeredSemester) {                
-                $this->context['semester_id'] = Semester::getActiveSemester()->id;
-                $this->context['year_id'] = Semester::getActiveSemester()->year->id;             
-            }
-            else {
+            if (!$offeredSemester) {
+                $this->context['semester_id'] = $student->studyMode->activeSemester()->id;
+                $this->context['year_id'] = $student->studyMode->activeSemester()->year->id;
+            } else {
                 $this->context['semester_id'] = $offeredSemester->id;
 
                 $admissionYear = $offeredSemester ? $offeredSemester->year->name : null;
@@ -114,7 +115,7 @@ class GradesImport implements ToCollection, WithHeadingRow
     public function gradeGeneration($grade_point, $grade_letter)
     {
         $point = floatval($grade_point);
-        
+
         if (is_nan($point)) {
             $grade_letter = 'N/A';
         } elseif ($point >= 94) {
@@ -144,5 +145,4 @@ class GradesImport implements ToCollection, WithHeadingRow
         }
         return $grade_letter;
     }
-    
 }

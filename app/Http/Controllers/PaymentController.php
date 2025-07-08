@@ -25,7 +25,7 @@ class PaymentController extends Controller
     {
         $payments = PaymentResource::collection(
             Payment::with(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester'])
-            ->paginate(30)
+                ->paginate(30)
         );
 
         $paymentCategories = PaymentCategory::get();
@@ -80,7 +80,7 @@ class PaymentController extends Controller
 
         $student = Student::find($data['student_id']);
 
-        $semester = Semester::getActiveSemester();
+        $semester = $student->studyMode->activeSemester();
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['created_by'] = Auth::user()->id;
         $data['semester_id'] = $semester->id;
@@ -134,7 +134,7 @@ class PaymentController extends Controller
         }
 
         $payment = Payment::create($data);
-        
+
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.')->with('reload', true);
     }
 
@@ -160,7 +160,7 @@ class PaymentController extends Controller
             'description' => 'nullable|string|max:255',
             'payment_reference' => 'nullable|string|max:255',
         ]);
-        
+
         $student = Student::find($payment->student_id);
 
         if ($payment->total_amount < $data['paid_amount']) {
@@ -169,13 +169,13 @@ class PaymentController extends Controller
 
         $status = $payment->total_amount == $data['paid_amount'] ? 'completed' : 'pending';
         $data['status'] = $student->status->is_scholarship ? 'paid_by_college' : $status;
-        $data['payment_method_id'] = $payment->payment_method_id; 
+        $data['payment_method_id'] = $payment->payment_method_id;
         $data['updated_by'] = Auth::user()->id;
 
 
         $data['tenant_id'] = Auth::user()->tenant_id;
         $data['updated_by'] = Auth::user()->id;
-        $semester = Semester::getActiveSemester();
+        $semester = $student->studyMode->activeSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
 
         $payment->update($data);
@@ -217,7 +217,7 @@ class PaymentController extends Controller
         }
         if ($payment->semesterStudent()->exists()) {
             return redirect()->route('payments.index')->withErrors(['error' => 'Cannot delete this payment because it has associated semester student records.']);
-        }   
+        }
         $payment->delete();
 
         return redirect()->route('payments.index')->with('success', 'Payment deleted successfully.');

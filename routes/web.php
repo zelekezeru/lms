@@ -242,21 +242,23 @@ Route::middleware(['auth'])->group(function () {
         $singularCapitalized = ucfirst($singular);
         $controller = "App\\Http\\Controllers\\{$singularCapitalized}Controller";
 
+        $routesUndepependantOnSemester = ['year', 'semester', 'calendar', 'tenant'];
+
         $createMiddlewares = ["can:create-$route"];
-        if ($singular !== 'calendar') {
+        if (! in_array($singular, $routesUndepependantOnSemester)) {
             $createMiddlewares[] = ActiveSemesterIsSet::class;
         }
 
         $viewMiddlewares = ["can:view-$route"];
-        if ($singular !== 'calendar') {
+        if (! in_array($singular, $routesUndepependantOnSemester)) {
             $viewMiddlewares[] = ActiveSemesterIsSet::class;
         }
         $updateMiddlewares = ["can:update-$route"];
-        if ($singular !== 'calendar') {
+        if (! in_array($singular, $routesUndepependantOnSemester)) {
             $updateMiddlewares[] = ActiveSemesterIsSet::class;
         }
         $deleteMiddlewares = ["can:delete-$route"];
-        if ($singular !== 'calendar') {
+        if (! in_array($singular, $routesUndepependantOnSemester)) {
             $deleteMiddlewares[] = ActiveSemesterIsSet::class;
         }
 

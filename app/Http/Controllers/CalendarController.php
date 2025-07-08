@@ -32,38 +32,39 @@ class CalendarController extends Controller
                 ->orWhere('status', 'LIKE', "%{$search}%");
         }
 
-        $oldSemesters = $query->where('is_completed', 1)->orderBy('status', 'asc')
-            ->orderByDesc('start_date')
-            ->get();
+        // $oldSemesters = $query->where('is_completed', 1)->orderBy('status', 'asc')
+        //     ->orderByDesc('start_date')
+        //     ->get();
 
-        $oldSemesters = SemesterResource::collection($oldSemesters->load('sections', 'grades', 'year'));
+        // $oldSemesters = SemesterResource::collection($oldSemesters->load('sections', 'grades', 'year'));
 
-        $activeSemester = Semester::where('status', 'Active')->first();
-
-        $activeSemester = $activeSemester ? new SemesterResource($activeSemester->load(['year', 'sections.grades'])) : null;
+        $studyModes = StudyModeResource::collection(StudyMode::with(['semesters' => fn($q) => $q->wherePivot('status', 'inactive')->orderBy('created_at'), 'semesters.year'])->get());
+        $noActiveSemesterFound = $studyModes->contains(function ($studyMode) {
+            return ! $studyMode->activeSemester();
+        });
 
         $gradesPercentage = null;
 
-        $studyModes = StudyModeResource::collection(StudyMode::with(['semesters' => fn($q) => $q->wherePivot('status', 'inactive')->orderBy('created_at'), 'semesters.year'])->get());
 
-        if ($activeSemester) {
-            foreach ($activeSemester->sections as $section) {
-                $gradesPercentage[] = $this->sectionSemesterGradesPercentage($activeSemester->resource, $section);
-            }
-        }
+        // if (! $noActiveSemesterFound) {
 
-        $sections = SectionResource::collection(Section::with(['year', 'students', 'semester', 'program'])->paginate(30));
+        //     foreach ($activeSemester->sections as $section) {
+        //         $gradesPercentage[] = $this->sectionSemesterGradesPercentage($activeSemester->resource, $section);
+        //     }
+        // }
+
+        $sections = $noActiveSemesterFound ? [] : SectionResource::collection(Section::with(['year', 'students', 'semester', 'program'])->paginate(30));
 
         // $submittedGrades = $this->submittedGrades();
 
         // dd($submittedGrades);
         return Inertia::render('Calendars/Index', [
             'studyModes' => $studyModes,
-            'oldSemesters' => $oldSemesters,
-            'activeSemester' => $activeSemester,
+            // 'oldSemesters' => $oldSemesters,
+            // 'activeSemester' => $activeSemester,
             'search' => $request->search,
             'sections' => $sections,
-            'gradesPercentage' => $gradesPercentage,
+            // 'gradesPercentage' => $gradesPercentage,
         ]);
     }
 

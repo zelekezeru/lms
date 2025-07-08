@@ -17,7 +17,7 @@ class SectionSeeder extends Seeder
         $data = [];
         $userId = 2;
         $semesterId = 1;
-        $yearId = 1;
+        $yearId = 6;
 
 
         for ($i = 1; $i <= 13; $i++) {

@@ -8,6 +8,7 @@ const props = defineProps({
     users: Array,
     programs: Array,
     years: Array,
+    centers: Array,
 });
 console.log(props.section);
 
@@ -20,6 +21,7 @@ const form = useForm({
     year_id: props.section.year?.id || "",
     semester_id: props.section.semester?.id || "",
     study_mode_id: props.section.studyMode?.id || "",
+    center_id: props.section.center?.id || "",
     _method: "PATCH",
 });
 
@@ -46,6 +48,7 @@ const submit = () => {
                 :users="users"
                 :programs="programs"
                 :years="years"
+                :centers="centers"
                 @submit="submit"
             />
         </div>

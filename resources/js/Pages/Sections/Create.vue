@@ -8,6 +8,7 @@ const props = defineProps({
     users: { type: Array, required: true },
     programs: { type: Array, required: true },
     years: { type: Array, required: true },
+    centers: { type: Array, required: true },
 });
 
 // Form initialization
@@ -20,6 +21,7 @@ const form = useForm({
     year_id: "",
     semester_id: "",
     study_mode_id: "",
+    center_id: "",
 });
 
 // Submit handler
@@ -46,6 +48,7 @@ const submit = () => {
                 :users="users"
                 :programs="programs"
                 :years="years"
+                :centers="centers"
                 @submit="submit"
             />
         </div>

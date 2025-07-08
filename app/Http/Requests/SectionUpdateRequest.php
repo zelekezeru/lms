@@ -21,6 +21,7 @@ class SectionUpdateRequest extends FormRequest
             'year_id' => 'exists:years,id',
             'semester_id' => 'exists:semesters,id',
             'study_mode_id' => 'exists:study_modes,id',
+            'center_id' => 'exists:centers,id',
         ];
     }
 }

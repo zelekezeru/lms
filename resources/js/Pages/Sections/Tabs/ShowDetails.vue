@@ -96,6 +96,13 @@ const props = defineProps({
             </span>
         </div>
 
+        <div class="flex flex-col" v-if="section.studyMode.id == 4">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Center</span>
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ section.center.name }}
+            </span>
+        </div>
+
         <!-- Edit and Delete Buttons -->
 
         <div class="flex justify-end col-span-2 mt-4">

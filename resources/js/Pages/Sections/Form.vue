@@ -1,7 +1,7 @@
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { Select } from "primevue";
 
 const props = defineProps({
@@ -9,11 +9,14 @@ const props = defineProps({
     users: Array,
     programs: Array,
     years: Array,
+    centers: Array,
 });
 
 const selectedYearSemesters = ref(
     props.years.find((year) => year.id == props.form.year_id)?.semesters ?? []
 );
+
+const showCenters = computed(() => props.form.study_mode_id == 4);
 
 // watch and updated the list of semesters
 watch(
@@ -174,6 +177,23 @@ const emit = defineEmits(["submit"]);
                     :message="form.errors?.study_mode_id"
                     class="mt-2"
                 />
+            </div>
+
+            <!-- center -->
+            <div v-if="showCenters">
+                <InputLabel for="center_id" value="Select Study Mode" />
+                <Select
+                    id="center_id"
+                    v-model="form.center_id"
+                    :options="centers"
+                    option-value="id"
+                    option-label="name"
+                    filter
+                    empty-message="No centers available!"
+                    placeholder="Select Center"
+                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                />
+                <InputError :message="form.errors?.center_id" class="mt-2" />
             </div>
         </div>
 

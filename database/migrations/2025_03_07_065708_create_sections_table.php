@@ -20,6 +20,9 @@ return new class extends Migration
             $table->foreignId('track_id')->constrained();
             $table->foreignId('study_mode_id')->nullable()->constrained();
 
+            // center_id is only required if the study mode is distance
+            $table->foreignId('center_id')->nullable()->constrained();
+
             // these stands for batch so if a section is at year level 1 at 2025 then the batch(year_id) will be a link to 2025 on years table
             $table->foreignId('year_id')->nullable()->constrained();
             // these stands for the current status of the section so if the section is 2 years in to the program they are called 2nd years(just 2)

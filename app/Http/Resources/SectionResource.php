@@ -24,6 +24,7 @@ class SectionResource extends JsonResource
             'semester' => new SemesterResource($this->whenLoaded('semester')),
             'year' => new YearResource($this->whenLoaded('year')),
             'classSchedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
+            'center' => new CenterResource($this->whenLoaded('center')),
             'program' => new ProgramResource($this->whenLoaded('program')),
             'track' => new TrackResource($this->whenLoaded('track')),
             'user' => new UserResource($this->whenLoaded('user')),

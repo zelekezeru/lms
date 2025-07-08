@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SectionStoreRequest;
 use App\Http\Requests\SectionUpdateRequest;
+use App\Http\Resources\CenterResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\ProgramResource;
@@ -12,6 +13,7 @@ use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Models\Center;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Instructor;
@@ -46,10 +48,12 @@ class SectionController extends Controller
 
         $users = UserResource::collection(User::all()->sortBy('name'));
 
+        $centers = CenterResource::collection(Center::all());
         return Inertia::render('Sections/Create', [
             'programs' => $programs,
             'years' => $years,
             'users' => $users,
+            'centers' => $centers,
         ]);
     }
 
@@ -112,6 +116,7 @@ class SectionController extends Controller
             'studyMode.semesters.year',
             'students',
             'grades',
+            'center',
             'courseOfferings.course',
             'courseOfferings.instructor',
             'classSchedules' => fn($q) => $q->where('semester_id', $section->studyMode->activeSemester()->id),
@@ -194,18 +199,21 @@ class SectionController extends Controller
 
     public function edit(Section $section)
     {
-        $section = new SectionResource($section->load('program', 'track', 'studyMode', 'year', 'semester', 'user'));
+        $section = new SectionResource($section->load('program', 'track', 'studyMode', 'center', 'year', 'semester', 'user'));
         $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
 
         $years = YearResource::collection(Year::with('semesters')->get()->sortBy('name'));
 
         $users = UserResource::collection(User::all()->sortBy('name'));
 
+        $centers = CenterResource::collection(Center::all()->sortBy('name'));
+
         return Inertia::render('Sections/Edit', [
             'section' => $section,
             'programs' => $programs,
             'years' => $years,
             'users' => $users,
+            'centers' => $centers,
         ]);
     }
 

@@ -67,6 +67,11 @@ class Section extends Model
         return $this->belongsTo(Semester::class);
     }
 
+    public function center()
+    {
+        return $this->belongsTo(Center::class);
+    }
+
     public function year()
     {
         return $this->belongsTo(Year::class);

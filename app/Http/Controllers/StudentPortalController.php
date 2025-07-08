@@ -59,7 +59,7 @@ class StudentPortalController extends Controller
         $classSchedules = ClassScheduleResource::collection($enrollment->courseOffering->classSchedules);
         $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions);
 
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
+        $activeSemester = $enrollment->semester;
 
         return Inertia::render('StudentPortal/Enrollments/Show', [
             'enrollment' => new EnrollmentResource($enrollment),

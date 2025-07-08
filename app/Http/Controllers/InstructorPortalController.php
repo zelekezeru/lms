@@ -116,12 +116,10 @@ class InstructorPortalController extends Controller
             'classSchedules.courseOffering.course',
         ]);
 
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
         $instructor = new InstructorResource($instructor);
 
         return inertia('InstructorPortal/ClassSchedules', [
             'instructor' => $instructor,
-            'activeSemester' => $activeSemester,
         ]);
     }
 
@@ -189,7 +187,7 @@ class InstructorPortalController extends Controller
             $courseOffering->enrollments->where('status', 'enrolled')->pluck('student')
         );
 
-        $activeSemester = Semester::getActiveSemester();
+        $activeSemester = $section->studyMode->activeSemester();
         $classSchedules = ClassScheduleResource::collection($courseOffering->classSchedules);
         $classSessions = ClassSessionResource::collection($courseOffering->classSessions);
         $rooms = RoomResource::collection(Room::all());

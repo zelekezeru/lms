@@ -259,23 +259,8 @@ watch(
 );
 
 watch(
-    () => paymentUpdateForm.status,
-    (newVal) => {
-        if (newVal == "completed") {
-            console.log(paymentUpdateForm.paid_amount);
-            paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
-            console.log(paymentUpdateForm.paid_amount);
-        } else {
-            paymentUpdateForm.paid_amount = props.payments[0]?.paid_amount || 0;
-        }
-    }
-);
-
-watch(
     () => paymentCreationForm.payment_type_id,
     () => {
-        console.log(selectedPaymentType.value);
-
         if (
             selectedPaymentType.value &&
             selectedPaymentType.value.duration == "per-course"

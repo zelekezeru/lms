@@ -21,6 +21,12 @@ class AutoEnrollmentService
     $students = Student::getActiveForStudyMode($studyModeId);
 
     foreach ($students as $student) {
+      //remove any enrollment that was not paid fully
+      $student->enrollments()->where('status', 'pending')->update(['status' => 'dropped']);
+
+      // do something about enrolled courses where grade was not submitted(for now we just drop them)
+      $enrolledCourses = $student->enrollments()->where('status', 'enrolled')->update(['status' => 'dropped']);
+
       if (! $student->section) continue;
 
       $section = $student->section;

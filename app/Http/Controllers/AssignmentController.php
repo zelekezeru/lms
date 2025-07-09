@@ -158,7 +158,7 @@ class AssignmentController extends Controller
             ->route('programs.show', $program->id)
             ->with('success', 'Study Mode assigned successfully.');
     }
-    
+
     public function updateSectionCourse(Request $request, Section $section)
     {
         $validated = $request->validate([

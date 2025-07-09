@@ -20,24 +20,40 @@ const props = defineProps({
     track: { type: Object, required: true },
 });
 
-const studentSectionForm = useForm({
-    section_id: "",
-    student_id: "",
-});
+const studentSectionForm = useForm({});
 
+props.track.students.forEach((student) => {
+    studentSectionForm[student.id] = {
+        section_id: student.section.id ?? "",
+        processing: false,
+    };
+});
 const createStudent = ref(false);
 
 const assignStudentToSection = (studentId) => {
-    studentSectionForm.student_id = studentId;
-    studentSectionForm.post(route("student-section.assign"), {
+    studentSectionForm[studentId].processing = true;
+
+    const form = useForm({
+        section_id: studentSectionForm[studentId].section_id,
+        student_id: studentId,
+    });
+
+    form.post(route("student-section.assign"), {
         onSuccess: () => {
             Swal.fire(
-                t("students.success"), // ✅ Use `t` instead of `$t`
+                t("students.success"),
                 t("students.student_assigned_successfully"),
                 "success"
             );
-            studentSectionForm.reset();
-            console.log(studentSectionForm.section_id);
+        },
+        onFinish: () => {
+            studentSectionForm[studentId].processing = false;
+        },
+        onError: () => {
+            studentSectionForm[studentId].processing = false;
+            studentSectionForm[studentId].section_id = track.students.find(
+                (student) => student.id == studentId
+            ).section?.id;
         },
     });
 };
@@ -136,7 +152,10 @@ const assignStudentToSection = (studentId) => {
                                 >
                                     <Select
                                         id="studentSectionAssignment"
-                                        v-model="studentSectionForm.section_id"
+                                        v-model="
+                                            studentSectionForm[student.id]
+                                                .section_id
+                                        "
                                         :options="
                                             track.sections.filter((section) => {
                                                 return (
@@ -157,18 +176,19 @@ const assignStudentToSection = (studentId) => {
                                             assignStudentToSection(student.id)
                                         "
                                         :disabled="
-                                            studentSectionForm.processing
+                                            studentSectionForm[student.id]
+                                                .processing
                                         "
-                                        :placeholder="$t('change_section_to')"
+                                        :placeholder="'Change Section To...'"
                                         :maxSelectedLabels="3"
                                         class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
                                     >
                                         <template #dropdownicon>
                                             <ArrowPathIcon
                                                 v-if="
-                                                    studentSectionForm.processing &&
-                                                    student.id ==
-                                                        studentSectionForm.student_id
+                                                    studentSectionForm[
+                                                        student.id
+                                                    ].processing
                                                 "
                                                 class="w-5 h-5 text-gray-500 animate-spin"
                                             />

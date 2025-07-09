@@ -1,14 +1,12 @@
 <script setup>
 import { computed, defineProps, ref, watch } from "vue";
-import { Link, router, useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { CogIcon } from "@heroicons/vue/24/solid";
 import { PlusCircleIcon } from "@heroicons/vue/24/outline";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { Select } from "primevue";
 import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // Define the props for the track
 const props = defineProps({

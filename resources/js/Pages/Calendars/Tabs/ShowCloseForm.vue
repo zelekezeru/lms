@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { useForm } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import { ref, computed, watch } from "vue";
 import Select from "primevue/select";
 
@@ -130,7 +130,17 @@ const submit = () => {
                             </div>
                         </template>
                     </Select>
-
+                    <p
+                        class="text-red-400"
+                        v-if="selectedSemesters.length == 0"
+                    >
+                        No Semesters are available for this study mode please
+                        <Link
+                            class="text-blue-400 underline"
+                            :href="route('semesters.index')"
+                            >firs assign some semesters.</Link
+                        >
+                    </p>
                     <p
                         class="text-sm text-red-500 mt-1"
                         v-if="form.errors.new_semester_id"

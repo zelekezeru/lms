@@ -53,7 +53,7 @@ class StudentSeeder extends Seeder
                 'track_id' => 1,
                 'study_mode_id' => 1,
                 'year_id' => 6,
-                'semester_id' => 1,
+                'semester_id' => 21,
                 'section_id' => 1,
                 'created_at' => '2025-05-11 18:28:40',
                 'updated_at' => '2025-05-11 18:28:50',
@@ -302,7 +302,7 @@ class StudentSeeder extends Seeder
                     'track_id' => 1,   // Adjust based on your track IDs
                     'study_mode_id' => 1, // Adjust based on your study mode IDs
                     'year_id' => 6,    // Adjust based on your year IDs
-                    'semester_id' => 1, // Adjust based on your semester IDs
+                    'semester_id' => 21, // Adjust based on your semester IDs
                     'section_id' => 1,  //  Adjust
                     'created_at' => now(),
                     'updated_at' => now(),

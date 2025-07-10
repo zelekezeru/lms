@@ -55,14 +55,17 @@ class InstructorSeeder extends Seeder
 
         // Assign instructor 1 to all courses (assuming course IDs from 1 to 16)
         $courseInstructorData = [];
-        for ($courseId = 1; $courseId <= 56; $courseId++) {
+        $existingCourseIds = DB::table('courses')->pluck('id')->toArray();
+        foreach ($existingCourseIds as $courseId) {
             $courseInstructorData[] = [
-            'course_id' => $courseId,
-            'instructor_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+                'course_id' => $courseId,
+                'instructor_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ];
         }
-        DB::table('course_instructor')->insert($courseInstructorData);
+        if (!empty($courseInstructorData)) {
+            DB::table('course_instructor')->insert($courseInstructorData);
+        }
     }
 }

@@ -229,8 +229,11 @@ class TrackSeeder extends Seeder
         $data = [];
         $isCommon = 0;
 
+        // Get all existing course IDs from the courses table
+        $existingCourseIds = DB::table('courses')->pluck('id')->toArray();
+
         for ($trackId = 1; $trackId <= 21; $trackId++) {
-            for ($courseId = 1; $courseId <= 55; $courseId++) {
+            foreach ($existingCourseIds as $courseId) {
                 $data[] = [
                     'course_id' => $courseId,
                     'track_id' => $trackId,
@@ -239,6 +242,8 @@ class TrackSeeder extends Seeder
             }
         }
 
-        DB::table('course_track')->insert($data);
+        if (!empty($data)) {
+            DB::table('course_track')->insert($data);
+        }
     }
 }

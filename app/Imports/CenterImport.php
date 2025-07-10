@@ -83,7 +83,7 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year'] ?? null);
 
-                $userUuid = $this->generateUserUuid('D', $academicYear);
+                $userUuid = $this->generateUserUuid($academicYear);
 
                 // 5. User creation
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
@@ -203,10 +203,12 @@ class CenterImport implements ToCollection, WithHeadingRow
         return [$year, $semester, $academicYear];
     }
 
-    private function generateUserUuid($type, $academicYear)
+    private function generateUserUuid($academicYear)
     {
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-        return "SITS-{$type}-{$count}-{$academicYear}";
+        // last 2 digits of the year
+        $academicYear = substr($academicYear, -2);
+        return "SITS-D-{$count}-{$academicYear}";
     }
 
     private function generateDefaultPassword($firstName, $phone)

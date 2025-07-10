@@ -59,8 +59,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
+                
 
-                $userUuid = $this->generateUserUuid($row['entry_year']);
+                $userUuid = $this->generateUserUuid($academicYear);
 
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
 
@@ -125,6 +126,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function generateUserUuid($academicYear)
     {
+        // last 2 digits of the year
+        $academicYear = substr($academicYear, -2);
+
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
         return "SITS-R-{$count}-{$academicYear}";
     }

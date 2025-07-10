@@ -63,7 +63,7 @@ onMounted(createChart);
                 <h1
                     class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-dark dark: mb-3"
                 >
-                    Welcome, {{ student.firstName }}
+                    Welcome, {{ student.user.name }}
                 </h1>
                 <p class="text-base md:text-lg text-dark dark: max-w-2xl">
                     Dive into your courses, track your progress, manage

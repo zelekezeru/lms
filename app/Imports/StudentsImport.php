@@ -59,7 +59,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
-                $userUuid = $this->generateUserUuid($academicYear);
+
+                $userUuid = $this->generateUserUuid($row['entry_year']);
+
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
 
                 // 👤 Create User
@@ -160,7 +162,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         return [
             'id_no' => $userUuid,
             'old_id' => $row['old_id'] ?? null,
-            'first_name' => "$firstName $middleName",
+            'first_name' => "$firstName",
             'middle_name' => $middleName,
             'last_name' => $lastName,
             'sex' => $row['sex'] ?? '',

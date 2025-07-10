@@ -40,6 +40,7 @@ class CenterImport implements ToCollection, WithHeadingRow
 
         // Determine tenant and study mode
         $studyMode = StudyMode::where('name', 'DISTANCE')->firstOrFail();
+
         $this->study_mode_id = $studyMode->id;
 
         $this->tenant_id = optional(optional($center->coordinator)->user)->tenant_id ?? Auth::user()->tenant_id;
@@ -81,6 +82,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                 }
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year'] ?? null);
+
                 $userUuid = $this->generateUserUuid('D', $academicYear);
 
                 // 5. User creation

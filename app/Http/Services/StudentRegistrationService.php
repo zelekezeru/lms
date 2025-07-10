@@ -10,6 +10,7 @@ use App\Models\PaymentType;
 use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
+use App\Models\StudyMode;
 use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,9 +26,17 @@ class StudentRegistrationService extends Controller
         // Validate the request
         $fields = $request->validated();
 
+        //Find the study mode
+        if ($request->has('study_mode_id')) {
+            $studyModeModel = StudyMode::find($request->input('study_mode_id'));
+            $studyMode = $studyModeModel ? strtoupper(substr($studyModeModel->name, 0, 1)) : 'R';
+        }
+
         // Generate student-specific data
-        $fields['id_no'] = $this->student_id();
+        $fields['id_no'] = $this->student_id($studyMode);
+
         $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
+
         $student_email = $this->student_email($fields);
 
         // Date of Birth
@@ -245,7 +254,7 @@ class StudentRegistrationService extends Controller
         }
     }
 
-    public function student_id()
+    public function student_id($studyMode)
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two di
 
@@ -254,7 +263,8 @@ class StudentRegistrationService extends Controller
         do {
             $initialCount = $count ?? Student::max('id');
             $count = $initialCount + 1; // safer than count()
-            $studentUuid = 'SITS-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
+
+            $studentUuid = 'SITS-' . $studyMode . '-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
         } while (User::where('user_uuid', $studentUuid)->exists());
 
         return $studentUuid;

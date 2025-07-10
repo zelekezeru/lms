@@ -193,13 +193,44 @@ class TrackSeeder extends Seeder
                 'created_at' => '2025-04-11 09:20:00',
                 'updated_at' => '2025-04-11 09:20:00',
             ],
+            [
+                'id' => 19,
+                'name' => 'Distance Degree Oromifa Track',
+                'code' => 'DP/019/25',
+                'description' => 'Distance Degree Oromifa Track',
+                'program_id' => 14,
+                'duration' => 4,
+                'created_at' => '2025-04-11 09:21:00',
+                'updated_at' => '2025-04-11 09:21:00',
+            ],
+            [
+                'id' => 20,
+                'name' => 'Distance Diploma Oromifa Track',
+                'code' => 'DP/020/25',
+                'description' => 'Distance Diploma Oromifa Track',
+                'program_id' => 15,
+                'duration' => 4,
+                'created_at' => '2025-04-11 09:21:30',
+                'updated_at' => '2025-04-11 09:21:30',
+            ],
+            [
+                'id' => 21,
+                'name' => 'MABTS Amharic Track',
+                'code' => 'DP/021/25',
+                'description' => 'Masters of Art in Bible Al Studies (MABTS) in Amharic Track',
+                'program_id' => 16,
+                'duration' => 4,
+                'created_at' => '2025-04-11 09:22:00',
+                'updated_at' => '2025-04-11 09:22:00',
+            ],
+            
         ]);
 
         $data = [];
         $isCommon = 0;
 
-        for ($trackId = 1; $trackId <= 18; $trackId++) {
-            for ($courseId = 1; $courseId <= 45; $courseId++) {
+        for ($trackId = 1; $trackId <= 21; $trackId++) {
+            for ($courseId = 1; $courseId <= 55; $courseId++) {
                 $data[] = [
                     'course_id' => $courseId,
                     'track_id' => $trackId,

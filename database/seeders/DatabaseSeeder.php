@@ -24,15 +24,15 @@ class DatabaseSeeder extends Seeder
         $this->call(YearSeeder::class);
         $this->call(SemesterSeeder::class);
         $this->call(SectionSeeder::class);
-        $this->call(StudentSeeder::class);
-        $this->call(InstructorSeeder::class);
+        // $this->call(StudentSeeder::class);
+        // $this->call(InstructorSeeder::class);
         $this->call(PaymentCategorySeeder::class);
         $this->call(PaymentMethodSeeder::class);
         $this->call(PaymentTypeSeeder::class);
-        $this->call(WeightSeeder::class);
-        $this->call(CurriculumSeeder::class);
-        $this->call(CourseOfferingSeeder::class);
+        // $this->call(WeightSeeder::class);
+        // $this->call(CurriculumSeeder::class);
+        // $this->call(CourseOfferingSeeder::class);
         $this->call(RoomSeeder::class);
-        $this->call(CenterSeeder::class);
+        // $this->call(CenterSeeder::class);
     }
 }

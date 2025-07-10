@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Track;
 
 class SectionSeeder extends Seeder
 {
@@ -36,13 +37,19 @@ class SectionSeeder extends Seeder
                 11 => 16,
                 12 => 17,
                 13 => 18,
+                14 => 19,
+                15 => 20,
+                16 => 21,
                 default => null, // Handle cases beyond 8 if needed
             };
+
+            $track = Track::find($trackId);
+
 
             if ($trackId !== null) {
                 $data[] = [
                     'id' => $i,
-                    'name' => 'Section 1',
+                    'name' => 'Section 1 of ' . $track->name,
                     'code' => 'SC-25-' . str_pad($i, 2, '0', STR_PAD_LEFT),
                     'year_id' => $yearId,
                     'user_id' => $userId,

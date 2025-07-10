@@ -72,8 +72,8 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 if (isset($row['program'])) {
                     
-                    $program = Program::where('code', $row['program'])->first();
-
+                    $program = Program::where('code', strtoupper($row['program']))->first();
+                    
                     if (!$program) {
                         session()->flash('sweet_alert', [
                             'type' => 'error',
@@ -121,8 +121,8 @@ class CenterImport implements ToCollection, WithHeadingRow
                 }
                 elseif (count($fullNameParts) == 2) {
                     $firstName = $fullNameParts[0] ?? '';
-                    $middleName = 'Unknown';
-                    $lastName = $fullNameParts[1] ?? '';
+                    $middleName = $fullNameParts[1] ?? '';
+                    $lastName = 'Unknown';
                 } else {
                     // If the full name does not match expected format, skip this row
                     session()->flash('sweet_alert', [
@@ -207,7 +207,8 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 $userUuid = 'SITS-'.str_pad($studentCount, 4, '0', STR_PAD_LEFT).'-'.$academicYear;
 
-                $default_password = strtolower($firstName).'@'.substr($row['phone'], -4); // Default password for new users
+                $last4 = isset($row['phone']) && !empty($row['phone']) ? substr($row['phone'], -4) : '0000';
+                $default_password = strtolower($firstName).'@'.$last4; // Default password for new users
 
                 // Verify Date o Birth format
                 $user = User::firstOrCreate(
@@ -236,12 +237,14 @@ class CenterImport implements ToCollection, WithHeadingRow
                     $data['last_name'] = $lastName;
                 }
                 if (isset($row['sex'])) {
-                    $data['sex'] = $row['sex'];
+                    $data['sex'] = strtoupper($row['sex']);
                 }
                 if (isset($row['phone'])) {
                     // If the first character of phone mumber is 9 add 0 before it                    
                     $phone = $row['phone'];
-                    if (str_starts_with($phone, '9')) {
+                    if (empty($phone)) {
+                        $phone = '0900000000';
+                    } elseif (str_starts_with($phone, '9')) {
                         $phone = '0' . $phone;
                     }
                     $data['mobile_phone'] = $phone;

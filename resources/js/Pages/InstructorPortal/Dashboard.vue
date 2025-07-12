@@ -216,7 +216,7 @@ onMounted(createChart);
                                 </p>
                                 <p>
                                     <strong>Semester:</strong>
-                                    {{ section.semesterLevel }}
+                                    {{ section.semester?.level }}
                                 </p>
                             </div>
 

@@ -171,7 +171,7 @@ class TrackController extends Controller
             'students' => Inertia::defer(
                 fn() =>
                 StudentResource::collection(
-                    $track->students()->with(['year', 'semester', 'studyMode', 'section'])->get()
+                    $track->students()->with(['studyMode', 'section'])->get()
                 )
             ),
         ]);

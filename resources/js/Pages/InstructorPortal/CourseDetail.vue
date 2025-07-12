@@ -112,7 +112,7 @@ const getProgressColor = (mark) => {
                                 </p>
                                 <p>
                                     <strong>Semester:</strong>
-                                    {{ section.semesterLevel }}
+                                    {{ section.semester?.level }}
                                 </p>
                             </div>
 

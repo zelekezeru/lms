@@ -60,7 +60,7 @@ const props = defineProps({
                     </p>
                     <p>
                         <strong>Semester:</strong>
-                        {{ section.semesterLevel }}
+                        {{ section.semester?.level }}
                     </p>
                 </div>
 

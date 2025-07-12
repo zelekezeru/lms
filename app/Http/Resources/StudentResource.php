@@ -29,6 +29,8 @@ class StudentResource extends JsonResource
             'dateOfBirth' => $this->date_of_birth,
             'maritalStatus' => $this->marital_status,
             'user_id' => $this->user_id,
+            'yearId' => $this->year_id,
+            'semesterId' => $this->semester_id,
 
             'paymentCode' => $this->payment_code,
 

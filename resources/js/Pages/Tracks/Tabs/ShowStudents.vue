@@ -161,9 +161,9 @@ const assignStudentToSection = (studentId) => {
                                             track.sections.filter((section) => {
                                                 return (
                                                     section.year.id ==
-                                                        student.year.id &&
+                                                        student.yearId &&
                                                     section.semester.id ==
-                                                        student.semester.id &&
+                                                        student.semesterId &&
                                                     section.studyMode.id ==
                                                         student.studyMode.id
                                                 );

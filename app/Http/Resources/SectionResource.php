@@ -32,8 +32,7 @@ class SectionResource extends JsonResource
             'instructors' => $this->whenLoaded('instructors'),
             'grades' => $this->whenLoaded('grades'),
 
-            'yearLevel' => $this->yearLevel(),
-            'semesterLevel' => $this->semester->level,
+            // 'yearLevel' => $this->yearLevel(),
             'status' => $this->status,
             'isApproved' => $this->is_approved,
             'isCompleted' => $this->is_completed,

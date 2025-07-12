@@ -29,6 +29,7 @@ class InstructorPortalController extends Controller
                 'courses',
                 'courseOfferings.section.program',
                 'courseOfferings.section.track',
+                'courseOfferings.section.semester',
                 'courseOfferings.course'
             )
         );
@@ -73,7 +74,7 @@ class InstructorPortalController extends Controller
 
         $course = new CourseResource($course->load([
             'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
-            'courseOfferings.section',
+            'courseOfferings.section.semester',
             'courseOfferings.section.program',
             'courseOfferings.section.track',
             'courseOfferings.section.studyMode',
@@ -94,6 +95,7 @@ class InstructorPortalController extends Controller
             'courseOfferings.section.program',
             'courseOfferings.section.track',
             'courseOfferings.section.studyMode',
+            'courseOfferings.section.semester',
         ]);
 
         $uniqueAssignments = $instructor->courseOfferings->unique('section_id');

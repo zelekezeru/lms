@@ -8,6 +8,7 @@ use App\Http\Resources\CenterResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\CurriculumResource;
 use App\Http\Resources\ProgramResource;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\TrackResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
@@ -147,29 +148,32 @@ class TrackController extends Controller
             'sections.studyMode',
             'curricula.course',
             'curricula.studyMode',
-            'students.section',
-            'students.year',
-            'students.semester',
-            'students.studyMode'
         ));
-
-        $courses = CourseResource::collection(
-            Course::withExists(['tracks as related_to_track' => function ($query) use ($track) {
-                $query->where('tracks.id', $track->id);
-            }])
-                ->orderBy('name')
-                ->get()
-        );
 
         $years = YearResource::collection(Year::all());
 
         $centers = CenterResource::collection(Center::all());
 
-        return inertia('Tracks/Show', [
-            'track' => $track,
-            'courses' => $courses,
-            'centers' => $centers,
-            'years' => $years,
+        return Inertia::render('Tracks/Show', [
+            'track'    => $track,
+            'centers'  => CenterResource::collection(Center::all()),
+            'years'    => YearResource::collection(Year::all()),
+
+            'courses' => Inertia::defer(
+                fn() =>
+                CourseResource::collection(
+                    Course::withExists(['tracks as related_to_track' => fn($q) => $q->where('tracks.id', $track->id)])
+                        ->orderBy('name')
+                        ->get()
+                )
+            ),
+
+            'students' => Inertia::defer(
+                fn() =>
+                StudentResource::collection(
+                    $track->students()->with(['year', 'semester', 'studyMode', 'section'])->get()
+                )
+            ),
         ]);
     }
 

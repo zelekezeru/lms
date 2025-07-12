@@ -13,12 +13,14 @@ import ShowCurriculum from "./Tabs/ShowCurriculum.vue";
 import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowSections from "./Tabs/ShowSections.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
+import { Deferred } from "@inertiajs/vue3";
 
 const props = defineProps({
-    track: { type: Object, required: true },
-    courses: { type: Object, required: true },
-    years: { type: Object, required: true },
-    centers: { type: Array, required: true },
+    track: Object,
+    centers: Array,
+    years: Array,
+    courses: Array,
+    students: Array,
 });
 
 const { t } = useI18n();
@@ -156,11 +158,13 @@ const toggleDrawer = () => {
                         :track="track"
                         :courses="courses"
                     />
-                    <ShowCourses
+                    <Deferred
                         v-else-if="selectedTab === 'courses'"
-                        :track="track"
-                        :courses="courses"
-                    />
+                        :data="['courses']"
+                    >
+                        <template #fallback> loading... </template>
+                        <ShowCourses :track="track" :courses="courses" />
+                    </Deferred>
                     <ShowSections
                         v-else-if="selectedTab === 'sections'"
                         :track="track"
@@ -168,10 +172,14 @@ const toggleDrawer = () => {
                         :courses="courses"
                         :centers="centers"
                     />
-                    <ShowStudents
+                    <Deferred
                         v-else-if="selectedTab === 'students'"
-                        :track="track"
-                    />
+                        :data="['students']"
+                    >
+                        <template #fallback> Loading... </template>
+
+                        <ShowStudents :track="track" :students="students" />
+                    </Deferred>
                 </div>
             </transition>
         </div>

@@ -18,11 +18,12 @@ const { t } = useI18n(); // ✅ Destructure the `t` function
 
 const props = defineProps({
     track: { type: Object, required: true },
+    students: { type: Array, required: true },
 });
 
 const studentSectionForm = useForm({});
 
-props.track.students.forEach((student) => {
+props.students.forEach((student) => {
     studentSectionForm[student.id] = {
         section_id: student.section.id ?? "",
         processing: false,
@@ -51,7 +52,7 @@ const assignStudentToSection = (studentId) => {
         },
         onError: () => {
             studentSectionForm[studentId].processing = false;
-            studentSectionForm[studentId].section_id = track.students.find(
+            studentSectionForm[studentId].section_id = students.find(
                 (student) => student.id == studentId
             ).section?.id;
         },
@@ -110,7 +111,7 @@ const assignStudentToSection = (studentId) => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in track.students"
+                                v-for="(student, index) in students"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0

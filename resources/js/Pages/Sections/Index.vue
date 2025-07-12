@@ -4,7 +4,7 @@ import { usePage, Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon ,AcademicCapIcon, ViewColumnsIcon, CalendarIcon} from "@heroicons/vue/24/outline";
+import { PencilSquareIcon ,AcademicCapIcon, ViewColumnsIcon, CalendarIcon, FingerPrintIcon} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
 defineProps({

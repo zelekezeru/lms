@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Program;
 use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Status;
@@ -26,6 +27,10 @@ class StudentsImport implements ToCollection, WithHeadingRow
     protected $tenant_id;
     protected $user_id;
 
+    public $registeredCount = 0;
+    public $notRegisteredCount = 0;
+    public $duplicateData = 0;
+
     public function __construct(protected $section_id) {}
 
     public function collection(Collection $rows)
@@ -35,37 +40,32 @@ class StudentsImport implements ToCollection, WithHeadingRow
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
                 if (!$this->hasRequiredFields($row)) {
+                    $this->notRegisteredCount++;
                     continue;
                 }
 
                 [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
                 if (!$firstName) {
-                    session()->flash('sweet_alert', [
-                        'type' => 'error',
-                        'title' => 'Invalid Name Format',
-                        'text' => "Could not parse full name: {$row['full_name']}"
-                    ]);
+                    $this->notRegisteredCount++;
                     continue;
                 }
 
                 $email = $this->generateEmail($firstName, $middleName);
                 if (User::where('email', $email)->exists()) {
-                    session()->flash('sweet_alert', [
-                        'type' => 'error',
-                        'title' => 'Duplicate User',
-                        'text' => "User with email $email already exists."
-                    ]);
+                    $this->duplicateData++;
                     continue;
                 }
 
-                [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
+                if (!$this->resolveProgram($row['program'] ?? null)) {
+                    $this->notRegisteredCount++;
+                }
                 
+                [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
 
                 $userUuid = $this->generateUserUuid($academicYear);
 
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
 
-                // 👤 Create User
                 $user = User::firstOrCreate(
                     ['email' => $email],
                     [
@@ -75,8 +75,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                         'default_password' => $defaultPassword,
                     ]
                 );
-
-                // 📚 Create Student
+                
                 $student = Student::updateOrCreate(
                     ['user_id' => $user->id],
                     $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id)
@@ -89,6 +88,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 if (!empty($row['pastor_name']) || !empty($row['church_name'])) {
                     $this->createStudentChurch($student, $row->toArray());
                 }
+
+                $this->registeredCount++;
             }
         });
     }
@@ -106,7 +107,28 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function hasRequiredFields($row)
     {
-        return isset($row['full_name'], $row['phone']);
+        return isset($row['full_name'], $row['phone'], $row['entry_year']);
+    }
+
+    protected function resolveProgram($code): bool
+    {
+        if (!$code) {
+            return false;
+        }
+
+        $program = Program::where('code', $code)->first();
+        
+        if ($program) {
+            $this->program_id = $program->id;
+            $this->track_id = $program->tracks()->first()?->id;
+
+            return true;        
+        }
+        else {
+            $this->program_id = $this->program_id;
+            $this->track_id = $this->track_id;
+            return false;
+        }
     }
 
     protected function parseFullName($fullName)
@@ -126,9 +148,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function generateUserUuid($academicYear)
     {
-        // last 2 digits of the year
         $academicYear = substr($academicYear, -2);
-
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
         return "SITS-R-{$count}-{$academicYear}";
     }
@@ -141,11 +161,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function getOrCreateYearAndSemester($entryYear)
     {
-        $year = Year::where('name', $entryYear)->first() ?? Year::where('status', 'Active')->first();
+        $year = Year::where('name', $entryYear)->first();
+        
         if (!$year) {
             $year = Year::create(['name' => $entryYear]);
         }
-
+        
         $semester = Semester::firstOrCreate(
             ['year_id' => $year->id],
             [
@@ -156,9 +177,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
             ]
         );
 
-        $academicYear = substr($year->name, -2);
-
-        return [$year, $semester, $academicYear];
+        return [$year, $semester, $year->name];
     }
 
     protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId)
@@ -166,7 +185,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         return [
             'id_no' => $userUuid,
             'old_id' => $row['old_id'] ?? null,
-            'first_name' => "$firstName",
+            'first_name' => $firstName,
             'middle_name' => $middleName,
             'last_name' => $lastName,
             'sex' => $row['sex'] ?? '',
@@ -205,8 +224,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
         Status::create([
             'student_id' => $student->id,
             'user_id' => $student->user->id,
-            'is_active' => true,
-            'created_by_name' => Auth::user()?->name ?? 'System',
+            'is_active' => false,
+            'created_by_name' => Auth::user()?->name ?? 'Excel Import',
             'created_at' => now(),
         ]);
     }

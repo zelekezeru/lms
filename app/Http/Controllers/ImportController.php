@@ -21,7 +21,7 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        Excel::import(new StudentsImport($request->section_id), $request->file);
+        $imported = Excel::import(new StudentsImport($request->section_id), $request->file);
 
         return back()->with('success', "Students imported successfully.");
 
@@ -35,10 +35,15 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
         
-        // Assuming you have a similar import class for center students
-        Excel::import(new CenterImport($request->center_id), $request->file);
+        // Assuming CenterImport exposes these properties after import
+        $import = new CenterImport($request->center_id);
+        Excel::import($import, $request->file);
 
-        return back()->with('success', "Center students imported successfully.");
+        $registeredCount = $registeredCount;
+        $notRegisteredCount = $notRegisteredCount;
+        $duplicateData = $duplicateData;
+        $message = "Import completed: {$registeredCount} registered, {$notRegisteredCount} not registered, {$duplicateData} duplicates.";
+        return back()->with('success', "Center students imported successfully. {$message}");
     }
 
      public function gradesImport(Request $request)

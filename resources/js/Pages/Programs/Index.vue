@@ -10,7 +10,7 @@ import {
     Squares2X2Icon,
     TableCellsIcon,
 } from "@heroicons/vue/24/solid";
-import { AcademicCapIcon, CalendarIcon, PencilSquareIcon, LanguageIcon } from "@heroicons/vue/24/outline";
+import { AcademicCapIcon, CalendarIcon, PencilSquareIcon, LanguageIcon, FingerPrintIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
@@ -240,6 +240,14 @@ const searchPrograms = () => {
                         <LanguageIcon class="w-5 h-5 mr-2 text-teal-500" />
                         <span class="font-semibold">{{ $t('programs.language') }} :</span>
                         <span class="ml-1">{{ program.language }}</span>
+                    </div>
+
+                    <div
+                        class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
+                    >
+                        <FingerPrintIcon class="w-5 h-5 mr-2 text-orange-500" />
+                        <span class="font-semibold">Code:</span>
+                        <span class="ml-1">{{ program.code }}</span>
                     </div>
                     
                     <div

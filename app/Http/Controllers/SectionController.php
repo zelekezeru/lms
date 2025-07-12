@@ -135,7 +135,7 @@ class SectionController extends Controller
         $instructors = InstructorResource::collection(Instructor::with('courses', 'user')->get()->sortBy('name'));
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
-
+        
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'courses' => $courses,

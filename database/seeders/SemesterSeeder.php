@@ -55,6 +55,29 @@ class SemesterSeeder extends Seeder
                     'is_completed' => $year < 2025 ? 1 : 0,
                 ],
             ]);
+
+            // Add semester_study_mode seeding for 2025 1st semester only (semester_id = 21)
+            if ($year == 2025) {
+                $semesterId = DB::table('semesters')
+                    ->where('name', "1st Semester of 2025")
+                    ->where('year_id', $yearId)
+                    ->value('id');
+
+                if ($semesterId) {
+                    $studyModes = [1, 2, 3, 4];
+                    foreach ($studyModes as $i => $studyModeId) {
+                        DB::table('semester_study_mode')->insert([
+                            'semester_id' => $semesterId,
+                            'study_mode_id' => $studyModeId,
+                            'start_date' => now()->subMonths(2)->startOfMonth(),
+                            'end_date' => now()->addMonths(2)->endOfMonth(),
+                            'status' => 'active',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
         }
     }
 }

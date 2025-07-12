@@ -117,14 +117,19 @@ class StudentsImport implements ToCollection, WithHeadingRow
         }
 
         $program = Program::where('code', $code)->first();
+
+        if (!$program) {
+            $program = Program::where('name', 'like', "%$code%")->first();
+        }
         
         if ($program) {
             $this->program_id = $program->id;
             $this->track_id = $program->tracks()->first()?->id;
+            $this->study_mode_id = $program->studyModes()->first()?->id ?? 1;
+            $this->section_id = $program->sections()->first()?->id ?? $this->section_id;
 
-            return true;        
-        }
-        else {
+            return true;
+        } else {
             $this->program_id = $this->program_id;
             $this->track_id = $this->track_id;
             return false;
@@ -154,7 +159,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
     }
 
     protected function generateDefaultPassword($firstName, $phone)
-    {
+    {        
         $last4 = substr($phone ?? '0000', -4);
         return strtolower($firstName) . '@' . $last4;
     }

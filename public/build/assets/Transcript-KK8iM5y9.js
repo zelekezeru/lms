@@ -1,1 +1,0 @@
-import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as e,o as s,a as n}from"./app-DwTIzjuM.js";const o={},a={class:"transcript-page"};function c(i,t){return s(),e("div",a,t[0]||(t[0]=[n("h1",null,"Student Transcript",-1)]))}const d=r(o,[["render",c]]);export{d as default};

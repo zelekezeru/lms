@@ -31,7 +31,7 @@ class StudentResource extends JsonResource
             'user_id' => $this->user_id,
 
             'paymentCode' => $this->payment_code,
-            
+
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),
             'enrollments' => EnrollmentResource::collection($this->whenLoaded('enrollments')),
@@ -53,7 +53,10 @@ class StudentResource extends JsonResource
 
             'user' => new UserResource($this->whenLoaded('user')),
 
-            'profileImg' => Storage::url($this->user->profile_img),
+            'profileImg' => $this->whenLoaded('user', function () {
+                return Storage::url($this->user->profile_img);
+            }),
+
 
             'documents' => UserDocumentResource::collection($this->whenLoaded('documents')),
 

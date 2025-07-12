@@ -19,7 +19,6 @@ const props = defineProps({
     courses: { type: Object, required: true },
     years: { type: Object, required: true },
     centers: { type: Array, required: true },
-    curriculums: { type: Object, required: true },
 });
 
 const { t } = useI18n();
@@ -155,7 +154,6 @@ const toggleDrawer = () => {
                     <ShowCurriculum
                         v-else-if="selectedTab === 'curriculums'"
                         :track="track"
-                        :curriculums="curriculums"
                         :courses="courses"
                     />
                     <ShowCourses

@@ -16,7 +16,6 @@ import { MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     track: Object,
     courses: Array,
-    curriculums: Array,
 });
 
 const showModal = ref(false);

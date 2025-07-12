@@ -56,7 +56,6 @@ class TrackController extends Controller
         return inertia('Tracks/Index', [
             'tracks' => TrackResource::collection($tracks),
             'programs' => ProgramResource::collection(Program::all()),
-            'users' => UserResource::collection(User::all()),
             'search' => $request->search,
             'sortInfo' => [
                 'currentSortColumn' => $sortColumn,

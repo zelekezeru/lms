@@ -37,26 +37,26 @@ class AssessmentController extends Controller
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
-        
+
         $studentResults = [];
         foreach ($students as $student) {
             $studentResults[$student->id] = [];
             foreach ($weights as $weight) {
-            $result = $weight->results->where('student_id', $student->id)->first();
-            $studentResults[$student->id][$weight->id] = [
-                'point' => $result ? $result->point : null,
-                'description' => $result ? $result->description : null,
-                'changed_point' => $result ? $result->changed_point : null,
-                'instructor_id' => $result ? $result->instructor_id : null,
-                'grade_id' => $result ? $result->grade_id : null,
-                'student_id' => $student->id,
-                'weight_id' => $weight->id,
-                'changed_by' => $result ? $result->changed_by : null,
-                'changed_at' => $result ? $result->changed_at : null,
-            ];
+                $result = $weight->results->where('student_id', $student->id)->first();
+                $studentResults[$student->id][$weight->id] = [
+                    'point' => $result ? $result->point : null,
+                    'description' => $result ? $result->description : null,
+                    'changed_point' => $result ? $result->changed_point : null,
+                    'instructor_id' => $result ? $result->instructor_id : null,
+                    'grade_id' => $result ? $result->grade_id : null,
+                    'student_id' => $student->id,
+                    'weight_id' => $weight->id,
+                    'changed_by' => $result ? $result->changed_by : null,
+                    'changed_at' => $result ? $result->changed_at : null,
+                ];
             }
         }
-        
+
         return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,

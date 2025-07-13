@@ -188,22 +188,6 @@ const deleteSemester = (id) => {
 
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
                         <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Status</span
-                        >
-                        <div
-                            class="mt-1 text-lg font-semibold"
-                            :class="
-                                semester.status === 'Active'
-                                    ? 'text-green-600'
-                                    : 'text-red-600'
-                            "
-                        >
-                            {{ semester.status }}
-                        </div>
-                    </div>
-
-                    <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
                             >Start Date</span
                         >
                         <div

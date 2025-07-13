@@ -163,7 +163,6 @@ const deleteSemester = (id) => {
                             sortColumn="end_date"
                             >End Date</Thead
                         >
-                        <Thead>Status</Thead>
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
@@ -201,18 +200,6 @@ const deleteSemester = (id) => {
                             {{
                                 new Date(semester.end_date).toLocaleDateString()
                             }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="px-2 py-1 text-sm font-bold rounded"
-                                :class="
-                                    semester.status === 'Active'
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-red-800 text-white'
-                                "
-                            >
-                                {{ semester.status }}
-                            </span>
                         </td>
                         <td class="flex space-x-2">
                             <Link
@@ -272,16 +259,6 @@ const deleteSemester = (id) => {
                         <span class="font-semibold mr-1">End:</span>
                         {{ new Date(semester.end_date).toLocaleDateString() }}
                     </div>
-                    <span
-                        class="inline-block mt-2 px-2 py-1 text-md font-bold rounded"
-                        :class="
-                            semester.status === 'Active'
-                                ? 'bg-green-500 text-white'
-                                : 'bg-red-800 text-white'
-                        "
-                    >
-                        {{ semester.status }}
-                    </span>
                 </Link>
             </div>
         </div>

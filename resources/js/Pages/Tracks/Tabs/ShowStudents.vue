@@ -23,7 +23,7 @@ const props = defineProps({
 
 const studentSectionForm = useForm({});
 
-props.students.forEach((student) => {
+props.students.data.forEach((student) => {
     studentSectionForm[student.id] = {
         section_id: student.section.id ?? "",
         processing: false,
@@ -111,7 +111,7 @@ const assignStudentToSection = (studentId) => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in students"
+                                v-for="(student, index) in students.data"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0
@@ -203,6 +203,23 @@ const assignStudentToSection = (studentId) => {
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <!-- Pagination Links -->
+                <div class="mt-3 flex justify-center space-x-6">
+                    <Link
+                        v-for="link in students.meta.links"
+                        :key="link.label"
+                        :preserve-state="true"
+                        prefetch="hover"
+                        :href="link.url ? `${link.url}&search=${search}` : '#'"
+                        class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                        :class="{
+                            'text-gray-700 dark:text-gray-400': true,
+                            'cursor-not-allowed opacity-50': !link.url,
+                            '!bg-gray-100 !dark:bg-gray-800': link.active,
+                        }"
+                        v-html="link.label"
+                    />
                 </div>
             </div>
         </div>

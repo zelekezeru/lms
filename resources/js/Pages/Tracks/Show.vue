@@ -162,7 +162,13 @@ const toggleDrawer = () => {
                         v-else-if="selectedTab === 'courses'"
                         :data="['courses']"
                     >
-                        <template #fallback> loading... </template>
+                        <template #fallback>
+                            <div class="flex justify-center items-center h-32">
+                                <div
+                                    class="w-6 h-6 border-4 border-dashed rounded-full animate-spin border-indigo-500 dark:border-white"
+                                ></div>
+                            </div>
+                        </template>
                         <ShowCourses :track="track" :courses="courses" />
                     </Deferred>
                     <ShowSections
@@ -176,7 +182,13 @@ const toggleDrawer = () => {
                         v-else-if="selectedTab === 'students'"
                         :data="['students']"
                     >
-                        <template #fallback> Loading... </template>
+                        <template #fallback>
+                            <div class="flex justify-center items-center h-32">
+                                <div
+                                    class="w-6 h-6 border-4 border-dashed rounded-full animate-spin border-indigo-500 dark:border-white"
+                                ></div>
+                            </div>
+                        </template>
 
                         <ShowStudents :track="track" :students="students" />
                     </Deferred>

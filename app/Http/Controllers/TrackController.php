@@ -170,7 +170,7 @@ class TrackController extends Controller
             'students' => Inertia::defer(
                 fn() =>
                 StudentResource::collection(
-                    $track->students()->with(['studyMode', 'section'])->paginate(15)
+                    $track->students()->with(['studyMode', 'section'])->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(15)
                 )
             ),
         ]);

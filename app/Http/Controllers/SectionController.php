@@ -11,6 +11,7 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\SectionResource;
 use App\Http\Resources\SemesterResource;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
 use App\Models\Center;
@@ -114,7 +115,6 @@ class SectionController extends Controller
             'semester',
             'studyMode',
             'studyMode.semesters.year',
-            'students',
             'grades',
             'center',
             'courseOfferings.course',
@@ -135,9 +135,10 @@ class SectionController extends Controller
         $instructors = InstructorResource::collection(Instructor::with('courses', 'user')->get()->sortBy('name'));
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
-        
+
         return Inertia::render('Sections/Show', [
             'section' => $section,
+            'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->paginate(15))),
             'courses' => $courses,
             'instructors' => $instructors,
             'studyModes' => $section->studyMode,

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps, ref, onMounted } from "vue";
-import { router } from "@inertiajs/vue3";
+import { Deferred, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
@@ -19,6 +19,7 @@ import ShowExcels from "./Tabs/ShowExcels.vue";
 
 const props = defineProps({
     section: Object,
+    students: Object,
     courses: Object,
     instructors: Object,
     currentYearLevel: Number,
@@ -188,12 +189,19 @@ onMounted(() => {
                         :currentSemesterLevel="currentSemesterLevel"
                     />
 
-                    <ShowStudents
+                    <Deferred
                         v-else-if="selectedTab === 'students'"
-                        :courses="courses"
-                        :section="section"
-                        :instructors="instructors"
-                    />
+                        :data="['students']"
+                    >
+                        <template #fallback>
+                            <div class="flex justify-center items-center h-32">
+                                <div
+                                    class="w-6 h-6 border-4 border-dashed rounded-full animate-spin border-indigo-500 dark:border-white"
+                                ></div>
+                            </div>
+                        </template>
+                        <ShowStudents :section="section" :students="students" />
+                    </Deferred>
 
                     <ShowClassSchedules
                         v-else-if="selectedTab === 'schedules'"
@@ -214,7 +222,7 @@ onMounted(() => {
                         :section="section"
                         :courses="courses"
                     />
-                    
+
                     <ShowExcels
                         v-else-if="selectedTab === 'excels'"
                         :section="section"

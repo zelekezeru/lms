@@ -17,6 +17,8 @@ class EnrollmentResource extends JsonResource
         return [
             'id' => $this->id,
             'student' => new StudentResource($this->whenLoaded('student')),
+
+            // needs query optimization
             'course' => new CourseResource($this->courseOffering->course),
             'section' => new SectionResource($this->courseOffering->section),
             'instructor' => new InstructorResource($this->courseOffering->instructor ?? null),

@@ -103,24 +103,39 @@ class StudentController extends Controller
             $status = new StatusResource($student->status);
         }
 
-        $student = new StudentResource($student->load(['user', 'enrollments.courseOffering', 'program', 'track', 'year', 'semester', 'section', 'church', 'status', 'results', 'grades', 'payments', 'studyMode', 'centers']));
+        $student = new StudentResource($student->load([
+            'user',
+            'enrollments.courseOffering',
+            'program',
+            'track',
+            'year',
+            'semester',
+            'section',
+            'church',
+            'status',
+            'results',
+            'grades',
+            'payments',
+            'studyMode',
+            'centers'
+        ]));
+        $activeSemester = $student->studyMode->activeSemester();
 
-        $yearLevel = $student->section ? $student->section->yearLevel() : null;
+        $yearLevel = intval($activeSemester->year->name) - intval($student->year->name) + 1;;
         $semester = ($student->section && $student->section->semester) ? $student->section->semester->level : null;
 
-        $activeSemester = $student->studyMode->activeSemester();
 
         $studyModes = StudyMode::with(['sections.courseOfferings', 'sections.studyMode', 'sections.track', 'sections.program'])->get();
 
-        $studyModes->each(function ($studyMode) {
+        $studyModes->each(function ($studyMode) use ($yearLevel) {
             // Check if activeSemester exists before accessing its properties
             $studyModeActiveSemester = $studyMode->activeSemester();
             if (!$studyModeActiveSemester) {
                 return;
             }
-            $studyMode->sections->each(function ($section) use ($studyMode, $studyModeActiveSemester) {
-                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($section, $studyModeActiveSemester) {
-                    return $courseOffering->year_level == $section->yearLevel() && $courseOffering->semester_level == $studyModeActiveSemester->level;
+            $studyMode->sections->each(function ($section) use ($studyMode, $yearLevel, $studyModeActiveSemester) {
+                $filteredCourseOfferings = $section->courseOfferings->filter(function ($courseOffering) use ($section, $yearLevel, $studyModeActiveSemester) {
+                    return $courseOffering->year_level == $yearLevel && $courseOffering->semester_level == $studyModeActiveSemester->level;
                 });
 
                 $section->setRelation('courseOfferings', $filteredCourseOfferings);

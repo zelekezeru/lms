@@ -25,7 +25,7 @@ const studentSectionForm = useForm({});
 
 props.students.data.forEach((student) => {
     studentSectionForm[student.id] = {
-        section_id: student.section.id ?? "",
+        section_id: student.section ? student.section.id : "",
         processing: false,
     };
 });

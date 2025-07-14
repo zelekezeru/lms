@@ -238,7 +238,8 @@ watch(
 watch(
     () => paymentUpdateForm.paid_amount,
     (newVal) => {
-        if (newVal == paymentUpdateForm.total_amount) {
+        console.log(selectedPayment);
+        if (newVal == selectedPayment.value.total_amount) {
             paymentUpdateForm.status = "completed";
         } else {
             paymentUpdateForm.status = "pending";
@@ -254,6 +255,17 @@ watch(
         } else {
             paymentCreationForm.paid_amount =
                 props.payments[0]?.paid_amount || 0;
+        }
+    }
+);
+
+watch(
+    () => paymentUpdateForm.status,
+    (newVal) => {
+        if (newVal == "completed") {
+            paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
+        } else {
+            paymentUpdateForm.paid_amount = props.payments[0]?.paid_amount || 0;
         }
     }
 );
@@ -1304,7 +1316,7 @@ const updatePayment = () => {
                             Status
                         </label>
                         <Select
-                            v-model="selectedPayment.status"
+                            v-model="paymentUpdateForm.status"
                             :options="statusOptions"
                             optionLabel="label"
                             optionValue="value"

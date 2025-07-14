@@ -31,7 +31,7 @@ class CenterController extends Controller
         }
 
         $centers = CenterResource::collection(
-            $query->with(['coordinator.user', 'students',])->paginate(15)->withQueryString()
+            $query->with(['coordinator.user', 'students',])->paginate(50)->withQueryString()
         );
 
         return inertia('Centers/Index', [

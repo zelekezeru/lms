@@ -343,7 +343,7 @@ class StudentController extends Controller
         $students = Student::where('first_name', 'like', "%$search%")
             ->orWhere('student_id', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Students/Index', compact('students'));
     }

@@ -75,7 +75,7 @@ class PermissionController extends Controller
         $search = $request->search;
         $permissions = Permission::where('permission_name', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Permissions/Index', compact('permissions'));
     }

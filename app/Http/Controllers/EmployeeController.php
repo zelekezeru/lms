@@ -32,7 +32,7 @@ class EmployeeController extends Controller
                 })->orWhere('job_position', 'like', "%{$search}%");
             })
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->appends(['search' => $search]);
 
         return inertia('Employees/Index', [

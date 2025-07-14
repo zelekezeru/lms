@@ -35,7 +35,7 @@ class UserDocumentController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $userDocuments = UserDocumentResource::collection($query->paginate(15)->withQueryString());
+        $userDocuments = UserDocumentResource::collection($query->paginate(50)->withQueryString());
 
         return inertia('UserDocuments/Index', [
             'userDocuments' => $userDocuments,

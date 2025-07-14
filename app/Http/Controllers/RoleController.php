@@ -22,7 +22,7 @@ class RoleController extends Controller
             return $query->where('name', 'like', "%$search%");
         })
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->withQueryString();
 
         return Inertia::render('Roles/Index', compact('roles', 'search'));
@@ -89,7 +89,7 @@ class RoleController extends Controller
         $search = $request->search;
         $roles = Role::where('role_name', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Roles/Index', compact('roles'));
     }

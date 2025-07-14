@@ -138,7 +138,7 @@ class SectionController extends Controller
 
         return Inertia::render('Sections/Show', [
             'section' => $section,
-            'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(15))),
+            'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(50))),
             'courses' => $courses,
             'instructors' => $instructors,
             'studyModes' => $section->studyMode,

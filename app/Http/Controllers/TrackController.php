@@ -51,7 +51,7 @@ class TrackController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $tracks = $query->paginate(15)->withQueryString();
+        $tracks = $query->paginate(50)->withQueryString();
 
         return inertia('Tracks/Index', [
             'tracks' => TrackResource::collection($tracks),
@@ -170,7 +170,7 @@ class TrackController extends Controller
             'students' => Inertia::defer(
                 fn() =>
                 StudentResource::collection(
-                    $track->students()->with(['studyMode', 'section'])->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(15)
+                    $track->students()->with(['studyMode', 'section'])->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(50)
                 )
             ),
         ]);
@@ -240,7 +240,7 @@ class TrackController extends Controller
         $tracks = Track::where('track_name', 'like', "%$search%")
             ->orWhere('track_id', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Tracks/Index', compact('tracks'));
     }

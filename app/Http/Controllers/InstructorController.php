@@ -35,7 +35,7 @@ class InstructorController extends Controller
             $query->join('users', 'instructors.user_id', '=', 'users.id')
                 ->orderBy('users.name')
                 ->select('instructors.*')
-                ->paginate(15)
+                ->paginate(50)
                 ->withQueryString()
         );
 

@@ -24,7 +24,7 @@ class YearController extends Controller
         }
 
         // Paginate the results
-        $years = $query->paginate(15)->appends($request->query());
+        $years = $query->paginate(50)->appends($request->query());
 
         // Return inertia view with data
         return inertia('Years/Index', [

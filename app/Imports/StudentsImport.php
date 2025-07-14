@@ -31,6 +31,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
     public $notRegisteredCount = 0;
     public $duplicateData = 0;
 
+    protected $registeredStudentIds = [];
+
     public function __construct(protected $section_id) {}
 
     public function collection(Collection $rows)
@@ -90,6 +92,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 $this->registeredCount++;
+                $this->registeredStudentIds[] = $student->id;
             }
         });
     }
@@ -249,5 +252,25 @@ class StudentsImport implements ToCollection, WithHeadingRow
             'church_name' => $fields['church_name'] ?? null,
             'church_address' => $fields['church_address'] ?? null,
         ]);
+    }
+
+    public function getRegisteredCount()
+    {
+        return $this->registeredCount;
+    }
+
+    public function getNotRegisteredCount()
+    {
+        return $this->notRegisteredCount;
+    }
+
+    public function getDuplicateDataCount()
+    {
+        return $this->duplicateData;
+    }
+
+    public function getRegisteredStudentIds()
+    {
+        return Student::whereIn('id', $this->registeredStudentIds)->get();
     }
 }

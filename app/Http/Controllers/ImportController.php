@@ -21,9 +21,34 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        $imported = Excel::import(new StudentsImport($request->section_id), $request->file);
+        $import = new StudentsImport($request->section_id);
+        Excel::import($import, $request->file('file'));
 
-        return back()->with('success', "Students imported successfully.");
+        // show the imported data
+        $registeredCount = $import->getRegisteredCount();
+        $notRegisteredCount = $import->getNotRegisteredCount();
+        $duplicateData = $import->getDuplicateDataCount();
+
+        $sectionId = $request->input('section_id');
+        $section = Section::findOrFail($sectionId);
+
+        // Get only the newly registered student IDs from the import
+        $newStudents = $import->getRegisteredStudentIds(); 
+
+        // Pass the import report data to the session for display with the success message
+        // if ($registeredCount > 0) {
+            return $this->showImportedStudents($request, $sectionId)->with([
+            'import_report' => [
+                'registeredCount' => $registeredCount,
+                'notRegisteredCount' => $notRegisteredCount,
+                'duplicateData' => $duplicateData,
+                'success' => "Students imported successfully. ",
+            ],
+            'students' => $newStudents,
+            ]);
+        // } else {
+        //     return back()->with('error', "No students were registered. Please check the file and try again.");
+        // }
 
     }
 
@@ -39,11 +64,7 @@ class ImportController extends Controller
         $import = new CenterImport($request->center_id);
         Excel::import($import, $request->file);
 
-        $registeredCount = $registeredCount;
-        $notRegisteredCount = $notRegisteredCount;
-        $duplicateData = $duplicateData;
-        $message = "Import completed: {$registeredCount} registered, {$notRegisteredCount} not registered, {$duplicateData} duplicates.";
-        return back()->with('success', "Center students imported successfully. {$message}");
+         return back()->with('success', "Center students imported successfully.");
     }
 
      public function gradesImport(Request $request)
@@ -63,5 +84,18 @@ class ImportController extends Controller
         Excel::import(new GradesImport($context), $request->file('grades_file'));
 
         return back()->with('success', 'Grades imported successfully.');
+    }
+    // Show the imported students for a section (GET endpoint)
+    public function showImportedStudents(Request $request, $sectionId)
+    {
+        $section = Section::with('students.user')->findOrFail($sectionId);
+
+        $students = $section->students()->with('user')->get();
+
+        return inertia('Students/importedStudents', [
+            'section' => $section,
+            'students' => $students,
+            'import_report' => null,
+        ]);
     }
 }

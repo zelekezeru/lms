@@ -154,10 +154,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/students/{student}/payment-code', [StudentController::class, 'generatePaymentCode'])->name('students.payment-code');
 
     // Excel Operation Routes
+    Route::get('/sections/{section}/imported-students', [ImportController::class, 'showImportedStudents'])->name('sections.imported-students');
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
 
+    // Make sure to use POST method when calling this route in your forms or AJAX requests.
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
     Route::post('/section-grades/import', [ImportController::class, 'gradesImport'])->name('sectionGrades.import');

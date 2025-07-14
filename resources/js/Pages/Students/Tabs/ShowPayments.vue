@@ -65,9 +65,6 @@ const semesterPayments = ref(
 watch(
     () => [selectedSemester.value, selectedStatus.value, props.payments],
     ([newSemester, newStatus]) => {
-        console.log("Semester:", newSemester);
-        console.log("Status:", newStatus);
-
         semesterPayments.value = props.payments.filter((payment) => {
             const matchesSemester =
                 !newSemester || payment.semester?.id === newSemester;
@@ -238,7 +235,6 @@ watch(
 watch(
     () => paymentUpdateForm.paid_amount,
     (newVal) => {
-        console.log(selectedPayment);
         if (newVal == selectedPayment.value.total_amount) {
             paymentUpdateForm.status = "completed";
         } else {
@@ -344,8 +340,6 @@ const updatePayment = () => {
         route("payments.update", { payment: selectedPayment.value.id }),
         {
             onSuccess: () => {
-                console.log(paymentUpdateForm.paid_amount);
-
                 paymentUpdateForm.reset();
                 closeUpdatePaymentModal();
                 Swal.fire(

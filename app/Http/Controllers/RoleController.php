@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
@@ -110,8 +111,19 @@ class RoleController extends Controller
     {
         $role = Role::findOrFail($roleId);
 
-        $role->permissions()->sync($request['permissions']);
+        $role->syncPermissions($request['permissions']);
 
+        cache()->forget("user_roles_" . Auth::id());
+
+        cache()->forget("user_permissions_" . Auth::id());
+
+        cache()->remember("user_roles_" . Auth::id(), now()->addMinutes(10), function () {
+            return Auth::user()->getRoleNames();
+        });
+
+        cache()->remember("user_permissions_" . Auth::id(), now()->addMinutes(10), function () {
+            return Auth::user()->getAllPermissions()->pluck('name');
+        });
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');
     }
 

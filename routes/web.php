@@ -40,7 +40,6 @@ Route::middleware(['auth'])->group(function () {
         }
 
         $roleName = $user->loggedInAs ? strtoupper($user->loggedInAs->name) : null;
-
         if ($roleName === 'STUDENT') {
             return redirect()->route('student.dashboard');
         } elseif ($roleName === 'INSTRUCTOR') {

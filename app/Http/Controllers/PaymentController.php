@@ -15,6 +15,7 @@ use App\Models\Semester;
 use App\Models\SemesterStudent;
 use App\Models\Student;
 use App\Models\StudyMode;
+use Carbon\Carbon;
 use Illuminate\Http\Request; // Add this line to import StudentResource
 use Illuminate\Support\Facades\Auth; // Add this line to import StudyModeResource
 use Inertia\Inertia; // Import Auth facade
@@ -23,11 +24,26 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $payments = PaymentResource::collection(
-            Payment::with(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester'])
-                ->paginate(30)
-        );
+        $date = $request->query('date') ?? null;
 
+        $paymentsQuery =
+            Payment::with([
+                'student',
+                'paymentType',
+                'paymentCategory',
+                'paymentScheduleItem',
+                'paymentMethod',
+                'semester'
+            ]);
+
+        if ($date) {
+            if ($date == 'today') {
+                $paymentsQuery->whereBetween('updated_at', [
+                    Carbon::today()->startOfDay(),
+                    Carbon::today()->endOfDay()
+                ]);
+            }
+        }
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
@@ -42,7 +58,7 @@ class PaymentController extends Controller
         ];
 
         return Inertia::render('Payments/Index', [
-            'payments' => $payments,
+            'payments' => PaymentResource::collection($paymentsQuery->paginate(30)),
             'paymentCategories' => $paymentCategories,
             'paymentMethods' => $paymentMethods,
             'paymentTypes' => $paymentTypes,

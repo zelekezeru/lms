@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -73,6 +74,22 @@ class RoleController extends Controller
         // Sync permissions if provided
         if ($request->has('permissions')) {
             $role->permissions()->sync($request->input('permissions'));
+
+            $users = $role->users;
+
+            foreach ($users as $user) {
+                cache()->forget("user_roles_" . $user->id);
+
+                cache()->forget("user_permissions_" . $user->id);
+
+                cache()->remember("user_roles_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                    return $user->getRoleNames();
+                });
+
+                cache()->remember("user_permissions_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                    return $user->getAllPermissions()->pluck('name');
+                });
+            }
         }
 
         return redirect()->route('roles.show', $role)->with('success', 'Role updated successfully.');
@@ -113,17 +130,22 @@ class RoleController extends Controller
 
         $role->syncPermissions($request['permissions']);
 
-        cache()->forget("user_roles_" . Auth::id());
+        $users = $role->users;
 
-        cache()->forget("user_permissions_" . Auth::id());
+        foreach ($users as $user) {
+            cache()->forget("user_roles_" . $user->id);
 
-        cache()->remember("user_roles_" . Auth::id(), now()->addMinutes(10), function () {
-            return Auth::user()->getRoleNames();
-        });
+            cache()->forget("user_permissions_" . $user->id);
 
-        cache()->remember("user_permissions_" . Auth::id(), now()->addMinutes(10), function () {
-            return Auth::user()->getAllPermissions()->pluck('name');
-        });
+            cache()->remember("user_roles_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                return $user->getRoleNames();
+            });
+
+            cache()->remember("user_permissions_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                return $user->getAllPermissions()->pluck('name');
+            });
+        }
+
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');
     }
 

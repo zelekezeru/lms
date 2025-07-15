@@ -50,11 +50,14 @@ const props = defineProps({
 
         <!-- Program name -->
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Program name</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Program name</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.program.name }}
+                <Link
+                    :href="route('programs.show', { program: section.program.id })"
+                    class="text-inherit hover:underline"
+                >
+                    {{ section.program.name }}
+                </Link>
             </span>
         </div>
 
@@ -62,7 +65,12 @@ const props = defineProps({
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Track</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <Link
+                :href="route('tracks.show', { track: section.track.id })"
+                class="text-inherit hover:underline"
+            >
                 {{ section.track.name }}
+            </Link>
             </span>
         </div>
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Imports\CenterImport;
 use App\Imports\StudentsImport;
 use App\Imports\GradesImport;
+use App\Imports\ResultsImport;
+use App\Imports\s;
 use App\Models\Section;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
@@ -85,6 +87,22 @@ class ImportController extends Controller
 
         return back()->with('success', 'Grades imported successfully.');
     }
+
+    // Import results for a section
+    public function importSectionResults(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+            'section_id' => 'required|exists:sections,id',
+        ]);
+        $sectionId = $request->input('section_id');
+        $instructorId = Auth::id(); // Assuming the instructor is the current user
+        
+        $import = new ResultsImport($instructorId);
+        Excel::import($import, $request->file('file'));
+        return back()->with('success', 'Results imported successfully.');
+    }
+
     // Show the imported students for a section (GET endpoint)
     public function showImportedStudents(Request $request, $sectionId)
     {

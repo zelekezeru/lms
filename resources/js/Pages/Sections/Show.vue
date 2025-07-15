@@ -16,6 +16,8 @@ import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowClassSchedules from "./Tabs/showClassSchedules.vue";
 import ShowExcels from "./Tabs/ShowExcels.vue";
+import ShowAssessments from "./Tabs/ShowAssessments.vue";
+
 
 const props = defineProps({
     section: Object,
@@ -42,6 +44,11 @@ const tabs = [
     {
         key: "excels",
         label: "Excel Managment",
+        icon: ClipboardDocumentListIcon,
+    },
+    {
+        key: "assessments",
+        label: "Assessments",
         icon: ClipboardDocumentListIcon,
     },
 ];
@@ -227,6 +234,16 @@ onMounted(() => {
                         v-else-if="selectedTab === 'excels'"
                         :section="section"
                         :courses="courses"
+                    />
+
+                    <ShowAssessments
+                        v-else-if="selectedTab === 'assessments'"
+                        :section="section"
+                        :courses="courses"
+                        :students="students"
+                        :instructors="instructors"
+                        :currentYearLevel="currentYearLevel"
+                        :currentSemesterLevel="currentSemesterLevel"
                     />
                 </div>
             </transition>

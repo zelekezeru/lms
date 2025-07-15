@@ -158,6 +158,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
 
+    // Add these routes for student results import/export
+    Route::get('/student-results/export/{section}', [ExportController::class, 'exportStudentResults'])->name('studentResults.export');
+    Route::post('/section-results/import', [ImportController::class, 'importSectionResults'])->name('sectionResults.import');
+
     // Make sure to use POST method when calling this route in your forms or AJAX requests.
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');

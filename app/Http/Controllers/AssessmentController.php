@@ -33,7 +33,7 @@ class AssessmentController extends Controller
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         $grades = $section->grades()->where('course_id', $course->id)->get();
-
+        dd($weights);
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));

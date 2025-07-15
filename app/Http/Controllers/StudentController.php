@@ -70,7 +70,7 @@ class StudentController extends Controller
         }
 
         // Paginate and transform
-        $paginatedStudents = $query->paginate(30)->withQueryString();
+        $paginatedStudents = $query->paginate(50)->withQueryString();
 
         $students = StudentResource::collection($paginatedStudents);
 

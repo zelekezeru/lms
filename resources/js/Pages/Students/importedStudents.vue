@@ -77,6 +77,15 @@ function route(name, id) {
                 ⚡ Duplicate Data: <span>{{ importReport.duplicateData || 0 }}</span>
                 </span>
             </li>
+            <!-- Go to section link -->
+            <li>
+                <a
+                  :href="route('sections.show', section.id)"
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-200 text-blue-900 font-bold dark:bg-blue-700 dark:text-blue-100 text-xl hover:bg-blue-300 dark:hover:bg-blue-600 transition"
+                >
+                  🔗 Go to Section
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -90,7 +99,7 @@ function route(name, id) {
             <tr>
               <th class="px-4 py-2">#</th>
               <th class="px-4 py-2">Name</th>
-              <th class="px-4 py-2">Email</th>
+              <th class="px-4 py-2">Id Number</th>
               <th class="px-4 py-2">Phone</th>
               <th class="px-4 py-2">Actions</th>
             </tr>

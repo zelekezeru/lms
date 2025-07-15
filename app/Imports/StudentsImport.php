@@ -54,7 +54,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 $email = $this->generateEmail($firstName, $middleName);
-                if (User::where('email', $email)->exists()) {
+                if (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone === $row['phone']) {
                     $this->duplicateData++;
                     continue;
                 }

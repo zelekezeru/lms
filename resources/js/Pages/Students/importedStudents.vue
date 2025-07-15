@@ -79,12 +79,12 @@ function route(name, id) {
             </li>
             <!-- Go to section link -->
             <li>
-                <a
-                  :href="route('sections.show', section.id)"
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-200 text-blue-900 font-bold dark:bg-blue-700 dark:text-blue-100 text-xl hover:bg-blue-300 dark:hover:bg-blue-600 transition"
-                >
+              <a
+                href="javascript:history.back()"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-200 text-blue-900 font-bold dark:bg-blue-700 dark:text-blue-100 text-xl hover:bg-blue-300 dark:hover:bg-blue-600 transition"
+              >
                   🔗 Go to Section
-                </a>
+              </a>
             </li>
         </ul>
     </div>

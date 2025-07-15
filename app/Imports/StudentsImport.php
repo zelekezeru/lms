@@ -41,6 +41,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
+                
                 if (!$this->hasRequiredFields($row)) {
                     $this->notRegisteredCount++;
                     continue;
@@ -67,7 +68,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 $userUuid = $this->generateUserUuid($academicYear);
 
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
-
+                
                 $user = User::firstOrCreate(
                     ['email' => $email],
                     [
@@ -129,7 +130,6 @@ class StudentsImport implements ToCollection, WithHeadingRow
             $this->program_id = $program->id;
             $this->track_id = $program->tracks()->first()?->id;
             $this->study_mode_id = $program->studyModes()->first()?->id ?? 1;
-            $this->section_id = $program->sections()->first()?->id ?? $this->section_id;
 
             return true;
         } else {

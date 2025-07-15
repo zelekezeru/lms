@@ -594,7 +594,7 @@ function submitMove() {
                 id="cousesList"
                 v-model="courseAssignmentForm.courses"
                 :options="courses"
-                optionLabel="name"
+                :optionLabel="option => `${option.name} (${option.code})`"
                 option-value="id"
                 appendTo="self"
                 filter

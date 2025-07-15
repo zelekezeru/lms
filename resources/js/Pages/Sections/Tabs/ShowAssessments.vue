@@ -136,10 +136,10 @@ function submit() {
                 </svg>
                 </div>
                 <span class="text-2xl font-extrabold text-blue-900 dark:text-blue-100 mb-4 tracking-wide text-center">
-                Import Section Students
+                Import Student Results
                 </span>
                 <p class="text-blue-800 dark:text-blue-200 text-sm mb-6 text-center">
-                Upload an Excel file to add students to this section.
+                Upload an Excel file to add results of Students.
                 </p>
                 <form
                 @submit.prevent="submit"

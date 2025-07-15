@@ -25,8 +25,8 @@ class ResultsImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             
-            $idNumber = trim($row['ID_Number'] ?? '');
-            $courseCode = trim($row['course_Code'] ?? '');
+            $idNumber = trim($row['id_number'] ?? '');
+            $courseCode = trim($row['course_code'] ?? '');
 
             if (!$idNumber || !$courseCode) {
                 continue; // skip incomplete rows
@@ -37,7 +37,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 // Optionally log missing student
                 continue;
             }
-
+            
             $course = Course::where('code', $courseCode)->first();
             if (!$course) {
                 // Optionally log missing course
@@ -48,18 +48,19 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 if (in_array($header, ['no', 'id_number', 'full_name', 'course_code'])) {
                     continue; // skip non-weight columns
                 }
-
+                
                 $score = $row[$header];
                 if (is_null($score) || $score === '') {
                     continue; // skip empty scores
                 }
                 
+                $semester = Semester::where('status', 'Active')->first()->load(['year']);
+
                 $weight = Weight::where('course_id', $course->id)
                     ->where('name', $header)
                     ->where('section_id', $student->section_id)
-                    ->where('semester_id', $student->semester_id)
+                    ->where('semester_id', $semester->id)
                     ->first();
-                $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
                 
                 if (!$weight) {
                     $weight = Weight::create([
@@ -89,7 +90,9 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 // Collect results in an array
                 $this->results[] = $result;
             }
-            dd($this->results);
         }
+
+        // Optionally, you can return the results array or process it further
+        return $this->results;
     }
 }

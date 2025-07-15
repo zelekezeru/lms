@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { useForm, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const props = defineProps({
   section: Object,
@@ -9,7 +10,7 @@ const props = defineProps({
   semester: Object,
   weights: Array,
   instructor: Object,
-  studentsList: Array,
+  studentsList: Object,
   studentResults: Object, // <-- This comes from your controller
 });
 
@@ -122,11 +123,10 @@ const submitImport = () => {
       <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
 
       <!-- Import file -->
-      <form @submit.prevent="submitImport" enctype="multipart/form-data" class="mb-4">
+      <!-- <form @submit.prevent="submitImport" enctype="multipart/form-data" class="mb-4">
         <input type="file" ref="fileInput" accept=".csv,.xlsx,.xls" class="border p-2 rounded text-sm" required>
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Import</button>
-      </form>
-
+      </form> -->
       <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
         <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
           <tr>
@@ -142,7 +142,7 @@ const submitImport = () => {
         <tbody>
           <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
             <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
+            <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }} {{ student.last_name }}</td>
             <td v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">
               {{
                 props.studentResults[student.id][weight.id]?.point ??
@@ -187,7 +187,7 @@ const submitImport = () => {
         <tbody>
           <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
             <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
+            <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
             <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_point ?? "N/A" }}</td>
             <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}</td>
           </tr>

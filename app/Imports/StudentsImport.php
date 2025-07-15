@@ -54,8 +54,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 $email = $this->generateEmail($firstName, $middleName);
-                if (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone === $row['phone']) {
+
+                if (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone === $row['phone'] && User::where('email', $email)->first()->section_id === $this->section_id) {
                     $this->duplicateData++;
+                    continue;
+                } elseif (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone !== $row['phone'] && User::where('email', $email)->first()->section_id !== $this->section_id) {
+                    $email = Str::slug($firstName) . '.' . Str::slug($middleName) . '2' . '@sits.edu.et';
                     continue;
                 }
 

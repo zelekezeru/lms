@@ -192,7 +192,7 @@ const submitWeightResults = () => {
                 >
                     <td class="px-4 py-2">{{ index + 1 }}</td>
                     <td class="px-4 py-2">
-                        {{ student.firstName }} {{ student.middleName }}
+                        {{ student.first_name }} {{ student.middle_name }}
                     </td>
                     <td
                         v-for="weight in props.weights"

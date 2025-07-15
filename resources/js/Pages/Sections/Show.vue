@@ -48,7 +48,7 @@ const tabs = [
     },
     {
         key: "assessments",
-        label: "Assessments",
+        label: "Import Assessments",
         icon: ClipboardDocumentListIcon,
     },
 ];

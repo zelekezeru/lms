@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\Student;
 use App\Models\Weight;
 
 class AssessmentController extends Controller
@@ -33,30 +34,62 @@ class AssessmentController extends Controller
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         $grades = $section->grades()->where('course_id', $course->id)->get();
-        dd($weights);
+        
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
 
         $studentResults = [];
+        // Fetch students with their course results
         foreach ($students as $student) {
             $studentResults[$student->id] = [];
             foreach ($weights as $weight) {
-                $result = $weight->results->where('student_id', $student->id)->first();
-                $studentResults[$student->id][$weight->id] = [
-                    'point' => $result ? $result->point : null,
-                    'description' => $result ? $result->description : null,
-                    'changed_point' => $result ? $result->changed_point : null,
-                    'instructor_id' => $result ? $result->instructor_id : null,
-                    'grade_id' => $result ? $result->grade_id : null,
-                    'student_id' => $student->id,
-                    'weight_id' => $weight->id,
-                    'changed_by' => $result ? $result->changed_by : null,
-                    'changed_at' => $result ? $result->changed_at : null,
-                ];
+            $result = $weight->results->where('student_id', $student->id)->first();
+            $studentResults[$student->id][$weight->id] = [
+                'point' => $result ? $result->point : null,
+                'description' => $result ? $result->description : null,
+                'changed_point' => $result ? $result->changed_point : null,
+                'instructor_id' => $result ? $result->instructor_id : null,
+                'grade_id' => $result ? $result->grade_id : null,
+                'student_id' => $student->id,
+                'weight_id' => $weight->id,
+                'changed_by' => $result ? $result->changed_by : null,
+                'changed_at' => $result ? $result->changed_at : null,
+            ];
             }
         }
 
+        foreach ($weights as $weight) {
+            foreach ($weight->results as $result) {
+                if (!isset($studentResults[$result->student_id])) {
+                    $studentResults[$result->student_id] = [];
+                }
+                if (!isset($studentResults[$result->student_id][$weight->id])) {
+                    $studentResults[$result->student_id][$weight->id] = [
+                        'point' => $result->point,
+                        'description' => $result->description,
+                        'changed_point' => $result->changed_point,
+                        'instructor_id' => $result->instructor_id,
+                        'grade_id' => $result->grade_id,
+                        'student_id' => $result->student_id,
+                        'weight_id' => $weight->id,
+                        'changed_by' => $result->changed_by,
+                        'changed_at' => $result->changed_at,
+                    ];
+                }
+            }
+        }
+
+        $finalStudents = [];
+        foreach ($studentResults as $studentId => $results) {
+            $finalStudents[] = $studentId;
+        }
+
+        // Reorder $students to match the order in $finalStudents
+        $students = Student::whereIn('id', $finalStudents)->get()->sortBy(function ($student) use ($finalStudents) {
+            return array_search($student->id, $finalStudents);
+        })->values();
+        
         return inertia('Assessments/SectionCourse', [
             'section' => $section,
             'course' => $course,

@@ -27,6 +27,7 @@ class GradeController extends Controller
 
     public function store(Request $request)
     {
+        
         $data = $request->validate([
             'grades' => 'required|array',
             'grades.*.student_id' => 'required|integer|exists:students,id',
@@ -34,7 +35,7 @@ class GradeController extends Controller
             'grades.*.grade_letter' => 'required|string',
             'grades.*.grade_description' => 'nullable|string',
             'grades.*.grade_scale' => 'required|string',
-            'grades.*.grade_complaint' => 'required|boolean',
+            'grades.*.grade_complaint' => 'nullable|boolean',
             'grades.*.grade_comment' => 'nullable|string',
             'grades.*.changed_grade' => 'nullable',
             'grades.*.grade_status' => 'required|string',
@@ -44,6 +45,7 @@ class GradeController extends Controller
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
+        
         DB::beginTransaction();
         
         try {
@@ -57,7 +59,7 @@ class GradeController extends Controller
                 if ($sum !== 100) {
                     throw new \Exception('The sum of the weights must be 100.');
                 }
-
+                
                 // Set the 'completed' column of the section's course offering to 1
                 DB::table('course_offerings')
                     ->where('course_id', $gradeData['course_id'])

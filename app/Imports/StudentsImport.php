@@ -104,7 +104,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         $this->program_id = $this->section->program->id;
         $this->track_id = $this->section->track->id;
         $this->study_mode_id = $this->section->studyMode->id;
-        $this->tenant_id = $this->section->user->tenant_id;
+        $this->tenant_id = Auth::user()->tenant_id;
         $this->user_id = $this->section->user->id;
     }
 

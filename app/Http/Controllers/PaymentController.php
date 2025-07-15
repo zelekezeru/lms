@@ -44,6 +44,11 @@ class PaymentController extends Controller
                 ]);
             }
         }
+
+        // if user cant view all payments decrease the scope of payments list to only payments updated by the current user
+        if (! Auth::user()->can('view-all-payments')) {
+            $paymentsQuery->where('updated_by', Auth::user()->id);
+        }
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
@@ -149,6 +154,8 @@ class PaymentController extends Controller
             }
         }
 
+        $data['updated_by'] = Auth::id();
+
         $payment = Payment::create($data);
 
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.')->with('reload', true);
@@ -193,6 +200,8 @@ class PaymentController extends Controller
         $data['updated_by'] = Auth::user()->id;
         $semester = $student->studyMode->activeSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
+
+        $data['updated_by'] = Auth::user()->id;
 
         $payment->update($data);
         if ($payment->paymentType->duration == 'per-course') {

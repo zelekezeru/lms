@@ -76,7 +76,7 @@ const emit = defineEmits(["next", "previous"]);
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Academic Year Dropdown -->
             <div>
-                <InputLabel for="year_id" value="Select Registration year" />
+                <InputLabel for="year_id" value="Select Batch year" />
                 <Select
                     id="year_id"
                     v-model="form.year_id"
@@ -92,7 +92,8 @@ const emit = defineEmits(["next", "previous"]);
 
             <!-- Semester Dropdown -->
             <div>
-                <InputLabel for="semester_id" value="Select semester" />
+                <InputLabel for="semester_id" value="Select Batch Semester" />
+                <!-- source of semester list should be changed from years to semester -->
                 <Select
                     id="semester_id"
                     v-model="form.semester_id"

@@ -21,6 +21,7 @@ use Carbon\Carbon;
 class StudentsImport implements ToCollection, WithHeadingRow
 {
     protected $section;
+    protected $center;
     protected $program_id;
     protected $track_id;
     protected $study_mode_id;
@@ -33,11 +34,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected $registeredStudentIds = [];
 
-    public function __construct(protected $section_id) {}
+    public function __construct(protected $section_id = null, protected $center_id = null) {}
 
     public function collection(Collection $rows)
     {
-        $this->initializeSection();
+        
+        $this->initializeCenter();
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
@@ -58,7 +60,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 if (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone === $row['phone'] && User::where('email', $email)->first()->section_id === $this->section_id) {
                     $this->duplicateData++;
                     continue;
-                } elseif (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone !== $row['phone'] && User::where('email', $email)->first()->section_id !== $this->section_id) {
+                } elseif (User::where('email', $email)->exists() && User::where('email', $email)->first()->section_id !== $this->section_id) {
                     $email = Str::slug($firstName) . '.' . Str::slug($middleName) . '2' . '@sits.edu.et';
                     continue;
                 }
@@ -70,6 +72,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
 
                 $userUuid = $this->generateUserUuid($academicYear);
+
+                if($row['phone'] && !str_starts_with($row['phone'], '0')) {
+                    $row['phone'] = '0' . $row['phone'];
+                }elseif(!$row['phone']) {
+                    $row['phone'] = '0900000000'; // Default phone if not provided
+                }
 
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
                 
@@ -148,7 +156,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         $parts = preg_split('/\s+/', trim($fullName));
         return match (count($parts)) {
             3 => [$parts[0], $parts[1], $parts[2]],
-            2 => [$parts[0], $parts[1], 'User'],
+            2 => [$parts[0], $parts[1], ''],
             default => [null, null, null],
         };
     }
@@ -167,7 +175,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function generateDefaultPassword($firstName, $phone)
     {        
-        $last4 = substr($phone ?? '0000', -4);
+        $last4 = substr($phone, -4);
         return strtolower($firstName) . '@' . $last4;
     }
 
@@ -201,7 +209,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
             'middle_name' => $middleName,
             'last_name' => $lastName,
             'sex' => $row['sex'] ?? '',
-            'mobile_phone' => $this->formatPhone($row['phone'] ?? '0900000000'),
+            'mobile_phone' => $this->formatPhone($row['phone'] ?? ''),
             'address' => $row['address'] ?? null,
             'date_of_birth' => $this->parseDateOfBirth($row['date_of_birth'] ?? null),
             'program_id' => $this->program_id,

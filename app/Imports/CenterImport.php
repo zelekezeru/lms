@@ -27,10 +27,34 @@ class CenterImport implements ToCollection, WithHeadingRow
     protected $study_mode_id;
 
     protected $duplicate_entries = [];
+    protected $registeredCount = 0;
+    protected $notRegisteredCount = 0;
+    protected $duplicateData = [];
+    protected $registeredStudentIds = [];
 
     public function __construct($center_id)
     {
         $this->center_id = $center_id;
+    }
+
+    public function getRegisteredCount()
+    {
+        return $this->registeredCount;
+    }
+
+    public function getNotRegisteredCount()
+    {
+        return $this->notRegisteredCount;
+    }
+
+    public function getDuplicateDataCount()
+    {
+        return count($this->duplicateData);
+    }
+
+    public function getRegisteredStudentIds()
+    {
+        return $this->registeredStudentIds;
     }
 
     public function collection(Collection $rows)
@@ -65,7 +89,8 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 // 2. Validate row fields
                 if (!$this->hasRequiredFields($row, ['full_name', 'phone', 'sex'])) {
-                    $this->duplicate_entries[] = $row['full_name'] ?? '[Unknown Name]';
+                    $this->notRegisteredCount++;
+                    $this->duplicateData[] = $row;
                     continue;
                 }
 
@@ -77,6 +102,8 @@ class CenterImport implements ToCollection, WithHeadingRow
                 // 4. Email & UUID
                 $email = $this->generateEmail($firstName, $middleName);
                 if (User::where('email', $email)->exists()) {
+                    $this->notRegisteredCount++;
+                    $this->duplicateData[] = $row;
                     $this->flashError('Duplicate User', "User with email $email already exists.");
                     continue;
                 }
@@ -118,6 +145,9 @@ class CenterImport implements ToCollection, WithHeadingRow
                 ];
 
                 $student = Student::updateOrCreate(['user_id' => $user->id], $studentData);
+
+                $this->registeredCount++;
+                $this->registeredStudentIds[] = $student->id;
 
                 $user->assignRole('STUDENT');
 
@@ -161,7 +191,7 @@ class CenterImport implements ToCollection, WithHeadingRow
         if (count($parts) === 3) {
             return [$parts[0], $parts[1], $parts[2]];
         } elseif (count($parts) === 2) {
-            return [$parts[0], $parts[1], 'User'];
+            return [$parts[0], $parts[1], ''];
         } else {
             $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
             return null;

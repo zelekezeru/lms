@@ -8,6 +8,7 @@ use App\Imports\GradesImport;
 use App\Imports\ResultsImport;
 use App\Imports\s;
 use App\Models\Section;
+use App\Models\Center;
 use App\Models\StudyMode;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -36,21 +37,16 @@ class ImportController extends Controller
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds(); 
-
-        // Pass the import report data to the session for display with the success message
-        // if ($registeredCount > 0) {
-            return $this->showImportedStudents($request, $sectionId)->with([
-            'import_report' => [
-                'registeredCount' => $registeredCount,
-                'notRegisteredCount' => $notRegisteredCount,
-                'duplicateData' => $duplicateData,
-                'success' => "Students imported successfully. ",
-            ],
-            'students' => $newStudents,
-            ]);
-        // } else {
-        //     return back()->with('error', "No students were registered. Please check the file and try again.");
-        // }
+    
+        return $this->showImportedStudents($request, $sectionId)->with([
+        'import_report' => [
+            'registeredCount' => $registeredCount,
+            'notRegisteredCount' => $notRegisteredCount,
+            'duplicateData' => $duplicateData,
+            'success' => "Students imported successfully. ",
+        ],
+        'students' => $newStudents,
+        ]);
 
     }
 
@@ -64,9 +60,28 @@ class ImportController extends Controller
         
         // Assuming CenterImport exposes these properties after import
         $import = new CenterImport($request->center_id);
-        Excel::import($import, $request->file);
+        Excel::import($import, $request->file('file'));
 
-         return back()->with('success', "Center students imported successfully.");
+        // show the imported data
+        $registeredCount = $import->getRegisteredCount();
+        $notRegisteredCount = $import->getNotRegisteredCount();
+        $duplicateData = $import->getDuplicateDataCount();
+
+        $centerId = $request->input('center_id');
+        $center = Center::findOrFail($centerId);
+
+        // Get only the newly registered student IDs from the import
+        $newStudents = $import->getRegisteredStudentIds();
+
+        return $this->showImportedStudents($request, $centerId)->with([
+        'import_report' => [
+            'registeredCount' => $registeredCount,
+            'notRegisteredCount' => $notRegisteredCount,
+            'duplicateData' => $duplicateData,
+            'success' => "Students imported successfully. ",
+        ],
+        'students' => $newStudents,
+        ]);
     }
 
      public function gradesImport(Request $request)

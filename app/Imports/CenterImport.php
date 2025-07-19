@@ -142,6 +142,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                     'semester_id' => $semester->id,
                     'tenant_id' => $this->tenant_id,
                     'user_id' => $user->id,
+                    'center_id' => $this->center_id,
                 ];
 
                 $student = Student::updateOrCreate(['user_id' => $user->id], $studentData);

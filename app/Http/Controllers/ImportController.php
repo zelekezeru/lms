@@ -68,7 +68,7 @@ class ImportController extends Controller
         $duplicateData = $import->getDuplicateDataCount();
 
         $centerId = $request->input('center_id');
-        $center = Center::findOrFail($centerId);
+        $center = Center::findOrFail($centerId)->load('students.user');
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();

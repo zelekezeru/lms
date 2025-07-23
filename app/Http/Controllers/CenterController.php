@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Center;
 use App\Models\User;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class CenterController extends Controller
@@ -41,18 +42,6 @@ class CenterController extends Controller
             ->orderBy('name')->paginate(50)->withQueryString());
 
         return inertia('Centers/Index', [
-            'centers' => $centers,
-        ]);
-    }
-
-    public function distanceHome()
-    {
-        $centers = CenterResource::collection(
-            Center::with(['coordinator.user', 'students'])
-                ->orderBy('name')
-                ->get());
-
-        return inertia('Centers/DistanceHome', [
             'centers' => $centers,
         ]);
     }
@@ -139,5 +128,33 @@ class CenterController extends Controller
 
             return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
         }
+    }
+
+    public function distanceHome()
+    {
+        $centers = CenterResource::collection(
+            Center::with(['coordinator.user', 'students'])
+                ->orderBy('name')
+                ->get());
+
+        $totalStudents = $centers->flatMap(function ($center) {
+            return $center->students;
+        })->unique('id')->count();
+        
+        return inertia('Centers/DistanceHome', [
+            'centers' => $centers,
+            'totalStudents' => $totalStudents,
+        ]);
+    }
+
+    public function distanceStudents()
+    {
+        $students = StudentResource::collection(
+            Student::where('study_mode', 'distance')->get()
+        );
+
+        return inertia('Centers/DistanceStudents', [
+            'students' => $students,
+        ]);
     }
 }

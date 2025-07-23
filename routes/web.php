@@ -209,6 +209,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
+    Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');
 
     // Resource Routes
     $resourceRoutes = [

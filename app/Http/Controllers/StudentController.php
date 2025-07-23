@@ -43,7 +43,7 @@ class StudentController extends Controller
     public function index(Request $request): Response
     {
         $query = Student::with('user');
-
+        
         // Apply search filter
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;

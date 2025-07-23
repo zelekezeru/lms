@@ -6,9 +6,14 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon ,AcademicCapIcon, ViewColumnsIcon, CalendarIcon, FingerPrintIcon} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import SectionsList from "./SectionsList.vue";
 
 defineProps({
     sections: {
+        type: Object,
+        required: true,
+    },
+    programs: {
         type: Object,
         required: true,
     },
@@ -88,8 +93,11 @@ const deleteSection = (id) => {
             </button>
         </div>
 
+        <!-- include sections/List.vue -->
+        <SectionsList :sections="sections" :programs="programs" />
+
         <!-- Sections Table -->
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <!-- <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
                     v-for="section in sections"
@@ -143,6 +151,6 @@ const deleteSection = (id) => {
                     </Link>
                 </div>
             </div>
-        </div>
+        </div> -->
     </AppLayout>
 </template>

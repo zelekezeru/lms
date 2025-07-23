@@ -229,6 +229,12 @@ const wrapperClasses = computed(() => {
                         :href="route('centers.index')"
                         :isCollapsed="!isOpen"
                     />
+                    <SidebarItem
+                        :icon="BuildingOffice2Icon"
+                        :label="$t('sidebar.distance_home')"
+                        :href="route('distance.home')"
+                        :isCollapsed="!isOpen"
+                    />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu

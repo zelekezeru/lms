@@ -163,6 +163,7 @@ const deleteSemester = (id) => {
                             sortColumn="end_date"
                             >End Date</Thead
                         >
+                        <Thead>status</Thead>
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
@@ -201,6 +202,16 @@ const deleteSemester = (id) => {
                                 new Date(semester.end_date).toLocaleDateString()
                             }}
                         </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="px-2 py-1 text-sm rounded font-semibold"
+                                :class="semester.status === 'Active'
+                                  ? 'bg-green-400 text-green-900 dark:bg-green-400 dark:text-green-900'
+                                  : 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100'"
+                            >
+                                {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}
+                            </span>
+                        </td>
                         <td class="flex space-x-2">
                             <Link
                                 :href="
@@ -209,16 +220,9 @@ const deleteSemester = (id) => {
                                     })
                                 "
                                 class="text-blue-500 hover:text-blue-700"
-                            >
+                                >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <button
-                                v-if="userCan('delete-semesters')"
-                                @click="deleteSemester(semester.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
                         </td>
                     </TableZebraRows>
                 </tbody>
@@ -236,25 +240,30 @@ const deleteSemester = (id) => {
                 class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-600"
             >
                 <Link
+                    v-if="userCan('view-semesters')"
                     :href="route('semesters.show', { semester: semester.id })"
-                    class="block"
+                    class="text-blue-500 hover:text-blue-700 block"
                 >
-                    <div
-                        class="flex items-center mb-2 font-bold text-gray-900 dark:text-white"
-                    >
-                        <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
-                        {{ semester.name }}
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="mb-3 text-center flex items-center justify-center gap-2 font-bold text-gray-700 dark:text-gray-300">
+                            <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ semester.name }}</h2>
+                        </div>
+                        <span
+                            class="px-2 py-1 text-sm rounded font-semibold"
+                            :class="semester.status === 'Active'
+                                ? 'bg-green-400 text-green-900 dark:bg-green-400 dark:text-green-900'
+                                : 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100'"
+                        >
+                            {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}
+                        </span>
                     </div>
-                    <div
-                        class="flex items-center text-gray-700 dark:text-gray-300"
-                    >
+                    <div class="flex items-center text-gray-700 dark:text-gray-300 mb-1">
                         <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
                         <span class="font-semibold mr-1">Start:</span>
                         {{ new Date(semester.start_date).toLocaleDateString() }}
                     </div>
-                    <div
-                        class="flex items-center text-gray-700 dark:text-gray-300"
-                    >
+                    <div class="flex items-center text-gray-700 dark:text-gray-300 mb-3">
                         <CalendarIcon class="w-5 h-5 mr-2 text-rose-500" />
                         <span class="font-semibold mr-1">End:</span>
                         {{ new Date(semester.end_date).toLocaleDateString() }}

@@ -25,6 +25,8 @@ class CenterImport implements ToCollection, WithHeadingRow
     protected $center_id;
     protected $tenant_id;
     protected $study_mode_id;
+    protected $program_id;
+    protected $track_id;
 
     protected $duplicate_entries = [];
     protected $registeredCount = 0;
@@ -61,19 +63,38 @@ class CenterImport implements ToCollection, WithHeadingRow
     {
         // Load the center and coordinator with user
         $center = Center::with('coordinator.user')->findOrFail($this->center_id);
-
-        // Determine tenant and study mode
+        
         $studyMode = StudyMode::where('name', 'DISTANCE')->firstOrFail();
-
         $this->study_mode_id = $studyMode->id;
+            
+        if (!$studyMode) {
+            throw new \Exception('Study mode "DISTANCE" not found.');
+        }
 
-        $this->tenant_id = optional(optional($center->coordinator)->user)->tenant_id ?? Auth::user()->tenant_id;
+        $this->tenant_id = Auth::user()->tenant_id;
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
+                // Determine tenant and study mode
+
                 // 1. Program & track & section
+                if (!$this->hasRequiredFields($row, ['full_name', 'phone', 'sex', 'program'])) {
+                    $this->notRegisteredCount++;
+                    continue;
+                }
+
+                [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
+                if (!$firstName) {
+                    $this->notRegisteredCount++;
+                    continue;
+                }
+
                 $program = $this->resolveProgram($row['program'] ?? null);
-                if (!$program) continue;
+                if (!is_object($program)) {
+                    $this->notRegisteredCount++;
+                    $this->flashError('Program Not Found', "Program not found for code: " . ($row['program'] ?? 'N/A'));
+                    continue;
+                }
 
                 $track = $program->tracks()->first();
                 if (!$track) {
@@ -130,7 +151,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                     'first_name' => $firstName,
                     'middle_name' => $middleName,
                     'last_name' => $lastName,
-                    'sex' => strtoupper($row['sex']),
+                    'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
                     'mobile_phone' => $this->formatPhone($row['phone']),
                     'address' => $row['address'] ?? null,
                     'date_of_birth' => $this->parseDate($row['date_of_birth'] ?? null),
@@ -169,29 +190,58 @@ class CenterImport implements ToCollection, WithHeadingRow
      * ✅  Helper methods below
      * --------------------------------------------- */
 
-    private function resolveProgram($code)
+
+    private function hasRequiredFields($row, $fields)
+    {
+        foreach ($fields as $field) {
+            if (!isset($row[$field]) || empty($row[$field])) {
+                $this->flashError('Missing Fields', "Field '$field' is required.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected function resolveProgram($code)
     {
         if (!$code) {
-            $this->flashError('Program Missing', 'Program field is required.');
             return null;
         }
 
-        $program = Program::where('code', strtoupper($code))->first();
+        $program = Program::where('code', $code)->first();
+
         if (!$program) {
-            $this->flashError('Program Not Found', "Program {$code} does not exist.");
+            $program = Program::where('name', 'like', "%$code%")->first();
+        }
+        
+        if ($program) {
+            $this->program_id = $program->id;
+            $this->track_id = $program->tracks()->first()?->id;
+            $this->study_mode_id = $program->studyModes()->first()?->id ?? 1;
+
+            return $program;
+        } else {
+            $this->program_id = $this->program_id;
+            $this->track_id = $this->track_id;
             return null;
         }
-
-        return $program;
     }
 
     private function parseFullName($fullName)
     {
         $parts = preg_split('/\s+/', trim($fullName));
         if (count($parts) === 3) {
-            return [$parts[0], $parts[1], $parts[2]];
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ucfirst(strtolower($parts[2]))
+            ];
         } elseif (count($parts) === 2) {
-            return [$parts[0], $parts[1], ''];
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ''
+            ];
         } else {
             $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
             return null;
@@ -249,8 +299,17 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     private function formatPhone($phone)
     {
-        if (!$phone) return '0900000000';
-        return str_starts_with($phone, '9') ? '0' . $phone : $phone;
+        if (!$phone) return '+251 900000000';
+
+        if (str_starts_with($phone, '9')) {
+            return '+251 ' . $phone;
+        } elseif (str_starts_with($phone, '7')) {
+            return '+254 ' . $phone;
+        } elseif (!str_starts_with($phone, '0')) {
+            // Remove leading 0 if present
+            $phone = ltrim($phone, '0');
+            return '+251 ' . $phone;
+        }
     }
 
     private function parseDate($value)
@@ -277,8 +336,15 @@ class CenterImport implements ToCollection, WithHeadingRow
     private function createStudentChurch(Student $student, array $fields, $fallbackAddress = null): void
     {
         $pastorPhone = $fields['pastor_phone'] ?? null;
+        // Normalize pastor phone number
         if ($pastorPhone && str_starts_with($pastorPhone, '9')) {
-            $pastorPhone = '0' . $pastorPhone;
+            $pastorPhone = '+251 ' . $pastorPhone;
+        } elseif ($pastorPhone && str_starts_with($pastorPhone, '7')) {
+            $pastorPhone = '+254 ' . $pastorPhone;
+        } elseif ($pastorPhone && !str_starts_with($pastorPhone, '0')) {
+            $pastorPhone = '+251 ' . $pastorPhone;
+        } elseif (!$pastorPhone) {
+            $pastorPhone = '+251 900000000'; // Default phone if not provided
         }
 
         $churchAddress = $fields['church_address'] ?? $fallbackAddress;
@@ -300,16 +366,5 @@ class CenterImport implements ToCollection, WithHeadingRow
             'title' => $title,
             'text' => $text,
         ]);
-    }
-
-    private function hasRequiredFields($row, $fields)
-    {
-        foreach ($fields as $field) {
-            if (!isset($row[$field]) || empty($row[$field])) {
-                $this->flashError('Missing Fields', "Field '$field' is required.");
-                return false;
-            }
-        }
-        return true;
     }
 }

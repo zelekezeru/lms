@@ -24,7 +24,10 @@ class YearController extends Controller
         }
 
         // Paginate the results
-        $years = $query->paginate(50)->appends($request->query());
+        $years = $query->orderByRaw("status = 'active' DESC")
+            ->orderBy('name', 'desc')
+            ->paginate(50)
+            ->appends($request->query());
 
         // Return inertia view with data
         return inertia('Years/Index', [

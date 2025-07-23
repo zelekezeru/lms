@@ -185,7 +185,7 @@ const submitProfileImageUpdate = () => {
 
 
         <!-- if student has center show center name -->
-        <div v-if="student.centers" class="flex flex-col">
+        <div v-if="student.centers[0] != null" class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Center</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ student.centers[0].name }} Center

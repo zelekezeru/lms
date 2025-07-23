@@ -73,7 +73,10 @@
       "of": "of",
       "entries": "entries"
     },
-    "actions": "Actions"
+    "actions": "Actions",
+    "actions.view": "View",
+    "actions.edit": "Edit",
+    "actions.delete": "Delete"
   },
   
   "admin_dashboard": {
@@ -567,7 +570,7 @@
     "delete_confirm_text": "You won't be able to revert this!",
     "deleted_title": "Deleted!",
     "deleted_text": "The center has been deleted.",
-    "actions.edit": "Delete",
+    "actions.edit": "Edit",
     "actions.delete": "Delete"
   },
 
@@ -637,7 +640,8 @@
     "all_students": "All Students",
     "add_student": "Add Student",
     "manage_students": "Manage Students",
-    "center_management": "Distance Program",
+    "center_management": "Distance Program",    
+    "distance_home": "Distance Home",
     "all_centers": "All Centers",
     "inventory_management": "Inventory Management",
     "inventories": "Inventories",

@@ -36,8 +36,15 @@ class SectionController extends Controller
     {
         $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
 
+        $programs = ProgramResource::collection(Program::with('tracks.sections', 'studyModes')->get());
+
+        $sections = $sections->groupBy(function ($section) {
+            return $section->program_id;
+        });
+        
         return Inertia::render('Sections/Index', [
             'sections' => $sections,
+            'programs' => $programs,
         ]);
     }
 

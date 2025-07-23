@@ -119,7 +119,7 @@ const deleteTrack = (id) => {
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>{{ $t('actions.edit') }}</span>
+                <span>{{ $t('common.edit') }}</span>
             </Link>
             <button
                 v-if="userCan('delete-tracks')"
@@ -127,7 +127,7 @@ const deleteTrack = (id) => {
                 class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />
-                <span>{{ $t('actions.delete') }}</span>
+                <span>{{ $t('common.delete') }}</span>
             </button>
         </div>
     </div>

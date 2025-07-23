@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
@@ -39,7 +40,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         
-        $this->initializeCenter();
+        $this->initializeSection();
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
@@ -55,14 +56,24 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
+                $phone = $this->formatPhone($row['phone'] ?? '');
+
                 $email = $this->generateEmail($firstName, $middleName);
 
-                if (User::where('email', $email)->exists() && User::where('email', $email)->first()->phone === $row['phone'] && User::where('email', $email)->first()->section_id === $this->section_id) {
-                    $this->duplicateData++;
-                    continue;
-                } elseif (User::where('email', $email)->exists() && User::where('email', $email)->first()->section_id !== $this->section_id) {
-                    $email = Str::slug($firstName) . '.' . Str::slug($middleName) . '2' . '@sits.edu.et';
-                    continue;
+                $existingUser = User::where('email', $email)->first();
+
+                if($phone){
+                    if($existingUser && $existingUser->section_id === $this->section_id && $existingUser->phone !== $phone) {
+                        $this->duplicateData++;
+                        continue;
+                    }
+                }
+                else{
+                    if ($existingUser && $existingUser->section_id === $this->section_id) {
+                        $this->duplicateData++;
+                        continue;
+                    } elseif ($existingUser && $existingUser->section_id !== $this->section_id) {
+                        $email = Str::slug($firstName) . '.' . Str::slug($middleName) . '2' . '@sits.edu.et';
                 }
 
                 if (!$this->resolveProgram($row['program'] ?? null)) {
@@ -73,13 +84,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                 $userUuid = $this->generateUserUuid($academicYear);
 
-                if($row['phone'] && !str_starts_with($row['phone'], '0')) {
-                    $row['phone'] = '0' . $row['phone'];
-                }elseif(!$row['phone']) {
-                    $row['phone'] = '0900000000'; // Default phone if not provided
-                }
-
-                $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
+                $defaultPassword = $this->generateDefaultPassword($firstName, $phone);
                 
                 $user = User::firstOrCreate(
                     ['email' => $email],
@@ -106,6 +111,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                 $this->registeredCount++;
                 $this->registeredStudentIds[] = $student->id;
+                }
             }
         });
     }
@@ -123,7 +129,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function hasRequiredFields($row)
     {
-        return isset($row['full_name'], $row['phone'], $row['entry_year']);
+        return isset($row['full_name'], $row['program'], $row['entry_year']);
     }
 
     protected function resolveProgram($code): bool
@@ -151,14 +157,27 @@ class StudentsImport implements ToCollection, WithHeadingRow
         }
     }
 
-    protected function parseFullName($fullName)
+    private function parseFullName($fullName)
     {
         $parts = preg_split('/\s+/', trim($fullName));
-        return match (count($parts)) {
-            3 => [$parts[0], $parts[1], $parts[2]],
-            2 => [$parts[0], $parts[1], ''],
-            default => [null, null, null],
-        };
+        if (count($parts) === 3) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ucfirst(strtolower($parts[2]))
+            ];
+        } elseif (count($parts) === 2) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ''
+            ];
+        } else {
+            // Log invalid full name format
+            Log::warning('Invalid Full Name: Name must be First Middle Last.');
+            $this->notRegisteredCount++;
+            return [null, null, null];
+        }
     }
 
     protected function generateEmail($firstName, $middleName)
@@ -208,8 +227,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
             'first_name' => $firstName,
             'middle_name' => $middleName,
             'last_name' => $lastName,
-            'sex' => $row['sex'] ?? '',
-            'mobile_phone' => $this->formatPhone($row['phone'] ?? ''),
+            'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
+            'mobile_phone' => $this->formatPhone($phone ?? ''),
             'address' => $row['address'] ?? null,
             'date_of_birth' => $this->parseDateOfBirth($row['date_of_birth'] ?? null),
             'program_id' => $this->program_id,
@@ -235,8 +254,18 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     protected function formatPhone($phone)
     {
+        // Normalize student phone number
         $phone = trim($phone);
-        return str_starts_with($phone, '9') ? '0' . $phone : $phone;
+        if ($phone && str_starts_with($phone, '9')) {
+            return '+251 ' . $phone;
+        } elseif ($phone && str_starts_with($phone, '7')) {
+            return '+254 ' . $phone;
+        } elseif ($phone && !str_starts_with($phone, '0')) {
+            return '+251 ' . $phone;
+        } elseif (!$phone) {
+            return '+251 900000000'; // Default phone if not provided
+        }
+        return $phone;
     }
 
     protected function createStudentStatus(Student $student)
@@ -253,8 +282,12 @@ class StudentsImport implements ToCollection, WithHeadingRow
     protected function createStudentChurch(Student $student, array $fields)
     {
         $pastorPhone = $fields['pastor_phone'] ?? null;
-        if ($pastorPhone && str_starts_with($pastorPhone, '9')) {
-            $pastorPhone = '0' . $pastorPhone;
+        if ($pastorPhone && (str_starts_with($pastorPhone, '9'))) {
+            $pastorPhone = '+251 ' . $pastorPhone;
+        } elseif ($pastorPhone && (str_starts_with($pastorPhone, '7'))) {
+            $pastorPhone = '+254 ' . $pastorPhone;
+        } elseif ($pastorPhone && !str_starts_with($pastorPhone, '0')) {
+            $pastorPhone = '+251 ' . $pastorPhone;
         }
 
         $student->church()->create([

@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\CenterController;
 use App\Http\Controllers\FinancePortalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportController;
@@ -206,6 +207,8 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
+
+    Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
 
     // Resource Routes
     $resourceRoutes = [

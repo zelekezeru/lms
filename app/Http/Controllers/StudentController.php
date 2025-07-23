@@ -54,7 +54,9 @@ class StudentController extends Controller
                 $q->where('first_name', 'LIKE', "%{$search}%")
                     ->orWhere('middle_name', 'LIKE', "%{$search}%")
                     ->orWhere('last_name', 'LIKE', "%{$search}%")
-                    ->orWhere('id_no', 'LIKE', "%{$search}%");
+                    ->orWhere('id_no', 'LIKE', "%{$search}%")
+                    ->orWhere('contact_phone', 'LIKE', "%{$search}%");
+
             });
         }
 
@@ -196,7 +198,7 @@ class StudentController extends Controller
     public function create(): Response
     {
 
-        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->orderBy('name', 'asc')->get());
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
 
@@ -239,9 +241,10 @@ class StudentController extends Controller
 
     public function edit(Student $student): Response
     {
-        $programs = ProgramResource::collection(Program::with('studyModes', 'tracks')->get());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->orderBy('name', 'asc')->get());
 
-        $years = YearResource::collection(Year::with('semesters')->get());
+        $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
+
         $student = new StudentResource($student->load('user', 'program', 'track', 'year', 'semester', 'section', 'studyMode', 'status'));
 
         return Inertia::render('Students/Edit', [

@@ -14,6 +14,12 @@ use Illuminate\Http\Request;
 
 class CenterController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
         $query = Center::with('coordinator');
@@ -35,6 +41,18 @@ class CenterController extends Controller
             ->orderBy('name')->paginate(50)->withQueryString());
 
         return inertia('Centers/Index', [
+            'centers' => $centers,
+        ]);
+    }
+
+    public function distanceHome()
+    {
+        $centers = CenterResource::collection(
+            Center::with(['coordinator.user', 'students'])
+                ->orderBy('name')
+                ->get());
+
+        return inertia('Centers/DistanceHome', [
             'centers' => $centers,
         ]);
     }

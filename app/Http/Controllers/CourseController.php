@@ -58,6 +58,7 @@ class CourseController extends Controller
         $fields = $request->validated();
 
         $programsId = $fields['programs'] ?? [];
+        unset($fields['programs']);
 
         $year = substr(Carbon::now()->year, -2);
 
@@ -74,7 +75,10 @@ class CourseController extends Controller
         foreach ($programs as $program) {
             $courses = $program->courses->pluck('id');
             foreach ($program->tracks as $track) {
-                $track->courses()->syncWithPivotValues($courses, ['is_common' => true]);
+                // Keep existing attachments and just add the new course
+                $existingCourses = $track->courses()->pluck('courses.id')->toArray();
+                $newCourses = array_unique(array_merge($existingCourses, [$course->id]));
+                $track->courses()->syncWithPivotValues($newCourses, ['is_common' => true]);
             }
         }
 

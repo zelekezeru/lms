@@ -58,7 +58,6 @@ class CourseController extends Controller
         $fields = $request->validated();
 
         $programsId = $fields['programs'] ?? [];
-        unset($fields['programs']);
 
         $year = substr(Carbon::now()->year, -2);
 

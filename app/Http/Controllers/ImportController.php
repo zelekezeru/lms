@@ -36,18 +36,17 @@ class ImportController extends Controller
         $section = Section::findOrFail($sectionId);
 
         // Get only the newly registered student IDs from the import
-        $newStudents = $import->getRegisteredStudentIds(); 
-    
-        return $this->showImportedStudents($request, $sectionId)->with([
-        'import_report' => [
-            'registeredCount' => $registeredCount,
-            'notRegisteredCount' => $notRegisteredCount,
-            'duplicateData' => $duplicateData,
-            'success' => "Students imported successfully. ",
-        ],
-        'students' => $newStudents,
-        ]);
+        $newStudents = $import->getRegisteredStudentIds();
 
+        return $this->showImportedStudents($request, $sectionId)->with([
+            'import_report' => [
+                'registeredCount' => $registeredCount,
+                'notRegisteredCount' => $notRegisteredCount,
+                'duplicateData' => $duplicateData,
+                'success' => "Students imported successfully. ",
+            ],
+            'students' => $newStudents,
+        ]);
     }
 
     // Import students from Excel for a center
@@ -57,7 +56,7 @@ class ImportController extends Controller
             'center_id' => 'required|exists:centers,id',
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
-        
+
         // Assuming CenterImport exposes these properties after import
         $import = new CenterImport($request->center_id);
         Excel::import($import, $request->file('file'));
@@ -74,30 +73,30 @@ class ImportController extends Controller
         $newStudents = $import->getRegisteredStudentIds();
 
         return $this->showImportedStudents($request, $centerId)->with([
-        'import_report' => [
-            'registeredCount' => $registeredCount,
-            'notRegisteredCount' => $notRegisteredCount,
-            'duplicateData' => $duplicateData,
-            'success' => "Students imported successfully. ",
-        ],
-        'students' => $newStudents,
+            'import_report' => [
+                'registeredCount' => $registeredCount,
+                'notRegisteredCount' => $notRegisteredCount,
+                'duplicateData' => $duplicateData,
+                'success' => "Students imported successfully. ",
+            ],
+            'students' => $newStudents,
         ]);
     }
 
-     public function gradesImport(Request $request)
-        {
-            $request->validate([
+    public function gradesImport(Request $request)
+    {
+        $request->validate([
             'grades_file' => 'required|mimes:xlsx,xls,csv,ods,tsv,txt',
-            ]);
-            
-            $context = [
+        ]);
+
+        $context = [
             'course_id'   => $request->course_id,
             'section_id'  => $request->section_id,
             'semester_id' => $request->semester_id,
             'year_id'     => $request->year_id,
             'user_id'     => Auth::id(),
         ];
-        
+
         Excel::import(new GradesImport($context), $request->file('grades_file'));
 
         return back()->with('success', 'Grades imported successfully.');
@@ -109,12 +108,15 @@ class ImportController extends Controller
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv',
             'section_id' => 'required|exists:sections,id',
+            'course_id' => 'required|exists:courses,id',
         ]);
         $sectionId = $request->input('section_id');
-        $instructorId = Auth::id(); // Assuming the instructor is the current user
-        
-        $import = new ResultsImport($instructorId);
+        $courseId = $request->input('course_id');
+
+        $import = new ResultsImport($courseId, $sectionId);
+
         Excel::import($import, $request->file('file'));
+
         return back()->with('success', 'Results imported successfully.');
     }
 

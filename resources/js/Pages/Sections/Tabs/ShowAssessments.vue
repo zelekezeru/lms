@@ -1,9 +1,10 @@
 <script setup>
 import { defineProps } from "vue";
-import { Link, useForm } from "@inertiajs/vue3";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { Select } from "primevue";
 
 // Props from parent
 const props = defineProps({
@@ -24,6 +25,7 @@ const props = defineProps({
 // Form state using useForm (Inertia.js)
 const form = useForm({
     section_id: props.section.id,
+    course_id: "",
     file: null,
 });
 
@@ -50,7 +52,7 @@ function submit() {
             Swal.fire({
                 icon: "error",
                 title: "Import Failed",
-                text: "There was an error importing students. Please check your file and try again.",
+                text: usePage().props.errors[0],
             });
         },
         onFinish: () => {
@@ -161,7 +163,7 @@ function submit() {
             class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
         >
             <div
-                class="flex flex-col md:flex-row items-stretch justify-between gap-8 mb-4"
+                class="flex flex-col md:flex-row items-stretch justify-between gap-8 mb-4 p-8"
             >
                 <!-- Export Section -->
                 <div
@@ -237,6 +239,7 @@ function submit() {
                             />
                         </svg>
                     </div>
+
                     <span
                         class="text-2xl font-extrabold text-blue-900 dark:text-blue-100 mb-4 tracking-wide text-center"
                     >
@@ -247,6 +250,17 @@ function submit() {
                     >
                         Upload an Excel file to add results of Students.
                     </p>
+                    <Select
+                        v-model="form.course_id"
+                        :options="section.courses"
+                        optionLabel="name"
+                        optionValue="id"
+                        filter
+                        checkmark
+                        placeholder="For which course"
+                        class="w-full"
+                        panelClass="z-[1000]"
+                    />
                     <form
                         @submit.prevent="submit"
                         enctype="multipart/form-data"

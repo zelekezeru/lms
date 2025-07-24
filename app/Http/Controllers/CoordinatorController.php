@@ -32,7 +32,7 @@ class CoordinatorController extends Controller
 
         $coordinators = CoordinatorResource::collection($query->paginate(30));
 
-        return inertia('Coordinators/Index', [
+        return inertia('Centers/CoordinatorsList', [
             'coordinators' => $coordinators,
         ]);
     }

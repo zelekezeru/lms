@@ -576,6 +576,7 @@
 
   
   "coordinators": {
+    "no": "No.",
     "title": "Coordinators",
     "add": "Add Coordinator",
     "search": "Search coordinators...",
@@ -587,6 +588,7 @@
     "status": "Status",
     "select_status": "Select Status (default: Active)",
     "active": "Active",
+    "action": "Action",
     "inactive": "Inactive",
     "edit": "Edit",
     "delete": "Delete",

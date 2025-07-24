@@ -3,6 +3,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import LanguageToggle from "@/Components/LanguageToggle.vue";
+import { onMounted } from "vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -20,6 +21,17 @@ const submit = () => {
         onFinish: () => form.reset("password"),
     });
 };
+
+onMounted(() => {
+    // Check for saved theme in localStorage or system preference
+    const userTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (userTheme === "dark" || (!userTheme && systemPrefersDark)) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
+});
 </script>
 
 <template>

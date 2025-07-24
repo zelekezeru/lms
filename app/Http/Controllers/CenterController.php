@@ -140,10 +140,15 @@ class CenterController extends Controller
         $totalStudents = $centers->flatMap(function ($center) {
             return $center->students;
         })->unique('id')->count();
+
+        $totalCoordinators = $centers->filter(function ($center) {
+            return $center->coordinator !== null;
+        })->count();
         
         return inertia('Centers/DistanceHome', [
             'centers' => $centers,
             'totalStudents' => $totalStudents,
+            'totalCoordinators' => $totalCoordinators,
         ]);
     }
 

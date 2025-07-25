@@ -188,14 +188,13 @@ class AssignmentController extends Controller
     public function sortStudentsToSections(Track $track)
     {
         // Load all sections by year_id
-        $sections = Section::where('track_id', $track->id)
-            ->pluck('id', 'year_id'); // ['year_id' => section_id]
+        $sections = $track->sections()->pluck('id', 'year_id'); // ['year_id' => section_id]
 
         // Load only necessary fields to reduce memory usage
         $students = Student::select('id', 'year_id', 'section_id')
             ->where('track_id', $track->id)
             ->get();
-
+        
         $updates = [];
 
         foreach ($students as $student) {

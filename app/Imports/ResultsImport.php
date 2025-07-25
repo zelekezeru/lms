@@ -242,56 +242,60 @@ class ResultsImport implements ToCollection
                         ]
                     );
 
-                    // Update or create enrollment for the student in the course and section
-                    $enrollment = $student->enrollments()
-                        ->whereHas(
-                            'courseOffering',
-                            fn($q) => $q->where('course_id', $course->id)
-                                ->where('section_id', $section->id)
-                        )
-                        ->first();
+                    $courses = $course;
 
+                    $coursesWithStatus = collect($courses)
+                        ->mapWithKeys(function ($courseId) use ($student) {
+                            return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
+                        })
+                        ->toArray();
+                        
+
+                    $student->status()->update([
+                        'is_enrolled' => true,
+                        'enrolled_by_name' => Auth::user()->name,
+                        'enrolled_at' => now(),
+                    ]);
+                        
                     // Set academic status based on the grade letter
                     $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
 
+                    $enrollment = $student->enrollments()
+                        ->where('semester_id', $semester->id)
+                        ->where('course_offering_id', $courseOffering->id)
+                        ->first();
+                        
                     if ($enrollment) {
+                        // Update existing enrollment status
                         $enrollment->update([
                             'academic_status' => $academicStatus,
                         ]);
                     } else {
-                        // If no existing enrollment, create a new one
-                        $student->enrollments()->create(
-                            [
-                                'semester_id' => $semester->id,
-                                'student_id' => $student->id,
-                                'course_offering_id' => $courseOffering->id, // Use course_offering_id
-                            ],
-                            [
-                                'academic_status' => $academicStatus,
-                                'semester_id' => $semester->id,
-                                'status' => 'enrolled', // Default status for new enrollment
-                            ]
-                        );
+                        // No existing enrollment, create a new one
+                        $newEnrollment = Enrollment::create([
+                            'semester_id' => $semester->id,
+                            'course_offering_id' => $courseOffering->id,
+                            'student_id' => $student->id,
+                            'academic_status' => $academicStatus,
+                            'status' => 'enrolled',
+                        ]);
                     }
                 } else {
-                    continue; // Skip to the next student if no valid scores were found
+                    // If total points are 0, we might want to log this or handle it differently
+                    Log::info("No valid scores found for student ID '{$idNumber}'. No grade assigned.");
                 }
+
             } // End of foreach ($rows as $row)
 
             DB::commit(); // Commit the transaction for student results, grades, and enrollments
-
         } catch (\Exception $e) {
-            DB::rollBack(); // Rollback if any error occurs during student data processing
-            throw new Exception('Error processing student data: ' . $e->getMessage());
+            DB::rollBack(); // Rollback if any error occurs during student processing
+            throw new Exception('Error processing student results: ' . $e->getMessage());
         }
-
-        // The ToCollection trait expects the method to return void or a Collection.
-        // Returning $this->results here is fine if you intend to use it, otherwise void is also acceptable.
-        return $this->results;
     }
 
     /**
-     * Determines the grade letter based on the total point.
+     * Returns the grade letter based on the total point.
      *
      * @param float|int $totalPoint
      * @return string

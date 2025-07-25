@@ -40,7 +40,7 @@ class ResultsImport implements ToCollection
 
         // start from the 5th column to get the weight points
         $weightPoints = array_slice($weightHeadings, 4);
-        
+
         // If there are no weight points, return an error
         if (empty($weightPoints || count($weightPoints) < 1)) {
             return redirect()->back()->withErrors('No weight points found in the file.');
@@ -86,7 +86,7 @@ class ResultsImport implements ToCollection
 
         // same as year warn the user to create the user before trying to import
         if (! $semester) {
-            return redirect()->back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year' . $year->name . ' Is not applied for ' . $course->section->Study . '!');
+            return redirect()->back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year' . $year->name . ' Is not applied for ' . $studyMode->name . '!');
         }
 
         $totalWeight = 0;
@@ -98,7 +98,7 @@ class ResultsImport implements ToCollection
                 if ($totalWeight > 100) {
                     throw new \Exception('The sum of the weights must be 100.');
                 }
-                
+
                 $weight = Weight::updateOrCreate([
                     'name' => 'Weight ' . ($index + 1),
                     'point' => $weightPoint,
@@ -112,7 +112,6 @@ class ResultsImport implements ToCollection
                 $totalWeight += $weightPoint;
                 // Map by index instead of value to allow duplicates
                 $this->weights[$index] = $weight;
-                
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -120,7 +119,7 @@ class ResultsImport implements ToCollection
 
             return redirect()->back()->withErrors($e->getMessage());
         }
-        
+
         // start rows from the 2nd row
         $rows = $rows->slice(1);
         // Get the semester in which that course will be given in the course offering of the section
@@ -130,11 +129,18 @@ class ResultsImport implements ToCollection
             $idNumber = trim($idNumber);
 
             $student = Student::where('id_no', $idNumber)->first();
-            
+
             if (!$idNumber || !$student) {
                 continue; // skip incomplete rows
             }
-            
+
+            $student->semesters()->syncWithoutDetaching([
+                $semester->id => [
+                    'payment_status' => 'paid',
+                    'academic_status' => 'completed',
+                ]
+            ]);
+
             foreach ($weightPoints as $index => $weightPoint) {
                 $score = $row[4 + $index] ?? 0;
                 $weight = $this->weights[$index] ?? null; // Use index, not value

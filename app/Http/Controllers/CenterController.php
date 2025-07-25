@@ -36,10 +36,17 @@ class CenterController extends Controller
                     });
             });
         }
+        if ($request->has('sort') && $request->sort !== '') {
+            $sort = $request->sort;
+            $direction = $request->direction ?? 'asc';
 
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->orderBy('name', 'asc');
+        }
         $centers = CenterResource::collection(
             $query->with(['coordinator.user', 'students'])
-            ->orderBy('name')->paginate(50)->withQueryString());
+            ->get()->withQueryString());
 
         return inertia('Centers/Index', [
             'centers' => $centers,

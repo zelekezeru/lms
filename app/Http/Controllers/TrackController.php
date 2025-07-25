@@ -157,7 +157,7 @@ class TrackController extends Controller
             'track'    => $track,
             'centers'  => CenterResource::collection(Center::all()),
             'years'    => YearResource::collection(Year::all()),
-
+            
             'courses' => Inertia::defer(
                 fn() =>
                 CourseResource::collection(

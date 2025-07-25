@@ -12,6 +12,9 @@ use App\Models\StudyMode;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AssignmentController extends Controller
 {
@@ -178,5 +181,56 @@ class AssignmentController extends Controller
         $courseOffering->save();
 
         return back()->with('success', 'Course updated successfully.');
+    }
+
+    // sortStudentsToSections route("student-section.sort", { track: props.track.id }),
+    public function sortStudentsToSections(Track $track)
+    {
+        // 1. Eager load related models to avoid N+1 problem for students' year and section
+        // 2. Fetch students who either have no section_id OR whose section_id needs to be potentially updated
+        //    (depending on your exact logic for re-sorting vs. initial assignment)
+        $students = $track->students()->with('year')->get();
+
+        // Fetch all relevant sections for this track in one go
+        // This avoids N+1 queries for sections inside the loop.
+        $sections = Section::where('track_id', $track->id)->get()->keyBy('year_id');
+
+        DB::beginTransaction(); // Start a transaction for multiple updates
+
+        try {
+            foreach ($students as $student) {
+                // Corrected condition: Check if section_id is null OR if you intend to re-sort
+                // If you only want to assign students who DON'T have a section_id yet:
+                // if ($student->section_id === null) {
+
+                // If you want to ensure they are in the CORRECT section for their year/track,
+                // regardless if they already have a section_id:
+                // (No outer if needed, the logic inside handles it)
+
+                $targetSection = $sections->get($student->year_id);
+
+                if (!$targetSection) {
+                    // Handle case where no section is found for the student's year within this track
+                    // You might log this, skip the student, or throw an exception
+                    Log::warning("No matching section found for student ID: {$student->id} (Year ID: {$student->year_id}, Track ID: {$track->id}). Skipping student.");
+                    continue; // Skip to the next student
+                }
+
+                // Check if the student is already in the correct section to avoid unnecessary updates
+                if ($student->section_id !== $targetSection->id) {
+                    $student->update(['section_id' => $targetSection->id]);
+                }
+            }
+
+            DB::commit(); // Commit the transaction if all updates are successful
+
+            return redirect()->back()->with('success', 'Students sorted into sections successfully.');
+
+        } catch (Exception $e) {
+            DB::rollBack(); // Rollback if any error occurs
+            // Log the error for debugging
+            Log::error("Error sorting students into sections: " . $e->getMessage());
+            return redirect()->back()->withErrors('Failed to sort students into sections: ' . $e->getMessage());
+        }
     }
 }

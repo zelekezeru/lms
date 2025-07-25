@@ -68,9 +68,11 @@ class SectionController extends Controller
         $fields = $request->validated();
         // Section code generation logic
 
-        $year = substr(Carbon::now()->year, -2);
-
-        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $year = Year::where('id', $fields['year_id'])->first();
+        
+        $year = substr($year->name, -2);
+        
+        $section_id = 'SC' . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT)  . '-' . $year;
 
         $fields['code'] = $section_id;
         $track = Track::find($fields['track_id']);

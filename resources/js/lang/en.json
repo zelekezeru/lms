@@ -328,6 +328,13 @@
 
   "students": {
     "title": "Students",
+    "sort_sections": "Sort Students to Sections",
+    "sort_sections_description": "Select the section you want to assign students to.",
+    "sort_sections_button": "Sort Students",
+    "students_sorted_successfully": "Students sorted successfully.",
+    "sort_sections_error": "An error occurred while sorting students.",
+    "confirm_sorting": "Are you sure you want to sort students to sections?",
+    "sort_students": "Sort Students",
     "no": "No.",
     "actions": "Actions",
     "name": "Name",

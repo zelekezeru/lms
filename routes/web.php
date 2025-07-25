@@ -187,6 +187,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
 
+    // Sort Students to Sections
+    Route::post('/student-section/sort/{track}', [AssignmentController::class, 'sortStudentsToSections'])->name('student-section.sort');
     // Detach Program from Study Mode
     Route::delete('/studymodes/{study_mode}/programs/{program}', [StudyModeController::class, 'destroyProgram'])->name('studymodes.programs.destroy');
 

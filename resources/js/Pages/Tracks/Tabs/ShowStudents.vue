@@ -7,6 +7,7 @@ import {
     ArrowDownIcon,
     ArrowPathIcon,
     ChevronDownIcon,
+    FolderOpenIcon,
     PlusCircleIcon,
 } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
@@ -58,6 +59,37 @@ const assignStudentToSection = (studentId) => {
         },
     });
 };
+// sortStudentsToSections
+const sortStudentsToSections = () => {
+    Swal.fire({
+        title: t("students.sort_sections"),
+        text: t("students.confirm_sorting"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: t("confirm"),
+        cancelButtonText: t("cancel"),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            useForm().post(route("student-section.sort", props.track.id), {
+                onSuccess: () => {
+                    Swal.fire(
+                        t("students.success"),
+                        t("students.students_sorted_successfully"),
+                        "success"
+                    );
+                },
+                onError: () => {
+                    Swal.fire(
+                        t("error"),
+                        t("students.sorting_failed"),
+                        "error"
+                    );
+                },
+            });
+        }
+    });
+};
+
 </script>
 
 <template>
@@ -66,8 +98,13 @@ const assignStudentToSection = (studentId) => {
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ $t("students.students") }}
             </h2>
+            <!-- Button to create new student -->
+            <PrimaryButton @click="sortStudentsToSections">
+                <FolderOpenIcon class="w-5 h-5 mr-2" />
+                {{ $t("students.sort_sections") }}
+            </PrimaryButton>
         </div>
-
+        
         <!-- Track Study Students List -->
         <div class="overflow-x-auto">
             <div

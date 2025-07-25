@@ -182,55 +182,56 @@ class AssignmentController extends Controller
 
         return back()->with('success', 'Course updated successfully.');
     }
-
-    // sortStudentsToSections route("student-section.sort", { track: props.track.id }),
+    /**
+     * Show the form for creating a new resource.
+     */
     public function sortStudentsToSections(Track $track)
     {
-        // 1. Eager load related models to avoid N+1 problem for students' year and section
-        // 2. Fetch students who either have no section_id OR whose section_id needs to be potentially updated
-        //    (depending on your exact logic for re-sorting vs. initial assignment)
-        $students = $track->students()->with('year')->get();
+        // Load all sections by year_id
+        $sections = Section::where('track_id', $track->id)
+            ->pluck('id', 'year_id'); // ['year_id' => section_id]
 
-        // Fetch all relevant sections for this track in one go
-        // This avoids N+1 queries for sections inside the loop.
-        $sections = Section::where('track_id', $track->id)->get()->keyBy('year_id');
+        // Load only necessary fields to reduce memory usage
+        $students = Student::select('id', 'year_id', 'section_id')
+            ->where('track_id', $track->id)
+            ->get();
 
-        DB::beginTransaction(); // Start a transaction for multiple updates
+        $updates = [];
 
-        try {
-            foreach ($students as $student) {
-                // Corrected condition: Check if section_id is null OR if you intend to re-sort
-                // If you only want to assign students who DON'T have a section_id yet:
-                // if ($student->section_id === null) {
+        foreach ($students as $student) {
+            $yearId = $student->year_id;
+            $targetSectionId = $sections[$yearId] ?? null;
 
-                // If you want to ensure they are in the CORRECT section for their year/track,
-                // regardless if they already have a section_id:
-                // (No outer if needed, the logic inside handles it)
-
-                $targetSection = $sections->get($student->year_id);
-
-                if (!$targetSection) {
-                    // Handle case where no section is found for the student's year within this track
-                    // You might log this, skip the student, or throw an exception
-                    Log::warning("No matching section found for student ID: {$student->id} (Year ID: {$student->year_id}, Track ID: {$track->id}). Skipping student.");
-                    continue; // Skip to the next student
-                }
-
-                // Check if the student is already in the correct section to avoid unnecessary updates
-                if ($student->section_id !== $targetSection->id) {
-                    $student->update(['section_id' => $targetSection->id]);
-                }
+            if (!$targetSectionId) {
+                Log::warning("No matching section for student ID: {$student->id} (Year ID: $yearId)");
+                continue;
             }
 
-            DB::commit(); // Commit the transaction if all updates are successful
+            // Only update if section_id is different
+            if ($student->section_id !== $targetSectionId) {
+                $updates[] = [
+                    'id' => $student->id,
+                    'section_id' => $targetSectionId,
+                ];
+            }
+        }
 
-            return redirect()->back()->with('success', 'Students sorted into sections successfully.');
+        DB::beginTransaction();
 
-        } catch (Exception $e) {
-            DB::rollBack(); // Rollback if any error occurs
-            // Log the error for debugging
-            Log::error("Error sorting students into sections: " . $e->getMessage());
-            return redirect()->back()->withErrors('Failed to sort students into sections: ' . $e->getMessage());
+        try {
+            // Perform batch updates
+            foreach ($updates as $update) {
+                Student::where('id', $update['id'])
+                    ->update(['section_id' => $update['section_id']]);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Students sorted successfully into sections.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Error sorting students: " . $e->getMessage());
+            return redirect()->back()->withErrors('Sorting failed: ' . $e->getMessage());
         }
     }
 }

@@ -260,8 +260,9 @@ class ResultsImport implements ToCollection
                         ]);
                     } else {
                         // If no existing enrollment, create a new one
-                        $student->enrollments()->updateOrCreate(
+                        $student->enrollments()->create(
                             [
+                                'semester_id' => $semester->id,
                                 'student_id' => $student->id,
                                 'course_offering_id' => $courseOffering->id, // Use course_offering_id
                             ],

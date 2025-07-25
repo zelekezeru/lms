@@ -10,6 +10,7 @@ use App\Models\Weight;
 use App\Models\Semester;
 use App\Models\Result;
 use App\Models\Year;
+use App\Models\Grade;
 use Error;
 use Exception;
 use Illuminate\Support\Collection;
@@ -77,13 +78,13 @@ class ResultsImport implements ToCollection
         if (! $year) {
             return redirect()->back()->withErrors('A year with name ' . $courseGivenAtYear . ' was not found!');
         }
+        
         // After we get the year we will pick a semester that belongs to the section's studyMode which have a level(1,2,3,4) as the semester_level the course should be given at
         $semester = $studyMode
             ->semesters()
             ->where('year_id', $year->id)
             ->where('level', $courseOffering->semester_level)
             ->first();
-
         // same as year warn the user to create the user before trying to import
         if (! $semester) {
             return redirect()->back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year' . $year->name . ' Is not applied for ' . $studyMode->name . '!');
@@ -119,7 +120,7 @@ class ResultsImport implements ToCollection
 
             return redirect()->back()->withErrors($e->getMessage());
         }
-
+        
         // start rows from the 2nd row
         $rows = $rows->slice(1);
         // Get the semester in which that course will be given in the course offering of the section
@@ -127,8 +128,10 @@ class ResultsImport implements ToCollection
 
             $idNumber = $row[1] ?? '';
             $idNumber = trim($idNumber);
+            $totalPoint = 0;
 
             $student = Student::where('id_no', $idNumber)->first();
+            
 
             if (!$idNumber || !$student) {
                 continue; // skip incomplete rows
@@ -156,10 +159,49 @@ class ResultsImport implements ToCollection
                     'changed_point' => null,
                 ]);
                 $this->results[] = $result;
+
+                // Calculate total points for the student                
+                $totalPoint = $totalPoint + ($score);
             }
+
+            $gradeLetter = $this->getGradeLetter($totalPoint);
+            
+            Grade::create([
+                'student_id' => $student->id,
+                'course_id' => $course->id,
+                'section_id' => $section->id,
+                'year_id' => $year->id,
+                'semester_id' => $semester->id,
+                'grade_point' => $totalPoint,
+                'grade_letter' => $gradeLetter,
+                'user_id' => Auth::id(),
+                'grade_status' => 'Submitted',
+                'grade_scale' => 100,
+                'grade_description' => 'Excel Imported',
+            ]);
         }
 
         // Optionally, you can return the results array or process it further
         return $this->results;
+    }
+
+    public function getGradeLetter($totalPoint)
+    {
+
+        $totalPoint = floatval($totalPoint);
+        if (is_nan($totalPoint)) return "N/A";
+        if ($totalPoint >= 94) return "A";
+        if ($totalPoint >= 90) return "A-";
+        if ($totalPoint >= 87) return "B+";
+        if ($totalPoint >= 84) return "B";
+        if ($totalPoint >= 80) return "B-";
+        if ($totalPoint >= 77) return "C+";
+        if ($totalPoint >= 74) return "C";
+        if ($totalPoint >= 70) return "C-";
+        if ($totalPoint >= 67) return "D+";
+        if ($totalPoint >= 64) return "D";
+        if ($totalPoint >= 60) return "D-";
+        return "F";
+
     }
 }

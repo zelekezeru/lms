@@ -306,10 +306,14 @@ class CenterImport implements ToCollection, WithHeadingRow
             return '+251 ' . $phone;
         } elseif (str_starts_with($phone, '7')) {
             return '+254 ' . $phone;
+        } elseif (str_starts_with($phone, '6') || str_starts_with($phone, '8')) {
+            return '+27 ' . $phone;
         } elseif (!str_starts_with($phone, '0')) {
             // Remove leading 0 if present
             $phone = ltrim($phone, '0');
             return '+251 ' . $phone;
+        }else{
+            return $phone; // Already in correct format
         }
     }
 

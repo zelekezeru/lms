@@ -28,6 +28,7 @@ const props = defineProps({
     currentSemesterLevel: Number,
     currentSemester: Object,
     rooms: Array,
+    importableCourses: Array,
 });
 
 const selectedTab = ref("details");
@@ -244,6 +245,7 @@ onMounted(() => {
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
+                        :importableCourses="importableCourses"
                     />
                 </div>
             </transition>

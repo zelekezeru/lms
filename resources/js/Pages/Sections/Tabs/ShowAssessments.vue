@@ -20,6 +20,10 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    importableCourses: {
+        type: Array,
+        required: false,
+    },
 });
 
 // Form state using useForm (Inertia.js)
@@ -252,7 +256,7 @@ function submit() {
                     </p>
                     <Select
                         v-model="form.course_id"
-                        :options="section.courses"
+                        :options="importableCourses"
                         optionLabel="name"
                         optionValue="id"
                         filter

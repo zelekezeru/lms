@@ -21,7 +21,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\HeadingRowImport;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
-class ResultsImport implements ToCollection, WithHeadingRow
+class ResultsImport implements ToCollection
 {
     protected $sectionId;
     protected $courseId;
@@ -36,8 +36,24 @@ class ResultsImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
+        $weightHeadings = $rows[0]->toArray();
+
+        // start from the 5th column to get the weight points
+        $weightPoints = array_slice($weightHeadings, 4);
+        
+        // If there are no weight points, return an error
+        if (empty($weightPoints || count($weightPoints) < 1)) {
+            return redirect()->back()->withErrors('No weight points found in the file.');
+        }
+
+        // add up the total weight points
+        $totalWeight = array_sum($weightPoints);
+        // loop through the weight points to calculate the total weight
+        if ($totalWeight != 100) {
+            return redirect()->back()->withErrors('The total weight points must be 100, but now it is ' . $totalWeight);
+        }
+
         // Get the course offering for the course and section to get access to section, course and instructor and also other important attributes like in when the course was given
-        // A question remains tho... can results be imported for courses the section has not yet taken
         $courseOffering = CourseOffering::lookUpFor($this->courseId, $this->sectionId);
 
         if (! $courseOffering) {
@@ -47,12 +63,13 @@ class ResultsImport implements ToCollection, WithHeadingRow
         if (! $courseOffering->year_level || ! $courseOffering->semester_level) {
             return redirect()->back()->withErrors('year level and semester level is not set for this course in this section');
         }
-
+        // Get the course, section, instructor and study mode from the course offering
         $course = $courseOffering->course;
         $section = $courseOffering->section;
         $instructor = $courseOffering->instructor ? $courseOffering->instructor : Instructor::first();
         $studyMode = $courseOffering->section->studyMode;
 
+        // If the course is not found redirect with error cuz the user might wanna create it
         $courseGivenAtYear = intval($section->year->name) + $courseOffering->year_level - 1; // This will give a year value in int eg: 2025, 2026
         $year = Year::where('name', $courseGivenAtYear)->first();
 
@@ -72,10 +89,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
             return redirect()->back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year' . $year->name . ' Is not applied for ' . $course->section->Study . '!');
         }
 
-        $weightPoints = array_slice($rows->first()->keys()->ToArray(), 4);
-
         $totalWeight = 0;
-        $i = 4;
         DB::beginTransaction();
 
         try {
@@ -84,6 +98,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 if ($totalWeight > 100) {
                     throw new \Exception('The sum of the weights must be 100.');
                 }
+                
                 $weight = Weight::create([
                     'name' => 'Weight ' . ($index + 1),
                     'point' => $weightPoint,
@@ -97,7 +112,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 $totalWeight += $weightPoint;
                 // Map header to weight for later lookup
                 $this->weights[$weightPoint] = $weight;
-                DD($this->weights, $weightPoint, $weight);
+                
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -106,55 +121,41 @@ class ResultsImport implements ToCollection, WithHeadingRow
             return redirect()->back()->withErrors($e->getMessage());
         }
 
+        // start rows from the 2nd row
+        $rows = $rows->slice(1);
         // Get the semester in which that course will be given in the course offering of the section
         foreach ($rows as $row) {
 
             // Foreach rows
 
             // Make Sure that there are nowhicte spaces
-            $idNumber = trim($row['id_number'] ?? '');
+            $idNumber = $row[1] ?? '';
 
+            $idNumber = trim($idNumber);
             // retrieve the student and the course
             $student = Student::where('id_no', $idNumber)->first();
-
+            
             // if there is no coursecode, idnumber or student(of the given id number) in a given row skip the row
             if (!$idNumber || !$student) {
                 continue; // skip incomplete rows
             }
-
-            // For each columns in the current row
-            // use The $row->keys as headers
-            foreach ($row->keys() as $header) {
-                // if the column header is not a "weight" col or one of the following keys skip the column
-                if (in_array($header, ['no', 'ID_Number'])) {
-                    continue; // skip non-weight columns
-                }
-
-
-                $score = $row[$header];
-                if (is_null($score) || $score === '') {
-                    continue; // skip empty scores
-                }
-
-                // Find the corresponding weight by header (weight point)
-                $weight = $this->weights[$header] ?? null;
+            
+            // Get the score from the row, assuming it's in the 5th column (index 4)
+            foreach ($weightPoints as $index => $weightPoint) {
+                $score = $row[4 + $index] ?? 0;
+                $weight = $this->weights[$weightPoint] ?? null;
                 if (!$weight) {
-                    continue; // skip if no matching weight
+                    continue;
                 }
-                $result = Result::updateOrCreate(
-                    [
+                $result = Result::create([
                         'student_id' => $student->id,
                         'weight_id' => $weight->id,
                         'instructor_id' => $instructor->id,
-                    ],
-                    [
                         'point' => $score,
                         'description' => null,
                         'changed_point' => null,
-                    ]
-                );
+                    ]);
                 $this->results[] = $result;
-                // Collect results in an array
             }
         }
 

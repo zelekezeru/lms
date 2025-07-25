@@ -32,7 +32,7 @@ class AssessmentController extends Controller
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
-        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
+        $weights = Weight::where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         $grades = $section->grades()->where('course_id', $course->id)->get();
         
         $enrollments = $courseOffering->enrollments;
@@ -58,7 +58,7 @@ class AssessmentController extends Controller
             ];
             }
         }
-
+        
         foreach ($weights as $weight) {
             foreach ($weight->results as $result) {
                 if (!isset($studentResults[$result->student_id])) {

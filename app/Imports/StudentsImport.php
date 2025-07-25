@@ -46,7 +46,6 @@ class StudentsImport implements ToCollection, WithHeadingRow
             foreach ($rows as $row) {
                 
                 if (!$this->hasRequiredFields($row)) {
-                    $this->notRegisteredCount++;
                     Log::error('Missing Fields: Required fields are missing for row: ' . json_encode($row));
                     continue;
                 }

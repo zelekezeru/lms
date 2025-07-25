@@ -134,6 +134,11 @@ class SectionController extends Controller
             return $query->where('section_id', $section->id);
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
 
+        $importableCourses = $section->track->courses()->with(['curricula' => function ($q) use ($section) {
+            $q->where('track_id', $section->track_id)
+                ->where('study_mode_id', $section->study_mode_id);
+        }])->get();
+
         $currentSemester = $section->studyMode->activeSemester();
         $currentYearLevel = intval($currentSemester->year->name) - intval($section->year->name) + 1;
         $currentSemesterLevel = $currentSemester->level;
@@ -154,6 +159,7 @@ class SectionController extends Controller
             'currentYearLevel' => $currentYearLevel,
             'currentSemesterLevel' => $currentSemesterLevel,
             'currentSemester' => $currentSemester,
+            'importableCourses' => $importableCourses,
         ]);
     }
 

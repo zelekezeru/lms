@@ -37,7 +37,7 @@ class ExportController extends Controller
             ->orderBy('middle_name')
             ->get();
 
-        return Excel::download(new StudentsExport($students), $center->name.'students.xlsx');
+        return Excel::download(new StudentsExport($students), $center->name.' Students List.xlsx');
     }
 
     // Export UsersExcel with a parameter list

@@ -47,37 +47,34 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 
                 if (!$this->hasRequiredFields($row)) {
                     $this->notRegisteredCount++;
+                    Log::error('Missing Fields: Required fields are missing for row: ' . json_encode($row));
+                    continue;
+                }
+                
+                [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
+                if (!$firstName) {
+                    Log::error('Full Name Not Found: Full name not found for row: ' . json_encode($row));
                     continue;
                 }
 
-                [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
-                if (!$firstName) {
+                $program = $this->resolveProgram($row['program'] ?? null);
+
+                if (!$program) {
                     $this->notRegisteredCount++;
+                    Log::error('Program Not Found: Program not found for code: ' . ($row['program'] ?? 'N/A'));
                     continue;
                 }
 
                 $phone = $this->formatPhone($row['phone'] ?? '');
-
+                
                 $email = $this->generateEmail($firstName, $middleName);
 
-                $existingUser = User::where('email', $email)->first();
+                $existingUser = User::where('email', $email)->orWhere('phone', $phone)->first();
 
-                if($phone){
-                    if($existingUser && $existingUser->section_id === $this->section_id && $existingUser->phone !== $phone) {
-                        $this->duplicateData++;
-                        continue;
-                    }
-                }
-                else{
-                    if ($existingUser && $existingUser->section_id === $this->section_id) {
-                        $this->duplicateData++;
-                        continue;
-                    } elseif ($existingUser && $existingUser->section_id !== $this->section_id) {
-                        $email = Str::slug($firstName) . '.' . Str::slug($middleName) . '2' . '@sits.edu.et';
-                }
-
-                if (!$this->resolveProgram($row['program'] ?? null)) {
-                    $this->notRegisteredCount++;
+                if ($existingUser) {
+                    $this->duplicateData++;
+                    Log::error('Duplicate User: User with email ' . $email . ' or phone ' . $phone . ' already exists.');
+                    continue;
                 }
                 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
@@ -111,7 +108,6 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                 $this->registeredCount++;
                 $this->registeredStudentIds[] = $student->id;
-                }
             }
         });
     }
@@ -175,7 +171,6 @@ class StudentsImport implements ToCollection, WithHeadingRow
         } else {
             // Log invalid full name format
             Log::warning('Invalid Full Name: Name must be First Middle Last.');
-            $this->notRegisteredCount++;
             return [null, null, null];
         }
     }
@@ -256,15 +251,17 @@ class StudentsImport implements ToCollection, WithHeadingRow
     {
         // Normalize student phone number
         $phone = trim($phone);
-        if ($phone && str_starts_with($phone, '9')) {
-            return '+251 ' . $phone;
-        } elseif ($phone && str_starts_with($phone, '7')) {
-            return '+254 ' . $phone;
-        } elseif ($phone && !str_starts_with($phone, '0')) {
-            return '+251 ' . $phone;
-        } elseif (!$phone) {
-            return '+251 900000000'; // Default phone if not provided
+
+        if (isset($phone) && str_starts_with($phone, '9')) {
+            $phone = '+251 ' . $phone;
+        } elseif (isset($phone) && str_starts_with($phone, '7')) {
+            $phone = '+251 ' . $phone;
+        } elseif (isset($phone) && !str_starts_with($phone, '0')) {
+            $phone = '+251 ' . $phone;
+        } elseif (!isset($phone) || $phone === '') {
+            $phone = '+251 900000000';
         }
+
         return $phone;
     }
 

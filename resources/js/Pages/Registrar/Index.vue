@@ -153,7 +153,7 @@ const recentActivities = [
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-white"
                     >
-                        6,320
+                        0
                     </h2>
                 </div>
             </div>

@@ -34,17 +34,15 @@ class SectionController extends Controller
 {
     public function index()
     {
-        $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
-
-        $programs = ProgramResource::collection(Program::with('tracks.sections', 'studyModes')->get());
-
-        $sections = $sections->groupBy(function ($section) {
-            return $section->program_id;
-        });
         
+        $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
+        
+        $sections = $sections->sortBy(function ($section) {
+            return $section->program->name . ' ' . $section->track->name;
+        })->values();
+
         return Inertia::render('Sections/Index', [
             'sections' => $sections,
-            'programs' => $programs,
         ]);
     }
 

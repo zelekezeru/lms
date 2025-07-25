@@ -90,6 +90,7 @@ class CenterImport implements ToCollection, WithHeadingRow
                 }
 
                 $program = $this->resolveProgram($row['program'] ?? null);
+                
                 if (!is_object($program)) {
                     $this->notRegisteredCount++;
                     $this->flashError('Program Not Found', "Program not found for code: " . ($row['program'] ?? 'N/A'));

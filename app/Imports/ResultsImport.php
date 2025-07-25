@@ -26,6 +26,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
     protected $sectionId;
     protected $courseId;
     protected $results = [];
+    protected $weights = [];
 
     public function __construct($courseId, $sectionId)
     {
@@ -84,7 +85,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
                     throw new \Exception('The sum of the weights must be 100.');
                 }
                 $weight = Weight::create([
-                    'name' => 'Weight ' . $index + 1,
+                    'name' => 'Weight ' . ($index + 1),
                     'point' => $weightPoint,
                     'description' => null,
                     'instructor_id' => $instructor->id,
@@ -94,6 +95,9 @@ class ResultsImport implements ToCollection, WithHeadingRow
                 ]);
 
                 $totalWeight += $weightPoint;
+                // Map header to weight for later lookup
+                $this->weights[$weightPoint] = $weight;
+                DD($this->weights, $weightPoint, $weight);
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -122,7 +126,7 @@ class ResultsImport implements ToCollection, WithHeadingRow
             // use The $row->keys as headers
             foreach ($row->keys() as $header) {
                 // if the column header is not a "weight" col or one of the following keys skip the column
-                if (in_array($header, ['no', 'id_number', 'full_name', 'course_code'])) {
+                if (in_array($header, ['no', 'ID_Number'])) {
                     continue; // skip non-weight columns
                 }
 
@@ -132,6 +136,11 @@ class ResultsImport implements ToCollection, WithHeadingRow
                     continue; // skip empty scores
                 }
 
+                // Find the corresponding weight by header (weight point)
+                $weight = $this->weights[$header] ?? null;
+                if (!$weight) {
+                    continue; // skip if no matching weight
+                }
                 $result = Result::updateOrCreate(
                     [
                         'student_id' => $student->id,

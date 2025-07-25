@@ -13,10 +13,6 @@ defineProps({
         type: Object,
         required: true,
     },
-    programs: {
-        type: Object,
-        required: true,
-    },
 });
 
 const refreshing = ref(false);
@@ -94,10 +90,10 @@ const deleteSection = (id) => {
         </div>
 
         <!-- include sections/List.vue -->
-        <SectionsList :sections="sections" :programs="programs" />
+        <SectionsList :sections="sections"/>
 
         <!-- Sections Table -->
-        <!-- <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
                     v-for="section in sections"
@@ -105,7 +101,7 @@ const deleteSection = (id) => {
                     class="bg-white dark:bg-gray-800 shadow-md rounded-2xl p-4 border dark:border-gray-700"
                 >
                     <Link
-                        :href="route('sections.show', { section: section.id })" class="ml-1 text-blue-600" >
+                        :href="route('sections.show', section.id)" class="ml-1 text-blue-600" >
                         <div
                             class="mb-3 flex items-center text-gray-700 dark:text-gray-300"
                         >
@@ -131,18 +127,14 @@ const deleteSection = (id) => {
 
                         <div class="flex justify-end space-x-3 mt-4">
                             <Link
-                                :href="
-                                    route('sections.show', { section: section.id })
-                                "
+                                :href="route('sections.show', section.id)"
                                 class="text-blue-500 hover:text-blue-700"
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                             <Link
                                 v-if="userCan('update-sections')"
-                                :href="
-                                    route('sections.edit', { section: section.id })
-                                "
+                                :href="route('sections.edit', section.id)"
                                 class="text-green-500 hover:text-green-700"
                             >
                                 <PencilSquareIcon class="w-5 h-5" />
@@ -151,6 +143,6 @@ const deleteSection = (id) => {
                     </Link>
                 </div>
             </div>
-        </div> -->
+        </div>
     </AppLayout>
 </template>

@@ -11,10 +11,6 @@ defineProps({
         type: Object,
         required: true,
     },
-    programs: {
-        type: Object,
-        required: true,
-    },
 });
 </script>
 
@@ -34,7 +30,11 @@ defineProps({
                 <tr
                     v-for="(section, index) in Object.values(sections).flat()"
                     :key="section.id"
-                    class="hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-200"
+                    :class="[
+                        'hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer',
+                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'
+                    ]"
+                    @click="$router ? $router.push({ name: 'sections.show', params: { section: section.id } }) : $inertia.visit(route('sections.show', { section: section.id }))"
                 >
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                         {{ index + 1 }}
@@ -49,7 +49,7 @@ defineProps({
                         {{ section.year?.name ?? 'N/A' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-3">
-                        <Link :href="route('sections.show', section.id)" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 flex items-center gap-1">
+                        <Link :href="route('sections.show', { section: section.id })" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 flex items-center gap-1" @click.stop>
                             <EyeIcon class="w-4 h-4" />
                             View
                         </Link>

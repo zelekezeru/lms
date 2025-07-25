@@ -147,7 +147,7 @@ class ResultsImport implements ToCollection
             foreach ($rows as $row) {
                 // Extract student ID number, trim whitespace
                 $idNumber = trim($row[1] ?? '');
-
+                
                 // Skip rows that do not have a valid student ID number or if the student is not found
                 if (empty($idNumber)) {
                     // Optionally log this skip for debugging

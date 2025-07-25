@@ -99,7 +99,7 @@ class ResultsImport implements ToCollection
                     throw new \Exception('The sum of the weights must be 100.');
                 }
                 
-                $weight = Weight::create([
+                $weight = Weight::updateOrCreate([
                     'name' => 'Weight ' . ($index + 1),
                     'point' => $weightPoint,
                     'description' => null,
@@ -110,8 +110,8 @@ class ResultsImport implements ToCollection
                 ]);
 
                 $totalWeight += $weightPoint;
-                // Map header to weight for later lookup
-                $this->weights[$weightPoint] = $weight;
+                // Map by index instead of value to allow duplicates
+                $this->weights[$index] = $weight;
                 
             }
             DB::commit();
@@ -120,41 +120,35 @@ class ResultsImport implements ToCollection
 
             return redirect()->back()->withErrors($e->getMessage());
         }
-
+        
         // start rows from the 2nd row
         $rows = $rows->slice(1);
         // Get the semester in which that course will be given in the course offering of the section
         foreach ($rows as $row) {
 
-            // Foreach rows
-
-            // Make Sure that there are nowhicte spaces
             $idNumber = $row[1] ?? '';
-
             $idNumber = trim($idNumber);
-            // retrieve the student and the course
+
             $student = Student::where('id_no', $idNumber)->first();
             
-            // if there is no coursecode, idnumber or student(of the given id number) in a given row skip the row
             if (!$idNumber || !$student) {
                 continue; // skip incomplete rows
             }
             
-            // Get the score from the row, assuming it's in the 5th column (index 4)
             foreach ($weightPoints as $index => $weightPoint) {
                 $score = $row[4 + $index] ?? 0;
-                $weight = $this->weights[$weightPoint] ?? null;
+                $weight = $this->weights[$index] ?? null; // Use index, not value
                 if (!$weight) {
                     continue;
                 }
-                $result = Result::create([
-                        'student_id' => $student->id,
-                        'weight_id' => $weight->id,
-                        'instructor_id' => $instructor->id,
-                        'point' => $score,
-                        'description' => null,
-                        'changed_point' => null,
-                    ]);
+                $result = Result::updateOrCreate([
+                    'student_id' => $student->id,
+                    'weight_id' => $weight->id,
+                    'instructor_id' => $instructor->id,
+                    'point' => $score,
+                    'description' => null,
+                    'changed_point' => null,
+                ]);
                 $this->results[] = $result;
             }
         }

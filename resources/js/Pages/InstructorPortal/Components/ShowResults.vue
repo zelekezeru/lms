@@ -181,7 +181,16 @@ const submitWeightResults = () => {
             </thead>
             <tbody>
                 <tr
-                    v-for="(student, index) in props.studentsList"
+                    v-for="(student, index) in props.studentsList.sort((a, b) => {
+                        const nameA = (a.first_name + ' ' + (a.middle_name || '')).toUpperCase();
+                        const nameB = (b.first_name + ' ' + (b.middle_name || '')).toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;})"
                     :key="student.id"
                     :class="
                         index % 2 === 0

@@ -18,16 +18,6 @@ use Exception;
 
 class AssignmentController extends Controller
 {
-    // convention for methods is as follows
-    /**
-     * every post method that actually assigns the lists of model entities from request to a model is  start with "assign"
-     * then follows the entities(targets) that are going to be followed by a Owner of targets
-
-     * so a name like assignCoursesToSection -> accepts an array of ids of courses to be assigned to a section which should be accepted by laravel's route model binding as argument
-
-     * and a name like assignInstructorToCourseSection -> relates a single instructor to a CourseSection model later to be filtered inside the method
-     */
-
     // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {

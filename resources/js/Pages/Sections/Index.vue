@@ -7,9 +7,14 @@ import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon ,AcademicCapIcon, ViewColumnsIcon, CalendarIcon, FingerPrintIcon} from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import SectionsList from "./SectionsList.vue";
+import TrackSections from "./TrackSections.vue";
 
 defineProps({
     sections: {
+        type: Object,
+        required: true,
+    },
+    tracks: {
         type: Object,
         required: true,
     },
@@ -90,7 +95,9 @@ const deleteSection = (id) => {
         </div>
 
         <!-- include sections/List.vue -->
-        <SectionsList :sections="sections"/>
-        
+        <!-- <SectionsList :sections="sections" :tracks="tracks"/> -->
+
+        <TrackSections :sections="sections" :tracks="tracks"/>
+
     </AppLayout>
 </template>

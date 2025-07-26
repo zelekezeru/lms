@@ -248,14 +248,7 @@ class ResultsImport implements ToCollection
                         ->mapWithKeys(function ($courseId) use ($student) {
                             return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
                         })
-                        ->toArray();
-                        
-
-                    $student->status()->update([
-                        'is_enrolled' => true,
-                        'enrolled_by_name' => Auth::user()->name,
-                        'enrolled_at' => now(),
-                    ]);
+                        ->toArray();                        
                         
                     // Set academic status based on the grade letter
                     $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
@@ -271,13 +264,14 @@ class ResultsImport implements ToCollection
                             'academic_status' => $academicStatus,
                         ]);
                     } else {
-                        // No existing enrollment, create a new one
-                        $newEnrollment = Enrollment::create([
-                            'semester_id' => $semester->id,
-                            'course_offering_id' => $courseOffering->id,
+                        // Prevent duplicate entries
+                        Enrollment::updateOrCreate([
                             'student_id' => $student->id,
-                            'academic_status' => $academicStatus,
+                            'course_offering_id' => $courseOffering->id,
+                            'semester_id' => $semester->id,
+                        ], [
                             'status' => 'enrolled',
+                            'academic_status' => $academicStatus,
                         ]);
                     }
                 } else {

@@ -11,6 +11,10 @@ defineProps({
         type: Object,
         required: true,
     },
+    tracks: {
+        type: Object,
+        required: true,
+    },
 });
 </script>
 

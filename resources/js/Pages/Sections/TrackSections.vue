@@ -1,0 +1,64 @@
+<script setup>
+import { defineProps } from "vue";
+import { Link, useForm } from "@inertiajs/vue3";
+import { EyeIcon } from "@heroicons/vue/24/outline";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
+
+defineProps({
+    sections: {
+        type: Object,
+        required: true,
+    },
+    tracks: {
+        type: Object,
+        required: true,
+    },
+});
+</script>
+
+<template>
+    <div class="overflow-x-auto">
+
+        <!-- Card for each section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div
+            v-for="track in tracks"
+            :key="track.id"
+            class="bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg rounded-xl p-6 transition-transform hover:scale-105 hover:shadow-2xl"
+            >
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                {{ track.name }}
+                </h3>
+
+                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                {{ track.program?.name ?? 'N/A' }}
+                </span>
+
+            </div>
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">Sections List</h4>
+                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 mb-2">
+                    👥 {{ track.students?.length ?? 0 }} students
+                </span>
+            </div>
+            <ul class="space-y-2">
+                <li
+                    v-for="section in track.sections"
+                    :key="section.id"
+                    class="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-md px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-950 transition"
+                >
+                    <Link :href="`/sections/${section.id}`" class="flex-1 flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium hover:underline">
+                        {{ section.name }}
+                        <EyeIcon class="w-5 h-5 text-blue-500" />
+                    </Link>
+                </li>
+                <li v-if="!track.sections?.length" class="text-gray-400 italic">No sections available.</li>
+            </ul>
+        </div>
+        </div>
+    </div>
+
+</template>

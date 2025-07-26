@@ -34,7 +34,7 @@ class SectionController extends Controller
 {
     public function index()
     {
-        
+        $tracks = Track::with(['program', 'courses', 'students', 'students', 'sections', 'sections.year', 'sections.semester'])->get()->sortBy('name');
         $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
         
         $sections = $sections->sortBy(function ($section) {
@@ -43,6 +43,7 @@ class SectionController extends Controller
 
         return Inertia::render('Sections/Index', [
             'sections' => $sections,
+            'tracks' => $tracks,
         ]);
     }
 

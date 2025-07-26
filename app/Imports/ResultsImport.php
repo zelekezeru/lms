@@ -43,7 +43,7 @@ class ResultsImport implements ToCollection
     {
         // Ensure there's at least one row (for headings)
         if ($rows->isEmpty()) {
-            throw new Exception('The uploaded file is empty.');
+            return back()->withErrors('the uploaded file is empty');
         }
 
         // Get the first row as headings for weight points
@@ -54,7 +54,7 @@ class ResultsImport implements ToCollection
 
         // Validate if weight points are found
         if (empty($weightPoints) || count($weightPoints) < 1) {
-            throw new Exception('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
+            return back()->withErrors('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
         }
 
         // Calculate the sum of the weight points
@@ -62,19 +62,19 @@ class ResultsImport implements ToCollection
 
         // Validate if the total weight points sum to 100
         if ($totalWeightSum != 100) {
-            throw new Exception('The total sum of weight points must be 100, but it is ' . $totalWeightSum . '.');
+            return back()->withErrors('The total sum of weight points must be 100, but it is ' . $totalWeightSum . '.');
         }
 
         // Retrieve the CourseOffering to get associated course, section, instructor, etc.
         $courseOffering = CourseOffering::lookUpFor($this->courseId, $this->sectionId);
 
         if (!$courseOffering) {
-            throw new Exception('This Course is not offered in this section. Please ensure the course and section IDs are correct.');
+            return back()->withErrors('This Course is not offered in this section. Please ensure the course and section IDs are correct.');
         }
 
         // Validate year and semester levels are set for the course offering
         if (!$courseOffering->year_level || !$courseOffering->semester_level) {
-            throw new Exception('Year level and semester level are not set for this course in this section.');
+            return back()->withErrors('Year level and semester level are not set for this course in this section.');
         }
 
         // Get the related models from the course offering
@@ -90,7 +90,7 @@ class ResultsImport implements ToCollection
 
         // Validate if the academic year exists
         if (!$year) {
-            throw new Exception('A year with the name ' . $courseGivenAtYear . ' was not found. Please ensure the academic years are set up.');
+            return back()->withErrors('A year with the name ' . $courseGivenAtYear . ' was not found. Please ensure the academic years are set up.');
         }
 
         // Find the semester based on study mode, year, and semester level
@@ -102,7 +102,7 @@ class ResultsImport implements ToCollection
 
         // Validate if the semester exists
         if (!$semester) {
-            throw new Exception('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
+            return back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
         }
 
         // Start a database transaction for creating/updating weights
@@ -112,7 +112,8 @@ class ResultsImport implements ToCollection
             foreach ($weightPoints as $index => $weightPoint) {
                 // Ensure the weight point is a valid number before using it
                 if (!is_numeric($weightPoint)) {
-                    throw new Exception("Invalid weight point '{$weightPoint}' found at column " . ($index + 5) . ". Weight points must be numeric.");
+                    // dd($weightPoint);
+                    throw new Exception("Invalid weight point " . $weightPoint . " found at column " . ($index + 5) . " . Weight points must be numeric.");
                 }
 
                 $weight = Weight::updateOrCreate(
@@ -134,7 +135,7 @@ class ResultsImport implements ToCollection
             DB::commit(); // Commit the transaction for weights
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback if any error occurs during weight creation
-            throw new Exception('Error processing weights: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Error processing weights: ' . $e->getMessage());
         }
 
         // Process student rows, starting from the second row (index 1)
@@ -147,7 +148,7 @@ class ResultsImport implements ToCollection
             foreach ($rows as $row) {
                 // Extract student ID number, trim whitespace
                 $idNumber = trim($row[1] ?? '');
-                
+
                 // Skip rows that do not have a valid student ID number or if the student is not found
                 if (empty($idNumber)) {
                     // Optionally log this skip for debugging
@@ -177,7 +178,7 @@ class ResultsImport implements ToCollection
                 foreach ($weightPoints as $index => $weightPoint) {
                     // Check if the score column exists and is not null or empty
                     if (!isset($row[4 + $index]) || $row[4 + $index] === null || $row[4 + $index] === '') {
-                        
+
                         continue;
                     }
 
@@ -187,7 +188,7 @@ class ResultsImport implements ToCollection
                     // Ensure the score is numeric
                     if (!is_numeric($score)) {
                         // Log or handle error for non-numeric score, then skip this specific score
-                        Log::warning("Non-numeric score '{$score}' found for student ID '{$idNumber}' at column " . (4 + $index + 1) . ". Skipping this score.");
+                        throw new Exception("Non-numeric score '{$score}' found for student ID '{$idNumber}' at column " . (4 + $index + 1));
                         continue;
                     }
 
@@ -196,7 +197,7 @@ class ResultsImport implements ToCollection
                     if (!$weight) {
                         // This should ideally not happen if weights were created successfully,
                         // but it's a safeguard. Log and skip if a weight is unexpectedly missing.
-                        Log::error("Weight at index {$index} not found for student ID '{$idNumber}'. Skipping score.");
+                        throw new Exception("Weight at index {$index} not found for student ID '{$idNumber}'.");
                         continue;
                     }
 
@@ -248,8 +249,8 @@ class ResultsImport implements ToCollection
                         ->mapWithKeys(function ($courseId) use ($student) {
                             return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
                         })
-                        ->toArray();                        
-                        
+                        ->toArray();
+
                     // Set academic status based on the grade letter
                     $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
 
@@ -257,14 +258,14 @@ class ResultsImport implements ToCollection
                         ->where('semester_id', $semester->id)
                         ->where('course_offering_id', $courseOffering->id)
                         ->first();
-                        
+
                     if ($enrollment) {
                         // Update existing enrollment status
                         $enrollment->update([
                             'academic_status' => $academicStatus,
                         ]);
                     } else {
-                        // Prevent duplicate entries
+                        // No existing enrollment, create a new one
                         Enrollment::updateOrCreate([
                             'student_id' => $student->id,
                             'course_offering_id' => $courseOffering->id,
@@ -276,15 +277,14 @@ class ResultsImport implements ToCollection
                     }
                 } else {
                     // If total points are 0, we might want to log this or handle it differently
-                    Log::info("No valid scores found for student ID '{$idNumber}'. No grade assigned.");
+                    throw new Exception("No valid scores found for student ID '{$idNumber}'. No grade assigned.");
                 }
-
             } // End of foreach ($rows as $row)
 
             DB::commit(); // Commit the transaction for student results, grades, and enrollments
         } catch (\Exception $e) {
-            DB::rollBack(); // Rollback if any error occurs during student processing
-            throw new Exception('Error processing student results: ' . $e->getMessage());
+            DB::rollBack(); // Rollback if any error occurs during student data processing
+            return back()->withErrors('Error processing student data: ' . $e->getMessage());
         }
     }
 

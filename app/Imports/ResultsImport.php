@@ -243,14 +243,6 @@ class ResultsImport implements ToCollection
                         ]
                     );
 
-                    $courses = $course;
-
-                    $coursesWithStatus = collect($courses)
-                        ->mapWithKeys(function ($courseId) use ($student) {
-                            return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
-                        })
-                        ->toArray();
-
                     // Set academic status based on the grade letter
                     $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
 
@@ -277,7 +269,7 @@ class ResultsImport implements ToCollection
                     }
                 } else {
                     // If total points are 0, we might want to log this or handle it differently
-                    throw new Exception("No valid scores found for student ID '{$idNumber}'. No grade assigned.");
+                    continue;
                 }
             } // End of foreach ($rows as $row)
 

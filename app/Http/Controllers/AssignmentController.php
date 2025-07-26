@@ -176,7 +176,7 @@ class AssignmentController extends Controller
         $students = Student::select('id', 'year_id', 'section_id')
             ->where('track_id', $track->id)
             ->get();
-        
+
         $updates = [];
 
         foreach ($students as $student) {
@@ -184,7 +184,6 @@ class AssignmentController extends Controller
             $targetSectionId = $sections[$yearId] ?? null;
 
             if (!$targetSectionId) {
-                Log::warning("No matching section for student ID: {$student->id} (Year ID: $yearId)");
                 continue;
             }
 

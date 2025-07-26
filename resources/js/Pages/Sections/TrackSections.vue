@@ -49,9 +49,13 @@ defineProps({
                     v-for="section in track.sections"
                     :key="section.id"
                     class="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-md px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-950 transition"
-                >
+                >{{ section.name }}
+                    <!-- Section students count -->
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                        👥 {{ section.students?.length ?? 0 }} students
+                    </span>
                     <Link :href="`/sections/${section.id}`" class="flex-1 flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium hover:underline">
-                        {{ section.name }}
+                        
                         <EyeIcon class="w-5 h-5 text-blue-500" />
                     </Link>
                 </li>

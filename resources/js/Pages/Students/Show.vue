@@ -88,7 +88,7 @@ const tabs = [
     },
     {
         key: "documents",
-        label: "Documents",
+        label: "Transcript Documents",
         icon: PaperClipIcon,
         permission: "view-students",
     },

@@ -10,6 +10,7 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudyMode;
 use App\Models\Track;
+use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -181,10 +182,22 @@ class AssignmentController extends Controller
 
         foreach ($students as $student) {
             $yearId = $student->year_id;
-            $targetSectionId = $sections[$yearId] ?? null;
+            $targetSectionId = $sections[$yearId];
 
             if (!$targetSectionId) {
-                continue;
+                $section = Section::create([
+                    'name' => 'Section-1',
+                    'code' => 'SC-' . $yearId . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                    'program_id' => $track->program_id,
+                    'track_id' => $track->id,
+                    'study_mode_id' => $track->program->studyModes->first()->id,
+                    'year_id' => $yearId,
+                    'semester_id' => $student->semester_id ?? Semester::where('year_id', $yearId)->first()->id,
+                    'center_id' => $track->center_id ?? null,
+                ]);
+
+                $targetSectionId = $section->id;
+                $sections[$yearId] = $targetSectionId;
             }
 
             // Only update if section_id is different

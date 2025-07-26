@@ -277,15 +277,6 @@ function exportPDF() {
                     </tr>
                 </thead>
                 <tbody>
-                    {{
-                        semester.grades
-                    }}
-                    //all grades
-                    {{
-                        semester.grades.filter(
-                            (g) => g.student_id == student.id
-                        ).length
-                    }}
                     <tr
                         v-for="(grade, i) in semester.grades.filter(
                             (g) => g.student_id == student.id
@@ -298,15 +289,6 @@ function exportPDF() {
                         "
                         class="text-sm text-gray-900 dark:text-gray-100"
                     >
-                        {{
-                            grade
-                        }}
-
-                        Breakkk
-
-                        {{
-                            student
-                        }}
                         <td class="px-4 py-2">{{ grade.course?.code }}</td>
                         <td class="px-4 py-2">{{ grade.course?.name }}</td>
                         <td class="px-4 py-2">

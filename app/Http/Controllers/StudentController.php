@@ -43,7 +43,7 @@ class StudentController extends Controller
     public function index(Request $request): Response
     {
         $query = Student::with('user');
-        
+
         // Apply search filter
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
@@ -174,7 +174,7 @@ class StudentController extends Controller
         $documents = UserDocumentResource::collection($student->user->userDocuments);
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
+            ->with(['year', 'grades' => fn($q) => $q->where('student_id', $student->id)->with(['course', 'section', 'semester']),])->get();
 
         return Inertia::render('Students/Show', [
             'student' => $student,

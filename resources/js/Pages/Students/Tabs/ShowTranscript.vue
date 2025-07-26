@@ -283,12 +283,12 @@ function exportPDF() {
                     //all grades
                     {{
                         semester.grades.filter(
-                            (g) => g.student_id === student.id
+                            (g) => g.student_id == student.id
                         ).length
                     }}
                     <tr
                         v-for="(grade, i) in semester.grades.filter(
-                            (g) => g.student_id === student.id
+                            (g) => g.student_id == student.id
                         )"
                         :key="grade.id"
                         :class="

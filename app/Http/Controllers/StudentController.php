@@ -174,7 +174,10 @@ class StudentController extends Controller
         $documents = UserDocumentResource::collection($student->user->userDocuments);
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q->where('student_id', $student->id)->with(['course', 'section', 'semester']),])->get();
+            ->with([
+                'year',
+                'grades' => fn($q) => $q->where('student_id', $student->id)->with(['course', 'section', 'semester']),
+            ])->orderBy('name', 'asc')->get();
 
         return Inertia::render('Students/Show', [
             'student' => $student,

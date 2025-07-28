@@ -179,7 +179,7 @@ class AssignmentController extends Controller
         $sections = $track->sections()->get()->groupBy('study_mode_id');
 
         // Load only necessary fields to reduce memory usage
-        $students = Student::select('id', 'year_id', 'section_id')
+        $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id')
             ->where('track_id', $track->id)
             ->get();
 
@@ -191,7 +191,7 @@ class AssignmentController extends Controller
             // target section is a section that belongs to the same studymode and year as the student
             $targetSectionId = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
                 return $section->year_id == $yearId;
-            });
+            })->id;
 
             // if there is no target section found create it
             if (!$targetSectionId) {
@@ -200,7 +200,7 @@ class AssignmentController extends Controller
                     'code' => 'SC-' . $yearId . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
-                    'study_mode_id' => $student->studyMode->id,
+                    'study_mode_id' => $student->study_mode->id,
                     'year_id' => $yearId,
                     'semester_id' => $student->semester_id ?? Semester::where('year_id', $yearId)->first()->id,
                     'center_id' => $track->center_id ?? null,

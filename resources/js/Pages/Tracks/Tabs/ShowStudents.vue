@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref } from "vue";
-import { Link, useForm } from "@inertiajs/vue3";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
@@ -79,17 +79,12 @@ const sortStudentsToSections = () => {
                     );
                 },
                 onError: () => {
-                    Swal.fire(
-                        t("error"),
-                        t("students.sorting_failed"),
-                        "error"
-                    );
+                    Swal.fire(t("error"), usePage().props.errors[0], "error");
                 },
             });
         }
     });
 };
-
 </script>
 
 <template>
@@ -104,7 +99,7 @@ const sortStudentsToSections = () => {
                 {{ $t("students.sort_sections") }}
             </PrimaryButton>
         </div>
-        
+
         <!-- Track Study Students List -->
         <div class="overflow-x-auto">
             <div

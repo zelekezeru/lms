@@ -332,6 +332,7 @@ class StudentRegistrationService extends Controller
             'year_id' => $fields['year_id'],
             'semester_id' => $fields['semester_id'],
             'program_id' => $fields['program_id'],
+            'study_mode_id' => $fields['study_mode_id'],
             'track_id' => $fields['track_id'],
         ];
 

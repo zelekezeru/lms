@@ -203,7 +203,7 @@ class StudentController extends Controller
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
 
-        $studyModes = StudyModeResource::collection(StudyMode::all());
+        $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
 
         return inertia('Students/Create', [
             'programs' => $programs,

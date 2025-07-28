@@ -94,9 +94,6 @@ const deleteSection = (id) => {
             </button>
         </div>
 
-        <!-- include sections/List.vue -->
-        <!-- <SectionsList :sections="sections" :tracks="tracks"/> -->
-
         <TrackSections :sections="sections" :tracks="tracks"/>
 
     </AppLayout>

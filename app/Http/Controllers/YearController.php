@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreYearRequest;
 use App\Http\Requests\UpdateYearRequest;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\StudyModeResource;
 use App\Models\Year;
+use App\Models\StudyMode;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -53,10 +55,13 @@ class YearController extends Controller
         // Format the dates
         $year->created_at_formatted = \Carbon\Carbon::parse($year->created_at)->format('F j, Y');
         $year->updated_at_formatted = \Carbon\Carbon::parse($year->updated_at)->format('F j, Y');
+        
+        $studyModes = StudyModeResource::collection(StudyMode::all());
 
         return inertia('Years/Show', [
             'year' => $year,
             'semesters' => $year->semesters,
+            'studyModes' => $studyModes,
         ]);
     }
 

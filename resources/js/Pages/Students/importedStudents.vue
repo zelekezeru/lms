@@ -7,6 +7,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 const page = usePage();
 const section = computed(() => page.props.section);
 const students = computed(() => page.props.students || []);
+const existingUser = computed(() => page.props.existingUser || {});
 const importReport = computed(() => page.props.import_report || {});
 const success = computed(() => importReport.value.success || page.props.success);
 const error = computed(() => importReport.value.error || page.props.error);
@@ -49,7 +50,6 @@ function route(name, id) {
           Imported Students for Section: <span class="text-blue-600 dark:text-blue-400">{{ section.name }}</span>
         </h1>
       </div>
-
       <div v-if="success" class="mb-4 px-4 py-3 rounded bg-green-100 text-green-700 border border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700">
         ✅ {{ success }}
       </div>
@@ -89,64 +89,74 @@ function route(name, id) {
         </ul>
     </div>
 
+    <!-- Imported Students -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
         <h1 class="text-lg font-semibold text-gray-900 dark:text-white">👥 Imported Students</h1>
       </div>
 
-      <div class="overflow-x-auto rounded shadow">
-        <table class="w-full text-sm text-left text-gray-700 dark:text-gray-200">
-          <thead class="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-            <tr>
-              <th class="px-4 py-2">#</th>
-              <th class="px-4 py-2">Name</th>
-              <th class="px-4 py-2">Id Number</th>
-              <th class="px-4 py-2">Phone</th>
-              <th class="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(student, idx) in filteredStudents"
-              :key="student.id"
-              :class=" [
-                idx % 2 === 0
-                  ? 'bg-white dark:bg-gray-900'
-                  : 'bg-gray-50 dark:bg-gray-800',
-                'hover:bg-blue-50 dark:hover:bg-blue-900 transition'
-              ]"
-            >
-              <td class="px-4 py-2">{{ idx + 1 }}</td>
-              <td class="px-4 py-2">
-                <a :href="route('students.show', student.id)" class="text-blue-600 hover:underline dark:text-blue-400">
-                  {{ student.first_name }} {{ student.middle_name ? student.middle_name + ' ' : '' }} {{ student.last_name }}
-                </a>
-              </td>
-              <td class="px-4 py-2">{{ student.id_no }}</td>
-              <td class="px-4 py-2">{{ student.phone || student.mobile_phone || '-' }}</td>
-              <td class="px-4 py-2">
-                <a
-                  :href="route('students.show', student.id)"
-                  class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                  title="View student details"
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Imported Students -->
+        <div class="flex-1 min-w-0">
+          <div class="overflow-x-auto rounded shadow">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-200">
+              <thead class="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                <tr>
+                  <th class="px-4 py-2">#</th>
+                  <th class="px-4 py-2">Name</th>
+                  <th class="px-4 py-2">Id Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(student, idx) in filteredStudents"
+                  :key="student.id"
+                  :class=" [
+                    idx % 2 === 0
+                      ? 'bg-white dark:bg-gray-900'
+                      : 'bg-gray-50 dark:bg-gray-800',
+                    'hover:bg-blue-50 dark:hover:bg-blue-900 transition'
+                  ]"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 
-                      7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </a>
-              </td>
-            </tr>
-            <tr v-if="filteredStudents.length === 0">
-              <td colspan="6" class="text-center px-4 py-6 text-gray-500 dark:text-gray-400">
-                No students found. Try adjusting your search.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <td class="px-4 py-2">{{ idx + 1 }}</td>
+                  <td class="px-4 py-2">
+                    <a :href="route('students.show', student.id)" class="text-blue-600 hover:underline dark:text-blue-400">
+                      {{ student.first_name }} {{ student.middle_name ? student.middle_name + ' ' : '' }} {{ student.last_name }}
+                    </a>
+                  </td>
+                  <td class="px-4 py-2">{{ student.id_no }}</td>
+                </tr>
+                <tr v-if="filteredStudents.length === 0">
+                  <td colspan="6" class="text-center px-4 py-6 text-gray-500 dark:text-gray-400">
+                    No students found. Try adjusting your search.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Existing Students -->
+        <div v-if="Object.keys(existingUser).length > 0" class="flex-1 min-w-0">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">👥 Existing Students</h2>
+          <div class="overflow-x-auto rounded shadow">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-200">
+              <thead class="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                <tr>
+                  <th class="px-4 py-2">#</th>
+                  <th class="px-4 py-2">Name</th>
+                  <th class="px-4 py-2">Id Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(student, idx) in existingUser" :key="idx" class="bg-gray-50 dark:bg-gray-900 hover:bg-blue-50 dark:hover:bg-blue-950 transition">
+                  <td class="px-4 py-2">{{ idx + 1 }}</td>
+                  <td class="px-4 py-2 font-medium text-gray-800 dark:text-gray-200">{{ student.name }}</td>
+                  <td class="px-4 py-2">{{ student.user_uuid || '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </AppLayout>

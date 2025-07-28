@@ -46,18 +46,22 @@ defineProps({
             </div>
             <ul class="space-y-2">
                 <li
+
                     v-for="section in track.sections"
                     :key="section.id"
                     class="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-md px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-950 transition"
-                >{{ section.name }}
+                >
+                    <Link
+                        v-if="userCan('view-sections')"
+                        :href="route('sections.show', { section: section.id })"
+                        class="text-blue-500 hover:text-blue-700">
+
+                    <span class="font-medium text-gray-800 dark:text-gray-200">{{ section.name }}</span>
                     <!-- Section students count -->
                     <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                         👥 {{ section.students?.length ?? 0 }} students
                     </span>
-                    <Link :href="`/sections/${section.id}`" class="flex-1 flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium hover:underline">
-                        
-                        <EyeIcon class="w-5 h-5 text-blue-500" />
-                    </Link>
+                </Link>
                 </li>
                 <li v-if="!track.sections?.length" class="text-gray-400 italic">No sections available.</li>
             </ul>

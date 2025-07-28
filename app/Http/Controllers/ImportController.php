@@ -10,6 +10,7 @@ use App\Imports\s;
 use App\Models\Section;
 use App\Models\Center;
 use App\Models\StudyMode;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
@@ -37,12 +38,14 @@ class ImportController extends Controller
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
+        $duplicateStudents = $import->getExistingUserIds();
 
-        return $this->showImportedStudents($request, $sectionId)->with([
+        return $this->showImportedStudents($request, $sectionId, $duplicateStudents)->with([
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,
                 'duplicateData' => $duplicateData,
+                'duplicateStudents' => $duplicateStudents,
                 'success' => "Students imported successfully. ",
             ],
             'students' => $newStudents,
@@ -121,7 +124,7 @@ class ImportController extends Controller
     }
 
     // Show the imported students for a section (GET endpoint)
-    public function showImportedStudents(Request $request, $sectionId)
+    public function showImportedStudents(Request $request, $sectionId, $existingUser = [])
     {
         $section = Section::with('students.user')->findOrFail($sectionId);
 
@@ -130,7 +133,9 @@ class ImportController extends Controller
         return inertia('Students/importedStudents', [
             'section' => $section,
             'students' => $students,
-            'import_report' => null,
+            'existingUser' => $existingUser,
+            'import_report' => [null
+            ],
         ]);
     }
 }

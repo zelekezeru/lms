@@ -173,9 +173,6 @@ class AssignmentController extends Controller
         // Load all sections grouped by study modes... because students should not be assigned to a section with different study mode as theirs
         // this results in structure like...
 
-        // study_mode_id => [
-        //     laravel collection(advanced array) of sections that have the study mode
-        // ]
         $sections = $track->sections()->get()->groupBy('study_mode_id');
 
         // Load only necessary fields to reduce memory usage
@@ -187,20 +184,24 @@ class AssignmentController extends Controller
 
         foreach ($students as $student) {
             $yearId = $student->year_id;
-
+            
             // target section is a section that belongs to the same studymode and year as the student
-            $targetSectionId = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
+            $targetSection = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
                 return $section->year_id == $yearId;
-            })->id;
-
+            });
+            
             // if there is no target section found create it
-            if (!$targetSectionId) {
+            if ($targetSection)
+            {
+                $targetSectionId = $targetSection->id;
+            }
+            else {
                 $section = Section::create([
                     'name' => 'Section-1',
                     'code' => 'SC-' . $yearId . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
-                    'study_mode_id' => $student->study_mode->id,
+                    'study_mode_id' => $student->studyMode->id,
                     'year_id' => $yearId,
                     'semester_id' => $student->semester_id ?? Semester::where('year_id', $yearId)->first()->id,
                     'center_id' => $track->center_id ?? null,

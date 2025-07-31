@@ -195,10 +195,16 @@ class AssignmentController extends Controller
             {
                 $targetSectionId = $targetSection->id;
             }
-            else {
+
+            else {                
+
+                $year = Year::where('id', $student->year_id)->first();
+                
+                $year = substr($year->name, -2);
+
                 $section = Section::create([
                     'name' => 'Section-1',
-                    'code' => 'SC-' . $yearId . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                    'code' => 'SC-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
                     'study_mode_id' => $student->studyMode->id,

@@ -25,6 +25,8 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
+        $lastStudentId = Student::max('id') ?? 0;
+
         $import = new StudentsImport($request->section_id);
         Excel::import($import, $request->file('file'));
 
@@ -33,14 +35,15 @@ class ImportController extends Controller
         $notRegisteredCount = $import->getNotRegisteredCount();
         $duplicateData = $import->getDuplicateDataCount();
 
-        $sectionId = $request->input('section_id');
-        $section = Section::findOrFail($sectionId);
+        $section = Section::findOrFail($request->input('section_id'));
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
         $duplicateStudents = $import->getExistingUserIds();
 
-        return $this->showImportedStudents($request, $sectionId, $duplicateStudents)->with([
+        $newStudents = Student::whereIn('id', $newStudents)->with('user')->get();
+
+        return $this->showImportedStudents($request, $section->id, $duplicateStudents)->with([
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,
@@ -60,6 +63,9 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
+        // Last student ID is not used in this method, but kept for consistency
+        $lastStudentId = Student::max('id') ?? 0;
+
         // Assuming CenterImport exposes these properties after import
         $import = new CenterImport($request->center_id);
         Excel::import($import, $request->file('file'));
@@ -74,8 +80,11 @@ class ImportController extends Controller
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
+        $duplicateStudents = $import->getExistingUserIds();
 
-        return $this->showImportedStudents($request, $centerId)->with([
+        $newStudents = Student::whereIn('id', $newStudents)->with('user')->get();
+
+        return $this->showImportedStudents($request, $centerId, $duplicateStudents)->with([
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,

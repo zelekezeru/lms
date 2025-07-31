@@ -117,6 +117,7 @@ function route(name, id) {
                     'hover:bg-blue-50 dark:hover:bg-blue-900 transition'
                   ]"
                 >
+                
                   <td class="px-4 py-2">{{ idx + 1 }}</td>
                   <td class="px-4 py-2">
                     <a :href="route('students.show', student.id)" class="text-blue-600 hover:underline dark:text-blue-400">

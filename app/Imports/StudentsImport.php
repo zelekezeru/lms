@@ -88,6 +88,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     ['email' => $email],
                     [
                         'user_uuid' => $userUuid,
+                        'phone' => $phone,
+                        'tenant_id' => $this->tenant_id,
                         'name' => "$firstName $middleName",
                         'password' => Hash::make($defaultPassword),
                         'default_password' => $defaultPassword,
@@ -96,7 +98,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 
                 $student = Student::updateOrCreate(
                     ['user_id' => $user->id],
-                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id)
+                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone)
                 );
 
                 $user->assignRole('STUDENT');
@@ -239,7 +241,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         return strtolower($firstName) . '@' . $last4;
     }
 
-    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId)
+    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId, $phone)
     {
         return [
             'id_no' => $userUuid,
@@ -272,22 +274,23 @@ class StudentsImport implements ToCollection, WithHeadingRow
         }
     }
 
-    protected function formatPhone($phone)
+    private function formatPhone($phone)
     {
-        // Normalize student phone number
-        $phone = trim($phone);
+        if (!$phone) return '+251 900000000';
 
-        if (isset($phone) && str_starts_with($phone, '9')) {
-            $phone = '+251 ' . $phone;
-        } elseif (isset($phone) && str_starts_with($phone, '7')) {
-            $phone = '+251 ' . $phone;
-        } elseif (isset($phone) && !str_starts_with($phone, '0')) {
-            $phone = '+251 ' . $phone;
-        } elseif (!isset($phone) || $phone === '') {
-            $phone = '+251 900000000';
+        if (str_starts_with($phone, '9')) {
+            return '+251 ' . $phone;
+        } elseif (str_starts_with($phone, '7')) {
+            return '+254 ' . $phone;
+        } elseif (str_starts_with($phone, '6') || str_starts_with($phone, '8')) {
+            return '+27 ' . $phone;
+        } elseif (!str_starts_with($phone, '0')) {
+            // Remove leading 0 if present
+            $phone = ltrim($phone, '0');
+            return '+251 ' . $phone;
+        }else{
+            return $phone; // Already in correct format
         }
-
-        return $phone;
     }
 
     protected function createStudentStatus(Student $student)

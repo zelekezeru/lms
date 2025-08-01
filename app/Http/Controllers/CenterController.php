@@ -39,7 +39,8 @@ class CenterController extends Controller
 
         $centers = CenterResource::collection(
             $query->with(['coordinator.user', 'students'])
-            ->orderBy('name')->paginate(100)->withQueryString());
+                ->orderBy('name')->paginate(100)->withQueryString()
+        );
 
         return inertia('Centers/Index', [
             'centers' => $centers,
@@ -52,18 +53,18 @@ class CenterController extends Controller
 
         $students = StudentResource::collection(
             $center->students()
-            ->with(['user', 'program'])
-            ->orderBy('first_name')
-            ->orderBy('middle_name')
-            ->get()
+                ->with(['user', 'program'])
+                ->orderBy('first_name')
+                ->orderBy('middle_name')
+                ->paginate(30)
         );
-        
-        if($center->coordinator){
+
+        if ($center->coordinator) {
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
-        }else{
+        } else {
             $coordinator = null;
         }
-        
+
         return inertia('Centers/Show', [
             'center' => $center,
             'coordinator' => $coordinator,
@@ -84,10 +85,10 @@ class CenterController extends Controller
         // Generate Center Code
         $counCenters = Center::count();
 
-        $fields['code'] = 'SITS-C-'.str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
+        $fields['code'] = 'SITS-C-' . str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
 
         $center = Center::updateOrCreate($fields);
-        
+
         return redirect()->route('centers.show', $center)->with('success', 'Center created successfully.');
     }
 
@@ -104,7 +105,7 @@ class CenterController extends Controller
         $fields = $request->validated();
 
         $center->update($fields);
-        
+
         return redirect()->route('centers.show', $center)->with('success', 'Center updated successfully.');
     }
 
@@ -116,8 +117,7 @@ class CenterController extends Controller
         } elseif ($center->coordinator) {
             // Check if the center has an associated coordinator
             return redirect()->route('centers.index')->with('error', 'Cannot delete center with an associated coordinator.');
-        }
-        else {
+        } else {
             // Delete the center record
             $center->students()->detach(); // Detach all students from the center
             $center->coordinator()->dissociate(); // Dissociate the coordinator
@@ -135,7 +135,8 @@ class CenterController extends Controller
         $centers = CenterResource::collection(
             Center::with(['coordinator.user', 'students'])
                 ->orderBy('name')
-                ->get());
+                ->get()
+        );
 
         $totalStudents = $centers->flatMap(function ($center) {
             return $center->students;
@@ -144,7 +145,7 @@ class CenterController extends Controller
         $totalCoordinators = $centers->filter(function ($center) {
             return $center->coordinator !== null;
         })->count();
-        
+
         return inertia('Centers/DistanceHome', [
             'centers' => $centers,
             'totalStudents' => $totalStudents,

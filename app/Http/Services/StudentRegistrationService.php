@@ -58,18 +58,22 @@ class StudentRegistrationService extends Controller
             $student = $this->createStudent($fields);
 
             $activeSemester = $student->studyMode->activeSemester();
+
+            // Registration Types are required for all studymodes
             $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
 
-            Payment::create([
-                'student_id' => $student->id,
-                'payment_type_id' => $registrationFee?->id,
-                'semester_id' => $activeSemester?->id,
-                'tenant_id' => 1,
-                'created_by' => Auth::id(),
-                'status' => 'pending',
-                'paid_amount' => 0,
-                'total_amount' => $registrationFee->amount,
-            ]);
+            if ($registrationFee) {
+                Payment::create([
+                    'student_id' => $student->id,
+                    'payment_type_id' => $registrationFee?->id,
+                    'semester_id' => $activeSemester?->id,
+                    'tenant_id' => 1,
+                    'created_by' => Auth::id(),
+                    'status' => 'pending',
+                    'paid_amount' => 0,
+                    'total_amount' => $registrationFee->amount,
+                ]);
+            }
 
             // Create related records (status and church)
             $this->createStudentStatus($student);

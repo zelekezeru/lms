@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('first_name', 100);
             $table->string('middle_name', 100);
             $table->string('last_name', 100)->nullable();
-            $table->string('mobile_phone', 15);
-            $table->string('office_phone', 15)->nullable();
+            $table->string('mobile_phone');
+            $table->string('office_phone')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('marital_status', 10)->nullable();
             $table->char('sex', 6);

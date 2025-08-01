@@ -103,9 +103,9 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year'] ?? null);
 
-                $section = $this->sectionAssigned($track, $year);
+                                $section = $this->sectionAssigned($track, $year);
 
-                $userUuid = $this->generateUserUuid($academicYear, $row['study_mode'] ?? null);
+                $userUuid = $this->generateUserUuid($academicYear, $this->study_mode_id ?? 1);
 
                 // 5. User creation
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
@@ -148,11 +148,11 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 $user->assignRole('STUDENT');
 
-                // 7. Attach center if not attached
-                $student->centers()->syncWithoutDetaching([$this->center_id]);
-
                 // 8. Status
                 $this->createStudentStatus($student);
+
+                // 7. Attach center if not attached
+                $student->centers()->syncWithoutDetaching([$this->center_id]);
 
                 // 9. Church info
                 if (!empty($row['pastor_name']) || !empty($row['church_name'])) {
@@ -238,27 +238,6 @@ class CenterImport implements ToCollection, WithHeadingRow
         return $section;
     }
 
-    private function parseFullName($fullName)
-    {
-        $parts = preg_split('/\s+/', trim($fullName));
-        if (count($parts) === 3) {
-            return [
-            ucfirst(strtolower($parts[0])),
-            ucfirst(strtolower($parts[1])),
-            ucfirst(strtolower($parts[2]))
-            ];
-        } elseif (count($parts) === 2) {
-            return [
-            ucfirst(strtolower($parts[0])),
-            ucfirst(strtolower($parts[1])),
-            ''
-            ];
-        } else {
-            $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
-            return null;
-        }
-    }
-
     private function generateEmail($first, $middle)
     {
         return strtolower(Str::slug($first) . '.' . Str::slug($middle)) . '@sits.edu.et';
@@ -298,24 +277,48 @@ class CenterImport implements ToCollection, WithHeadingRow
         return [$year, $semester, $academicYear];
     }
 
-    private function generateUserUuid($academicYear, $studyModeName = null)
+    private function parseFullName($fullName)
     {
-        if ($studyModeName) {
-            $studyModeName = ucfirst(strtolower($studyModeName));
+        $parts = preg_split('/\s+/', trim($fullName));
+        if (count($parts) === 3) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ucfirst(strtolower($parts[2]))
+            ];
+        } elseif (count($parts) === 2) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ''
+            ];
+        } else {
+            $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
+            return null;
+        }
+    }
 
-            if($studyModeName === 'Regular') {
-                $studyModeName = 'R';
-            } elseif ($studyModeName === 'Distance') {
-                $studyModeName = 'D';
-            } elseif ($studyModeName === 'Online') {
-                $studyModeName = 'O';
-            } elseif ($studyModeName === 'Extention') {
-                $studyModeName = 'W';
-            } else {
-                $studyModeName = '';
+    private function generateUserUuid($academicYear, $studyModeId = null)
+    {
+        if ($studyModeId) {
+            $studyMode = StudyMode::find($studyModeId);
+            if ($studyMode) {
+                $studyModeName = ucfirst(strtolower($studyMode->name));
             }
         }
-        
+
+        if ($studyModeName === 'Regular') {
+            $studyModeName = 'R';
+        } elseif ($studyModeName === 'Distance') {
+            $studyModeName = 'D';
+        } elseif ($studyModeName === 'Online') {
+            $studyModeName = 'O';
+        } elseif ($studyModeName === 'Extention') {
+            $studyModeName = 'E';
+        } else {
+            $studyModeName = '';
+        }
+
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
         // last 2 digits of the year
         $academicYear = substr($academicYear, -2);
@@ -405,11 +408,6 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     
 
-    public function getExistingUserIds()
-    {
-        return User::whereIn('id', $this->existingUserIds)->get();
-    }
-
     public function getRegisteredCount()
     {
         return $this->registeredCount;
@@ -428,5 +426,10 @@ class CenterImport implements ToCollection, WithHeadingRow
     public function getRegisteredStudentIds()
     {
         return Student::whereIn('id', $this->registeredStudentIds)->get();
+    }
+
+    public function getExistingUserIds()
+    {
+        return User::whereIn('id', $this->existingUserIds)->get();
     }
 }

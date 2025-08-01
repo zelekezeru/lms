@@ -24,18 +24,6 @@ watch(search, (value) => {
   }, 300);
 });
 
-// Filter logic
-const filteredStudents = computed(() => {
-  if (!searchQuery.value) return students.value;
-  const term = searchQuery.value.toLowerCase();
-  return students.value.filter(student =>
-    (student.name && student.name.toLowerCase().includes(term)) ||
-    (student.email && student.email.toLowerCase().includes(term)) ||
-    (student.phone && student.phone.includes(term)) ||
-    (student.mobile_phone && student.mobile_phone.includes(term))
-  );
-});
-
 function route(name, id) {
   return `/students/${id}`;
 }
@@ -57,46 +45,44 @@ function route(name, id) {
         ⚠️ {{ error }}
       </div>
 
-    <div class="bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 border-2 border-blue-400 rounded-lg p-5 mb-6 shadow-lg dark:bg-gradient-to-r dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 dark:border-blue-600 flex flex-col items-center text-center">
-        <h2 class="text-lg font-bold mb-3 text-blue-800 dark:text-blue-200 flex items-center gap-2">
-            <span class="text-2xl">📊</span> Import Report
-        </h2>
-        <ul class="text-lg flex flex-wrap gap-6">
-            <li>
-                <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-green-200 text-green-900 font-bold dark:bg-green-700 dark:text-green-100 text-xl">
-                ✔️ Registered: <span>{{ importReport.registeredCount || 0 }}</span>
-                </span>
-            </li>
-            <li>
-                <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-red-200 text-red-900 font-bold dark:bg-red-700 dark:text-red-100 text-xl">
-                ❌ Not Registered: <span>{{ importReport.notRegisteredCount || 0 }}</span>
-                </span>
-            </li>
-            <li>
-                <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-yellow-200 text-yellow-900 font-bold dark:bg-yellow-700 dark:text-yellow-100 text-xl">
-                ⚡ Duplicate Data: <span>{{ importReport.duplicateData || 0 }}</span>
-                </span>
-            </li>
-            <!-- Go to section link -->
-            <li>
-              <a
-                href="javascript:history.back()"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-200 text-blue-900 font-bold dark:bg-blue-700 dark:text-blue-100 text-xl hover:bg-blue-300 dark:hover:bg-blue-600 transition"
-              >
-                  🔗 Go to Section
-              </a>
-            </li>
-        </ul>
-    </div>
-
-    <!-- Imported Students -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-        <h1 class="text-lg font-semibold text-gray-900 dark:text-white">👥 Imported Students</h1>
+      <div class="bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 border-2 border-blue-400 rounded-lg p-5 mb-6 shadow-lg dark:bg-gradient-to-r dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 dark:border-blue-600 flex flex-col items-center text-center">
+          <h2 class="text-lg font-bold mb-3 text-blue-800 dark:text-blue-200 flex items-center gap-2">
+              <span class="text-2xl">📊</span> Import Report
+          </h2>
+          <ul class="text-lg flex flex-wrap gap-6">
+              <li>
+                  <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-green-200 text-green-900 font-bold dark:bg-green-700 dark:text-green-100 text-xl">
+                  ✔️ Registered: <span>{{ importReport.registeredCount || 0 }}</span>
+                  </span>
+              </li>
+              <li>
+                  <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-red-200 text-red-900 font-bold dark:bg-red-700 dark:text-red-100 text-xl">
+                  ❌ Not Registered: <span>{{ importReport.notRegisteredCount || 0 }}</span>
+                  </span>
+              </li>
+              <li>
+                  <span class="inline-flex items-center gap-2 px-4 py-2 rounded bg-yellow-200 text-yellow-900 font-bold dark:bg-yellow-700 dark:text-yellow-100 text-xl">
+                  ⚡ Duplicate Data: <span>{{ importReport.duplicateData || 0 }}</span>
+                  </span>
+              </li>
+              <!-- Go to section link -->
+              <li>
+                <a
+                  href="javascript:history.back()"
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded bg-blue-200 text-blue-900 font-bold dark:bg-blue-700 dark:text-blue-100 text-xl hover:bg-blue-300 dark:hover:bg-blue-600 transition"
+                >
+                    🔗 Go to Section
+                </a>
+              </li>
+          </ul>
       </div>
 
       <div class="flex flex-col lg:flex-row gap-8">
+
         <!-- Imported Students -->
-        <div class="flex-1 min-w-0">
+        <div v-if="Object.keys(students).length > 0" class="flex-1 min-w-0">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-green-400 mb-4">👥 Registered Students</h2>
+
           <div class="overflow-x-auto rounded shadow">
             <table class="w-full text-sm text-left text-gray-700 dark:text-gray-200">
               <thead class="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-300">
@@ -108,7 +94,7 @@ function route(name, id) {
               </thead>
               <tbody>
                 <tr
-                  v-for="(student, idx) in filteredStudents"
+                  v-for="(student, idx) in students"
                   :key="student.id"
                   :class=" [
                     idx % 2 === 0
@@ -121,12 +107,12 @@ function route(name, id) {
                   <td class="px-4 py-2">{{ idx + 1 }}</td>
                   <td class="px-4 py-2">
                     <a :href="route('students.show', student.id)" class="text-blue-600 hover:underline dark:text-blue-400">
-                      {{ student.first_name }} {{ student.middle_name ? student.middle_name + ' ' : '' }} {{ student.last_name }}
+                      {{ student.name + ' ' }}
                     </a>
                   </td>
-                  <td class="px-4 py-2">{{ student.id_no }}</td>
+                  <td class="px-4 py-2">{{ student.user_uuid }}</td>
                 </tr>
-                <tr v-if="filteredStudents.length === 0">
+                <tr v-if="students.length === 0">
                   <td colspan="6" class="text-center px-4 py-6 text-gray-500 dark:text-gray-400">
                     No students found. Try adjusting your search.
                   </td>
@@ -138,7 +124,7 @@ function route(name, id) {
 
         <!-- Existing Students -->
         <div v-if="Object.keys(existingUser).length > 0" class="flex-1 min-w-0">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">👥 Existing Students</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-red-500 mb-4">👥 Existing Students</h2>
           <div class="overflow-x-auto rounded shadow">
             <table class="w-full text-sm text-left text-gray-700 dark:text-gray-200">
               <thead class="bg-gray-100 text-xs uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-300">

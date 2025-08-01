@@ -27,9 +27,9 @@ class ImportController extends Controller
 
         $lastStudentId = Student::max('id') ?? 0;
 
-        $import = new StudentsImport($request->section_id);
-        Excel::import($import, $request->file('file'));
+        $import = new StudentsImport($request->section_id, $center_id = null, $request);
 
+        Excel::import($import, $request->file('file'));
         // show the imported data
         $registeredCount = $import->getRegisteredCount();
         $notRegisteredCount = $import->getNotRegisteredCount();
@@ -40,8 +40,6 @@ class ImportController extends Controller
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
         $duplicateStudents = $import->getExistingUserIds();
-
-        $newStudents = Student::whereIn('id', $newStudents)->with('user')->get();
 
         return $this->showImportedStudents($request, $section->id, $duplicateStudents)->with([
             'import_report' => [
@@ -77,7 +75,7 @@ class ImportController extends Controller
 
         $centerId = $request->input('center_id');
         $center = Center::findOrFail($centerId)->load('students.user');
-
+        
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
         $duplicateStudents = $import->getExistingUserIds();

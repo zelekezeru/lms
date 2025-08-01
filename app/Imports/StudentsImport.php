@@ -9,6 +9,8 @@ use App\Models\Status;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Year;
+use App\Models\StudyMode;
+use App\Models\Center;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,15 +34,36 @@ class StudentsImport implements ToCollection, WithHeadingRow
     public $registeredCount = 0;
     public $notRegisteredCount = 0;
     public $duplicateData = 0;
+    
 
     protected $registeredStudentIds = [];
     protected $existingUserIds = [];
 
-    public function __construct(protected $section_id = null, protected $center_id = null) {}
-
+    public function __construct(protected $section_id, protected $center_id, protected $request) {
+        if($section_id !== null) {
+            $section = Section::find($section_id);
+            $center = null;
+        } elseif($center_id !== null) {
+            $center = Center::find($center_id);
+        } else {
+            $section = null;
+            $center = null;
+        }
+        $this->section = $section;
+        $this->center = $center;
+        
+    }
+    
     public function collection(Collection $rows)
     {
-        
+        // Load the center and coordinator with user
+        if ($this->center_id) {
+            // Ensure the center exists
+            $center = Center::with('coordinator.user')->findOrFail($this->center_id);
+        } else {
+            // If no center_id is provided, we can skip this part
+            $center = null;
+        }
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
@@ -52,7 +75,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
 
                 // Resolve program by code or name
-                $program = $this->resolveProgram($row['program'] ?? null);
+
+                $program = $this->resolveProgram($row['program'] ?? null, $row['study_mode'] ?? null);
 
                 if (!$program) {
                     $this->notRegisteredCount++;
@@ -60,10 +84,10 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
                 // Initialize section if not already set
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year']);
+                $track = $program->tracks()->first();
+                $section = $this->sectionAssigned($track, $year);
 
-                $this->initializeSection($program, $year, $semester);
-
-                if (!$this->section) {
+                if (!$section) {
                     $this->notRegisteredCount++;
                     continue;
                 }
@@ -80,7 +104,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                $userUuid = $this->generateUserUuid($academicYear);
+                $userUuid = $this->generateUserUuid($academicYear, $this->study_mode_id ?? 1);
 
                 $defaultPassword = $this->generateDefaultPassword($firstName, $phone);
                 
@@ -98,7 +122,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 
                 $student = Student::updateOrCreate(
                     ['user_id' => $user->id],
-                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone)
+                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone, $section->id)
                 );
 
                 $user->assignRole('STUDENT');
@@ -109,54 +133,18 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     $this->createStudentChurch($student, $row->toArray());
                 }
 
+                // 7. Attach center if not attached
+                if($this->center_id !== null) {
+                    $student->centers()->syncWithoutDetaching([$this->center_id]);
+                }
+
                 $this->registeredCount++;
                 $this->registeredStudentIds[] = $student->id;
             }
         });
     }
 
-    protected function initializeSection($program = null, $year, $semester)
-    {
-        if ($year == null || $program == null || $semester == null) {
-            return;
-        }
-
-        $this->section = Section::where('year_id', $year->id)
-            ->where('program_id', $program->id)
-            ->with(['user', 'program', 'track', 'studyMode'])
-            ->first();
-        
-        if ($this->section) {
-            $this->program_id = $this->section->program->id;
-            $this->track_id = $this->section->track->id;
-            $this->study_mode_id = $this->section->studyMode->id;
-            $this->tenant_id = Auth::user()->tenant_id;
-            if ($this->section && $this->section->user) {
-                $this->user_id = $this->section->user->id;
-            }
-        }else {
-            $code = 'SC' . '-' . substr($year->name, -2) . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
-
-            $this->section = Section::create([
-                'year_id' => $year->id,
-                'semester_id' => $semester->id,
-                'code' => $code,
-                'program_id' => $program->id,
-                'track_id' => $program->tracks()->first()?->id,
-                'study_mode_id' => $program->studyModes()->first()?->id ?? 1,
-                'name' => $program->code . '-' . $year->name,
-                'user_id' => Auth::id(),
-            ]);
-            $this->program_id = $this->section->program_id;
-            $this->track_id = $this->section->track_id;
-            $this->study_mode_id = $this->section->study_mode_id;
-            $this->tenant_id = $this->section->tenant_id;
-            $this->user_id = $this->section->user_id;
-        }
-      
-    }
-
-    protected function resolveProgram($code)
+    protected function resolveProgram($code, $studyModeName)
     {
         if (!$code) {
             return null;
@@ -167,40 +155,87 @@ class StudentsImport implements ToCollection, WithHeadingRow
         if (!$program) {
             $program = Program::where('name', 'like', "%$code%")->first();
         }
+
+        if($studyModeName != null)
+        {
+            $studyMode = StudyMode::where('name', $studyModeName)->first();
+
+            if ($studyMode) {
+                $this->study_mode_id = $studyMode->id;
+            }
+        }else{
+            $studyMode = StudyMode::where('name', 'REGULAR')->first();
+            $program?->studyModes()->syncWithoutDetaching($studyMode->id);
+            $this->study_mode_id = $studyMode->id;
+        }
         
         if ($program) {
             $this->program_id = $program->id;
             $this->track_id = $program->tracks()->first()?->id;
-            $this->study_mode_id = $program->studyModes()->first()?->id ?? 1;
+            $this->study_mode_id = $program->studyModes()->first()?->id;
+
             return $program;
         } else {
+            $this->program_id = $this->program_id;
+            $this->track_id = $this->track_id;
             return null;
         }
     }
 
-    protected function getOrCreateYearAndSemester($entryYear)
+    private function sectionAssigned($track, $year)
     {
-        $yearObj = Year::where('name', (string)$entryYear)->first();
-        if (!$yearObj) {
-            $yearObj = Year::create([
-                'name' => (string)$entryYear,
+        if ($track->sections()->where('year_id', $year->id)->exists()) {
+            $section = $track->sections()->where('year_id', $year->id)->first();
+        } else {
+
+            $section = Section::updateOrCreate([
+                'name' => 'Section-1 of ' . $track->name,
+                'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
+                'program_id' => $track->program_id,
+                'track_id' => $track->id,
+                    'study_mode_id' => $this->study_mode_id,
+                    'year_id' => $year->id,
+                    'semester_id' => Semester::where('year_id', $year->id)->first()->id,
+                    'center_id' => $this->center_id ?? null,
+                ]);
+            $track->sections()->save($section);
+        }
+
+        return $section;
+    }
+
+    private function getOrCreateYearAndSemester($entryYear)
+    {
+        if (Year::where('name', $entryYear)->exists()) {
+
+            $year = Year::where('name', $entryYear)->first();
+
+            if ($year->semesters()->exists()) {
+                $semester = $year->semesters()->first();
+            } else {
+                $semester = Semester::create([
+                    'name' => '1st - ' . $year->name,
+                    'year_id' => $year->id,
+                    'level' => 1,
+                    'start_date' => now()->startOfYear(),
+                    'end_date' => now()->endOfYear(),
+                ]);
+            }
+        } else {
+            $year = Year::create(['name' => $entryYear, 'status' => 'Inactive']);
+        
+            $semester = Semester::create([
+                'name' => '1st - ' . $year->name,
+                'year_id' => $year->id,
+                'level' => 1,
                 'start_date' => now()->startOfYear(),
                 'end_date' => now()->endOfYear(),
-                'status' => 'active',
             ]);
         }
+
+        $academicYear = substr($year->name, -2);
         
-        $semester = Semester::firstOrCreate(
-            ['year_id' => $yearObj->id],
-            [
-                'name' => '1st Semester of ' . $yearObj->name,
-                'level' => 1,
-                'start_date' => now()->startOfYear($yearObj->name)->addMonths(8)->startOfMonth(),
-                'end_date' => now()->startOfYear($yearObj->name)->addMonths(8)->endOfMonth(),
-            ]
-        );
-        
-        return [$yearObj, $semester, $yearObj->name];
+        return [$year, $semester, $academicYear];
     }
 
     private function parseFullName($fullName)
@@ -228,11 +263,31 @@ class StudentsImport implements ToCollection, WithHeadingRow
         return strtolower(Str::slug($firstName) . '.' . Str::slug($middleName)) . '@sits.edu.et';
     }
 
-    protected function generateUserUuid($academicYear)
+    private function generateUserUuid($academicYear, $studyModeId = null)
     {
-        $academicYear = substr($academicYear, -2);
+        if ($studyModeId) {
+            $studyMode = StudyMode::find($studyModeId);
+            if ($studyMode) {
+                $studyModeName = ucfirst(strtolower($studyMode->name));
+            }
+        }
+
+        if ($studyModeName === 'Regular') {
+            $studyModeName = 'R';
+        } elseif ($studyModeName === 'Distance') {
+            $studyModeName = 'D';
+        } elseif ($studyModeName === 'Online') {
+            $studyModeName = 'O';
+        } elseif ($studyModeName === 'Extention') {
+            $studyModeName = 'E';
+        } else {
+            $studyModeName = '';
+        }
+
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-        return "SITS-R-{$count}-{$academicYear}";
+        // last 2 digits of the year
+        $academicYear = substr($academicYear, -2);
+        return "SITS-$studyModeName-{$count}-{$academicYear}";
     }
 
     protected function generateDefaultPassword($firstName, $phone)
@@ -241,7 +296,8 @@ class StudentsImport implements ToCollection, WithHeadingRow
         return strtolower($firstName) . '@' . $last4;
     }
 
-    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId, $phone)
+    // Prepare student data for creation or update
+    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId, $phone, $sectionId)
     {
         return [
             'id_no' => $userUuid,
@@ -250,13 +306,13 @@ class StudentsImport implements ToCollection, WithHeadingRow
             'middle_name' => $middleName,
             'last_name' => $lastName,
             'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
-            'mobile_phone' => $this->formatPhone($phone ?? ''),
+            'mobile_phone' => $phone ?? '+251900000000',
             'address' => $row['address'] ?? null,
             'date_of_birth' => $this->parseDateOfBirth($row['date_of_birth'] ?? null),
             'program_id' => $this->program_id,
             'track_id' => $this->track_id,
             'study_mode_id' => $this->study_mode_id,
-            'section_id' => $this->section_id,
+            'section_id' => $sectionId,
             'year_id' => $year->id,
             'semester_id' => $semester->id,
             'tenant_id' => $this->tenant_id,
@@ -264,6 +320,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         ];
     }
 
+    // Parse date of birth from various formats
     protected function parseDateOfBirth($date)
     {
         if (!$date) return null;
@@ -274,6 +331,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
         }
     }
 
+    // Format phone numbers to international format
     private function formatPhone($phone)
     {
         if (!$phone) return '+251 900000000';
@@ -341,11 +399,11 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
     public function getRegisteredStudentIds()
     {
-        return Student::whereIn('id', $this->registeredStudentIds)->get();
+        return User::whereIn('id', $this->registeredStudentIds)->orderBy('name')->get();
     }
 
     public function getExistingUserIds()
     {
-        return User::whereIn('id', $this->existingUserIds)->get();
+        return User::whereIn('id', $this->existingUserIds)->orderBy('name')->get();
     }
 }

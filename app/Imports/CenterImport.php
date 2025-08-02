@@ -184,6 +184,11 @@ class CenterImport implements ToCollection, WithHeadingRow
             return null;
         }
 
+        $code = strtoupper(trim($code));
+        if (str_contains($code, '-')) {
+            $code = str_replace('-', '/', $code);
+        }
+
         $program = Program::where('code', $code)->first();
 
         if (!$program) {
@@ -223,7 +228,7 @@ class CenterImport implements ToCollection, WithHeadingRow
         } else {
 
             $section = Section::updateOrCreate([
-                'name' => 'Section-1 of ' . $track->name,
+                    'name' => $year->name . '-' . $track->name . ' Section-1',
                 'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
                 'program_id' => $track->program_id,
                 'track_id' => $track->id,

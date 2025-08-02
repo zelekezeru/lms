@@ -80,14 +80,14 @@ class SectionController extends Controller
 
         $fields['code'] = $section_id;
 
-        $fields['name'] = 'Section-1 of ' . Track::find($fields['track_id'])->name;
+        $fields['name'] = $year->name . '-' . Track::find($fields['track_id'])->name . ' Section-1';
 
         $track = Track::find($fields['track_id']);
 
         $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
             return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
         }])->get();
-
+        
         DB::beginTransaction();
         try {
             $section = Section::create($fields);

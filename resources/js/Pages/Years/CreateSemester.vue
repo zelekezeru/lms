@@ -4,7 +4,9 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { DatePicker, Listbox, Select } from "primevue";
 import Swal from "sweetalert2";
+import { useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const props = defineProps({
     form: Object,

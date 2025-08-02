@@ -10,6 +10,7 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudyMode;
 use App\Models\Track;
+use App\Models\Year;
 use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -199,19 +200,22 @@ class AssignmentController extends Controller
             else {                
 
                 $year = Year::where('id', $student->year_id)->first();
-                
+
+                $track = Track::where('id', $student->track_id)->first();
+
                 $year = substr($year->name, -2);
 
-                $section = Section::create([
-                    'name' => 'Section-1',
-                    'code' => 'SC-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT),
+                $section = Section::updateOrCreate([
+                    'name' => $year->name . '-' . $track->name . ' Section-1',
+                    'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
-                    'study_mode_id' => $student->studyMode->id,
-                    'year_id' => $yearId,
-                    'semester_id' => $student->semester_id ?? Semester::where('year_id', $yearId)->first()->id,
-                    'center_id' => $track->center_id ?? null,
+                    'study_mode_id' => $student->study_mode_id,
+                    'year_id' => $year->id,
+                    'semester_id' => Semester::where('year_id', $year->id)->first()->id,
                 ]);
+
+                $track->sections()->save($section);
 
                 $targetSectionId = $section->id;
                 $sections[$yearId] = $targetSectionId;
@@ -243,5 +247,43 @@ class AssignmentController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors('Sorting failed: ' . $e->getMessage());
         }
+    }
+
+    // Assign Track Courses to Section
+    public function assignTrackCoursesToSection(Section $section)
+    {
+        $track = Track::where('id', $section->track_id)->first();
+        
+        $fields = [
+            'track_id' => $track->id,
+            'study_mode_id' => $section->study_mode_id,
+        ];
+        // Assign the track to the section
+
+        $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
+            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+        }])->get();
+
+        foreach ($trackCourses as $trackCourse) {
+            $curriculum = $trackCourse->curricula->first();
+            if($curriculum !== null) {
+                $fields['year_level'] = $curriculum->year_level;
+                $fields['semester_level'] = $curriculum->semester_level;
+                
+                CourseOffering::updateOrCreate(
+                    [
+                        'course_id' => $trackCourse->id,
+                        'section_id' => $section->id,
+                    ],
+                    [
+                        'year_level' => $curriculum->year_level ?? null,
+                        'semester_level' => $curriculum->semester_level ?? null,
+                    ],
+                );
+            }
+            
+        }
+
+        return redirect()->route('sections.show', $section->id)->with('success', 'Track assigned to section successfully.');
     }
 }

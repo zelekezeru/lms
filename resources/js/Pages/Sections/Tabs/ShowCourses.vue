@@ -221,6 +221,15 @@ function submitMove() {
                     Courses That Are Not Assigned To A Year and Semester
                 </span>
             </h2>
+
+            <!-- Assign Track courses to the section -->
+            <a :href="route('trackCourses-section.assign', { section: props.section.id })"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-md transition">
+                Assign Courses
+            </a>
+
+
+            <!-- Assign Courses Button -->
             <button
                 @click="assignCourses = !assignCourses"
                 class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800"

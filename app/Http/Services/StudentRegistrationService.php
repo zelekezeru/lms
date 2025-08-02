@@ -252,7 +252,6 @@ class StudentRegistrationService extends Controller
 
             $user->update([
                 'name' => $name,
-                'email' => $student_email,
                 'phone' => $fields['mobile_phone'],
             ]);
         }

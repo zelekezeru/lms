@@ -190,7 +190,8 @@ Route::middleware(['auth'])->group(function () {
     // Sort Students to Sections
     Route::post('/student-section/sort/{track}', [AssignmentController::class, 'sortStudentsToSections'])->name('student-section.sort');
     Route::get('/trackCourses-section/{section}', [AssignmentController::class, 'assignTrackCoursesToSection'])->name('trackCourses-section.assign');
-    
+    Route::get('/trackCourses-sections/{track}', [AssignmentController::class, 'assignTrackCoursesToSections'])->name('trackCourses-sections.assign');
+
     // Detach Program from Study Mode
     Route::delete('/studymodes/{study_mode}/programs/{program}', [StudyModeController::class, 'destroyProgram'])->name('studymodes.programs.destroy');
 

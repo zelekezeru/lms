@@ -93,7 +93,7 @@ const sortStudentsToSections = () => {
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ $t("students.students") }}
             </h2>
-            <!-- Button to create new student -->
+            <!-- Button to sort students -->
             <PrimaryButton @click="sortStudentsToSections">
                 <FolderOpenIcon class="w-5 h-5 mr-2" />
                 {{ $t("students.sort_sections") }}

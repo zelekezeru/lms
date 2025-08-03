@@ -317,6 +317,8 @@
     "pick_common_courses": "Select the common courses you want to assign to this section",
     "select_courses": "Select Courses",
     "assigning": "Assigning...",
+    "assign_courses": "Assign Curriculum",
+    "assign_track_courses": "Assign Curriculum to All Sections",
     "assign": "Assign Courses",
     "refresh": "Refresh",
     "duration": "Duration",

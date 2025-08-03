@@ -203,11 +203,11 @@ class AssignmentController extends Controller
 
                 $track = Track::where('id', $student->track_id)->first();
 
-                $year = substr($year->name, -2);
+                $yearSuffix = substr($year->name, -2);
 
                 $section = Section::updateOrCreate([
                     'name' => $year->name . '-' . $track->name . ' Section-1',
-                    'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
+                    'code' => 'SC-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
                     'study_mode_id' => $student->study_mode_id,
@@ -285,5 +285,21 @@ class AssignmentController extends Controller
         }
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Track assigned to section successfully.');
+    }
+
+    // assignTrackCoursesToSections
+    public function assignTrackCoursesToSections(Track $track)
+    {
+        $sections = $track->sections()->get();
+        
+        if ($sections->isEmpty()) {
+            return redirect()->route('tracks.show', $track->id)->with('error', 'No sections found for this track.');
+        }
+        
+        foreach ($sections as $section) {
+            $this->assignTrackCoursesToSection($section);
+        }
+
+        return redirect()->route('tracks.show', $track->id)->with('success', 'Courses assigned to sections successfully.');
     }
 }

@@ -456,7 +456,6 @@ function submitMove() {
                                     <!-- Course Assessments showed if instructors are assigned-->
                                     <td>
                                         <Link
-                                            v-if="course.instructor"
                                             :href="
                                                 route(
                                                     'assessments.section_course',
@@ -475,16 +474,6 @@ function submitMove() {
                                                 >Assessments</span
                                             >
                                         </Link>
-                                        <span
-                                            v-else
-                                            class="text-red-500 cursor-not-allowed"
-                                            ><InformationCircleIcon
-                                                class="w-5 h-5 inline-block"
-                                            />
-                                            <span class="inline-block">
-                                                No Instructor</span
-                                            >
-                                        </span>
                                     </td>
 
                                     <!-- Course Grades -->

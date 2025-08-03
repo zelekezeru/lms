@@ -3,6 +3,7 @@ import { defineProps, ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
 import InputError from "@/Components/InputError.vue";
 import { Listbox, Select, Tree } from "primevue";
@@ -227,7 +228,7 @@ const sortedCourses = computed(() => {
                     {{ t("programs.tracks.curriculum.mode") }}
                 </h2>
             </div>
-            <div class="inline-flex items-center gap-2 px-4 py-2">
+            <div class="flex flex-row items-center gap-4 px-4 py-2">
                 <button
                     @click="openModal"
                     class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -235,6 +236,15 @@ const sortedCourses = computed(() => {
                     <PlusIcon class="w-5 h-5" />
                     {{ t("programs.tracks.curriculum.create") }}
                 </button>
+                <!-- Button to assign courses -->
+                <Link
+                    :href="route('trackCourses-sections.assign', { track: track.id })"
+                    class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-md shadow-sm hover:bg-indigo-200 transition-colors duration-200"
+                    title="Assign Courses"
+                >
+                    <EyeIcon class="w-5 h-5 mr-1" />
+                    <span class="font-medium">{{ $t("sections.assign_track_courses") }}</span>
+                </Link>
             </div>
 
             <div

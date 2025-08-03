@@ -51,8 +51,8 @@ class TrackController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $tracks = $query->paginate(50)->withQueryString();
-
+        $tracks = $query->withCount(['students'])->paginate(50)->withQueryString();
+        
         return inertia('Tracks/Index', [
             'tracks' => TrackResource::collection($tracks),
             'programs' => ProgramResource::collection(Program::all()),

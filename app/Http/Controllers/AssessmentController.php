@@ -33,8 +33,8 @@ class AssessmentController extends Controller
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $weights = Weight::where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
-        $grades = $section->grades()->where('course_id', $course->id)->get();
-        
+        $grades = $section->grades()->where('course_id', $course->id)->with('student')->get();
+
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));

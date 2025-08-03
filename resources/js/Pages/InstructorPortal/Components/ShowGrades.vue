@@ -9,6 +9,7 @@ const props = defineProps({
   course: Object,
   semester: Object,
   weights: Array,
+  grades: Array,
   instructor: Object,
   studentsList: Object,
   studentResults: Object, // <-- This comes from your controller
@@ -122,11 +123,6 @@ const submitImport = () => {
     <div v-if="!props.section.grades || props.section.grades.filter(g => g.course_id === props.course.id).length === 0">
       <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
 
-      <!-- Import file -->
-      <!-- <form @submit.prevent="submitImport" enctype="multipart/form-data" class="mb-4">
-        <input type="file" ref="fileInput" accept=".csv,.xlsx,.xls" class="border p-2 rounded text-sm" required>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Import</button>
-      </form> -->
       <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
         <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
           <tr>
@@ -185,11 +181,18 @@ const submitImport = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+          <tr v-for="(grade, index) in props.grades" :key="grade.student.id" class="text-sm">
             <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }}</td>
-            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_point ?? "N/A" }}</td>
-            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}</td>
+            <td class="px-4 py-2 text-white">
+              <a
+              :href="route('students.show', grade.student.id)"
+              class="text-blue-600 hover:underline"
+              >
+              {{ grade.student.first_name }} {{ grade.student.middle_name }}
+              </a>
+            </td>
+            <td class="px-4 py-2">{{ grade?.grade_point ?? "N/A" }}</td>
+            <td class="px-4 py-2">{{ grade?.grade_letter ?? "N/A" }}</td>
           </tr>
         </tbody>
       </table>

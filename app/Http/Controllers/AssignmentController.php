@@ -185,19 +185,16 @@ class AssignmentController extends Controller
 
         foreach ($students as $student) {
             $yearId = $student->year_id;
-            
+
             // target section is a section that belongs to the same studymode and year as the student
             $targetSection = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
                 return $section->year_id == $yearId;
             });
-            
-            // if there is no target section found create it
-            if ($targetSection)
-            {
-                $targetSectionId = $targetSection->id;
-            }
 
-            else {                
+            // if there is no target section found create it
+            if ($targetSection) {
+                $targetSectionId = $targetSection->id;
+            } else {
 
                 $year = Year::where('id', $student->year_id)->first();
 
@@ -253,7 +250,7 @@ class AssignmentController extends Controller
     public function assignTrackCoursesToSection(Section $section)
     {
         $track = Track::where('id', $section->track_id)->first();
-        
+
         $fields = [
             'track_id' => $track->id,
             'study_mode_id' => $section->study_mode_id,
@@ -266,10 +263,10 @@ class AssignmentController extends Controller
 
         foreach ($trackCourses as $trackCourse) {
             $curriculum = $trackCourse->curricula->first();
-            if($curriculum !== null) {
+            if ($curriculum !== null) {
                 $fields['year_level'] = $curriculum->year_level;
                 $fields['semester_level'] = $curriculum->semester_level;
-                
+
                 CourseOffering::updateOrCreate(
                     [
                         'course_id' => $trackCourse->id,
@@ -281,7 +278,6 @@ class AssignmentController extends Controller
                     ],
                 );
             }
-            
         }
 
         return redirect()->route('sections.show', $section->id)->with('success', 'Track assigned to section successfully.');
@@ -291,11 +287,11 @@ class AssignmentController extends Controller
     public function assignTrackCoursesToSections(Track $track)
     {
         $sections = $track->sections()->get();
-        
+
         if ($sections->isEmpty()) {
             return redirect()->route('tracks.show', $track->id)->with('error', 'No sections found for this track.');
         }
-        
+
         foreach ($sections as $section) {
             $this->assignTrackCoursesToSection($section);
         }

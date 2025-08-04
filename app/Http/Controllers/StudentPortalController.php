@@ -18,13 +18,18 @@ class StudentPortalController extends Controller
     public function index()
     {
         $student = new StudentResource(request()->user()->student->load(
-            'user',
-            'program',
-            'track',
-            'section',
-            'enrollments.courseOffering',
-            'enrollments.courseOffering.section.track',
-            'enrollments.courseOffering.section.studyMode'
+            [
+                'user',
+                'program',
+                'track',
+                'section',
+                'enrollments' => function ($q) {
+                    $q->where('status', 'enrolled')->where('academic_status', 'in_progress');
+                },
+                'enrollments.courseOffering',
+                'enrollments.courseOffering.section.track',
+                'enrollments.courseOffering.section.studyMode'
+            ]
         ));
 
         return inertia('StudentPortal/Dashboard', [
@@ -57,10 +62,11 @@ class StudentPortalController extends Controller
             $q->where('student_id', $student->id);
         })->get());
 
-        $classSchedules = ClassScheduleResource::collection($enrollment->courseOffering->classSchedules);
-        $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions);
+        $activeSemester = $enrollment->semester()->with('year')->first();
 
-        $activeSemester = $enrollment->semester;
+        $classSchedules = ClassScheduleResource::collection($enrollment->courseOffering->classSchedules()->where('semester_id', $activeSemester->id)->get());
+        $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions()->where('semester_id', $activeSemester->id)->get());
+
 
         return Inertia::render('StudentPortal/Enrollments/Show', [
             'enrollment' => new EnrollmentResource($enrollment),
@@ -78,6 +84,9 @@ class StudentPortalController extends Controller
             'program',
             'track',
             'section',
+            'enrollments' => function ($q) {
+                $q->where('status', 'enrolled')->where('academic_status', 'in_progress');
+            },
             'enrollments.courseOffering.classSchedules',
         ]);
 
@@ -85,12 +94,9 @@ class StudentPortalController extends Controller
 
         $classSchedules = ClassScheduleResource::collection($studentModel->classSchedules());
 
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
-
         return inertia('StudentPortal/ClassSchedules', [
             'student' => $student,
             'classSchedules' => $classSchedules,
-            'activeSemester' => $activeSemester,
         ]);
     }
 
@@ -100,6 +106,9 @@ class StudentPortalController extends Controller
             'program',
             'track',
             'section',
+            'enrollments' => function ($q) {
+                $q->where('status', 'enrolled')->where('academic_status', 'in_progress');
+            },
             'enrollments.courseOffering.classSessions',
         ]);
 
@@ -107,12 +116,10 @@ class StudentPortalController extends Controller
 
         $classSessions = ClassSessionResource::collection($studentModel->classSessions());
 
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
 
         return inertia('StudentPortal/ClassSessions', [
             'student' => $student,
             'classSessions' => $classSessions,
-            'activeSemester' => $activeSemester,
         ]);
     }
 

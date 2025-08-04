@@ -235,10 +235,12 @@ watch(
 watch(
     () => paymentUpdateForm.paid_amount,
     (newVal) => {
-        if (newVal == selectedPayment.value.total_amount) {
-            paymentUpdateForm.status = "completed";
-        } else {
-            paymentUpdateForm.status = "pending";
+        if (selectedPayment.value != null) {
+            if (newVal == selectedPayment.value.total_amount) {
+                paymentUpdateForm.status = "completed";
+            } else {
+                paymentUpdateForm.status = "pending";
+            }
         }
     }
 );

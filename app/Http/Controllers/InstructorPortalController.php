@@ -114,6 +114,9 @@ class InstructorPortalController extends Controller
         $instructor = request()->user()->instructor;
 
         $instructor->load([
+            'classSchedules' => function ($q) {
+                $q->whereHas('courseOffering.section.studyMode.semesters', fn($s) => $s->wherePivot('status', 'active'));
+            },
             'classSchedules.room',
             'classSchedules.courseOffering.course',
         ]);

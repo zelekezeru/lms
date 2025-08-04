@@ -52,7 +52,13 @@ class StudentPortalController extends Controller
 
     public function enrollmentDetail(Enrollment $enrollment)
     {
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section.track', 'section.program', 'results'));
+        $student = new StudentResource(request()->user()->student->load(
+            'program',
+            'track',
+            'section.track',
+            'section.program',
+            'results'
+        ));
         $enrollment->load('student', 'courseOffering.course', 'courseOffering.section.track.program', 'courseOffering.section.studyMode');
 
         $course = $enrollment->courseOffering->course;

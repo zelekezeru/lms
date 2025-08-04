@@ -58,6 +58,8 @@ class Student extends Model
     public function classSchedules()
     {
         return $this->enrollments()
+            ->where('status', 'enrolled')
+            ->where('academic_status', 'in_progress')
             ->with(
                 'courseOffering.classSchedules.courseOffering.course',
                 'courseOffering.classSchedules.courseOffering.instructor',

@@ -198,6 +198,8 @@ class AssignmentController extends Controller
 
                 $year = Year::where('id', $student->year_id)->first();
 
+                $track = Track::where('id', $student->track_id)->first();
+
                 if ($year) {
                     $track = Track::where('id', $student->track_id)->first();
                 } else{

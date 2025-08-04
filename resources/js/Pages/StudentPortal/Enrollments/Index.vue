@@ -13,23 +13,19 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    instructor: {
-        type: Object,
-        required: true,
-    },
 });
 
 const enrolledCourses = props.student.enrollments.filter(
-    (enrollment) => enrollment.status == "Enrolled"
+    (enrollment) => enrollment.status == "enrolled"
 );
 const completedCourses = props.student.enrollments.filter(
-    (enrollment) => enrollment.status == "Completed"
+    (enrollment) => enrollment.status == "completed"
 );
 const droppedCourses = props.student.enrollments.filter(
-    (enrollment) => enrollment.status == "Dropped"
+    (enrollment) => enrollment.status == "dropped"
 );
 const failedCourses = props.student.enrollments.filter(
-    (enrollment) => enrollment.status == "Failed"
+    (enrollment) => enrollment.status == "failed"
 );
 </script>
 

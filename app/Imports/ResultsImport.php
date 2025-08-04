@@ -53,10 +53,10 @@ class ResultsImport implements ToCollection
 
         // Get the first row as headings for weight points
         $weightHeadings = $rows[0]->toArray();
-        
+
         // Slice the array to get only the columns representing weight points (starting from the 5th column, index 4)
         $weightPoints = array_slice($weightHeadings, 4);
-        
+
         // Validate if weight points are found
         if (empty($weightPoints) || count($weightPoints) < 1) {
             return back()->withErrors('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
@@ -64,7 +64,7 @@ class ResultsImport implements ToCollection
 
         // Calculate the sum of the weight points
         $totalWeightSum = array_sum($weightPoints);
-        
+
         // Validate if the total weight points sum to 100
         if ($totalWeightSum != 100) {
             return back()->withErrors('The total sum of weight points must be 100, but it is ' . $totalWeightSum . '.');
@@ -74,9 +74,9 @@ class ResultsImport implements ToCollection
 
         // Process student rows, starting from the second row (index 1)
         $rows = $rows->slice(1);
-        
+
         foreach ($rows as $row) {
-            
+
             // Extract student ID number, trim whitespace
             $idNumber = trim($row[1] ?? '');
             $student = Student::where('id_no', $idNumber)->first();
@@ -85,19 +85,18 @@ class ResultsImport implements ToCollection
                 continue; // Skip incomplete rows (student not found)
             }
 
-            $section = $student ? $student->section: Section::find($student->section_id);
+            $section = $student ? $student->section : Section::find($student->section_id);
             if (!$section) {
                 continue; // Skip if section is not found for the student
             }
 
             // Retrieve the CourseOffering to get associated course, section, instructor, etc.
             $courseOffering = CourseOffering::lookUpFor($this->courseId, $section->id);
-            
-            if($courseOffering == null)
-            {   
+
+            if ($courseOffering == null) {
                 return back()->withErrors('Course offering not found for the given course and section. Please ensure the course offering exists.');
             }
-            // Validate year and semester levels are set for the course offering
+            // Validate year and semester  levels are set for the course offering
             if (!$courseOffering->year_level || !$courseOffering->semester_level) {
                 return back()->withErrors('Year level and semester level are not set for this course in this section.');
             }
@@ -107,13 +106,13 @@ class ResultsImport implements ToCollection
             $section = $courseOffering->section;
             // Use the instructor from course offering, or default to the first available instructor if not set
             $instructor = $courseOffering->instructor ?? Instructor::first();
-            
+
             $studyMode = $courseOffering->section->studyMode;
-            
+
             // Determine the academic year based on the section's year and course offering's year level
             $courseGivenAtYear = intval($section->year->name) + $courseOffering->year_level - 1;
             $year = Year::where('name', $courseGivenAtYear)->first();
-            
+
             // Validate if the academic year exists
             if (!$year) {
                 return back()->withErrors('A year with the name ' . $courseGivenAtYear . ' was not found. Please ensure the academic years are set up.');
@@ -130,7 +129,7 @@ class ResultsImport implements ToCollection
             if (!$semester) {
                 return back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
             }
-            
+
             if (in_array($section->id, $this->sections)) {
                 $weights = $this->weights[$section->id];
             } else {
@@ -142,8 +141,8 @@ class ResultsImport implements ToCollection
                 // Store the weights for the section for later use
                 $weights = $this->weights[$section->id];
             }
-            
-            
+
+
             // Sync the student's enrollment status for the current semester
             $student->semesters()->syncWithoutDetaching([
                 $semester->id => [
@@ -154,37 +153,37 @@ class ResultsImport implements ToCollection
 
             // Student result create Method
             $totalPoint = $this->createResults($weights, $student, $course, $section, $year, $semester, $courseOffering, $row);
-            
+
             // After processing results, calculate the total points for grading
             $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering);
-        } 
+        }
     }
 
     // Weights create method
     public function createWeights($weightPoints, $instructor, $section, $semester, $course): array
     {
-       foreach ($weightPoints as $index => $weightPoint) {
-                // Ensure the weight point is a valid number before using it
-                if (!is_numeric($weightPoint)) {
-                    throw new Exception('Invalid weight point found in the file. Please ensure all weight points are numeric.');
-                }
-
-                $weight = Weight::updateOrCreate(
-                    [
-                        'name' => 'Weight ' . ($index + 1),
-                        'instructor_id' => $instructor->id,
-                        'section_id' => $section->id,
-                        'semester_id' => $semester->id,
-                        'course_id' => $course->id,
-                    ],
-                    [
-                        'point' => $weightPoint,
-                        'description' => null, // You might want to get this from somewhere if available
-                    ]
-                );
-                // Store weights by their index for easy lookup later when processing student scores
-                $this->weights[$index] = $weight;
+        foreach ($weightPoints as $index => $weightPoint) {
+            // Ensure the weight point is a valid number before using it
+            if (!is_numeric($weightPoint)) {
+                throw new Exception('Invalid weight point found in the file. Please ensure all weight points are numeric.');
             }
+
+            $weight = Weight::updateOrCreate(
+                [
+                    'name' => 'Weight ' . ($index + 1),
+                    'instructor_id' => $instructor->id,
+                    'section_id' => $section->id,
+                    'semester_id' => $semester->id,
+                    'course_id' => $course->id,
+                ],
+                [
+                    'point' => $weightPoint,
+                    'description' => null, // You might want to get this from somewhere if available
+                ]
+            );
+            // Store weights by their index for easy lookup later when processing student scores
+            $this->weights[$index] = $weight;
+        }
         return $this->weights;
     }
 
@@ -229,7 +228,7 @@ class ResultsImport implements ToCollection
     {
         // Determine the grade letter based on the total calculated points
         $gradeLetter = $this->getGradeLetter($totalPoint);
-        
+
         // Update or create the Grade entry for the student for this course and semester
         Grade::updateOrCreate(
             [

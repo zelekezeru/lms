@@ -18,6 +18,7 @@ class StudentPortalController extends Controller
     public function index()
     {
         $student = new StudentResource(request()->user()->student->load(
+            'user',
             'program',
             'track',
             'section',

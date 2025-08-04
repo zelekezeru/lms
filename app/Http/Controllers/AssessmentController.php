@@ -28,7 +28,15 @@ class AssessmentController extends Controller
 
         $course = $courseOffering->course;
 
-        $instructor = new InstructorResource($courseOffering->instructor);
+        // Check if instructor exists
+        if (! $courseOffering->instructor) {
+            $instructor = null; // No instructor assigned
+        } elseif ($courseOffering->instructor->user) {
+            $instructor = new InstructorResource($courseOffering->instructor->user);
+        } else{
+            $instructor = new InstructorResource($courseOffering->instructor);
+        }
+        
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
@@ -38,7 +46,6 @@ class AssessmentController extends Controller
         $enrollments = $courseOffering->enrollments;
 
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
-
         $studentResults = [];
         // Fetch students with their course results
         foreach ($students as $student) {
@@ -69,12 +76,12 @@ class AssessmentController extends Controller
                         'point' => $result->point,
                         'description' => $result->description,
                         'changed_point' => $result->changed_point,
-                        'instructor_id' => $result->instructor_id,
-                        'grade_id' => $result->grade_id,
-                        'student_id' => $result->student_id,
+                        'instructor_id' => $result->instructor_id ?? null,
+                        'grade_id' => $result->grade_id ?? null,
+                        'student_id' => $result->student_id ?? null,
                         'weight_id' => $weight->id,
-                        'changed_by' => $result->changed_by,
-                        'changed_at' => $result->changed_at,
+                        'changed_by' => $result->changed_by ?? null,
+                        'changed_at' => $result->changed_at ?? null,
                     ];
                 }
             }

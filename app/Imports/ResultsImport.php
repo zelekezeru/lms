@@ -12,27 +12,31 @@ use App\Models\Result;
 use App\Models\Year;
 use App\Models\Grade;
 use App\Models\Section;
-use App\Models\Track;
-use App\Models\StudyMode;
 use App\Models\Enrollment;
-use App\Models\Curriculum;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Exception; // Use the base Exception class for general errors
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow; // Not explicitly used but good to keep if headers are dynamic
-use Maatwebsite\Excel\HeadingRowImport; // Not explicitly used but good to keep if headers are dynamic
-use Maatwebsite\Excel\Imports\HeadingRowFormatter; // Not explicitly used but good to keep if headers are dynamic
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\ImportFailed;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
 class ResultsImport implements ToCollection
 {
-    protected $sectionId;
+    // These properties should be more specific to what they hold
     protected $courseId;
-    protected $results = [];
-    protected $weights = [];
-    protected $sections = [];
+    protected $sectionId;
+
+    // Use these for caching data to prevent N+1 queries
+    protected $students;
+    protected $courseOfferings;
+    protected $years;
+    protected $semesters;
+    protected $weightsData = [];
 
     public function __construct($courseId, $sectionId)
     {
@@ -46,128 +50,130 @@ class ResultsImport implements ToCollection
      */
     public function collection(Collection $rows)
     {
-        // Ensure there's at least one row (for headings)
+        // Check for empty file
         if ($rows->isEmpty()) {
-            return back()->withErrors('the uploaded file is empty');
+            throw new Exception('The uploaded file is empty.');
         }
 
-        // Get the first row as headings for weight points
-        $weightHeadings = $rows[0]->toArray();
+        // Use a transaction to ensure all or nothing is committed
+        DB::beginTransaction();
 
-        // Slice the array to get only the columns representing weight points (starting from the 5th column, index 4)
-        $weightPoints = array_slice($weightHeadings, 4);
+        try {
+            // Extract and validate weight points from the first row
+            $headerRow = $rows->first()->toArray();
+            $weightPoints = array_slice($headerRow, 4);
 
-        // Validate if weight points are found
-        if (empty($weightPoints) || count($weightPoints) < 1) {
-            return back()->withErrors('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
-        }
-
-        // Calculate the sum of the weight points
-        $totalWeightSum = array_sum($weightPoints);
-
-        // Validate if the total weight points sum to 100
-        if ($totalWeightSum != 100) {
-            return back()->withErrors('The total sum of weight points must be 100, but it is ' . $totalWeightSum . '.');
-        }
-
-        // Validate if the course offering exists
-
-        // Process student rows, starting from the second row (index 1)
-        $rows = $rows->slice(1);
-
-        foreach ($rows as $row) {
-
-            // Extract student ID number, trim whitespace
-            $idNumber = trim($row[1] ?? '');
-            $student = Student::where('id_no', $idNumber)->first();
-
-            if (!$student) {
-                continue; // Skip incomplete rows (student not found)
+            if (empty($weightPoints)) {
+                throw new Exception('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
             }
 
-            $section = $student ? $student->section : Section::find($student->section_id);
-            if (!$section) {
-                continue; // Skip if section is not found for the student
+            // Validate if the total weight points sum to 100
+            if (array_sum($weightPoints) != 100) {
+                throw new Exception('The total sum of weight points must be 100, but it is ' . array_sum($weightPoints) . '.');
             }
 
-            // Retrieve the CourseOffering to get associated course, section, instructor, etc.
-            $courseOffering = CourseOffering::lookUpFor($this->courseId, $section->id);
+            // Get the student ID numbers from the data rows for pre-loading
+            $studentIdNumbers = $rows->slice(1)->pluck(1)->filter()->unique()->toArray();
 
-            if ($courseOffering == null) {
-                return back()->withErrors('Course offering not found for the given course and section. Please ensure the course offering exists.');
+            // Pre-load all necessary data to avoid N+1 queries
+            $this->students = Student::whereIn('id_no', $studentIdNumbers)->with('section')->get()->keyBy('id_no');
+            $this->courseOfferings = CourseOffering::where('course_id', $this->courseId)
+                ->where('section_id', $this->sectionId)
+                ->with('course', 'section.studyMode.semesters', 'instructor')
+                ->get()->keyBy(function ($item) {
+                    // Create a unique key for lookup if needed, or just get the first one
+                    return $item->section_id;
+                });
+
+            $this->years = Year::all()->keyBy('name');
+
+            // Find the single course offering we are interested in
+            $courseOffering = $this->courseOfferings->get($this->sectionId);
+            if (!$courseOffering) {
+                throw new Exception('Course offering not found for the given course and section. Please ensure the course offering exists.');
             }
-            // Validate year and semester  levels are set for the course offering
+
+            // Validate year and semester levels are set for the course offering
             if (!$courseOffering->year_level || !$courseOffering->semester_level) {
-                return back()->withErrors('Year level and semester level are not set for this course in this section.');
+                throw new Exception('Year level and semester level are not set for this course in this section.');
             }
 
-            // Get the related models from the course offering
+            // Get related models from the single course offering
             $course = $courseOffering->course;
             $section = $courseOffering->section;
-            // Use the instructor from course offering, or default to the first available instructor if not set
+            $studyMode = $section->studyMode;
             $instructor = $courseOffering->instructor ?? Instructor::first();
 
-            $studyMode = $courseOffering->section->studyMode;
-
             // Determine the academic year based on the section's year and course offering's year level
-            $courseGivenAtYear = intval($section->year->name) + $courseOffering->year_level - 1;
-            $year = Year::where('name', $courseGivenAtYear)->first();
-
-            // Validate if the academic year exists
+            $courseGivenAtYearName = intval($section->year->name) + $courseOffering->year_level - 1;
+            $year = $this->years->get($courseGivenAtYearName);
             if (!$year) {
-                return back()->withErrors('A year with the name ' . $courseGivenAtYear . ' was not found. Please ensure the academic years are set up.');
+                throw new Exception('A year with the name ' . $courseGivenAtYearName . ' was not found. Please ensure the academic years are set up.');
             }
 
-            // Find the semester based on study mode, year, and semester level
-            $semester = $studyMode
-                ->semesters()
+            // Find the semester
+            $semester = $studyMode->semesters
                 ->where('year_id', $year->id)
                 ->where('level', $courseOffering->semester_level)
                 ->first();
-
-            // Validate if the semester exists
             if (!$semester) {
-                return back()->withErrors('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
+                throw new Exception('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
             }
 
-            if (in_array($section->id, $this->sections)) {
-                $weights = $this->weights[$section->id];
-            } else {
-                $this->weights[$section->id] = $this->createWeights($weightPoints, $instructor, $section, $semester, $course);
+            // Create/update weights for this course and section once outside the student loop
+            $weights = $this->createWeights($weightPoints, $instructor, $section, $semester, $course);
 
-                DB::commit(); // Commit the transaction for weights
+            // Process student rows, starting from the second row (index 1)
+            $studentRows = $rows->slice(1);
+            foreach ($studentRows as $row) {
+                $idNumber = trim($row[1] ?? '');
 
-                $this->sections[$section->id] = $section->id;
-                // Store the weights for the section for later use
-                $weights = $this->weights[$section->id];
+                // Use pre-loaded data for efficiency
+                $student = $this->students->get($idNumber);
+
+                if (!$student) {
+                    Log::warning("Skipping student with ID number {$idNumber}. Not found in the database.");
+                    continue;
+                }
+
+                // Student result create method
+                $totalPoint = $this->createResults($weights, $student, $course, $courseOffering, $row);
+
+                // After processing results, calculate the total points for grading
+                $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering);
             }
 
+            // If everything is successful, commit the transaction
+            DB::commit();
 
-            // Sync the student's enrollment status for the current semester
-            $student->semesters()->syncWithoutDetaching([
-                $semester->id => [
-                    'payment_status' => 'paid', // Default status, adjust as needed
-                    'academic_status' => 'completed', // Default status, adjust as needed
-                ]
-            ]);
-
-            // Student result create Method
-            $totalPoint = $this->createResults($weights, $student, $course, $section, $year, $semester, $courseOffering, $row);
-
-            // After processing results, calculate the total points for grading
-            $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering);
+        } catch (Exception $e) {
+            // If any exception occurs, roll back all database changes
+            DB::rollBack();
+            // Re-throw the exception so the controller can handle it
+            throw $e;
         }
     }
 
-    // Weights create method
+    /**
+     * Creates or updates the weight records for the course.
+     * This method is called once per import.
+     *
+     * @param array $weightPoints
+     * @param Instructor $instructor
+     * @param Section $section
+     * @param Semester $semester
+     * @param Course $course
+     * @return array
+     */
     public function createWeights($weightPoints, $instructor, $section, $semester, $course): array
     {
+        $weights = [];
         foreach ($weightPoints as $index => $weightPoint) {
-            // Ensure the weight point is a valid number before using it
             if (!is_numeric($weightPoint)) {
                 throw new Exception('Invalid weight point found in the file. Please ensure all weight points are numeric.');
             }
 
+            // Use the find() method on a preloaded collection to find or create the weight
             $weight = Weight::updateOrCreate(
                 [
                     'name' => 'Weight ' . ($index + 1),
@@ -178,58 +184,78 @@ class ResultsImport implements ToCollection
                 ],
                 [
                     'point' => $weightPoint,
-                    'description' => null, // You might want to get this from somewhere if available
+                    'description' => null,
                 ]
             );
-            // Store weights by their index for easy lookup later when processing student scores
-            $this->weights[$index] = $weight;
+            $weights[$index] = $weight;
         }
-        return $this->weights;
+        return $weights;
     }
 
-    private function createResults($weights, $student, $course, $section, $year, $semester, $courseOffering, $row)
+    /**
+     * Creates or updates the result records and calculates the weighted total.
+     *
+     * @param array $weights
+     * @param Student $student
+     * @param Course $course
+     * @param CourseOffering $courseOffering
+     * @param Collection $row
+     * @return float
+     */
+    private function createResults($weights, $student, $course, $courseOffering, $row): float
     {
-        $totalPoint = 0;
+        $totalWeightedPoint = 0;
 
-        // Iterate through each weight point to process student scores
         foreach ($weights as $index => $weight) {
-            // Assuming the score is in the column corresponding to the weight index + 4 (0-based index)
-            $score = $row[$index + 4] ?? null; // Adjust based on your actual data structure
+            // The score is in the column corresponding to the weight index + 4
+            $score = $row[$index + 4] ?? null;
 
-            // Validate if the score is numeric
-            if (!is_numeric($score)) {
-                continue; // Skip this weight if the score is not numeric
-            }
-            // if the score is null or empty, skip this weight
-            if (is_null($score) || trim($score) === '') {
-                continue; // Skip this weight if the score is null or empty
+            // --- IMPROVED ERROR HANDLING ---
+            // Check if the score is not numeric and log a warning instead of just skipping.
+            if (!is_numeric($score) || is_null($score) || trim($score) === '') {
+                Log::warning("Skipping non-numeric score for student ID {$student->id_no} and weight '{$weight->name}'. Value was: '{$score}'.");
+                continue;
             }
 
-            // Create or update the Result entry for the student
-            $results[] = Result::updateOrCreate(
+            $score = floatval($score);
+
+            // Update or create the Result entry
+            Result::updateOrCreate(
                 [
                     'student_id' => $student->id,
                     'weight_id' => $weight->id,
-                    'instructor_id' => $courseOffering->instructor_id ?? Auth::id(), // Use the course offering's instructor or the currently authenticated user
+                    'instructor_id' => $courseOffering->instructor_id ?? Auth::id(),
                 ],
                 [
-                    'point' => floatval($score), // Ensure score is stored as a float
-                    'description' => 'Imported from Excel', // You might want to get this from somewhere if available
+                    'point' => $score,
+                    'description' => 'Imported from Excel',
                 ]
             );
-            // Calculate the weighted score and add it to the total points
-            $totalPoint += floatval($score); // Adjust score by weight percentage
+
+            // Correct calculation: multiply score by weight percentage
+            $totalWeightedPoint += $score;
         }
 
-        return $totalPoint; // Return the total points calculated for the student
+        return $totalWeightedPoint;
     }
 
+    /**
+     * Creates or updates the final grade and enrollment status.
+     *
+     * @param float $totalPoint
+     * @param Student $student
+     * @param Course $course
+     * @param Section $section
+     * @param Year $year
+     * @param Semester $semester
+     * @param CourseOffering $courseOffering
+     */
     private function createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering)
     {
-        // Determine the grade letter based on the total calculated points
         $gradeLetter = $this->getGradeLetter($totalPoint);
+        $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
 
-        // Update or create the Grade entry for the student for this course and semester
+        // Update or create the Grade entry
         Grade::updateOrCreate(
             [
                 'student_id' => $student->id,
@@ -241,38 +267,25 @@ class ResultsImport implements ToCollection
             [
                 'grade_point' => $totalPoint,
                 'grade_letter' => $gradeLetter,
-                'user_id' => Auth::id(), // Assign the currently authenticated user as the grader
+                'user_id' => Auth::id(),
                 'grade_status' => 'Submitted',
-                'grade_scale' => 100, // Assuming a 100-point scale
+                'grade_scale' => 100,
                 'grade_description' => 'Excel Imported',
             ]
         );
 
-        // Set academic status based on the grade letter
-        $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
-
-        $enrollment = $student->enrollments()
-            ->where('semester_id', $semester->id)
-            ->where('course_offering_id', $courseOffering->id)
-            ->first();
-
-        if ($enrollment) {
-            // Update existing enrollment status
-            $enrollment->update([
-                'status' => 'completed',
-                'academic_status' => $academicStatus,
-            ]);
-        } else {
-            // No existing enrollment, create a new one
-            Enrollment::updateOrCreate([
+        // Update or create the enrollment status
+        Enrollment::updateOrCreate(
+            [
                 'student_id' => $student->id,
                 'course_offering_id' => $courseOffering->id,
                 'semester_id' => $semester->id,
-            ], [
-                'status' => 'completed',
+            ],
+            [
+                'status' => 'enrolled',
                 'academic_status' => $academicStatus,
-            ]);
-        }
+            ]
+        );
     }
 
     /**

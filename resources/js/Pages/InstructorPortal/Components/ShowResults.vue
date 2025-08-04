@@ -112,7 +112,7 @@ const submitWeightResults = () => {
             return;
         }
         results.push({
-            instructor_id: props.instructor.id,
+            instructor_id: props.instructor?.id,
             weight_id: weightId,
             student_id: student.id,
             point,

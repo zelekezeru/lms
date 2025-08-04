@@ -87,7 +87,7 @@ const props = defineProps({
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
             >
             <div v-if ="instructor" class="flex items-center">
-                {{ instructor.user.name }}
+                {{ instructor?.user.name }}
             </div>
             <div v-else class="text-red-500 dark:text-gray-400">
                 No instructor assigned 

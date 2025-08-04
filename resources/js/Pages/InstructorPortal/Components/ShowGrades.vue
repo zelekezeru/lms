@@ -19,7 +19,7 @@ const sumOfWeightPoints = computed(() =>
   props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
 );
 
-const authUser = ref({ id: props.instructor.id });
+const authUser = ref({ id: props.instructor?.id });
 
 const gradeForm = useForm({ grades: [] });
 

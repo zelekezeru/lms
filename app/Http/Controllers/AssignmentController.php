@@ -201,10 +201,10 @@ class AssignmentController extends Controller
                 $track = Track::where('id', $student->track_id)->first();
 
                 $yearSuffix = substr($year->name, -2);
-
+                $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);
                 $section = Section::updateOrCreate([
                     'name' => $year->name . '-' . $track->name . ' Section-1',
-                    'code' => 'SC-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
+                    'code' => $section_id,
                     'program_id' => $track->program_id,
                     'track_id' => $track->id,
                     'study_mode_id' => $student->study_mode_id,

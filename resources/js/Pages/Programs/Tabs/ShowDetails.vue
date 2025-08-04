@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import Swal from "sweetalert2";
@@ -9,22 +9,23 @@ const props = defineProps({
     program: { type: Object, required: true },
 });
 
+// Delete function with SweetAlert confirmation
 const deleteProgram = (id) => {
     Swal.fire({
-        title: $t("programs.delete_confirm_title"),
-        text: $t("programs.delete_confirm_text"),
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("common.yes"),
+        confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("programs.destroy", { program: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("programs.deleted_title"),
-                        $t("programs.deleted_text"),
+                        "Deleted!",
+                        "The Program has been deleted.",
                         "success"
                     );
                 },

@@ -5,7 +5,6 @@ import { defineProps, ref } from "vue";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
-
 import { Listbox, MultiSelect } from "primevue";
 import {
     PencilIcon,

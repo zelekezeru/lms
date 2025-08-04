@@ -25,24 +25,23 @@ const props = defineProps({
         required: true,
     },
 });
-
 // Delete function with SweetAlert confirmation
 const deleteTrack = (id) => {
     Swal.fire({
-        title: $t("tracks.delete_confirm_title"),
-        text: $t("tracks.delete_confirm_text"),
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("common.yes"),
+        confirmButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("tracks.deleted_title"),
-                        $t("tracks.deleted_text"),
+                        "Deleted!",
+                        "The Track has been deleted.",
                         "success"
                     );
                 },

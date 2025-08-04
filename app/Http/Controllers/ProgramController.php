@@ -195,6 +195,19 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
+        // Check if the program has associated tracks
+        if ($program->tracks()->count() > 0) {
+            return redirect()->route('programs.index')->with('error', 'Cannot delete program with associated tracks.');
+        }
+        if ($program->courses()->count() > 0) {
+            return redirect()->route('programs.index')->with('error', 'Cannot delete program with associated courses.');
+        }
+        if ($program->studyModes()->count() > 0) {
+            return redirect()->route('programs.index')->with('error', 'Cannot delete program with associated study modes.');
+        }
+        if ($program->users()->count() > 0) {
+            return redirect()->route('programs.index')->with('error', 'Cannot delete program with associated users.');
+        }
         $program->delete();
 
         return redirect()->route('programs.index')->with('success', 'Program deleted successfully.');

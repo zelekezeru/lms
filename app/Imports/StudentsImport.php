@@ -10,6 +10,8 @@ use App\Models\Student;
 use App\Models\User;
 use App\Models\Year;
 use App\Models\StudyMode;
+use App\Models\Track;
+use App\Models\CourseOffering;
 use App\Models\Center;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -204,9 +206,47 @@ class StudentsImport implements ToCollection, WithHeadingRow
                     'center_id' => $this->center_id ?? null,
                 ]);
             $track->sections()->save($section);
+
+            $this->assignTrackCoursesToSection($section);
         }
 
         return $section;
+    }
+
+    public function assignTrackCoursesToSection(Section $section)
+    {
+        $track = Track::where('id', $section->track_id)->first();
+
+        $fields = [
+            'track_id' => $track->id,
+            'study_mode_id' => $section->study_mode_id,
+        ];
+        // Assign the track to the section
+
+        $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
+            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+        }])->get();
+
+        foreach ($trackCourses as $trackCourse) {
+            $curriculum = $trackCourse->curricula->first();
+            if ($curriculum !== null) {
+                $fields['year_level'] = $curriculum->year_level;
+                $fields['semester_level'] = $curriculum->semester_level;
+
+                CourseOffering::updateOrCreate(
+                    [
+                        'course_id' => $trackCourse->id,
+                        'section_id' => $section->id,
+                    ],
+                    [
+                        'year_level' => $curriculum->year_level ?? null,
+                        'semester_level' => $curriculum->semester_level ?? null,
+                    ],
+                );
+            }
+        }
+
+        return redirect()->route('sections.show', $section->id)->with('success', 'Track assigned to section successfully.');
     }
 
     private function getOrCreateYearAndSemester($entryYear)

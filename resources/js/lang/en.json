@@ -148,7 +148,11 @@
       "duration": "Duration",
       "select_program": "Select Program",
       "in_language": "in {language}",
-      
+      "deleted_title": "Deleted!",
+      "deleted_text": "The learning track has been deleted.",
+      "delete_confirm_text": "You won't be able to revert this!",
+      "delete_confirm_title": "Are you sure?",
+
       "curriculum": {
         "with": "with",
         "mode": "Mode - Curriculum",

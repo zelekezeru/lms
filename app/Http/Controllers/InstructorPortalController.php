@@ -34,6 +34,10 @@ class InstructorPortalController extends Controller
             )
         );
 
+        $uniqueAssignments = $instructor->courseOfferings->unique('section_id');
+
+        $instructor->setRelation('courseOfferings', $uniqueAssignments);
+
         return inertia('InstructorPortal/Dashboard', [
             'instructor' => $instructor,
         ]);

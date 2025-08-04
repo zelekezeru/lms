@@ -1,14 +1,8 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
 import {
     AcademicCapIcon,
-    ChartBarIcon,
-    UsersIcon,
-    CalendarIcon,
-    CurrencyDollarIcon,
     BookmarkIcon,
-    CheckCircleIcon,
-    ClockIcon,
     ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -76,80 +70,6 @@ onMounted(createChart);
         <!-- Main Content -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="col-span-3 space-y-8">
-                <!-- Teaching Courses -->
-                <section>
-                    <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
-                    >
-                        Courses You’re Teaching
-                    </h2>
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                    >
-                        <div
-                            v-for="course in instructor.courses"
-                            :key="course.id"
-                            class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all flex flex-col justify-between h-full"
-                        >
-                            <div>
-                                <AcademicCapIcon
-                                    class="h-6 w-6 text-indigo-500 mb-2"
-                                />
-                                <h3
-                                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
-                                >
-                                    {{ course.name }}
-                                </h3>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400 mt-1"
-                                >
-                                    Sections:
-                                </p>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400"
-                                >
-                                    Credits: 3
-                                </p>
-                            </div>
-                            <Link
-                                :href="
-                                    route('instructor.courses.detail', {
-                                        course: course.id,
-                                    })
-                                "
-                                class="group inline-flex items-center justify-center w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-                            >
-                                <ArrowRightIcon
-                                    class="w-4 h-4 mr-2 text-white transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                                View Details
-                            </Link>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Student Performance -->
-                <!-- <section>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Student Performance Overview</h2>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <canvas id="performanceChart" class="w-full h-64"></canvas>
-          </div>
-        </section> -->
-
-                <!-- Feedback Summary -->
-                <!-- <section>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Recent Student Feedback</h2>
-          <div class="space-y-4">
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-              <p class="text-gray-700 dark:text-gray-200">"Your CS101 lectures are super clear and helpful!"</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">— Student A</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-              <p class="text-gray-700 dark:text-gray-200">"Can you upload lecture notes earlier?"</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">— Student B</p>
-            </div>
-          </div>
-        </section> -->
                 <section>
                     <div class="mb-8">
                         <h1
@@ -237,6 +157,59 @@ onMounted(createChart);
                         </div>
                     </div>
                 </section>
+
+                <!-- Teaching Courses -->
+                <section>
+                    <h2
+                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
+                    >
+                        Courses You’re Teaching
+                    </h2>
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        <div
+                            v-for="course in instructor.courses"
+                            :key="course.id"
+                            class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all flex flex-col justify-between h-full"
+                        >
+                            <div>
+                                <AcademicCapIcon
+                                    class="h-6 w-6 text-indigo-500 mb-2"
+                                />
+                                <h3
+                                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                                >
+                                    {{ course.name }}
+                                </h3>
+                                <p
+                                    class="text-sm text-gray-600 dark:text-gray-400 mt-1"
+                                >
+                                    Sections:
+                                </p>
+                                <p
+                                    class="text-sm text-gray-600 dark:text-gray-400"
+                                >
+                                    Credits: 3
+                                </p>
+                            </div>
+                            <Link
+                                :href="
+                                    route('instructor.courses.detail', {
+                                        course: course.id,
+                                    })
+                                "
+                                class="group inline-flex items-center justify-center w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                            >
+                                <ArrowRightIcon
+                                    class="w-4 h-4 mr-2 text-white transition-transform duration-300 group-hover:translate-x-1"
+                                />
+                                View Details
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Schedule Overview -->
                 <section>
                     <h2

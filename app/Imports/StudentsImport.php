@@ -197,9 +197,9 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
             $section = Section::updateOrCreate([
                     'name' => $year->name . '-' . $track->name . ' Section-1',
-                'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
-                'program_id' => $track->program_id,
-                'track_id' => $track->id,
+                    'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
+                    'program_id' => $track->program_id,
+                    'track_id' => $track->id,
                     'study_mode_id' => $this->study_mode_id,
                     'year_id' => $year->id,
                     'semester_id' => Semester::where('year_id', $year->id)->first()->id,

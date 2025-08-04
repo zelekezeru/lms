@@ -74,20 +74,20 @@ class SectionController extends Controller
 
         $year = Year::where('id', $fields['year_id'])->first();
         
-        $year = substr($year->name, -2);
-        
-        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT) ;
+        $year_string = substr($year->name, -2);
+
+        $section_id = 'SC' . '-' . $year_string . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
 
-        $fields['name'] = $year->name . '-' . Track::find($fields['track_id'])->name . ' Section-1';
+        $fields['name'] = $year->name . ' - ' . Track::find($fields['track_id'])->name . ' Section-1';
 
         $track = Track::find($fields['track_id']);
 
         $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
             return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
         }])->get();
-        
+                
         DB::beginTransaction();
         try {
             $section = Section::create($fields);

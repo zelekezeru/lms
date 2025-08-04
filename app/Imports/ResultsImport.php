@@ -259,6 +259,7 @@ class ResultsImport implements ToCollection
         if ($enrollment) {
             // Update existing enrollment status
             $enrollment->update([
+                'status' => 'completed',
                 'academic_status' => $academicStatus,
             ]);
         } else {
@@ -268,7 +269,7 @@ class ResultsImport implements ToCollection
                 'course_offering_id' => $courseOffering->id,
                 'semester_id' => $semester->id,
             ], [
-                'status' => 'enrolled',
+                'status' => 'completed',
                 'academic_status' => $academicStatus,
             ]);
         }

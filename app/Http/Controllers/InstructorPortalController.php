@@ -24,17 +24,36 @@ class InstructorPortalController extends Controller
     public function index()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load(
+            request()->user()->instructor->load([
                 'user',
                 'courses',
                 'courseOfferings.section.program',
                 'courseOfferings.section.track',
                 'courseOfferings.section.semester',
                 'courseOfferings.course'
-            )
+            ])
         );
 
-        $uniqueAssignments = $instructor->courseOfferings->unique('section_id');
+        $filteredCourseOfferings = $instructor->courseOfferings->filter(function ($offering) {
+            $section = $offering->section;
+            $sectionYear = $section->year->name;
+
+            // Get active semester for the studyMode
+            $activeSemester = $section?->studyMode?->semesters
+                ?->firstWhere('pivot.status', 'active');
+
+            if (!$sectionYear || !$activeSemester || !$activeSemester->year) {
+                return false;
+            }
+
+            $activeYear = intval($activeSemester->year->name);
+            $calculatedYearLevel = $activeYear - intval($sectionYear) + 1;
+
+            return $offering->year_level === $calculatedYearLevel
+                && $offering->semester_level === $activeSemester->level;
+        });
+
+        $uniqueAssignments = $filteredCourseOfferings->unique('section_id');
 
         $instructor->setRelation('courseOfferings', $uniqueAssignments);
 
@@ -163,12 +182,25 @@ class InstructorPortalController extends Controller
         //     abort(403);
         // }
 
+        $activeSemester = $section->studyMode->activeSemester();
+        $yearLevel = intval($activeSemester->year->name) - intval($section->year->name) + 1;
+
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
+            request()->user()->instructor->load(
+                [
+                    'user',
+                    'courses',
+                    'courseOfferings' => function ($query) use ($yearLevel, $activeSemester) {
+                        $query->where('year_level', $yearLevel)->where('semester_level', $activeSemester->level);
+                    },
+                    'courseOfferings.section',
+                    'courseOfferings.course'
+                ]
+            )
         );
 
         $section = new SectionResource($section->load([
-            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id)->where('year_level', $yearLevel)->where('semester_level', $activeSemester->level),
             'courseOfferings.course',
             'program',
             'track',

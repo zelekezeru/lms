@@ -90,38 +90,15 @@ Route::middleware(['auth'])->group(function () {
     // Instructor Portal
     Route::group(['prefix' => 'reg-portal', 'middleware' => ['role:REGISTRAR']], function () {
         Route::get('/', [RegistrarPortalController::class, 'index'])->name('registrar.dashboard');
-        // Route::get('/courses', [RegistrarPortalController::class, 'courses'])->name('instructor.courses');
-        // Route::get('/courses/{course}', [RegistrarPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
-        // Route::get('/sections', [RegistrarPortalController::class, 'sections'])->name('instructor.sections');
-        // Route::get('/sections/{section}', [RegistrarPortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
-
+        
         Route::get('students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('registrar.students');
-        // Route::get('sections/{section}/courses/{course}/assessments', [RegistrarPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
-        // Route::get('sections/{section}/courses/{course}/attendance', [RegistrarPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
-        // Route::get('sections/{section}/courses/{course}', [RegistrarPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
-
-        // Route::get('/result', [RegistrarPortalController::class, 'result'])->name('instructor.result');
-        // Route::get('/calendars', [RegistrarPortalController::class, 'calendar'])->name('instructor.calendar');
-        // Route::get('/profile', [RegistrarPortalController::class, 'profile'])->name('instructor.profile');
-        // Route::get('/classSchedules', [RegistrarPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
+        
     });
 
     Route::group(['prefix' => 'fin-portal', 'middleware' => ['role:FINANCE-ADMIN|FINANCE-USER']], function () {
         Route::get('/', [FinancePortalController::class, 'index'])->name('finance.dashboard');
-        // Route::get('/courses', [FinancePortalController::class, 'courses'])->name('instructor.courses');
-        // Route::get('/courses/{course}', [FinancePortalController::class, 'courseDetail'])->name('instructor.courses.detail');
-        // Route::get('/sections', [FinancePortalController::class, 'sections'])->name('instructor.sections');
-        // Route::get('/sections/{section}', [FinancePortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
-
+        
         Route::get('students', [FinancePortalController::class, 'sectionCourseStudents'])->name('finance.students');
-        // Route::get('sections/{section}/courses/{course}/assessments', [FinancePortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
-        // Route::get('sections/{section}/courses/{course}/attendance', [FinancePortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
-        // Route::get('sections/{section}/courses/{course}', [FinancePortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
-
-        // Route::get('/result', [FinancePortalController::class, 'result'])->name('instructor.result');
-        // Route::get('/calendars', [FinancePortalController::class, 'calendar'])->name('instructor.calendar');
-        // Route::get('/profile', [FinancePortalController::class, 'profile'])->name('instructor.profile');
-        // Route::get('/classSchedules', [FinancePortalController::class, 'classSchedules'])->name('instructor.classSchedules');
     });
 
 
@@ -191,7 +168,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/student-section/sort/{track}', [AssignmentController::class, 'sortStudentsToSections'])->name('student-section.sort');
     Route::get('/trackCourses-section/{section}', [AssignmentController::class, 'assignTrackCoursesToSection'])->name('trackCourses-section.assign');
     Route::get('/trackCourses-sections/{track}', [AssignmentController::class, 'assignTrackCoursesToSections'])->name('trackCourses-sections.assign');
-
+    
     // Detach Program from Study Mode
     Route::delete('/studymodes/{study_mode}/programs/{program}', [StudyModeController::class, 'destroyProgram'])->name('studymodes.programs.destroy');
 

@@ -39,6 +39,7 @@ class ImportController extends Controller
 
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
+        
         $duplicateStudents = $import->getExistingUserIds();
 
         return $this->showImportedStudents($request, $section->id, $duplicateStudents)->with([

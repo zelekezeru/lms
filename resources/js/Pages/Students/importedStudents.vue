@@ -96,7 +96,7 @@ function route(name, id) {
                 <tr
                   v-for="(student, idx) in students"
                   :key="student.id"
-                  :class=" [
+                  :class="[
                     idx % 2 === 0
                       ? 'bg-white dark:bg-gray-900'
                       : 'bg-gray-50 dark:bg-gray-800',

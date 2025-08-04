@@ -52,7 +52,7 @@ class ResultsImport implements ToCollection
     {
         // Check for empty file
         if ($rows->isEmpty()) {
-            throw new Exception('The uploaded file is empty.');
+            return redirect()->back()->withErrors(['error' => 'The uploaded file is empty. Please upload a valid file with data.']);
         }
 
         // Use a transaction to ensure all or nothing is committed
@@ -64,12 +64,12 @@ class ResultsImport implements ToCollection
             $weightPoints = array_slice($headerRow, 4);
 
             if (empty($weightPoints)) {
-                throw new Exception('No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.');
+                return redirect()->back()->withErrors(['error' => 'No weight points found in the file. Please ensure the header row contains weight percentages from the 5th column onwards.']);
             }
 
             // Validate if the total weight points sum to 100
             if (array_sum($weightPoints) != 100) {
-                throw new Exception('The total sum of weight points must be 100, but it is ' . array_sum($weightPoints) . '.');
+                return redirect()->back()->withErrors(['error' => 'Total weight points must sum to 100%. Please check the file and try again.']);
             }
 
             // Get the student ID numbers from the data rows for pre-loading
@@ -90,12 +90,12 @@ class ResultsImport implements ToCollection
             // Find the single course offering we are interested in
             $courseOffering = $this->courseOfferings->get($this->sectionId);
             if (!$courseOffering) {
-                throw new Exception('Course offering not found for the given course and section. Please ensure the course offering exists.');
+                return redirect()->back()->withErrors(['error' => 'Course offering not found for the given course and section.']);
             }
 
             // Validate year and semester levels are set for the course offering
             if (!$courseOffering->year_level || !$courseOffering->semester_level) {
-                throw new Exception('Year level and semester level are not set for this course in this section.');
+                return redirect()->back()->withErrors(['error' => 'Year level or semester level not set for the course offering.']);
             }
 
             // Get related models from the single course offering
@@ -108,7 +108,7 @@ class ResultsImport implements ToCollection
             $courseGivenAtYearName = intval($section->year->name) + $courseOffering->year_level - 1;
             $year = $this->years->get($courseGivenAtYearName);
             if (!$year) {
-                throw new Exception('A year with the name ' . $courseGivenAtYearName . ' was not found. Please ensure the academic years are set up.');
+                return redirect()->back()->withErrors(['error' => 'Year not found for the course offering.']);
             }
 
             // Find the semester
@@ -117,7 +117,7 @@ class ResultsImport implements ToCollection
                 ->where('level', $courseOffering->semester_level)
                 ->first();
             if (!$semester) {
-                throw new Exception('A semester with level ' . $courseOffering->semester_level . ' in the year ' . $year->name . ' is not applied for ' . $studyMode->name . '.');
+                return redirect()->back()->withErrors(['error' => 'Semester not found for the course offering.']);
             }
 
             // Create/update weights for this course and section once outside the student loop
@@ -132,7 +132,6 @@ class ResultsImport implements ToCollection
                 $student = $this->students->get($idNumber);
 
                 if (!$student) {
-                    Log::warning("Skipping student with ID number {$idNumber}. Not found in the database.");
                     continue;
                 }
 
@@ -170,7 +169,7 @@ class ResultsImport implements ToCollection
         $weights = [];
         foreach ($weightPoints as $index => $weightPoint) {
             if (!is_numeric($weightPoint)) {
-                throw new Exception('Invalid weight point found in the file. Please ensure all weight points are numeric.');
+                return redirect()->back()->withErrors(['error' => 'Weight points must be numeric. Please check the file and try again.']);
             }
 
             // Use the find() method on a preloaded collection to find or create the weight
@@ -212,8 +211,7 @@ class ResultsImport implements ToCollection
 
             // --- IMPROVED ERROR HANDLING ---
             // Check if the score is not numeric and log a warning instead of just skipping.
-            if (!is_numeric($score) || is_null($score) || trim($score) === '') {
-                Log::warning("Skipping non-numeric score for student ID {$student->id_no} and weight '{$weight->name}'. Value was: '{$score}'.");
+            if (!is_numeric($score) || is_null($score) || trim($score) === '') {                
                 continue;
             }
 
@@ -297,7 +295,7 @@ class ResultsImport implements ToCollection
     public function getGradeLetter($totalPoint): string
     {
         $totalPoint = floatval($totalPoint);
-        if (is_nan($totalPoint)) return "N/A";
+        if (is_nan($totalPoint)) return "NG";
         if ($totalPoint >= 94) return "A";
         if ($totalPoint >= 90) return "A-";
         if ($totalPoint >= 87) return "B+";
@@ -309,6 +307,7 @@ class ResultsImport implements ToCollection
         if ($totalPoint >= 67) return "D+";
         if ($totalPoint >= 64) return "D";
         if ($totalPoint >= 60) return "D-";
-        return "F";
+        if ($totalPoint >= 0) return "F";
+        return "NG"; // Not Graded
     }
 }

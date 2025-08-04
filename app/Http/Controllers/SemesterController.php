@@ -35,7 +35,7 @@ class SemesterController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $semesters = SemesterResource::collection($query->with('year')->orderBy('status', 'asc')->orderBy('start_date', 'desc')->paginate(30));
+        $semesters = SemesterResource::collection($query->with('year')->orderBy('status', 'asc')->orderBy('start_date', 'desc')->with('studyModes')->paginate(30));
         
         return inertia('Semesters/Index', [
             'semesters' => $semesters, // Corrected to return the semesters collection

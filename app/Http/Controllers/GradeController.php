@@ -124,9 +124,17 @@ class GradeController extends Controller
     {
         $fields = $request->validated();
 
-        $grade->update($fields);
+        $data = [
+            'changed_by' => auth()->id(),
+            'changed_grade' => $fields['changed_grade'] ?? null,
+            'grade_comment' => $fields['grade_comment'] ?? null,
+            'grade_letter' => $fields['changed_letter'] ?? $grade->grade_letter,
+            'grade_point' => $fields['changed_grade'] ?? $grade->grade_point,
+        ];
+        
+        $grade->update($data);
 
-        return redirect()->route('grades.index')->with('success', 'Grade updated successfully.');
+        return redirect()->back()->with('success', 'Grade updated successfully.');
     }
 
     public function destroy(Grade $grade)

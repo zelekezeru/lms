@@ -26,7 +26,6 @@ defineProps({
 
 const search = ref(usePage().props.search || "");
 const refreshing = ref(false);
-const viewMode = ref("card");
 
 const searchSemesters = () => {
     router.get(
@@ -141,7 +140,6 @@ const deleteSemester = (id) => {
 
         <!-- Table View -->
         <div
-            v-if="viewMode === 'table'"
             class="overflow-x-auto shadow sm:rounded-lg"
         >
             <Table>
@@ -151,19 +149,10 @@ const deleteSemester = (id) => {
                             >Semester</Thead
                         >
                         <Thead>Year</Thead>
-                        <Thead
-                            sortable
-                            :sort-info="sortInfo"
-                            sortColumn="start_date"
-                            >Start Date</Thead
-                        >
-                        <Thead
-                            sortable
-                            :sort-info="sortInfo"
-                            sortColumn="end_date"
-                            >End Date</Thead
-                        >
-                        <Thead>status</Thead>
+                        <Thead>REGULAR</Thead>
+                        <Thead>DISTANCE</Thead>
+                        <Thead>ONLINE</Thead>
+                        <Thead>EXTENTION</Thead>
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
@@ -171,6 +160,7 @@ const deleteSemester = (id) => {
                     <TableZebraRows
                         v-for="semester in semesters.data"
                         :key="semester.id"
+                        :i="0"
                     >
                         <th
                             scope="row"
@@ -190,26 +180,22 @@ const deleteSemester = (id) => {
                         <td class="px-6 py-4">
                             {{ semester.year?.name ?? "N/A" }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{
-                                new Date(
-                                    semester.start_date
-                                ).toLocaleDateString()
-                            }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{
-                                new Date(semester.end_date).toLocaleDateString()
-                            }}
-                        </td>
-                        <td class="px-6 py-4">
+                        <td
+                            v-for="modeName in ['REGULAR', 'DISTANCE', 'ONLINE', 'EXTENSION']"
+                            :key="modeName"
+                            class="px-6 py-4"
+                        >
                             <span
-                                class="px-2 py-1 text-sm rounded font-semibold"
-                                :class="semester.status === 'Active'
-                                  ? 'bg-green-400 text-green-900 dark:bg-green-400 dark:text-green-900'
-                                  : 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100'"
+                                v-if="semester.studyModes && semester.studyModes.some(m => m.name === modeName)"
+                                class="font-bold text-green-600"
                             >
-                                {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}
+                                Active
+                            </span>
+                            <span
+                                v-else
+                                class="font-bold text-red-400"
+                            >
+                                Inactive
                             </span>
                         </td>
                         <td class="flex space-x-2">
@@ -228,63 +214,17 @@ const deleteSemester = (id) => {
                 </tbody>
             </Table>
         </div>
-
-        <!-- Card View -->
-        <div
-            v-else
-            class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 md:grid-cols-3"
-        >
-            <div
-                v-for="semester in semesters.data"
-                :key="semester.id"
-                class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-600"
-            >
-                <Link
-                    v-if="userCan('view-semesters')"
-                    :href="route('semesters.show', { semester: semester.id })"
-                    class="text-blue-500 hover:text-blue-700 block"
-                >
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="mb-3 text-center flex items-center justify-center gap-2 font-bold text-gray-700 dark:text-gray-300">
-                            <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ semester.name }}</h2>
-                        </div>
-                        <span
-                            class="px-2 py-1 text-sm rounded font-semibold"
-                            :class="semester.status === 'Active'
-                                ? 'bg-green-400 text-green-900 dark:bg-green-400 dark:text-green-900'
-                                : 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100'"
-                        >
-                            {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}
-                        </span>
-                    </div>
-                    <div class="flex items-center text-gray-700 dark:text-gray-300 mb-1">
-                        <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
-                        <span class="font-semibold mr-1">Start:</span>
-                        {{ new Date(semester.start_date).toLocaleDateString() }}
-                    </div>
-                    <div class="flex items-center text-gray-700 dark:text-gray-300 mb-3">
-                        <CalendarIcon class="w-5 h-5 mr-2 text-rose-500" />
-                        <span class="font-semibold mr-1">End:</span>
-                        {{ new Date(semester.end_date).toLocaleDateString() }}
-                    </div>
-                </Link>
-            </div>
-        </div>
-
         <!-- Pagination -->
-        <div class="flex justify-center mt-6 space-x-2">
-            <Link
-                v-for="link in semesters.meta.links"
-                :key="link.label"
-                :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"
-                :class="{
-                    'text-gray-700 dark:text-gray-400': true,
-                    'cursor-not-allowed opacity-50': !link.url,
-                    '!bg-gray-100 !dark:bg-gray-800': link.active,
-                }"
-                v-html="link.label"
+        <div class="mt-4">
+            <pagination
+                :links="semesters.links"
+                :meta="semesters.meta"
+                :current-page="semesters.current_page"
+                :last-page="semesters.last_page"
+                @page-changed="(page) => router.get(route('semesters.index'), {
+                    page: page,
+                    search: search.value
+                })"
             />
         </div>
     </AppLayout>

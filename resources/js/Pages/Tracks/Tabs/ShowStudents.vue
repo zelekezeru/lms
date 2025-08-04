@@ -120,6 +120,11 @@ const sortStudentsToSections = () => {
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
                                 <th
+                                     class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                    >
+                                    {{ $t("students.no") }}
+                                </th>
+                                <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.name") }}
@@ -130,12 +135,12 @@ const sortStudentsToSections = () => {
                                     {{ $t("students.id") }}
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200  border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.current_section") }}
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.assign_to") }}
                                 </th>
@@ -152,6 +157,11 @@ const sortStudentsToSections = () => {
                                 "
                                 class="border-b border-gray-300 dark:border-gray-600"
                             >
+                                <td
+                                    class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    {{ index + 1 }}
+                                </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >

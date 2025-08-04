@@ -6,7 +6,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 
 const props = defineProps({
     instructor: Object,
-    activeSemester: Object,
 });
 
 const viewMode = ref("card");
@@ -35,8 +34,7 @@ function toggleViewMode() {
             <!-- Header -->
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold text-gray-800 dark:text-white">
-                    Your Class Sessions - {{ activeSemester.year.name }}
-                    {{ activeSemester.level }}
+                    Your Class Sessions
                 </h1>
                 <button
                     @click="toggleViewMode"

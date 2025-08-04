@@ -115,11 +115,15 @@ class InstructorPortalController extends Controller
 
         $instructor->load([
             'classSchedules' => function ($q) {
-                $q->whereHas('courseOffering.section.studyMode.semesters', fn($s) => $s->wherePivot('status', 'active'));
+                $q->whereHas('courseOffering.section.studyMode.semesters', function ($query) {
+                    $query->where('semester_study_mode.status', 'active');
+                });
             },
             'classSchedules.room',
             'classSchedules.courseOffering.course',
         ]);
+
+
 
         $instructor = new InstructorResource($instructor);
 
@@ -133,15 +137,18 @@ class InstructorPortalController extends Controller
         $instructor = request()->user()->instructor;
 
         $instructor->load([
+            'classSessions' => function ($q) {
+                $q->whereHas('courseOffering.section.studyMode.semesters', function ($query) {
+                    $query->where('semester_study_mode.status', 'active');
+                });
+            },
             'classSessions.room',
             'classSessions.courseOffering.course',
         ]);
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
         $instructor = new InstructorResource($instructor);
 
         return inertia('InstructorPortal/ClassSessions', [
             'instructor' => $instructor,
-            'activeSemester' => $activeSemester,
         ]);
     }
 

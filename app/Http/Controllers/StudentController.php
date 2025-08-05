@@ -70,18 +70,22 @@ class StudentController extends Controller
         }
 
         // Paginate and transform
-        $paginatedStudents = $query->paginate(50)->withQueryString();
+        $paginatedStudents = $query->paginate(15)->withQueryString();
+        $studentsCount = $query->count();
 
         $students = StudentResource::collection($paginatedStudents);
 
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks.sections.studyMode', 'tracks.sections.year')->orderBy('name', 'asc')->get());
+        $studyModes = StudyModeResource::collection(StudyMode::orderBy('name', 'asc')->get());
 
         $years = YearResource::collection(Year::orderBy('name', 'asc')->get());
 
         // Return with Inertia
         return inertia('Students/Index', [
             'students' => $students,
+            'studentsCount' => $studentsCount,
             'programs' => $programs,
+            'studyModes' => $studyModes,
             'years' => $years,
             'search' => $request->search,
             'sortInfo' => [

@@ -33,12 +33,13 @@ class InstructorPortalController extends Controller
                 'courseOfferings.course'
             ])
         );
-
+        //* this is attempt to narrow dow the courseOfferings list to courseOfferings that instructor is currently assigned to... 
+        //* meaning courseOfferings that belong to active semesters of a studyMode are wanted
         $filteredCourseOfferings = $instructor->courseOfferings->filter(function ($offering) {
             $section = $offering->section;
             $sectionYear = $section->year->name;
 
-            // Get active semester for the studyMode
+            //* Get active semester for the studyMode
             $activeSemester = $section?->studyMode?->semesters
                 ?->firstWhere('pivot.status', 'active');
 

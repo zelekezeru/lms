@@ -178,11 +178,6 @@ class InstructorPortalController extends Controller
 
     public function sectionDetail(Section $section)
     {
-        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later
-        // if (!$course->instructors->contains(request()->user()->instructor->id)) {
-        //     abort(403);
-        // }
-
         $activeSemester = $section->studyMode->activeSemester();
         $yearLevel = intval($activeSemester->year->name) - intval($section->year->name) + 1;
 

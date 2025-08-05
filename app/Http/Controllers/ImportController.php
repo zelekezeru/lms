@@ -127,8 +127,11 @@ class ImportController extends Controller
         $import = new ResultsImport($courseId, $sectionId);
 
         Excel::import($import, $request->file('file'));
-
-        return back()->with('success', 'Results imported successfully.');
+        
+        return redirect()->route('assessments.section_course', [
+            'section' => $sectionId,
+            'course' => $courseId,
+        ])->with('success', 'Results imported successfully.');
     }
 
     // Show the imported students for a section (GET endpoint)

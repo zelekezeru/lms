@@ -37,6 +37,7 @@ class ResultsImport implements ToCollection
     protected $years;
     protected $semesters;
     protected $weightsData = [];
+    protected $noGrade = [];
 
     public function __construct($courseId, $sectionId)
     {
@@ -139,7 +140,15 @@ class ResultsImport implements ToCollection
                 $totalPoint = $this->createResults($weights, $student, $course, $courseOffering, $row);
 
                 // After processing results, calculate the total points for grading
-                $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering);
+                if (collect($this->noGrade)->contains('student_id', $student->id)) {
+                    $this->noGrade[] = [
+                        'student_id' => $student->id,
+                    ];
+                    $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering, false);
+                } else {
+                    // Create or update the grade for the student
+                    $this->createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering, true);
+                }
             }
 
             // If everything is successful, commit the transaction
@@ -169,7 +178,7 @@ class ResultsImport implements ToCollection
         $weights = [];
         foreach ($weightPoints as $index => $weightPoint) {
             if (!is_numeric($weightPoint)) {
-                return redirect()->back()->withErrors(['error' => 'Weight points must be numeric. Please check the file and try again.']);
+                continue; // Skip non-numeric weight points
             }
 
             // Use the find() method on a preloaded collection to find or create the weight
@@ -211,7 +220,14 @@ class ResultsImport implements ToCollection
 
             // --- IMPROVED ERROR HANDLING ---
             // Check if the score is not numeric and log a warning instead of just skipping.
-            if (!is_numeric($score) || is_null($score) || trim($score) === '') {                
+            if (!is_numeric($score) || is_null($score) || trim($score) === '') {
+                // Only add if not already present
+                if (!collect($this->noGrade)->contains('student_id', $student->id)) {
+                    $this->noGrade[] = [
+                        'student_id' => $student->id,
+                    ];
+                }
+                
                 continue;
             }
 
@@ -222,10 +238,10 @@ class ResultsImport implements ToCollection
                 [
                     'student_id' => $student->id,
                     'weight_id' => $weight->id,
-                    'instructor_id' => $courseOffering->instructor_id ?? Auth::id(),
                 ],
                 [
                     'point' => $score,
+                    'instructor_id' => $courseOffering->instructor_id ?? Auth::id(),
                     'description' => 'Imported from Excel',
                 ]
             );
@@ -248,10 +264,16 @@ class ResultsImport implements ToCollection
      * @param Semester $semester
      * @param CourseOffering $courseOffering
      */
-    private function createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering)
+    private function createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering, $isImport = true)
     {
-        $gradeLetter = $this->getGradeLetter($totalPoint);
-        $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
+        if ($isImport === false || $totalPoint === 0) {
+            $gradeLetter = "NG"; 
+            $academicStatus = 'in_progress';
+        } else {
+            $totalPoint = floatval($totalPoint);
+            $gradeLetter = $this->getGradeLetter($totalPoint);
+            $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
+        }
 
         // Update or create the Grade entry
         Grade::updateOrCreate(
@@ -259,10 +281,10 @@ class ResultsImport implements ToCollection
                 'student_id' => $student->id,
                 'course_id' => $course->id,
                 'section_id' => $section->id,
-                'year_id' => $year->id,
-                'semester_id' => $semester->id,
             ],
             [
+                'year_id' => $year->id,
+                'semester_id' => $semester->id,
                 'grade_point' => $totalPoint,
                 'grade_letter' => $gradeLetter,
                 'user_id' => Auth::id(),
@@ -295,7 +317,6 @@ class ResultsImport implements ToCollection
     public function getGradeLetter($totalPoint): string
     {
         $totalPoint = floatval($totalPoint);
-        if (is_nan($totalPoint)) return "NG";
         if ($totalPoint >= 94) return "A";
         if ($totalPoint >= 90) return "A-";
         if ($totalPoint >= 87) return "B+";

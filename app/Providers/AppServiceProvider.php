@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('manage-course-section-pair', [InstructorPortalPolicy::class, 'canManageCourseSectionPair']);
+        Gate::define('view-course-details', [InstructorPortalPolicy::class, 'canViewCourseDetails']);
 
         JsonResource::withoutWrapping();
         Vite::prefetch(concurrency: 3);

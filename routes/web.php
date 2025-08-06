@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
         Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
         Route::get('/courses', [InstructorPortalController::class, 'courses'])->name('instructor.courses');
-        Route::get('/courses/{course}', [InstructorPortalController::class, 'courseDetail'])->name('instructor.courses.detail');
+        Route::get('/courses/{course}', [InstructorPortalController::class, 'courseDetail'])->name('instructor.courses.detail')->middleware('can:view-course-details,course');
         Route::get('/sections', [InstructorPortalController::class, 'sections'])->name('instructor.sections');
         Route::get('/sections/{section}', [InstructorPortalController::class, 'sectionDetail'])->name('instructor.sections.detail');
 

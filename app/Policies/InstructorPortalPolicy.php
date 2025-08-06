@@ -13,9 +13,9 @@ class InstructorPortalPolicy
      */
     public function __construct() {}
 
-    public function canViewCourseDetails(Course $course): bool
+    public function canViewCourseDetails(User $user, Course $course): bool
     {
-        $instructor = request()->user()->instructor;
+        $instructor = $user->instructor;
         if (! $instructor) return false;
 
         return $course->instructors->contains(request()->user()->instructor->id);

@@ -154,8 +154,8 @@ const getSectionName = (id) => {
                 Filters
             </button>
         </div>
-        <div>
-            {{ studentsCount }}
+        <div class="mb-2 text-gray-700 dark:text-gray-200 text-sm">
+            Total students found: <strong>{{ studentsCount }}</strong>
         </div>
         <!-- Active Filters Summary -->
         <div

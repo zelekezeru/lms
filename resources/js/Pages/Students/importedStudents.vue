@@ -107,7 +107,7 @@ function route(name, id) {
                   <td class="px-4 py-2">{{ idx + 1 }}</td>
                   <td class="px-4 py-2">
                     <a :href="route('students.show', student.id)" class="text-blue-600 hover:underline dark:text-blue-400">
-                      {{ student.name + ' ' }}
+                      {{ student.name }}
                     </a>
                   </td>
                   <td class="px-4 py-2">{{ student.user_uuid }}</td>

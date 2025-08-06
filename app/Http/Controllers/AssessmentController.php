@@ -18,11 +18,13 @@ class AssessmentController extends Controller
 {
     public function section_course($section, $course)
     {
-        $courseOffering = CourseOffering::lookUpFor($course, $section)->load('instructor', 'section.program', 'section.grades', 'enrollments.student');
+        $courseOffering = CourseOffering::lookUpFor($course, $section);
+        
         // Check if the section and course exist
         if (! $courseOffering) {
             return redirect()->back()->with('error', 'No Such course Offering Found.');
         }
+        $courseOffering->load('instructor', 'section.program', 'section.grades', 'enrollments.student');
 
         $section = $courseOffering->section;
 
@@ -44,7 +46,7 @@ class AssessmentController extends Controller
         $grades = $section->grades()->where('course_id', $course->id)->with('student')->get();
 
         $enrollments = $courseOffering->enrollments;
-
+        
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
         $studentResults = [];
         // Fetch students with their course results

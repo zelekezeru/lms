@@ -78,17 +78,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware('can:manage-course-section-pair,section,course')->group(function () {
             Route::get('sections/{section}/courses/{course}/students', [InstructorPortalController::class, 'sectionCourseStudents'])->name('instructor.sections.courses.students');
-        });
-
-        Route::middleware('can:manage-course-section-pair,section,course')->group(function () {
             Route::get('sections/{section}/courses/{course}/assessments', [InstructorPortalController::class, 'sectionCourseAssessments'])->name('instructor.sections.courses.assessments');
-        });
-
-        Route::middleware('can:manage-course-section-pair,section,course')->group(function () {
             Route::get('sections/{section}/courses/{course}/attendance', [InstructorPortalController::class, 'sectionCourseAttendance'])->name('instructor.sections.courses.attendance');
-        });
-
-        Route::middleware('can:manage-course-section-pair,section,course')->group(function () {
             Route::get('sections/{section}/courses/{course}', [InstructorPortalController::class, 'sectionCourse'])->name('instructor.sections.courses');
         });
 

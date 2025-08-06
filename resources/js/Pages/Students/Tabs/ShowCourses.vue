@@ -295,7 +295,7 @@ const dropEnrollment = (enrollmentId) => {
                                                 : 'text-red-500'
                                         "
                                     >
-                                        {{ enrollment.status }}
+                                        {{ enrollment.status.toUpperCase() }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-2 text-sm">
@@ -453,7 +453,7 @@ const dropEnrollment = (enrollmentId) => {
                                                 : 'text-red-500'
                                         "
                                     >
-                                        {{ enrollment.status }}
+                                        {{ enrollment.status.toUpperCase() }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-2 text-sm">
@@ -605,7 +605,7 @@ const dropEnrollment = (enrollmentId) => {
                                             : 'text-red-500'
                                     "
                                 >
-                                    {{ enrollment.status }}
+                                    {{ enrollment.status.toUpperCase() }}
                                 </span>
                             </td>
                             <td class="px-4 py-2 text-sm">
@@ -748,12 +748,12 @@ const dropEnrollment = (enrollmentId) => {
                             >
                                 <span
                                     :class="
-                                        enrollment.status === 'enrolled'
-                                            ? 'text-green-500'
-                                            : 'text-red-500'
+                                        enrollment.status === 'enrolled'? 'text-green-500'
+                                        : enrollment.status === 'completed' ? 'text-blue-500'
+                                        : 'text-red-500'
                                     "
                                 >
-                                    {{ enrollment.status }}
+                                    {{ enrollment.status.toUpperCase() }}
                                 </span>
                             </td>
                         </tr>

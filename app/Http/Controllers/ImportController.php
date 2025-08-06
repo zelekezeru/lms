@@ -42,7 +42,11 @@ class ImportController extends Controller
         
         $duplicateStudents = $import->getExistingUserIds();
 
-        return $this->showImportedStudents($request, $section->id, $duplicateStudents)->with([
+        return inertia('Students/importedStudents', [
+            'section' => $section,
+            'students' => Student::whereIn('id', $newStudents)->with('user')->get(),
+            'existingUser' => $duplicateStudents,
+        ])->with([
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,
@@ -50,7 +54,6 @@ class ImportController extends Controller
                 'duplicateStudents' => $duplicateStudents,
                 'success' => "Students imported successfully. ",
             ],
-            'students' => $newStudents,
         ]);
     }
 
@@ -83,7 +86,12 @@ class ImportController extends Controller
 
         $newStudents = Student::whereIn('id', $newStudents)->with('user')->get();
 
-        return $this->showImportedStudents($request, $centerId, $duplicateStudents)->with([
+        $section = Section::where('center_id', $centerId)->first();
+
+        return inertia('Students/importedStudents', [
+            'section' => $section,
+            'students' => $newStudents,
+            'existingUser' => $duplicateStudents,
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,
@@ -132,21 +140,5 @@ class ImportController extends Controller
             'section' => $sectionId,
             'course' => $courseId,
         ])->with('success', 'Results imported successfully.');
-    }
-
-    // Show the imported students for a section (GET endpoint)
-    public function showImportedStudents(Request $request, $sectionId, $existingUser = [])
-    {
-        $section = Section::with('students.user')->findOrFail($sectionId);
-
-        $students = $section->students()->with('user')->get();
-
-        return inertia('Students/importedStudents', [
-            'section' => $section,
-            'students' => $students,
-            'existingUser' => $existingUser,
-            'import_report' => [null
-            ],
-        ]);
     }
 }

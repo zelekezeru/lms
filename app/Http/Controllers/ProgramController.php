@@ -77,7 +77,7 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        $users = UserResource::collection(User::all());
+        $users = UserResource::collection(User::whereDoesntHave('roles', fn($q) => $q->where('roles.name', 'STUDENT'))->get());
         $courses = CourseResource::collection(Course::all());
 
         return inertia('Programs/Create', [
@@ -97,7 +97,7 @@ class ProgramController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $program_id = 'PR'.'-'.str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT).'-'.$year;
+        $program_id = 'PR' . '-' . str_pad(Program::count() + 1, 2, '0', STR_PAD_LEFT) . '-' . $year;
 
         $fields['code'] = $program_id;
 
@@ -134,9 +134,11 @@ class ProgramController extends Controller
             return $query->where('programs.id', $program->id);
         }])->orderByDesc('related_to_program', 'name')->get());
 
+        $users = UserResource::collection(User::whereDoesntHave('roles', fn($q) => $q->where('roles.name', 'STUDENT'))->get());
+
         return inertia('Programs/Edit', [
             'program' => new ProgramResource($program),
-            'users' => UserResource::collection(User::all()),
+            'users' => $users,
             'courses' => $courses,
         ]);
     }

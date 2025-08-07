@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -39,17 +39,29 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
+        $login = $this->input('email');
+        $password = $this->input('password');
+        $remember = $this->boolean('remember');
+
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        // Try login by email first, then by user_uuid if email fails
+        if (
+            Auth::attempt(['email' => $login, 'password' => $password], $remember)
+        ) {
+            return;
+        }
+        if (
+            Auth::attempt(['user_uuid' => $login, 'password' => $password], $remember)
+        ) {
+            return;
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => 'These credentials do not match our records.',
+        ]);
     }
 
     /**

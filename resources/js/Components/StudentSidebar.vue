@@ -70,6 +70,12 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
+                    :icon="BookOpenIcon"
+                    label="Grades"
+                    :href="route('student.grades')"
+                    :isCollapsed="!isOpen"
+                />
+                <SidebarItem
                     :icon="CalendarDaysIcon"
                     label="All Class Schedules"
                     :href="route('student.classSchedules')"

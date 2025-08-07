@@ -166,4 +166,23 @@ class StudentPortalController extends Controller
             'student' => $student,
         ]);
     }
+
+    // Results and grades of student
+    public function grades()
+    {
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+
+        $semester = Semester::where('status', 'Active')->first();
+
+        $grades = $student->grades()->with('result', 'semester', 'course')->get();
+
+        $results = $student->results()->with('weight', 'grade', 'semester', 'weight.course')->get();
+
+        return inertia('StudentPortal/ShowAssessment', [
+            'student' => $student,
+            'grades' => $grades,
+            'semester' => new SemesterResource($semester),
+            'results' => $results,
+        ]);
+    }
 }

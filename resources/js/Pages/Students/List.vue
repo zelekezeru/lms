@@ -130,7 +130,11 @@ const getTrackName = (id) => {
 
 const getStudyModeName = (id) => {
     const program = props.programs.find((p) => p.id == filterForm.program);
-    return program?.studyModes.find((s) => s.id == id)?.name || "Unknown";
+    return (
+        program?.studyModes.find((s) => s.id == id)?.name ||
+        props.studyModes.find((s) => s.id == id)?.name ||
+        "Unknown"
+    );
 };
 
 const getSectionName = (id) => {

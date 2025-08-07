@@ -175,8 +175,8 @@ const showUpdatePaymentModal = (payment) => {
 
     paymentUpdateForm.payment_type_id = payment.payment_type_id;
     paymentUpdateForm.description = payment.description;
-    (paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10)),
-        (paymentUpdateForm.paid_amount = payment.paid_amount);
+    paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10);
+    paymentUpdateForm.paid_amount = payment.paid_amount;
     paymentUpdateForm.status = payment.status;
     paymentUpdateForm.reference_number = payment.reference_number;
 
@@ -260,10 +260,11 @@ watch(
 watch(
     () => paymentUpdateForm.status,
     (newVal) => {
-        if (newVal == "completed") {
+        if (selectedPaymentType.value && newVal == "completed") {
             paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
         } else {
-            paymentUpdateForm.paid_amount = props.payments[0]?.paid_amount || 0;
+            paymentUpdateForm.paid_amount =
+                selectedPayment.value?.paid_amount || 0;
         }
     }
 );

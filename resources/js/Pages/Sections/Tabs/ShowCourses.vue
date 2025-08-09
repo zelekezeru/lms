@@ -26,6 +26,10 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    sectionCourses: {
+        type: Object,
+        required: false,
+    },
     instructors: {
         type: Object,
         required: false,
@@ -39,22 +43,17 @@ const props = defineProps({
         required: false,
     },
 });
-
 const selectedYearLevel = ref(props.currentYearLevel);
 const selectedSemester = ref(props.currentSemesterLevel);
-
 const showUnassignedOnly = ref(false);
-
+const searchQuery = ref(""); // Add a ref for the search query
 const filteredCourses = computed(() => {
     let courses = props.section.courses;
-
     if (showUnassignedOnly.value) {
         // Show only unassigned courses
         courses = courses.filter(
             (course) => course.yearLevel === 0 && course.semester === 0
         );
-        // Sort by name
-        courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     } else {
         // Show courses based on selected filters
         courses = courses.filter((course) => {
@@ -63,32 +62,35 @@ const filteredCourses = computed(() => {
                 course.semester == selectedSemester.value
             );
         });
-        // Sort by name
-        courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     }
-
+    // Filter courses based on searchQuery
+    if (searchQuery.value) {
+        const query = searchQuery.value.toLowerCase();
+        courses = courses.filter(
+            (course) =>
+                course.name.toLowerCase().includes(query) ||
+                course.code.toLowerCase().includes(query)
+        );
+    }
+    // Sort by name
+    courses = courses.slice().sort((a, b) => a.name.localeCompare(b.name));
     return courses;
 });
-
 const assignInstructor = ref(false);
 const assignCourses = ref(false);
 const assignToCourse = ref({});
-
 const elegibleInstructorsList = ref([]);
-
 const courseAssignmentForm = useForm({
     courses: props.section.courses
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((course) => course.id),
 });
-
 const closeCourseAssignment = () => {
     assignCourses.value = false;
     courseAssignmentForm.reset();
     courseAssignmentForm.clearErrors();
 };
-
 const submitCourseAssignment = () => {
     courseAssignmentForm.post(
         route("courses-section.assign", { section: props.section.id }),
@@ -108,11 +110,9 @@ const submitCourseAssignment = () => {
         }
     );
 };
-
 const instructorAssignmentForm = useForm({
     instructor_id: "",
 });
-
 const openInstructorAssignemnt = (course) => {
     assignInstructor.value = true;
     assignToCourse.value = course;
@@ -123,13 +123,11 @@ const openInstructorAssignemnt = (course) => {
         ? course.instructor.id
         : "";
 };
-
 const closeInstructorAssignemnt = () => {
     assignInstructor.value = false;
     instructorAssignmentForm.reset();
     instructorAssignmentForm.clearErrors();
 };
-
 const submitInstructorAssignment = () => {
     instructorAssignmentForm.post(
         route("instructor-courseSection.assign", {
@@ -149,14 +147,12 @@ const submitInstructorAssignment = () => {
         }
     );
 };
-
 // Popover state
 const popOverRef = ref(null);
 const selectedCourse = ref(null);
 const targetEvent = ref(null);
 const targetYear = ref(null);
 const targetSemester = ref(null);
-
 function openMovePopover(event, course) {
     selectedCourse.value = course;
     targetEvent.value = event;
@@ -165,27 +161,22 @@ function openMovePopover(event, course) {
     // show popover next to the clicked element
     popOverRef.value.show(event);
 }
-
 const form = useForm({
     course_id: null,
     year: null,
     semester: null,
 });
-
 function submitMove() {
     if (!selectedCourse.value) return;
-
     form.course_id = selectedCourse.value.id;
     form.year = targetYear.value;
     form.semester = targetSemester.value;
-
     form.post(route("update-section-course", { section: props.section.id }), {
         onSuccess: () => {
             Swal.fire("Success", `Course moved successfully.`, "success");
             popOverRef.value.hide();
             selectedCourse.value = null;
             showUnassignedOnly.value = false;
-
             selectedYearLevel.value = form.year;
             selectedSemester.value = form.semester;
             form.reset();
@@ -242,6 +233,17 @@ function submitMove() {
                     {{ assignCourses ? "Close" : "Assign Courses" }}
                 </span>
             </button>
+        </div>
+
+        <!-- SEARCH A SECTION COURSE FUNCTIONALITY -->
+        <div class="mb-4">
+            <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Search courses..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+            />
+
         </div>
 
         <!-- Filters -->

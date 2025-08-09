@@ -234,11 +234,8 @@ class ResultsImport implements ToCollection
                 $this->noGrade = collect($this->noGrade)->reject(function ($item) use ($student) {
                     return $item['student_id'] === $student->id;
                 })->values()->all();
-
-                // If no scores are present, skip the student
-                if (empty($row->slice(4)->filter()->all())) {
-                    continue;
-                }
+                
+                continue;
             }
 
             // Check if the score is not numeric and log a warning instead of just skipping.
@@ -315,6 +312,7 @@ class ResultsImport implements ToCollection
                 'grade_description' => 'Excel Imported',
             ]
         );
+
 
         // Update or create the enrollment status
         Enrollment::updateOrCreate(

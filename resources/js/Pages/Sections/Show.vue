@@ -23,6 +23,7 @@ const props = defineProps({
     section: Object,
     students: Object,
     courses: Object,
+    sectionCourses: Object,
     instructors: Object,
     currentYearLevel: Number,
     currentSemesterLevel: Number,
@@ -191,6 +192,7 @@ onMounted(() => {
                     <ShowCourses
                         v-else-if="selectedTab === 'courses'"
                         :courses="courses"
+                        :sectionCourses="sectionCourses"
                         :section="section"
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
@@ -231,16 +233,10 @@ onMounted(() => {
                         :courses="courses"
                     />
 
-                    <ShowExcels
-                        v-else-if="selectedTab === 'excels'"
-                        :section="section"
-                        :courses="courses"
-                    />
-
                     <ShowAssessments
                         v-else-if="selectedTab === 'assessments'"
                         :section="section"
-                        :courses="courses"
+                        :courses="sectionCourses"
                         :students="students"
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"

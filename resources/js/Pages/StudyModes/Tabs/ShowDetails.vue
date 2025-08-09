@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 

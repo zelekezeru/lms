@@ -150,6 +150,11 @@ class ResultsImport implements ToCollection
                 // Student result create method
                 $totalPoint = $this->createResults($weights, $student, $courseOffering, $rowArray);
 
+                if ($totalPoint === 0) {
+                    // If no valid scores were found, skip to the next student
+                    continue;
+                }
+                
                 // After processing results, calculate the total points for grading
                 if (collect($this->noGrade)->contains('student_id', $student->id)) {
                     $this->noGrade[] = [
@@ -189,12 +194,12 @@ class ResultsImport implements ToCollection
             $weight = Weight::updateOrCreate(
                 [
                     'name' => 'Weight ' . ($index + 1),
-                    'instructor_id' => $instructor->id,
                     'section_id' => $section->id,
                     'semester_id' => $semester->id,
                     'course_id' => $course->id,
                 ],
                 [
+                    'instructor_id' => $instructor->id,
                     'point' => $weightPoint,
                     'description' => null,
                 ]
@@ -223,6 +228,19 @@ class ResultsImport implements ToCollection
             $score = $row[$index + 4] ?? null;
 
             // --- IMPROVED ERROR HANDLING ---
+
+            // If all scores of the student are empty don't add to noGrade
+            if (collect($this->noGrade)->contains('student_id', $student->id)) {
+                $this->noGrade = collect($this->noGrade)->reject(function ($item) use ($student) {
+                    return $item['student_id'] === $student->id;
+                })->values()->all();
+
+                // If no scores are present, skip the student
+                if (empty($row->slice(4)->filter()->all())) {
+                    continue;
+                }
+            }
+
             // Check if the score is not numeric and log a warning instead of just skipping.
             if (!is_numeric($score) || is_null($score) || trim($score) === '') {
                 // Only add if not already present

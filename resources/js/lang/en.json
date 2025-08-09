@@ -508,7 +508,8 @@
     "name": "Name",
     "description": "Description",
     "permissions": "Permissions",
-    "no_permissions": "No permissions found."
+    "no_permissions": "No permissions found.",
+    "view_permissions": "View Permissions"
   },
 
 

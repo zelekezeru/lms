@@ -154,7 +154,7 @@ class ResultsImport implements ToCollection
                     // If no valid scores were found, skip to the next student
                     continue;
                 }
-                
+
                 // After processing results, calculate the total points for grading
                 if (collect($this->noGrade)->contains('student_id', $student->id)) {
                     $this->noGrade[] = [
@@ -350,7 +350,7 @@ class ResultsImport implements ToCollection
         if ($totalPoint >= 67) return "D+";
         if ($totalPoint >= 64) return "D";
         if ($totalPoint >= 60) return "D-";
-        if ($totalPoint >= 0) return "F";
+        if ($totalPoint > 0) return "F";
         return "NG"; // Not Graded
     }
 

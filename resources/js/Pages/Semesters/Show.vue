@@ -7,6 +7,7 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { DatePicker, Listbox, MultiSelect } from "primevue";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/vue/24/outline";
+import { useI18n } from "vue-i18n";
 
 // Props
 const props = defineProps({
@@ -20,6 +21,7 @@ const props = defineProps({
     },
 });
 
+const { t } = useI18n();
 const selectedStudyModes = ref(
     props.semester.studyModes.map((studyMode) => studyMode.id)
 );
@@ -118,8 +120,8 @@ const applyChanges = () => {
 // Delete function with SweetAlert confirmation
 const deleteSemester = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -130,7 +132,7 @@ const deleteSemester = (id) => {
             router.delete(route("semesters.destroy", { semester: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
+                        t("common.delete_success"),
                         "The semester has been deleted.",
                         "success"
                     );

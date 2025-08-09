@@ -1,18 +1,12 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head, Link, router, useForm, usePage } from "@inertiajs/vue3";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
-import { Listbox, MultiSelect, Select } from "primevue";
+import { Listbox, Select } from "primevue";
 import { computed, defineProps, ref, watch } from "vue";
 import InputError from "@/Components/InputError.vue";
-import {
-    CogIcon,
-    PencilSquareIcon,
-    XMarkIcon,
-    PlusCircleIcon,
-} from "@heroicons/vue/24/solid";
+import { CogIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     student: {
@@ -414,7 +408,7 @@ const updatePayment = () => {
         <div class="my-4 ml-4 flex items-center space-x-2">
             <template v-if="student.paymentCode">
                 <span
-                    class="inline-flex items-center px-4 py-3 py-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse"
+                    class="inline-flex items-center px-4 py-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse"
                 >
                     <svg
                         class="w-4 h-4 mr-2 text-white"

@@ -21,7 +21,6 @@ import Grades from "./Tabs/ShowGrades.vue";
 import Results from "./Tabs/ShowResults.vue";
 import Transcripts from "./Tabs/ShowTranscript.vue";
 
-
 const props = defineProps({
     student: {
         type: Object,
@@ -67,11 +66,11 @@ const changeTab = (tab) => {
 </script>
 <template>
     <AppLayout>
-        <div class="max-w-7xl p-4 mx-auto relative">
-            <!-- Mobile Tabs Button -->
+        <div class="max-w-8xl mx-auto p-6 relative">
+            <!-- 🔘 Drawer Toggle Button (mobile only) -->
             <div class="flex justify-end mb-4 md:hidden">
                 <button
-                    @click="showMobileNav = !showMobileNav"
+                    @click="toggleDrawer"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
                 >
                     <CogIcon class="w-5 h-5 mr-2" />
@@ -79,12 +78,12 @@ const changeTab = (tab) => {
                 </button>
             </div>
 
-            <!-- Mobile Drawer Navigation -->
+            <!--  Mobile Drawer -->
             <div
                 class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-gray-900 shadow-lg z-50 transform transition-transform duration-300 md:hidden"
                 :class="{
-                    'translate-x-0': showMobileNav,
-                    'translate-x-full': !showMobileNav,
+                    'translate-x-0': isDrawerOpen,
+                    'translate-x-full': !isDrawerOpen,
                 }"
             >
                 <div
@@ -96,50 +95,54 @@ const changeTab = (tab) => {
                         Navigation
                     </h2>
                     <button
-                        @click="showMobileNav = false"
+                        @click="toggleDrawer"
                         class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                     >
                         ✕
                     </button>
                 </div>
 
+                <nav class="flex flex-col px-4 py-2 space-y-2">
+                    <button
+                        v-for="tab in tabs"
+                        :key="tab.key"
+                        @click="
+                            () => {
+                                selectedTab = tab.key;
+                                toggleDrawer();
+                            }
+                        "
+                        class="flex items-center space-x-2 px-3 py-2 rounded-lg transition"
+                        :class="
+                            selectedTab === tab.key
+                                ? 'bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-white'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        "
+                    >
+                        <component :is="tab.icon" class="w-5 h-5" />
+                        <span>{{ tab.label }}</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- 🟤 Overlay (mobile only) -->
+            <div
+                v-if="isDrawerOpen"
+                @click="toggleDrawer"
+                class="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
+            ></div>
+
+            <!-- 💻 Desktop Tab Nav (hidden on mobile) -->
             <nav
-                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700 justify-center"
+                ref="tabNav"
+                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
+                :class="isOverflowing ? 'justify-start' : 'justify-center'"
             >
                 <div class="flex space-x-4 min-w-max">
                     <button
                         v-for="tab in tabs"
                         :key="tab.key"
                         @click="selectedTab = tab.key"
-                        class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
-                        :class="
-                            selectedTab === tab.key
-                                ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                        "
-                    >
-                        <component :is="tab.icon" class="w-5 h-5" />
-                        <span>{{ tab.label }}</span>
-                    </button>
-                </div>
-            </nav>
-            </div>
-
-            <div
-                v-if="showMobileNav"
-                @click="showMobileNav = false"
-                class="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
-            ></div>
-
-            <!-- Desktop Tabs -->
-            <nav
-                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700 justify-center"
-            >
-                <div class="flex space-x-4 min-w-max">
-                    <button
-                        v-for="tab in tabs"
-                        :key="tab.key"
-                        @click="selectedTab.value = tab.key"
                         class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
                         :class="
                             selectedTab === tab.key
@@ -159,21 +162,22 @@ const changeTab = (tab) => {
                 {{ student.firstName }} {{ student.middleName }}
             </h1>
 
+            <!-- 🌐 Main Content -->
             <transition
                 mode="out-in"
                 enter-active-class="transition duration-300 ease-out"
-                enter-from-class="scale-75 opacity-0"
-                enter-to-class="scale-100 opacity-100"
+                enter-from-class="opacity-0 scale-75"
+                enter-to-class="opacity-100 scale-100"
                 leave-active-class="transition duration-200 ease-in"
-                leave-from-class="scale-100 opacity-100"
-                leave-to-class="scale-75 opacity-0"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-75"
             >
                 <div
                     :key="selectedTab"
                     class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
                 >
                     <component
-                        :is="selectedTab === 'grades' ? Grades : selectedTab === 'results' ? Results : Transcripts"
+                        :is="selectedTab === 'grades' ? Grades : selectedTab === 'results' ? Results : selectedTab === 'transcripts' ? Transcripts : null"
                         :student="props.student"
                         :grades="props.grades"
                         :results="props.results"

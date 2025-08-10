@@ -1,43 +1,91 @@
 <script setup>
-import { computed, ref } from "vue";
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
-import { Link } from "@inertiajs/vue3";
-import { DatePicker, Select } from "primevue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import "sweetalert2/dist/sweetalert2.min.css";
-import AppLayout from "@/Layouts/AppLayout.vue";
-import Modal from "@/Components/Modal.vue";
-import { AcademicCapIcon } from "@heroicons/vue/24/outline";
+import { ref } from "vue"
+import Button from "primevue/button"
+import PrimaryButton from "@/Components/PrimaryButton.vue"
+import Modal from "@/Components/Modal.vue"
+import { AcademicCapIcon } from "@heroicons/vue/24/outline"
+import axios from "axios"
+import Swal from "sweetalert2"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 const props = defineProps({
-    student: {
-        type: Object,
-        required: true,
-    },
-    grades: {
-        type: Array,
-        required: true,
-    },
-    results: {
-        type: Array,
-        required: false,
-        default: () => [],
-    },
-});
-const showMobileNav = ref(false);
-// Helper to get grade for a course
-const getGradeForCourse = (courseId) => {
-    const grade = props.grades.find((g) => g.course_id === courseId);
-    return grade ? grade.grade_letter : "Not Graded";
-};
+    student: { type: Object, required: true },
+    grades: { type: Array, required: true },
+    results: { type: Array, default: () => [] }
+})
+
+const showMobileNav = ref(false)
+const showGradesModal = ref(false)
+
+function openModal() {
+    showGradesModal.value = true
+}
+function closeModal() {
+    showGradesModal.value = false
+}
+
+// PDF Export function for grades
+const exportGradesPDF = () => {
+    const doc = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+    })
+    const student = props.student
+    const grades = props.grades
+    const pageWidth = doc.internal.pageSize.getWidth()
+    let y = 20
+
+    doc.setFontSize(16)
+    doc.text("Student Grades Report", pageWidth / 2, y, { align: "center" })
+    y += 10
+
+    doc.setFontSize(12)
+    doc.text(
+        `Name: ${student.firstName} ${student.lastName}`,
+        14,
+        y
+    )
+    y += 7
+    doc.text(
+        `Student ID: ${student.idNo || student.id}`,
+        14,
+        y
+    )
+    y += 10
+
+    // Table data
+    const tableData = grades.map((g, i) => [
+        i + 1,
+        g.course?.name || "N/A",
+        g.course?.credit_hours || "N/A",
+        g.grade_letter || "N/A",
+        g.semester?.name || "N/A"
+    ])
+
+    autoTable(doc, {
+        head: [["#", "Course Name", "Credit Hours", "Grade", "Semester"]],
+        body: tableData,
+        startY: y,
+        theme: "grid",
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+        margin: { left: 14, right: 10 },
+    })
+
+    doc.save(
+        `${student.firstName}_${student.lastName}_Grades.pdf`
+    )
+}
 </script>
+
 
 <template>
     <div class="container mx-auto p-6">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">Grades for {{ student.firstName }} {{ student.lastName }}</h1>
-            <Button label="Download Grades" icon="pi pi-download" />
+            <Button label="Download Grades" icon="pi pi-download" @click="downloadGradesPdf" />
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-300 dark:border-gray-600">

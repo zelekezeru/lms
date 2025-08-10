@@ -19,6 +19,14 @@
   "password_reset_success": "Your password has been reset successfully. You can now log in with your new password.",
   "password_reset_error": "An error occurred while resetting your password. Please try again.",
   "password_reset_link_sent": "A password reset link has been sent to your email address.",
+  "Change Password": "Change Password (First Time Login)",
+  "change_password_info": "Please enter your current password and the new password you would like to set.",
+  "Old Password": "Old Password",
+  "New Password": "New Password",
+  "Confirm New Password": "Confirm New Password",
+  "Change Password Button": "Change Password",
+  "Your password has been changed successfully.": "Your password has been changed successfully.",
+  "There was an error changing your password.": "There was an error changing your password.",
 
   
   "common": {

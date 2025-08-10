@@ -51,10 +51,10 @@ class TrackController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $tracks = $query->withCount(['students'])->paginate(50)->withQueryString();
+        $tracks = $query->withCount(['students', 'curricula'])->paginate(30);
         
         return inertia('Tracks/Index', [
-            'tracks' => TrackResource::collection($tracks),
+            'tracks' => $tracks,
             'programs' => ProgramResource::collection(Program::all()),
             'search' => $request->search,
             'sortInfo' => [
@@ -152,7 +152,7 @@ class TrackController extends Controller
         $years = YearResource::collection(Year::all());
 
         $centers = CenterResource::collection(Center::all());
-
+        
         return Inertia::render('Tracks/Show', [
             'track'    => $track,
             'centers'  => CenterResource::collection(Center::all()),

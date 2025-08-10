@@ -22,6 +22,7 @@ use App\Http\Controllers\StudentPortalController;
 use App\Http\Controllers\StudyModeController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrackController;
 use App\Http\Controllers\StatusController;
 use App\Http\Middleware\ActiveSemesterIsSet;
 use Illuminate\Support\Facades\Auth;
@@ -173,6 +174,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Detach Program from Study Mode
     Route::delete('/studymodes/{study_mode}/programs/{program}', [StudyModeController::class, 'destroyProgram'])->name('studymodes.programs.destroy');
+
+    // Add this route before the resource routes or at an appropriate place
+    Route::post('/curricula/copy-from-track', [TrackController::class, 'copyCurriculaFromTrack'])->name('curricula.copy-from-track');
+
 
     Route::post('/enrollment-student/{student}/add', [StudentController::class, 'addEnrollment'])->name('enrollments-student.add');
     Route::post('/enrollment-student/{student}/drop', [StudentController::class, 'dropEnrollment'])->name('enrollments-student.drop');

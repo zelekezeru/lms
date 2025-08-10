@@ -229,15 +229,6 @@ class ResultsImport implements ToCollection
 
             // --- IMPROVED ERROR HANDLING ---
 
-            // If all scores of the student are empty don't add to noGrade
-            if (collect($this->noGrade)->contains('student_id', $student->id)) {
-                $this->noGrade = collect($this->noGrade)->reject(function ($item) use ($student) {
-                    return $item['student_id'] === $student->id;
-                })->values()->all();
-                
-                continue;
-            }
-
             // Check if the score is not numeric and log a warning instead of just skipping.
             if (!is_numeric($score) || is_null($score) || trim($score) === '') {
                 // Only add if not already present
@@ -246,6 +237,15 @@ class ResultsImport implements ToCollection
                         'student_id' => $student->id,
                     ];
                 }
+                
+                continue;
+            }
+
+            // If all scores of the student are empty don't add to noGrade
+            if (collect($this->noGrade)->contains('student_id', $student->id)) {
+                $this->noGrade = collect($this->noGrade)->reject(function ($item) use ($student) {
+                    return $item['student_id'] === $student->id;
+                })->values()->all();
                 
                 continue;
             }

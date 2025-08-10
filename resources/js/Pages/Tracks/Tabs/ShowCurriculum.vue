@@ -17,6 +17,7 @@ import { MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 const props = defineProps({
     track: Object,
     courses: Array,
+    tracks: Array,
 });
 
 const showModal = ref(false);
@@ -205,46 +206,98 @@ const sortedCourses = computed(() => {
         a.name.localeCompare(b.name)
     );
 });
+
+const selectedTrackId = ref(null);
+
+const assignCurriculum = () => {
+    if (!selectedTrackId.value) {
+        Swal.fire(
+            t("common.warning"),
+            t("programs.tracks.curriculum.select_track") || "Please select a track to copy from.",
+            "warning"
+        );
+        return;
+    }
+    router.post(
+        route("curricula.copy-from-track", { 
+            from_track: selectedTrackId.value, 
+            to_track: props.track.id,
+            study_mode_id: selectedStudyModeId.value
+        }),
+        {},
+        {
+            onSuccess: () => {
+                Swal.fire(
+                    t("common.success"),
+                    t("programs.tracks.curriculum.assigned_text") || "Curriculum copied successfully.",
+                    "success"
+                );
+            },
+            onError: () => {
+                Swal.fire(
+                    t("common.error"),
+                    t("programs.tracks.curriculum.copy_error") || "Failed to copy curriculum.",
+                    "error"
+                );
+            }
+        }
+    );
+};
 </script>
 
 <template>
     <div class="">
         <div class="p-4">
             <!-- Header -->
-            <div
-                class="flex flex-col mb-3 sm:flex-row items-start sm:items-center justify-between gap-4"
-            >
-                <h2
-                    class="text-2xl font-semibold text-gray-900 dark:text-gray-100"
-                >
-                    {{ track.program.name }}
-                    {{ t("programs.tracks.in_language") }} {{ track.name }}
-                    {{ t("programs.tracks.curriculum.with") }}
-                    {{
-                        studyModes.find(
-                            (studyMode) => studyMode.id == selectedStudyModeId
-                        )?.name
-                    }}
-                    {{ t("programs.tracks.curriculum.mode") }}
-                </h2>
-            </div>
-            <div class="flex flex-row items-center gap-4 px-4 py-2">
-                <button
-                    @click="openModal"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                    <PlusIcon class="w-5 h-5" />
-                    {{ t("programs.tracks.curriculum.create") }}
-                </button>
-                <!-- Button to assign courses -->
-                <Link
-                    :href="route('trackCourses-sections.assign', { track: track.id })"
-                    class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-md shadow-sm hover:bg-indigo-200 transition-colors duration-200"
-                    title="Assign Courses"
-                >
-                    <EyeIcon class="w-5 h-5 mr-1" />
-                    <span class="font-medium">{{ $t("sections.assign_track_courses") }}</span>
-                </Link>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 flex-1 my-6">
+                {{ track.program.name }}
+                {{ t("programs.tracks.in_language") }} {{ track.name }}
+                {{ t("programs.tracks.curriculum.with") }}
+                {{
+                    studyModes.find(
+                        (studyMode) => studyMode.id == selectedStudyModeId
+                    )?.name
+                }}
+                {{ t("programs.tracks.curriculum.mode") }}
+            </h2>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-3">
+                <div class="flex flex-row items-center gap-4">
+                    <button
+                        @click="openModal"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                        <PlusIcon class="w-5 h-5" />
+                        {{ t("programs.tracks.curriculum.create") }}
+                    </button>
+                    <!-- Button to assign courses -->
+                    <Link
+                        :href="route('trackCourses-sections.assign', { track: track.id })"
+                        class="inline-flex items-center px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-md shadow-sm hover:bg-indigo-200 transition-colors duration-200"
+                        title="Assign Courses"
+                    >
+                        <EyeIcon class="w-5 h-5 mr-1" />
+                        <span class="font-medium">{{ $t("sections.assign_track_courses") }}</span>
+                    </Link>
+                    <!-- copy curriculum from other tracks -->  
+                    <div class="flex items-right gap-4">
+                        <Select
+                            v-model="selectedTrackId"
+                            :options="tracks"
+                            option-label="name"
+                            option-value="id"
+                            :placeholder="t('programs.tracks.select_track')"
+                            class="min-w-[200px] rounded-lg shadow-sm border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                            clearable
+                        />
+                        <button
+                            :hidden="!selectedTrackId"                    
+                            @click="assignCurriculum"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md shadow disabled:opacity-50"
+                        >
+                            {{ t('programs.tracks.copy_from_track') }}
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div

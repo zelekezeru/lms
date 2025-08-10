@@ -157,7 +157,8 @@ class TrackController extends Controller
             'track'    => $track,
             'centers'  => CenterResource::collection(Center::all()),
             'years'    => YearResource::collection(Year::all()),
-            
+            'tracks'   => TrackResource::collection(Track::all()),
+
             'courses' => Inertia::defer(
                 fn() =>
                 CourseResource::collection(
@@ -255,5 +256,86 @@ class TrackController extends Controller
         $track->curriculums()->sync($validated['courses']); // sync to update the curricula list
 
         return redirect()->back()->with('success', 'Courses assigned to curricula successfully.');
+    }
+
+    /**
+     * Copy curricula from one track to another for a given study mode.
+     */
+    public function copyCurriculaFromTrack(Request $request)
+    {
+        $request->validate([
+            'from_track' => 'required|exists:tracks,id',
+            'to_track' => 'required|exists:tracks,id',
+            'study_mode_id' => 'required|exists:study_modes,id',
+        ]);
+        
+        $fromTrackId = $request->input('from_track');
+        $toTrackId = $request->input('to_track');
+        $studyModeId = $request->input('study_mode_id');
+
+        // Get all curricula from the source track for the selected study mode
+        $fromCurricula = Curriculum::where('track_id', $fromTrackId)
+            ->where('study_mode_id', $studyModeId)
+            ->get();
+
+        // Remove existing curricula for the target track and study mode
+        Curriculum::where('track_id', $toTrackId)
+            ->where('study_mode_id', $studyModeId)
+            ->delete();
+
+        // Group curricula by year_level and semester_level for batch insert
+        $grouped = $fromCurricula->groupBy(function ($item) {
+            return $item->year_level . '-' . $item->semester_level;
+        });
+
+        foreach ($grouped as $key => $curriculaGroup) {
+            $fields = [
+                'study_mode_id' => $studyModeId,
+                'track_id' => $toTrackId,
+                'year_level' => $curriculaGroup->first()->year_level,
+                'semester_level' => $curriculaGroup->first()->semester_level,
+                'description' => $curriculaGroup->first()->description,
+            ];
+            $courseIds = $curriculaGroup->pluck('course_id')->toArray();
+
+            $existingCourseIds = Curriculum::where('track_id', $fields['track_id'])
+                ->where('study_mode_id', $fields['study_mode_id'])
+                ->where('year_level', $fields['year_level'])
+                ->where('semester_level', $fields['semester_level'])
+                ->pluck('course_id')
+                ->toArray();
+
+            foreach ($existingCourseIds as $index => $existingCourseId) {
+                if (! in_array($existingCourseId, $courseIds)) {
+                    Curriculum::where('track_id', $fields['track_id'])
+                        ->where('study_mode_id', $fields['study_mode_id'])
+                        ->where('year_level', $fields['year_level'])
+                        ->where('semester_level', $fields['semester_level'])
+                        ->where('course_id', $existingCourseId)
+                        ->delete();
+                    unset($existingCourseIds[$index]);
+                }
+            }
+
+            $bulkInsert = [];
+            foreach ($courseIds as $courseId) {
+                if (! in_array($courseId, $existingCourseIds)) {
+                    $bulkInsert[] = [
+                        'study_mode_id' => $fields['study_mode_id'],
+                        'track_id' => $fields['track_id'],
+                        'course_id' => $courseId,
+                        'year_level' => $fields['year_level'],
+                        'semester_level' => $fields['semester_level'],
+                        'description' => 'This Course In This Study MOde And Track Should Be Taken ' . ($fields['description'] ?? 'Year ' . $fields['year_level'] . ' Semester ' . $fields['semester_level']),
+                    ];
+                }
+            }
+
+            if (!empty($bulkInsert)) {
+                Curriculum::insert($bulkInsert);
+            }
+        }
+
+        return back()->with('success', 'Curriculum copied successfully.');
     }
 }

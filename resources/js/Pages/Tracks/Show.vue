@@ -21,6 +21,7 @@ const props = defineProps({
     years: Array,
     courses: Array,
     students: Array,
+    tracks: Array,
 });
 
 const { t } = useI18n();
@@ -56,6 +57,7 @@ const toggleDrawer = () => {
                     Tabs
                 </button>
             </div>
+            
 
             <div
                 class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-gray-900 shadow-lg z-50 transform transition-transform duration-300 md:hidden"
@@ -157,6 +159,7 @@ const toggleDrawer = () => {
                         v-else-if="selectedTab === 'curriculums'"
                         :track="track"
                         :courses="courses"
+                        :tracks="tracks"
                     />
                     <Deferred
                         v-else-if="selectedTab === 'courses'"

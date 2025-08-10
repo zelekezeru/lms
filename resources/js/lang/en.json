@@ -152,6 +152,9 @@
       "deleted_text": "The learning track has been deleted.",
       "delete_confirm_text": "You won't be able to revert this!",
       "delete_confirm_title": "Are you sure?",
+      "select_track": "Select a Track to be copied from",
+      "select_track_label": "Copy from Track",
+      "copy_from_track": "Copy from Track",
 
       "curriculum": {
         "with": "with",

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
@@ -27,14 +28,17 @@ use App\Http\Controllers\StatusController;
 use App\Http\Middleware\ActiveSemesterIsSet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {});
 
 Route::middleware(['auth'])->group(function () {
+    // Password Change Route
+    Route::get('change-password', [AuthenticatedSessionController::class, 'change'])->name('password.change');
     // Student Dashboard
     Route::get('/', function () {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
         if (!$user->loggedInAs) {
             $user->active_role_id = $user->roles->first()?->id;

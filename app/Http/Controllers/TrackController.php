@@ -275,7 +275,7 @@ class TrackController extends Controller
 
         // Get all curricula from the source track for the selected study mode
         $fromCurricula = Curriculum::where('track_id', $fromTrackId)
-            ->where('study_mode_id', $studyModeId)
+            ->where('study_mode_id', 1)
             ->get();
 
         // Remove existing curricula for the target track and study mode
@@ -287,7 +287,7 @@ class TrackController extends Controller
         $grouped = $fromCurricula->groupBy(function ($item) {
             return $item->year_level . '-' . $item->semester_level;
         });
-
+        
         foreach ($grouped as $key => $curriculaGroup) {
             $fields = [
                 'study_mode_id' => $studyModeId,

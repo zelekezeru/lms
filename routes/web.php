@@ -35,8 +35,6 @@ Route::middleware('auth')->group(function () {});
 Route::middleware(['auth'])->group(function () {
     // Password Change Route
     Route::get('change-password', [AuthenticatedSessionController::class, 'change'])->name('password.change');
-    Route::post('update-password', [AuthenticatedSessionController::class, 'updatePassword'])->name('password.update');
-
     // Student Dashboard
     Route::get('/', function () {
         $user = User::find(Auth::id());

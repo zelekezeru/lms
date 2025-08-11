@@ -218,7 +218,7 @@ function submit() {
                                 d="M12 4v12m0 0l-4-4m4 4l4-4"
                             />
                         </svg>
-                        Export Students
+                        Export Student Results
                     </a>
                 </div>
 

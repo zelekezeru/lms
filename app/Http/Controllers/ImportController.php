@@ -136,9 +136,19 @@ class ImportController extends Controller
 
         Excel::import($import, $request->file('file'));
         
+        // Fetch alert message from import if available
+        $alert = method_exists($import, 'getAlert') ? $import->getAlert() : 'Results imported successfully.';
+        // If the import has no alert, we can assume it was successful
+        if (!$alert) {
+            $title = 'Success';
+            $alert = 'Results imported successfully.';
+        } else {
+            // If there was an alert, we can log it or handle it as needed
+            $title = 'Alert';
+        }
         return redirect()->route('assessments.section_course', [
             'section' => $sectionId,
             'course' => $courseId,
-        ])->with('success', 'Results imported successfully.');
+        ])->with($title, $alert);
     }
 }

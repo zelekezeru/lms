@@ -42,6 +42,7 @@ class ResultsImport implements ToCollection
     protected $noGrade = [];
     protected $course;
     protected $results = [];
+    protected $alert;
 
     public function __construct($courseId, $sectionId)
     {
@@ -61,8 +62,6 @@ class ResultsImport implements ToCollection
             return redirect()->back()->withErrors(['error' => 'The uploaded file is empty. Please upload a valid file with data.']);
         }
 
-        $this->course = Course::find($this->courseId);
-
             // Extract and validate weight points from the first row
             $headerRow = $rows->first()->toArray();
             $weightPoints = array_slice($headerRow, 4);
@@ -78,12 +77,9 @@ class ResultsImport implements ToCollection
             
             // Get the student ID numbers from the data rows for pre-loading
             $studentIdNumbers = $rows->slice(1)->pluck(1)->filter()->unique()->toArray();
-
-
                 // Pre-load all necessary data to avoid N+1 queries
             $this->students = Student::whereIn('id_no', $studentIdNumbers)->with('section')->get()->keyBy('id_no');
             
-            // Process student rows, starting from the second row (index 1)
             // $studentRows = $rows->slice(1);
             foreach ($rows->slice(1) as $row) {
                 // Ensure $row is an array
@@ -91,46 +87,46 @@ class ResultsImport implements ToCollection
                 
                 // Validate the row length to ensure it has enough columns
                 if (count($rowArray) < 5) {
-                    Log::warning('Row skipped due to insufficient columns: ' . json_encode($rowArray));
                     continue; // Skip rows that do not have enough data
                 }
 
                 // Ensure the student ID number is present
                 if (empty($rowArray[1])) {
-                    Log::warning('Row skipped due to missing student ID: ' . json_encode($rowArray));
                     continue; // Skip rows without a student ID
                 }
 
                 $student = $this->students->get(trim($rowArray[1]));
                 $section = Section::find($student->section_id ?? $this->sectionId);                
                 $studyMode = $section->studyMode;
-
-                $courseOfferings = CourseOffering::where('course_id', $this->courseId)
+                
+                $courseOffering = CourseOffering::where('course_id', $this->courseId)
                     ->where('section_id', $section->id) // Use student's section if available, otherwise use provided section ID
                     ->with('course', 'section.studyMode.semesters', 'instructor')
                     ->get()->keyBy(function ($item) {
                         // Create a unique key for lookup if needed, or just get the first one
                         return $item->section_id;
-                    });
-                // Find the single course offering we are interested in
-                $courseOffering = $courseOfferings->get($section->id);
-                
+                    })->first();
+
                 if (!$courseOffering) {
-                    return redirect()->back()->withErrors(['error' => 'Course offering not found for the student\'s section.']);
+                    $this->alert = 'Course offering not found for the student\'s section.';
+                    
+                    continue;
                 }
 
                 // Validate year and semester levels are set for the course offering
                 if (!$courseOffering->year_level || !$courseOffering->semester_level) {
-                    return redirect()->back()->withErrors(['error' => 'Year level or semester level not set for the course offering.']);
+                    $this->alert = 'Year level or semester level not set for the course offering.';
+                    continue;
                 }
-
+                
                 // Determine the academic year based on the section's year and course offering's year level
                 $courseGivenAtYearName = intval($section->year->name) + $courseOffering->year_level - 1;
                 
                 $year = Year::where('name', $courseGivenAtYearName)->first();
                 
                 if (!$year) {
-                    return redirect()->back()->withErrors(['error' => 'Year not found for the course offering.']);
+                    $this->alert = 'Year not found for the course offering.';
+                    return;
                 }
 
                 // Find the semester
@@ -160,10 +156,8 @@ class ResultsImport implements ToCollection
                     $this->noGrade[] = [
                         'student_id' => $student->id,
                     ];
-                    $this->createGrade($totalPoint, $student, $this->course, $section, $year, $semester, $courseOffering, false);
                 } else {
-                    // Create or update the grade for the student
-                    $this->createGrade($totalPoint, $student, $this->course, $section, $year, $semester, $courseOffering, true);
+                    $this->createGrade($totalPoint, $student, $this->course, $section, $year, $semester, $courseOffering, false);
                 }
             }
 
@@ -453,5 +447,13 @@ class ResultsImport implements ToCollection
         return Semester::where('year_id', $year->id)
             ->where('level', $courseOffering->semester_level)
             ->first();
+    }
+
+    /**
+     * Get alert message for import result.
+     */
+    public function getAlert()
+    {
+        return $this->alert ?? 'Results imported successfully.';
     }
 }

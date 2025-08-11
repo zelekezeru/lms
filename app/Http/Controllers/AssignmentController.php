@@ -280,10 +280,8 @@ class AssignmentController extends Controller
         foreach ($trackCourses as $trackCourse) {
             $curriculum = $trackCourse->curricula->first();
             if ($curriculum !== null) {
-                $fields['year_level'] = $curriculum->year_level;
-                $fields['semester_level'] = $curriculum->semester_level;
-
-                CourseOffering::updateOrCreate(
+                // If course Offering exists register the new one and if it is removed from the new curriculum remove it from the section course offerings
+                $courseOffering = CourseOffering::updateOrCreate(
                     [
                         'course_id' => $trackCourse->id,
                         'section_id' => $section->id,
@@ -291,8 +289,9 @@ class AssignmentController extends Controller
                     [
                         'year_level' => $curriculum->year_level ?? null,
                         'semester_level' => $curriculum->semester_level ?? null,
-                    ],
+                    ]
                 );
+                
             }
         }
 

@@ -145,20 +145,13 @@ class ResultsImport implements ToCollection
 
                 // Student result create method
                 $totalPoint = $this->createResults($weights, $student, $courseOffering, $rowArray);
-
-                if ($totalPoint === 0) {
+                
+                if ($totalPoint === 0.0) {
                     // If no valid scores were found, skip to the next student
                     continue;
                 }
-
-                // After processing results, calculate the total points for grading
-                if (collect($this->noGrade)->contains('student_id', $student->id)) {
-                    $this->noGrade[] = [
-                        'student_id' => $student->id,
-                    ];
-                } else {
-                    $this->createGrade($totalPoint, $student, $this->course, $section, $year, $semester, $courseOffering, false);
-                }
+                
+                $this->createGrade($totalPoint, $student, $this->course, $section, $year, $semester, $courseOffering);
             }
 
             // If everything is successful, commit the transaction
@@ -231,10 +224,8 @@ class ResultsImport implements ToCollection
                         'student_id' => $student->id,
                     ];
                 }
-                
                 continue;
             }
-
             $score = floatval($score);
             
             // Update or create the Result entry
@@ -254,6 +245,13 @@ class ResultsImport implements ToCollection
             $totalWeightedPoint += $score;
         }
 
+        // 2️⃣ Assign NG if totalWeightedPoint = 0 OR some scores empty & some filled
+        if ($totalWeightedPoint == 0 || (in_array(null, $this->results[$student->id], true) || in_array('', $this->results[$student->id], true)) && collect($this->results[$student->id])->filter()->isNotEmpty()) {
+            $resultStatus = 'NG';
+        } else {
+            $resultStatus = $totalWeightedPoint; // or your normal calculation
+        }
+
         return $totalWeightedPoint;
     }
 
@@ -268,16 +266,11 @@ class ResultsImport implements ToCollection
      * @param Semester $semester
      * @param CourseOffering $courseOffering
      */
-    private function createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering, $isImport = true)
+    private function createGrade($totalPoint, $student, $course, $section, $year, $semester, $courseOffering)
     {
-        if ($isImport === false || $totalPoint === 0) {
-            $gradeLetter = "NG"; 
-            $academicStatus = 'in_progress';
-        } else {
-            $totalPoint = floatval($totalPoint);
-            $gradeLetter = $this->getGradeLetter($totalPoint);
-            $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
-        }
+        $totalPoint = floatval($totalPoint);
+        $gradeLetter = $this->getGradeLetter($totalPoint);
+        $academicStatus = ($gradeLetter === 'F') ? 'failed' : 'completed';
 
         // Update or create the Grade entry
         Grade::updateOrCreate(
@@ -333,8 +326,8 @@ class ResultsImport implements ToCollection
         if ($totalPoint >= 67) return "D+";
         if ($totalPoint >= 64) return "D";
         if ($totalPoint >= 60) return "D-";
-        if ($totalPoint > 0) return "F";
-        return "NG"; // Not Graded
+        if ($totalPoint > 0.0) return "F";
+        else return "NG"; // Not Graded
     }
 
     public function registerSemester($student, $semester)

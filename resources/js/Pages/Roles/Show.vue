@@ -5,6 +5,7 @@ import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 
 // Define the props for the role
 defineProps({
@@ -14,23 +15,25 @@ defineProps({
     },
 });
 
+const { t } = useI18n();
 // Delete function with SweetAlert confirmation
 const deleteRole = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.delete_confirm_button"),
+        cancelButtonText: t("common.delete_cancel_button"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("roles.destroy", { role: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        "Deleted!",
-                        "The role has been deleted.",
+                        t("common.delete_success"),
+                        t("roles.deleted_succesfully_message"),
                         "success"
                     );
                 },
@@ -46,14 +49,16 @@ const deleteRole = (id) => {
             <h1
                 class="mb-6 text-3xl font-semibold text-center text-gray-900 dark:text-gray-100"
             >
-                {{ role.name }} {{ $t('role.role') }}
+                {{ role.name }} {{ $t("role.role") }}
             </h1>
 
             <div
                 class="p-6 border shadow-lg dark:bg-gray-800 rounded-xl dark:border-gray-700"
             >
-                <h1 class="my-4 text-xl font-bold text-center text-gray-900 dark:text-gray-100">
-                    {{ $t('role.view_permissions') }}
+                <h1
+                    class="my-4 text-xl font-bold text-center text-gray-900 dark:text-gray-100"
+                >
+                    {{ $t("role.view_permissions") }}
                 </h1>
 
                 <div class="grid grid-cols-3 gap-4 ml-16">
@@ -73,18 +78,17 @@ const deleteRole = (id) => {
                         class="text-blue-500 hover:text-blue-700"
                     >
                         <PencilIcon class="w-5 h-5" />
-                        <span>{{ $t('role.edit') }}</span>
+                        <span>{{ $t("role.edit") }}</span>
                     </Link>
                     <button
                         @click="deleteRole(role.id)"
                         class="text-red-500 hover:text-red-700"
                     >
                         <TrashIcon class="w-5 h-5" />
-                        <span>{{ $t('role.delete') }}</span>
+                        <span>{{ $t("role.delete") }}</span>
                     </button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
-

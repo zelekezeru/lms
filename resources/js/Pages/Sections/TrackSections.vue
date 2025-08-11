@@ -28,22 +28,24 @@ defineProps({
             :key="track.id"
             class="bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg rounded-xl p-6 transition-transform hover:scale-105 hover:shadow-2xl"
             >
+            <!-- Track Name -->
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {{ track.name }}
-                </h3>
-
-                <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                {{ track.program?.name ?? 'N/A' }}
-                </span>
-
+                <Link
+                    :href="route('tracks.show', { track: track.id })"
+                    class="text-l font-bold text-gray-900 dark:text-gray-100 inline-flex items-center px-2 py-1 font-medium rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 hover:underline"
+                >
+                    {{ track.name }}
+                </Link>
             </div>
+
+            <!-- Track Students Count -->
             <div class="flex items-center justify-between mb-4">
                 <h4 class="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">Sections List</h4>
                 <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 mb-2">
                     👥 {{ track.students?.length ?? 0 }} students
                 </span>
             </div>
+            <!-- Sections List -->
             <ul class="space-y-2">
                 <li
 

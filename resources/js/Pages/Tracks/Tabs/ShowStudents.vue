@@ -196,7 +196,7 @@ const sortStudentsToSections = () => {
                                         "
                                     >
                                         {{ student.firstName }}
-                                        {{ student.lastName }}
+                                        {{ student.middleName }}
                                     </Link>
                                 </td>
                                 <td

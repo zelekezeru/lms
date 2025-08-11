@@ -21,6 +21,7 @@ import {
     AcademicCapIcon,
     CheckBadgeIcon,
     PresentationChartBarIcon,
+    EyeSlashIcon
 } from "@heroicons/vue/24/outline";
 import ShowSemesters from "./ShowSemesters.vue";
 import ShowResults from "./ShowResults.vue";
@@ -79,6 +80,14 @@ const addSection = () => {
         },
     });
 };
+
+const showPassword = ref(false);
+
+function hashPassword(password) {
+    // Simple hash for display (not secure, just for obfuscation)
+    if (!password) return "";
+    return "*".repeat(password.length);
+}
 </script>
 
 <template>
@@ -126,7 +135,7 @@ const addSection = () => {
                         {{ student.lastName }}
                     </h2>
                 </div>
-
+                
                 <div
                     class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
                 >
@@ -140,7 +149,12 @@ const addSection = () => {
                             <span
                                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >
-                                {{ student.program.name }}
+                                <Link
+                                    :href="route('programs.show', { program: student.program.id })"
+                                    class="text-indigo-600 hover:underline"
+                                >
+                                    {{ student.program.name }}
+                                </Link>
                             </span>
                         </div>
                         <div v-if="student.track" class="flex flex-col">
@@ -151,7 +165,12 @@ const addSection = () => {
                             <span
                                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                             >
-                                {{ student.track.name }}
+                                <Link
+                                    :href="route('tracks.show', { track: student.track.id })"
+                                    class="text-indigo-600 hover:underline"
+                                >
+                                    {{ student.track.name }}
+                                </Link>
                             </span>
                         </div>
                         <div v-if="student.studyMode" class="flex flex-col">
@@ -196,42 +215,49 @@ const addSection = () => {
                                 >Section</span
                             >
                             <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2"
                             >
-                                {{ student.section.name }}
+                                <Link
+                                    :href="route('sections.show', { section: student.section.id })"
+                                    class="text-indigo-600 hover:underline"
+                                >
+                                    {{ student.section.name }}
+                                </Link>
+                                <button
+                                    @click="createSection = !createSection"
+                                    class="ml-2 text-indigo-600 hover:text-indigo-800 flex items-center"
+                                    title="Edit Section"
+                                >
+                                    <PencilSquareIcon class="w-5 h-5" />
+                                </button>
                             </span>
                         </div>
-
                         <div v-else class="flex flex-col">
                             <span
                                 class="text-sm text-gray-500 dark:text-gray-400"
                                 >Section</span
                             >
-                            <td>
-                                <!-- If the student has no section assigned, show a button to assign a section -->
-                                <span
-                                    class="text-lg font-medium text-gray-900 dark:text-gray-100 col"
+                            <span
+                                class="text-lg font-medium text-gray-900 dark:text-gray-100 col"
+                            >
+                                No Section Assigned
+                                <button
+                                    @click="createSection = !createSection"
+                                    class="flex text-indigo-600 hover:text-indigo-800"
                                 >
-                                    No Section Assigned
-
-                                    <button
-                                        @click="createSection = !createSection"
-                                        class="flex text-indigo-600 hover:text-indigo-800"
-                                    >
-                                        <component
-                                            :is="
-                                                createSection
-                                                    ? XMarkIcon
-                                                    : PlusCircleIcon
-                                            "
-                                            class="w-8 h-8"
-                                        />
-                                        Assign Section
-                                    </button>
-                                </span>
-                                <!-- Assign student to section if the Auth::user() has section-assign permission -->
-                            </td>
+                                    <component
+                                        :is="
+                                            createSection
+                                                ? XMarkIcon
+                                                : PlusCircleIcon
+                                        "
+                                        class="w-8 h-8"
+                                    />
+                                    Assign Section
+                                </button>
+                            </span>
                         </div>
+
                         <!-- Default Password -->
                         <div v-if="student.oldId" class="flex flex-col">
                             <span
@@ -269,10 +295,22 @@ const addSection = () => {
                                 class="text-sm text-gray-500 dark:text-gray-400"
                                 >Default Password</span
                             >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.user.default_password }}
+                            <span class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                <span v-if="showPassword">
+                                    {{ student.user.default_password }}
+                                </span>
+                                <span v-else>
+                                    {{ hashPassword(student.user.default_password) }}
+                                </span>
+                                <button
+                                    @click="showPassword = !showPassword"
+                                    class="ml-2 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                                    type="button"
+                                >
+                                    <EyeSlashIcon v-if="showPassword" class="w-4 h-4 inline-block" />
+                                    <EyeIcon v-else class="w-4 h-4 inline-block" />
+                                    {{ showPassword ? 'Hide' : 'Show' }}
+                                </button>
                             </span>
                         </div>
                         <!-- Closing the div for Default Password -->
@@ -286,36 +324,34 @@ const addSection = () => {
                             leave-from-class="opacity-100 translate-y-0"
                             leave-to-class="opacity-0 -translate-y-2"
                         >
-                            <tr v-if="createSection">
-                                <!-- Select a section from the list of Sections -->
-                                <td
-                                    class="w-full px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+                            <div v-if="createSection" class="col-span-2 flex items-center gap-4 mt-2">
+                                <select
+                                    v-model="sectionForm.section_id"
+                                    class="w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
                                 >
-                                    <select
-                                        v-model="sectionForm.section_id"
-                                        class="w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
+                                    <option value="">Select Section</option>
+                                    <option
+                                        v-for="section in sections"
+                                        :key="section.id"
+                                        :value="section.id"
                                     >
-                                        <option value="">Select Section</option>
-                                        <option
-                                            v-for="section in sections"
-                                            :key="section.id"
-                                            :value="section.id"
-                                        >
-                                            {{ section.name }} -
-                                            {{ section.program.name }}
-                                        </option>
-                                    </select>
-                                </td>
-
-                                <td class="flex justify-between">
-                                    <PrimaryButton
-                                        class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                        @click="addSection"
-                                    >
-                                        Save
-                                    </PrimaryButton>
-                                </td>
-                            </tr>
+                                        {{ section.name }} -
+                                        {{ section.program.name }}
+                                    </option>
+                                </select>
+                                <PrimaryButton
+                                    class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                    @click="addSection"
+                                >
+                                    Save
+                                </PrimaryButton>
+                                <button
+                                    @click="createSection = false"
+                                    class="ml-2 px-4 py-1 h-9 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </transition>
                     </div>
                 </div>

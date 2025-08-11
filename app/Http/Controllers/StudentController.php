@@ -150,13 +150,13 @@ class StudentController extends Controller
         $studyModes = StudyModeResource::collection($studyModes);
 
         // Check if the student has a section & Fetch courses accordingly
-        if ($student->section === null) {
-            $sections = Section::where('program_id', $student->program->id)
+        $sections = Section::where('program_id', $student->program->id)
                 ->get()->load('program', 'courseOfferings.course');
+                
+        if ($student->section === null) {
             $courses = [];
         } else {
             $courses = $student->section->courseOfferings()->with('course')->get()->pluck('course');
-            $sections = [];
         }
 
         // Fetch Payment Categories and Methods

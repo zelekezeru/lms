@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -31,6 +31,19 @@ props.students.data.forEach((student) => {
     };
 });
 const createStudent = ref(false);
+const search = ref("");
+
+// Computed for filtered students
+const filteredStudents = computed(() => {
+    if (!search.value) return props.students.data;
+    const q = search.value.toLowerCase();
+    return props.students.data.filter(
+        (student) =>
+            (student.firstName && student.firstName.toLowerCase().includes(q)) ||
+            (student.lastName && student.lastName.toLowerCase().includes(q)) ||
+            (student.idNo && student.idNo.toLowerCase().includes(q))
+    );
+});
 
 const assignStudentToSection = (studentId) => {
     studentSectionForm[studentId].processing = true;
@@ -100,6 +113,16 @@ const sortStudentsToSections = () => {
             </PrimaryButton>
         </div>
 
+        <!-- Search input -->
+        <div class="mb-2 flex justify-start">
+            <input
+                type="text"
+                v-model="search"
+                :placeholder="$t('students.search_placeholder')"
+                class="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+            />
+        </div>
+
         <!-- Track Study Students List -->
         <div class="overflow-x-auto">
             <div
@@ -148,7 +171,7 @@ const sortStudentsToSections = () => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in students.data"
+                                v-for="(student, index) in filteredStudents"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0

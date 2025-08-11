@@ -177,7 +177,7 @@ class AssignmentController extends Controller
         $sections = $track->sections()->get()->groupBy('study_mode_id');
 
         // Load only necessary fields to reduce memory usage
-        $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id')
+        $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id', 'track_id')
             ->where('track_id', $track->id)
             ->get();
 
@@ -214,8 +214,6 @@ class AssignmentController extends Controller
                         'end_date' => now()->addMonths(4),
                     ]);
                 }
-
-                $track = Track::where('id', $student->track_id)->first();
 
                 $yearSuffix = substr($year->name, -2);
                 $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);

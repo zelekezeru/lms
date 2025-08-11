@@ -54,7 +54,7 @@ class CenterController extends Controller
 
         $students = StudentResource::collection(
             $center->students()
-                ->with(['user', 'program'])
+                ->with(['user', 'program', 'section'])
                 ->orderBy('first_name')
                 ->orderBy('middle_name')
                 ->paginate(50)
@@ -90,7 +90,7 @@ class CenterController extends Controller
         } else {
             $coordinator = null;
         }
-        
+
         return inertia('Centers/Show', [
             'center' => $center,
             'coordinator' => $coordinator,

@@ -145,9 +145,9 @@ class SectionController extends Controller
 
         // Courses that are attached to the section track offerings
         $sectionCourses = $courses->filter(function ($course) use ($section) {
-            return $course->related_to_course_offering || $section->track->courses->contains($course->id);
+            return $course->related_to_course_offering;
         })->values();
-
+        
         $importableCourses = $section->track->courses()->with(['curricula' => function ($q) use ($section) {
             $q->where('track_id', $section->track_id)
                 ->where('study_mode_id', $section->study_mode_id);

@@ -303,7 +303,8 @@
     "duration": "Duration",
     "action": "Action",
     "view": "View",
-    "edit": "Edit"
+    "edit": "Edit",
+    "pick_courses": "Select the courses you want to assign to this course"
   },
 
 

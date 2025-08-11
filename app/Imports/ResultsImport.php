@@ -241,15 +241,6 @@ class ResultsImport implements ToCollection
                 continue;
             }
 
-            // If all scores of the student are empty don't add to noGrade
-            if (collect($this->noGrade)->contains('student_id', $student->id)) {
-                $this->noGrade = collect($this->noGrade)->reject(function ($item) use ($student) {
-                    return $item['student_id'] === $student->id;
-                })->values()->all();
-                
-                continue;
-            }
-
             $score = floatval($score);
             
             // Update or create the Result entry

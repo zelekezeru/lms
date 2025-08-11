@@ -197,6 +197,20 @@ class AssignmentController extends Controller
             } else {
 
                 $year = Year::where('id', $student->year_id)->first();
+                if (! $year) {
+                    $year = Year::create([
+                        'name' => 'Year ' . now()->year,
+                        'status' => 'active',
+                    ]);
+                    Semester::create([
+                        'name' => '1st of ' . $year->name,
+                        'status' => 'active',
+                        'level' => 1,
+                        'year_id' => $year->id,
+                        'start_date' => now(),
+                        'end_date' => now()->addMonths(4),
+                    ]);
+                }
 
                 $track = Track::where('id', $student->track_id)->first();
 

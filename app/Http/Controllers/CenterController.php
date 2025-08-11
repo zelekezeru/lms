@@ -9,6 +9,7 @@ use App\Http\Resources\CoordinatorResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Center;
+use App\Models\CenterCourse;
 use App\Models\User;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -56,19 +57,46 @@ class CenterController extends Controller
                 ->with(['user', 'program'])
                 ->orderBy('first_name')
                 ->orderBy('middle_name')
-                ->paginate(30)
+                ->paginate(50)
         );
+
+        // Get courses from students who have grades in those courses
+        $courses = CenterCourse::where('center_id', $center->id)
+            ->with('course')
+            ->get()
+            ->pluck('course')
+            ->unique('id')
+            ->values()
+            ->map(function ($course) use ($center) {
+            // Count grades for this course from all students in the center
+            $gradeCount = $center->students
+                ->flatMap(function ($student) use ($course) {
+                return $student->grades->where('course_id', $course->id);
+                })
+                ->count();
+            $course->grade_count = $gradeCount;
+            return $course;
+            });
+        
+        $allCourses = $center->students
+            ->flatMap(function ($student) {
+            return $student->track ? $student->track->courses : collect();
+            })
+            ->unique('id')
+            ->values();
 
         if ($center->coordinator) {
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
         } else {
             $coordinator = null;
         }
-
+        
         return inertia('Centers/Show', [
             'center' => $center,
             'coordinator' => $coordinator,
             'students' => $students,
+            'courses' => $courses,
+            'allCourses' => $allCourses,
         ]);
     }
 

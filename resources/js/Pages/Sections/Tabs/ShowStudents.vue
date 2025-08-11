@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 
@@ -36,6 +36,19 @@ function submit() {
         },
     });
 }
+
+const search = ref("");
+const filteredStudents = computed(() => {
+    if (!search.value) return props.students.data;
+    const term = search.value.toLowerCase();
+    return props.students.data.filter(student =>
+        [student.firstName, student.middleName, student.lastName, student.idNo]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+    );
+});
 </script>
 
 <template>
@@ -49,6 +62,14 @@ function submit() {
                 >
                     Students
                 </h2>
+                <!-- Student Search Box -->
+                <input
+                    v-model="search"
+                    type="text"
+                    placeholder="Search students..."
+                    class="ml-4 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
+                    style="min-width: 220px"
+                />
             </div>
 
             <!-- Students Table -->
@@ -87,7 +108,7 @@ function submit() {
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(student, index) in students.data"
+                            v-for="(student, index) in filteredStudents"
                             :key="student.id"
                             :class="
                                 index % 2 === 0

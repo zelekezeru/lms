@@ -197,12 +197,15 @@ class AssignmentController extends Controller
             } else {
 
                 $year = Year::where('id', $student->year_id)->first();
+
+                $semester = Semester::where('year_id', $year->id)->first();
+
                 if (! $year) {
                     $year = Year::create([
                         'name' => 'Year ' . now()->year,
                         'status' => 'active',
                     ]);
-                    Semester::create([
+                    $semester = Semester::create([
                         'name' => '1st of ' . $year->name,
                         'status' => 'active',
                         'level' => 1,
@@ -214,24 +217,6 @@ class AssignmentController extends Controller
 
                 $track = Track::where('id', $student->track_id)->first();
 
-                if ($year) {
-                    $track = Track::where('id', $student->track_id)->first();
-                } else{
-                    $year = Year::create([
-                        'name' => 'Year ' . now()->year,
-                        'status' => 'active',
-                    ]);
-
-                    $semester = Semester::create([
-                        'name' => '1st of ' . $year->name,
-                        'status' => 'active',
-                        'level' => 1,
-                        'year_id' => $year->id,
-                        'start_date' => now(),
-                        'end_date' => now()->addMonths(4),
-                    ]);
-                }
-
                 $yearSuffix = substr($year->name, -2);
                 $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);
                 
@@ -242,7 +227,7 @@ class AssignmentController extends Controller
                     'track_id' => $track->id,
                     'study_mode_id' => $student->study_mode_id,
                     'year_id' => $year->id,
-                    'semester_id' => Semester::where('year_id', $year->id)->first()->id,
+                    'semester_id' => $semester->id,
                 ]);
 
                 $track->sections()->save($section);

@@ -99,8 +99,9 @@ const deleteCourse = (id) => {
                     {{ $t('centers.students_count') }}
                 </span>
                 <span class="block text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ studentsCount || 0 }}
+                    {{ center.students?.length || 0 }}
                 </span>
+                
             </div>
 
             <!-- Status -->

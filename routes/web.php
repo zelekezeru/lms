@@ -146,7 +146,7 @@ Route::middleware(['auth'])->group(function () {
     // Add these routes for student results import/export
     Route::get('/student-results/export/{section}', [ExportController::class, 'exportStudentResults'])->name('studentResults.export');
     Route::post('/section-results/import', [ImportController::class, 'importSectionResults'])->name('sectionResults.import');
-
+    
     // Make sure to use POST method when calling this route in your forms or AJAX requests.
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
@@ -199,6 +199,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
+    Route::get('/assessments/center_course/{center}/{course}', [AssessmentController::class, 'center_course'])->name('assessments.center_course');
+    
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');

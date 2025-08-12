@@ -10,8 +10,12 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Center;
 use App\Models\CenterCourse;
+use App\Models\Course;
+use App\Models\Program;
+use App\Models\Section;
 use App\Models\User;
 use App\Models\Student;
+use App\Models\Track;
 use Illuminate\Http\Request;
 
 class CenterController extends Controller
@@ -85,6 +89,14 @@ class CenterController extends Controller
             ->unique('id')
             ->values();
 
+        $importableCourses = Program::findOrFail(11)
+            ->tracks()
+            ->with(['courses' => function ($query) {
+                $query->orderBy('name');
+            }])
+            ->first()
+            ?->courses ?? collect();
+
         if ($center->coordinator) {
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
         } else {
@@ -97,6 +109,7 @@ class CenterController extends Controller
             'students' => $students,
             'courses' => $courses,
             'allCourses' => $allCourses,
+            'importableCourses' => $importableCourses,
         ]);
     }
 

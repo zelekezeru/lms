@@ -126,13 +126,16 @@ class ImportController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv',
-            'section_id' => 'required|exists:sections,id',
+            'section_id' => 'sometimes|exists:sections,id',
+            'center_id' => 'sometimes|exists:centers,id',
             'course_id' => 'required|exists:courses,id',
         ]);
+        
         $sectionId = $request->input('section_id');
         $courseId = $request->input('course_id');
+        $centerId = $request->input('center_id');
 
-        $import = new ResultsImport($courseId, $sectionId);
+        $import = new ResultsImport($courseId, $sectionId, $centerId);
 
         Excel::import($import, $request->file('file'));
         
@@ -146,9 +149,17 @@ class ImportController extends Controller
             // If there was an alert, we can log it or handle it as needed
             $title = 'Alert';
         }
-        return redirect()->route('assessments.section_course', [
-            'section' => $sectionId,
-            'course' => $courseId,
-        ])->with($title, $alert);
+
+        if ($sectionId) {
+            return redirect()->route('assessments.section_course', [
+                'section' => $sectionId,
+                'course' => $courseId,
+            ])->with($title, $alert);
+        } elseif ($centerId) {
+            return redirect()->route('assessments.center_course', [
+                'center' => $centerId,
+                'course' => $courseId,
+            ])->with($title, $alert);
+        }
     }
 }

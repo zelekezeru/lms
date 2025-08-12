@@ -5,12 +5,12 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import Thead from "@/Components/Thead.vue";
 
-defineProps({
+const props = defineProps({
     users: {
         type: Object,
         required: true,
@@ -55,6 +55,20 @@ const deleteuser = (id) => {
         }
     });
 };
+
+const search = ref("");
+const filteredUsers = computed(() => {
+    if (!props.users || !props.users.data) return [];
+    if (!search.value) return props.users.data;
+    const term = search.value.toLowerCase();
+    return props.users.data.filter(user =>
+        [user.name, user.email, user.phone]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+    );
+});
 </script>
 
 <template>
@@ -86,6 +100,13 @@ const deleteuser = (id) => {
                 />
                 Refresh Data
             </button>
+            <input
+                v-model="search"
+                type="text"
+                placeholder="Search users..."
+                class="ml-4 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
+                style="min-width: 220px"
+            />
         </div>
 
         <!-- users Table -->
@@ -103,7 +124,7 @@ const deleteuser = (id) => {
                 </TableHeader>
                 <tbody>
                     <tr
-                        v-for="user, index in users.data"
+                        v-for="(user, index) in filteredUsers"
                         :key="user.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                     >

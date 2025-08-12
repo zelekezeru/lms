@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = UserResource::collection(User::orderBy('name')->paginate(30));
+        $users = UserResource::collection(User::orderBy('name')->paginate(50));
 
         return inertia('Users/Index', [
             'users' => $users,

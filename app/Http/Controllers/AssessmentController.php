@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CenterResource;
 use App\Http\Resources\InstructorResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\WeightResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\SectionResource;
+use App\Models\Center;
 use App\Models\Course;
 use App\Models\CourseOffering;
+use App\Models\Grade;
 use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Student;
@@ -16,6 +19,7 @@ use App\Models\Weight;
 
 class AssessmentController extends Controller
 {
+    // Section course Assessment
     public function section_course($section, $course)
     {
         $courseOffering = CourseOffering::lookUpFor($course, $section);
@@ -109,6 +113,26 @@ class AssessmentController extends Controller
             'students' => $students,
             'studentResults' => $studentResults,
         ]);
+    }
+
+    // Center Course Assessment
+    public function center_course($center, $course)
+    {
+        $center = Center::find($center);
+        $course = Course::find($course);
+
+        $students = $center->students()
+            ->with(['user', 'grades' => function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            }])
+            ->get();
+
+        return inertia('Assessments/CenterCourse', [
+            'center' => new CenterResource($center),
+            'course' => new CourseResource($course),
+            'students' => $students,
+        ]);
+
     }
 
     public function section_student($section, $student)

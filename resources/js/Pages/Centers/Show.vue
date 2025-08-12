@@ -26,6 +26,7 @@ import {
   CogIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
+import ShowAssessments from "./Tabs/ShowAssessments.vue";
 
 defineProps({
     center: {
@@ -45,6 +46,10 @@ defineProps({
         required: true,
     },
     allCourses: {
+        type: Array,
+        required: true,
+    },
+    importableCourses: {
         type: Array,
         required: true,
     },
@@ -73,7 +78,8 @@ const tabs = [
     { key: 'students', label: 'Students', icon: UsersIcon },
     { key: 'courses', label: 'Center Courses', icon: ClipboardDocumentListIcon },
     { key: "excels", label: "Excel Managment", icon: ClipboardDocumentListIcon },
-    
+    { key: "assessments", label: "Import Assessments", icon: ClipboardDocumentListIcon },
+
 ];
 
 const search = ref(serverSearch || "");
@@ -178,6 +184,14 @@ const searchCoordinators = () => {
                     v-else-if="selectedTab == 'excels'"
                     :center="center"
                     :coordinator="coordinator?.user"
+                />
+
+                <!-- Assessment import -->
+                <ShowAssessments
+                    v-else-if="selectedTab == 'assessments'"
+                    :center="center"
+                    :coordinator="coordinator?.user"
+                    :importableCourses="importableCourses"
                 />
             </div>
         </transition>

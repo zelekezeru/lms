@@ -5,14 +5,10 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     EyeIcon,
-    TrashIcon,
-    PencilSquareIcon,
     ArrowPathIcon,
     Squares2X2Icon,
     TableCellsIcon,
-    CalendarIcon,
 } from "@heroicons/vue/24/solid";
-import { AcademicCapIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
@@ -139,9 +135,7 @@ const deleteSemester = (id) => {
         </div>
 
         <!-- Table View -->
-        <div
-            class="overflow-x-auto shadow sm:rounded-lg"
-        >
+        <div class="overflow-x-auto shadow sm:rounded-lg">
             <Table>
                 <TableHeader>
                     <tr>
@@ -181,20 +175,27 @@ const deleteSemester = (id) => {
                             {{ semester.year?.name ?? "N/A" }}
                         </td>
                         <td
-                            v-for="modeName in ['REGULAR', 'DISTANCE', 'ONLINE', 'EXTENSION']"
+                            v-for="modeName in [
+                                'REGULAR',
+                                'DISTANCE',
+                                'ONLINE',
+                                'EXTENSION',
+                            ]"
                             :key="modeName"
                             class="px-6 py-4"
                         >
                             <span
-                                v-if="semester.studyModes && semester.studyModes.some(m => m.name === modeName)"
+                                v-if="
+                                    semester.studyModes &&
+                                    semester.studyModes.some(
+                                        (m) => m.name === modeName
+                                    )
+                                "
                                 class="font-bold text-green-600"
                             >
                                 Active
                             </span>
-                            <span
-                                v-else
-                                class="font-bold text-red-400"
-                            >
+                            <span v-else class="font-bold text-red-400">
                                 Inactive
                             </span>
                         </td>
@@ -206,7 +207,7 @@ const deleteSemester = (id) => {
                                     })
                                 "
                                 class="text-blue-500 hover:text-blue-700"
-                                >
+                            >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                         </td>
@@ -221,10 +222,13 @@ const deleteSemester = (id) => {
                 :meta="semesters.meta"
                 :current-page="semesters.current_page"
                 :last-page="semesters.last_page"
-                @page-changed="(page) => router.get(route('semesters.index'), {
-                    page: page,
-                    search: search.value
-                })"
+                @page-changed="
+                    (page) =>
+                        router.get(route('semesters.index'), {
+                            page: page,
+                            search: search.value,
+                        })
+                "
             />
         </div>
     </AppLayout>

@@ -10,6 +10,7 @@ import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "../../Components/TableZebraRows.vue";
+import { useI18n } from "vue-i18n";
 
 defineProps({
     permissions: {
@@ -36,26 +37,33 @@ const refreshData = () => {
 
 // Handle search functionality
 const searchPermissions = () => {
-    router.get(route("permissions.index"), { search: searchQuery.value }, { preserveState: true });
+    router.get(
+        route("permissions.index"),
+        { search: searchQuery.value },
+        { preserveState: true }
+    );
 };
+
+const { t } = useI18n();
 
 // Delete function with SweetAlert confirmation
 const deletepermission = (id) => {
     Swal.fire({
-        title: $t("permission.delete_confirm_title"),
-        text: $t("permission.delete_confirm_text"),
+        title: t("permission.delete_confirm_title"),
+        text: t("permission.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("common.yes"),
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("permissions.destroy", { permission: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("permission.deleted_title"),
-                        $t("permission.deleted_text"),
+                        t("permission.deleted_title"),
+                        t("permission.deleted_text"),
                         "success"
                     );
                 },
@@ -70,7 +78,7 @@ const deletepermission = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ $t('permission.title') }}
+                {{ $t("permission.title") }}
             </h1>
         </div>
 
@@ -109,7 +117,7 @@ const deletepermission = (id) => {
                     :href="route('permissions.create')"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-green-600 rounded-md hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + {{ $t('permission.add') }}
+                    + {{ $t("permission.add") }}
                 </Link>
 
                 <button
@@ -121,7 +129,7 @@ const deletepermission = (id) => {
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    {{ $t('permission.refresh') }}
+                    {{ $t("permission.refresh") }}
                 </button>
             </div>
         </div>
@@ -130,30 +138,51 @@ const deletepermission = (id) => {
         <Table>
             <TableHeader>
                 <tr>
-                    <th scope="col" class="px-6 py-3">{{ $t('permission.name') }}</th>
-                    <th scope="col" class="px-6 py-3">{{ $t('permission.action') }}</th>
+                    <th scope="col" class="px-6 py-3">
+                        {{ $t("permission.name") }}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        {{ $t("permission.action") }}
+                    </th>
                 </tr>
             </TableHeader>
             <tbody>
-                <TableZebraRows v-for="permission in permissions.data" :key="permission.id">
+                <TableZebraRows
+                    v-for="permission in permissions.data"
+                    :key="permission.id"
+                >
                     <th
                         scope="row"
                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                        <Link :href="route('permissions.show', { permission: permission.id })">
+                        <Link
+                            :href="
+                                route('permissions.show', {
+                                    permission: permission.id,
+                                })
+                            "
+                        >
                             {{ permission.name }}
                         </Link>
                     </th>
                     <td class="flex items-center justify-around py-4">
                         <Link
-                            :href="route('permissions.show', { permission: permission.id })"
+                            :href="
+                                route('permissions.show', {
+                                    permission: permission.id,
+                                })
+                            "
                             class="text-blue-500 hover:text-blue-700"
                             :title="$t('permission.view')"
                         >
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
-                            :href="route('permissions.edit', { permission: permission.id })"
+                            :href="
+                                route('permissions.edit', {
+                                    permission: permission.id,
+                                })
+                            "
                             class="text-green-500 hover:text-green-700"
                             :title="$t('permission.edit')"
                         >
@@ -165,7 +194,7 @@ const deletepermission = (id) => {
                             :title="$t('permission.delete')"
                         >
                             <TrashIcon class="w-5 h-5" />
-                            <span>{{ $t('permission.delete') }}</span>
+                            <span>{{ $t("permission.delete") }}</span>
                         </button>
                     </td>
                 </TableZebraRows>
@@ -189,4 +218,3 @@ const deletepermission = (id) => {
         </div>
     </AppLayout>
 </template>
-

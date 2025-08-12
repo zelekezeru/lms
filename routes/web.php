@@ -203,6 +203,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
     Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');
+    Route::post('/centers/{center}/courses/assign', [AssignmentController::class, 'assignCoursesToCenter'])->name('center-courses.assign');
 
     // Resource Routes
     $resourceRoutes = [

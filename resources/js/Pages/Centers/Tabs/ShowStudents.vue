@@ -51,6 +51,20 @@ const assignStudentToSection = (studentId) => {
         },
     });
 };
+
+const search = ref("");
+
+const filteredStudents = computed(() => {
+    if (!search.value) return props.students.data;
+    const term = search.value.toLowerCase();
+    return props.students.data.filter((student) =>
+        [student.firstName, student.middleName, student.lastName, student.idNo, student.mobilePhone]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+    );
+});
 </script>
 
 <template>
@@ -61,6 +75,14 @@ const assignStudentToSection = (studentId) => {
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Students
             </h2>
+            <!-- Student Search Box -->
+            <input
+                v-model="search"
+                type="text"
+                placeholder="Search students..."
+                class="ml-4 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
+                style="min-width: 220px"
+            />
         </div>
 
         <!-- Students Table -->
@@ -75,12 +97,13 @@ const assignStudentToSection = (studentId) => {
                         <Thead>ID Number</Thead>
                         <Thead>Phone</Thead>
                         <Thead>Program</Thead>
+                        <Thead>Section</Thead>
                         <Thead>Actions</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
                     <TableZebraRows
-                        v-for="(student, index) in students.data"
+                        v-for="(student, index) in filteredStudents"
                         :key="student.id"
                     >
                         <td class="px-6 py-4">
@@ -104,6 +127,7 @@ const assignStudentToSection = (studentId) => {
                         <td class="px-6 py-4">{{ student.idNo }}</td>
                         <td class="px-6 py-4">{{ student.mobilePhone }}</td>
                         <td class="px-6 py-4">{{ student.program?.name }}</td>
+                        <td class="px-6 py-4">{{ student.section?.name }}</td>
                         <td class="px-6 py-4 flex space-x-6">
                             <div v-if="userCan('view-students')">
                                 <Link
@@ -117,22 +141,30 @@ const assignStudentToSection = (studentId) => {
                                     <EyeIcon class="w-5 h-5" />
                                 </Link>
                             </div>
-                            <div v-if="userCan('update-students')">
-                                <Link
-                                    :href="
-                                        route('students.edit', {
-                                            student: student.id,
-                                        })
-                                    "
-                                    class="text-green-500 hover:text-green-700"
-                                >
-                                    <PencilSquareIcon class="w-5 h-5" />
-                                </Link>
-                            </div>
                         </td>
                     </TableZebraRows>
                 </tbody>
             </Table>
+
+            <!-- Pagination Links -->
+            <div class="mt-4 flex justify-center">
+                <nav v-if="students.links && students.links.length > 1" class="inline-flex -space-x-px">
+                    <Link
+                        v-for="(link, i) in students.links"
+                        :key="i"
+                        :href="link.url || ''"
+                        class="px-3 py-1 border text-sm"
+                        :class="[
+                            link.active
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700',
+                            link.url ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+                        ]"
+                        v-html="link.label"
+                        :disabled="!link.url"
+                    />
+                </nav>
+            </div>
         </div>
     </div>
 </template>

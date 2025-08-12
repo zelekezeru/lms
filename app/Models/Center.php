@@ -17,4 +17,9 @@ class Center extends Model
     {
         return $this->hasOne(Coordinator::class);
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }

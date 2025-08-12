@@ -12,6 +12,7 @@ import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCoordinators from "./Tabs/ShowCoordinators.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowExcels from "./Tabs/ShowExcels.vue";
+import ShowCourses from "./Tabs/ShowCourses.vue";
 import {
   ArrowPathIcon,
   TrashIcon,
@@ -39,6 +40,14 @@ defineProps({
         type: Array,
         required: true,
     },
+    courses: {
+        type: Array,
+        required: true,
+    },
+    allCourses: {
+        type: Array,
+        required: true,
+    },
     sortInfo: {
         type: Object,
         required: false,
@@ -62,6 +71,7 @@ const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
     { key: 'coordinators', label: 'Coordinators', icon: UserGroupIcon },
     { key: 'students', label: 'Students', icon: UsersIcon },
+    { key: 'courses', label: 'Center Courses', icon: ClipboardDocumentListIcon },
     { key: "excels", label: "Excel Managment", icon: ClipboardDocumentListIcon },
     
 ];
@@ -153,6 +163,14 @@ const searchCoordinators = () => {
                     :coordinator="coordinator?.user"
                     :sort-info="sortInfo"
                     @close="showStudentsModal = false"
+                />
+
+                <ShowCourses
+                    v-else-if="selectedTab == 'courses'"
+                    :center="center"
+                    :courses="courses"
+                    :all-courses="allCourses"
+                    :coordinator="coordinator?.user"
                 />
 
                 <!-- Excel Management Panel -->

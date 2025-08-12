@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Center;
+use App\Models\CenterCourse;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Instructor;
@@ -217,16 +219,25 @@ class AssignmentController extends Controller
 
                 $yearSuffix = substr($year->name, -2);
                 $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);
+
+                // If the section already exists, use it
+                $section = Section::where('name', $year->name . ' - ' . $track->name . ' Section-1')
+                    ->where('code', $section_id)
+                    ->where('program_id', $track->program_id)
+                    ->where('track_id', $track->id)
+                    ->first();
                 
-                $section = Section::updateOrCreate([
-                    'name' => $year->name . ' - ' . $track->name . ' Section-1',
-                    'code' => $section_id,
-                    'program_id' => $track->program_id,
-                    'track_id' => $track->id,
+                if (!$section) {
+                    $section = Section::updateOrCreate([
+                        'name' => $year->name . ' - ' . $track->name . ' Section-1',
+                        'code' => $section_id,
+                        'program_id' => $track->program_id,
+                        'track_id' => $track->id,
                     'study_mode_id' => $student->study_mode_id,
                     'year_id' => $year->id,
                     'semester_id' => $semester->id,
                 ]);
+                }
 
                 $track->sections()->save($section);
 
@@ -313,4 +324,29 @@ class AssignmentController extends Controller
 
         return redirect()->route('tracks.show', $track->id)->with('success', 'Courses assigned to sections successfully.');
     }
+
+    public function assignCoursesToCenter(Request $request, $center)
+    {
+        $validated = $request->validate([
+            'courses' => 'required|array',
+            'courses.*' => 'exists:courses,id',
+        ]);
+
+        $centerCourses = [];
+
+        // Remove all previous course assignments for the center
+        CenterCourse::where('center_id', $center)->delete();
+
+        foreach ($validated['courses'] as $courseId) {
+            $centerCourses[] = CenterCourse::updateOrCreate(
+                [
+                    'center_id' => $center,
+                    'course_id' => $courseId,
+                ]
+            );
+        }
+
+        return redirect()->route('centers.show', $center)->with('success', 'Courses assigned to center successfully.');
+    }
 }
+

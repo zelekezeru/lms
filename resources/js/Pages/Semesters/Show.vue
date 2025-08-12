@@ -74,13 +74,14 @@ const dateWithoutTimezone = (date) => {
 
 const cancelChanges = () => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, Revert My Changes!",
+        confirmButtonText: t("common.revert"),
+        cancelButtonText: t("common.cancel"),
     }).then((result) => {
         if (result.isConfirmed) {
             studyModeRelationsForm.reset();
@@ -90,13 +91,14 @@ const cancelChanges = () => {
 };
 const applyChanges = () => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "Your Changes Will Be Applied!",
+        title: t("common.confirm_save"),
+        text: t("common.confirm_save_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, Apply My Changes!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             studyModeRelationsForm.post(
@@ -107,7 +109,7 @@ const applyChanges = () => {
                     preserveState: false,
                     onSuccess: () => {
                         Swal.fire(
-                            "Success!",
+                            t("common.success"),
                             "The semester has been updated.",
                             "success"
                         );
@@ -127,6 +129,7 @@ const deleteSemester = (id) => {
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Yes, delete it!",
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("semesters.destroy", { semester: id }), {
@@ -159,8 +162,9 @@ const deleteSemester = (id) => {
                 <!-- Grid Info -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Semester Name</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("semester.name") }}</span
                         >
                         <div
                             class="mt-1 text-lg font-semibold text-gray-800 dark:text-gray-100"
@@ -170,8 +174,9 @@ const deleteSemester = (id) => {
                     </div>
 
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Academic Year</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("semester.year") }}</span
                         >
                         <div
                             class="mt-1 text-lg font-semibold text-blue-600 hover:underline"
@@ -189,8 +194,9 @@ const deleteSemester = (id) => {
                     </div>
 
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Start Date</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("semester.start_date") }}</span
                         >
                         <div
                             class="mt-1 text-lg font-semibold text-gray-800 dark:text-gray-100"
@@ -204,8 +210,9 @@ const deleteSemester = (id) => {
                     </div>
 
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >End Date</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("semester.end_date") }}</span
                         >
                         <div
                             class="mt-1 text-lg font-semibold text-gray-800 dark:text-gray-100"
@@ -217,8 +224,9 @@ const deleteSemester = (id) => {
                     </div>
 
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-                        <span class="text-sm text-gray-500 dark:text-gray-400"
-                            >Approval</span
+                        <span
+                            class="text-sm text-gray-500 dark:text-gray-400"
+                            >{{ $t("semester.approval") }}</span
                         >
                         <div
                             class="mt-1 text-lg font-semibold"
@@ -245,7 +253,7 @@ const deleteSemester = (id) => {
                             <h2
                                 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100"
                             >
-                                This semester is applied in...
+                                {{ $t("semester.applied_in_study_modes") }}
                             </h2>
                             <Listbox
                                 v-model="selectedStudyModes"
@@ -265,14 +273,16 @@ const deleteSemester = (id) => {
                             <h2
                                 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100"
                             >
-                                Pick duration in each study mode
+                                {{ $t("semester.pick_duration_text") }}
                             </h2>
 
                             <div
                                 v-if="selectedStudyModes.length === 0"
                                 class="text-gray-500 italic dark:text-gray-400"
                             >
-                                No study mode selected
+                                {{
+                                    $t("semester.study_mode_not_selected_text")
+                                }}
                             </div>
 
                             <div v-else class="space-y-6">
@@ -359,14 +369,14 @@ const deleteSemester = (id) => {
                             class="inline-flex items-center px-5 mr-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition duration-200"
                         >
                             <CheckCircleIcon class="w-5 h-5 mr-2 -ml-1" />
-                            Apply Changes
+                            {{ $t("semester.apply_changes") }}
                         </button>
                         <button
                             @click="cancelChanges"
                             class="inline-flex items-center px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-sm transition duration-200"
                         >
                             <XCircleIcon class="w-5 h-5 mr-2 -ml-1" />
-                            Cancel Changes
+                            {{ $t("semester.cancel_changes") }}
                         </button>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
+import { useI18n } from "vue-i18n";
 
 defineProps({
     semesters: Object,
@@ -41,20 +42,28 @@ const refreshData = () => {
     });
 };
 
+const { t } = useI18n();
+
+// Delete function with SweetAlert confirmation
 const deleteSemester = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "This will permanently delete the semester.",
+        title: t("semester.delete_confirm_title"),
+        text: t("semester.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("semesters.destroy", { semester: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "Semester deleted.", "success");
+                    Swal.fire(
+                        t("semester.deleted_title"),
+                        t("semester.deleted_text"),
+                        "success"
+                    );
                 },
             });
         }
@@ -142,12 +151,12 @@ const deleteSemester = (id) => {
                         <Thead sortable :sort-info="sortInfo" sortColumn="name"
                             >Semester</Thead
                         >
-                        <Thead>Year</Thead>
-                        <Thead>REGULAR</Thead>
-                        <Thead>DISTANCE</Thead>
-                        <Thead>ONLINE</Thead>
-                        <Thead>EXTENTION</Thead>
-                        <Thead>Actions</Thead>
+                        <Thead>{{ $t("semester.year") }}</Thead>
+                        <Thead>{{ $t("semester.regular") }}</Thead>
+                        <Thead>{{ $t("semester.distance") }}</Thead>
+                        <Thead>{{ $t("semester.extension") }}</Thead>
+                        <Thead>{{ $t("semester.online") }}</Thead>
+                        <Thead>{{ $t("common.action") }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
@@ -216,19 +225,18 @@ const deleteSemester = (id) => {
             </Table>
         </div>
         <!-- Pagination -->
-        <div class="mt-4">
-            <pagination
-                :links="semesters.links"
-                :meta="semesters.meta"
-                :current-page="semesters.current_page"
-                :last-page="semesters.last_page"
-                @page-changed="
-                    (page) =>
-                        router.get(route('semesters.index'), {
-                            page: page,
-                            search: search.value,
-                        })
-                "
+        <div class="mt-3 flex justify-center space-x-6">
+            <Link
+                v-for="link in semesters.meta.links"
+                :key="link.label"
+                :href="link.url ? `${link.url}&search=${search}` : '#'"
+                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
+                :class="{
+                    'text-gray-700 dark:text-gray-400': true,
+                    'cursor-not-allowed opacity-50': !link.url,
+                    '!bg-gray-100 !dark:bg-gray-800': link.active,
+                }"
+                v-html="link.label"
             />
         </div>
     </AppLayout>

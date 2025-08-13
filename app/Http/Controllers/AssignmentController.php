@@ -264,12 +264,14 @@ class AssignmentController extends Controller
     // Route::post('/student-studyMode/sort/{center}', [AssignmentController::class, 'sortStudentsToStudyModes'])->name('student-studyMode.sort');
     public function sortStudentsToStudyModes(Request $request, Track $track)
     {
-        $students = $track->students;
+        $students = Student::where('track_id', $track->id)
+            ->where('study_mode_id', '!=', 4) // Exclude students already in DISTANCE study mode
+            ->get();
 
         if ($students->isEmpty()) {
             return redirect()->back()->with('error', 'No students found in this track.');
         }
-        
+
         foreach ($students as $student) {
             // Find the study mode for the student
             $studyMode = StudyMode::where('name', 'DISTANCE')->first();

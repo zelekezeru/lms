@@ -189,7 +189,7 @@ class AssignmentController extends Controller
             $yearId = $student->year_id;
 
             // target section is a section that belongs to the same studymode and year as the student
-            $targetSection = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) ‹
+            $targetSection = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
                 return $section->year_id == $yearId;
             });
 

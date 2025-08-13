@@ -182,7 +182,9 @@ class AssignmentController extends Controller
         $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id', 'track_id')
             ->where('track_id', $track->id)
             ->get();
-
+        
+        $availableYears = Year::whereIn('id', $students->pluck('year_id')->unique())->pluck('name', 'id');
+        dd($availableYears);
         $updates = [];
         foreach ($students as $student) {
             $yearId = $student->year_id;
@@ -190,11 +192,13 @@ class AssignmentController extends Controller
             // target section is a section that belongs to the same studymode and year as the student
             $sectionGroup = $sections->get($student->study_mode_id);
             $targetSection = null;
-            
+
             if ($sectionGroup) {
-                $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
-                    return $section->year_id == $yearId;
-                });
+                if ($sectionGroup->isNotEmpty()) {
+                    $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
+                        return $section->year_id == $yearId;
+                    });
+                }
             }
             
 
@@ -226,9 +230,9 @@ class AssignmentController extends Controller
                 $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);
 
                 // If the section already exists, use it
-                $section = Section::where('name', $year->name . ' - ' . $track->name . ' Section-1')
-                    ->where('code', $section_id)
+                $section = Section::where('code', $section_id)
                     ->where('program_id', $track->program_id)
+                    ->where('study_mode_id', $student->study_mode_id)
                     ->where('track_id', $track->id)
                     ->first();
                 

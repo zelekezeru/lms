@@ -267,9 +267,9 @@ class AssignmentController extends Controller
         $students = $track->students;
 
         if ($students->isEmpty()) {
-            return redirect()->route('tracks.show', $track->id)->with('error', 'No students found in this track.');
+            return redirect()->back()->with('error', 'No students found in this track.');
         }
-
+        
         foreach ($students as $student) {
             // Find the study mode for the student
             $studyMode = StudyMode::where('name', 'DISTANCE')->first();

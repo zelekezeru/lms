@@ -237,6 +237,7 @@
         "duration_years": "Duration in years",
         "select_program": "Select Program",
         "in_language": "in {language}",
+        "has_curriculum": "Has Curriculum",
         "curriculum": {
             "with": "with",
             "mode": "Mode - Curriculum",

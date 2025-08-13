@@ -184,14 +184,19 @@ class AssignmentController extends Controller
             ->get();
 
         $updates = [];
-
         foreach ($students as $student) {
             $yearId = $student->year_id;
 
             // target section is a section that belongs to the same studymode and year as the student
-            $targetSection = $sections->get($student->study_mode_id)->first(function ($section) use ($yearId) {
-                return $section->year_id == $yearId;
-            });
+            $sectionGroup = $sections->get($student->study_mode_id);
+            $targetSection = null;
+            
+            if ($sectionGroup) {
+                $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
+                    return $section->year_id == $yearId;
+                });
+            }
+            
 
             // if there is no target section found create it
             if ($targetSection) {

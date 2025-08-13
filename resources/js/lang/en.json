@@ -374,7 +374,8 @@
         "change_section_to": "Change Section To...",
         "not_available": "N/A",
         "success": "Success",
-        "student_assigned_successfully": "Student assigned to section successfully"
+        "student_assigned_successfully": "Student assigned to section successfully",
+        "sort_studyMode": "Sort to StudyMode"
     },
 
     "rooms": {

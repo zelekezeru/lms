@@ -228,7 +228,9 @@ const sortStudentsToSections = () => {
                                                     section.year.id ==
                                                         student.yearId &&
                                                     section.semester.id ==
-                                                        student.semesterId 
+                                                        student.semesterId &&
+                                                    section.studyMode.id ==
+                                                        student.studyMode.id
                                                 );
                                             })
                                         "

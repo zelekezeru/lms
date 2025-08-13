@@ -170,6 +170,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
+    Route::post('/student-studyMode/sort/{center}', [AssignmentController::class, 'sortStudentsToStudyModes'])->name('student-studyMode.sort');
 
     // Sort Students to Sections
     Route::post('/student-section/sort/{track}', [AssignmentController::class, 'sortStudentsToSections'])->name('student-section.sort');

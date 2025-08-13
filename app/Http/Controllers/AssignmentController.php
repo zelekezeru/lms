@@ -261,6 +261,29 @@ class AssignmentController extends Controller
         }
     }
 
+    // 
+    // Route::post('/student-studyMode/sort/{center}', [AssignmentController::class, 'sortStudentsToStudyModes'])->name('student-studyMode.sort');
+    public function sortStudentsToStudyModes(Request $request, Center $center)
+    {
+        $students = $center->students;
+        
+        if ($students->isEmpty()) {
+            return redirect()->route('centers.show', $center->id)->with('error', 'No students found in this center.');
+        }
+
+        foreach ($students as $student) {
+            // Find the study mode for the student
+            $studyMode = StudyMode::where('name', 'DISTANCE')->first();
+            
+            if ($studyMode) {
+                // Update the student's study mode
+                $student->update(['study_mode_id' => 4]);
+            }
+        }
+
+        return redirect()->route('centers.show', $center->id)->with('success', 'Students sorted to study modes successfully.');
+    }
+
     // Assign Track Courses to Section
     public function assignTrackCoursesToSection(Section $section)
     {

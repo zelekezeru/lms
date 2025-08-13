@@ -198,40 +198,20 @@ class AssignmentController extends Controller
             if ($targetSection) {
                 $targetSectionId = $targetSection->id;
             } else {
-
-                $year = Year::where('id', $student->year_id)->first();
-
-                $semester = Semester::where('year_id', $year->id)->first();
-
-                if (! $year) {
-                    $year = Year::create([
-                        'name' => 'Year ' . now()->year,
-                        'status' => 'active',
-                    ]);
-                    $semester = Semester::create([
-                        'name' => '1st of ' . $year->name,
-                        'status' => 'active',
-                        'level' => 1,
-                        'year_id' => $year->id,
-                        'start_date' => now(),
-                        'end_date' => now()->addMonths(4),
-                    ]);
-                }
-
-                $yearSuffix = substr($year->name, -2);
-
-                // If the section already exists, use it
-                $section = Section::where('year_id', $year->id)
-                    ->where('study_mode_id', $student->study_mode_id)
-                    ->where('track_id', $track->id)
-                    ->first();
+                $year = Year::find($yearId);
                 
-                if (!$section) {
-                    return redirect()->route('tracks.show', $track->id)->with('error', 'Section not found.');
+                if (! $year || $year->semesters->isEmpty()) {
+                    return redirect()->back()->withErrors('Year not found for student: ' . $student->first_name . ' ' . $student->last_name);
                 }
-
-                $targetSectionId = $section->id;
-                $sections[$yearId] = $targetSectionId;
+                // Create a new section for the student if it doesn't exist
+                $targetSection = Section::create([
+                    'name' => $yearId . ' - ' . $track->name . ' Section 1',
+                    'year_id' => $year->id,
+                    'semester_id' => $year->semesters->first()->id,
+                    'study_mode_id' => $student->study_mode_id,
+                    'track_id' => $track->id,
+                ]);
+                $targetSectionId = $targetSection->id;
             }
 
             // Only update if section_id is different
@@ -259,30 +239,6 @@ class AssignmentController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors('Sorting failed: ' . $e->getMessage());
         }
-    }
-
-    // Route::post('/student-studyMode/sort/{center}', [AssignmentController::class, 'sortStudentsToStudyModes'])->name('student-studyMode.sort');
-    public function sortStudentsToStudyModes(Request $request, Track $track)
-    {
-        $students = Student::where('track_id', $track->id)
-            ->where('study_mode_id', '!=', 4) // Exclude students already in DISTANCE study mode
-            ->get();
-
-        if ($students->isEmpty()) {
-            return redirect()->back()->with('error', 'No students found in this track.');
-        }
-        
-        foreach ($students as $student) {
-            // Find the study mode for the student
-            $studyMode = StudyMode::where('name', 'DISTANCE')->first();
-            
-            if ($studyMode) {
-                // Update the student's study mode
-                $student->update(['study_mode_id' => 4]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'Students sorted to study modes successfully.');
     }
 
     // Assign Track Courses to Section

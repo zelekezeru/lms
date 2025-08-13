@@ -9,17 +9,12 @@ import {
     ChevronDownIcon,
     EyeIcon,
     PencilSquareIcon,
-    PlusCircleIcon,
 } from "@heroicons/vue/24/outline";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { useI18n } from "vue-i18n"; // ✅ Add this line
-
-const { t } = useI18n(); // ✅ Destructure the `t` function
 
 const props = defineProps({
     center: Object,
@@ -70,32 +65,6 @@ const filteredStudents = computed(() => {
             .includes(term)
     );
 });
-// sortStudentsToSections
-const sortStudentsToStudyMode = () => {
-    Swal.fire({
-        title: t("students.sort_studyMode"),
-        text: t("students.confirm_sorting"),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: t("confirm"),
-        cancelButtonText: t("cancel"),
-    }).then((result) => {
-        if (result.isConfirmed) {
-            useForm().post(route("student-studyMode.sort", props.center.id), {
-                onSuccess: () => {
-                    Swal.fire(
-                        t("students.success"),
-                        t("students.students_sorted_successfully"),
-                        "success"
-                    );
-                },
-                onError: () => {
-                    Swal.fire(t("error"), usePage().props.errors[0], "error");
-                },
-            });
-        }
-    });
-};
 </script>
 
 <template>
@@ -114,24 +83,6 @@ const sortStudentsToStudyMode = () => {
                 class="ml-4 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
                 style="min-width: 220px"
             />
-
-            <div class="flex items-center justify-between mb-4">
-                <!-- Button to sort students -->
-                <PrimaryButton @click="sortStudentsToStudyMode">
-                    <FolderOpenIcon class="w-5 h-5 mr-2" />
-                    {{ $t("students.sort_studyMode") }}
-                </PrimaryButton>
-            </div>
-
-            
-
-            <!-- sort students to StudyMode -->
-            <div class="mb-4 flex justify-end">
-                <PrimaryButton @click="createStudent = true">
-                    <PlusCircleIcon class="w-5 h-5 mr-2" />
-                    {{ $t("students.add_student") }}
-                </PrimaryButton>
-            </div>
         </div>
 
         <!-- Students Table -->

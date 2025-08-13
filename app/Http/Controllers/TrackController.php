@@ -144,6 +144,7 @@ class TrackController extends Controller
             'courses',
             'sections.semester',
             'sections.year',
+            'sections.students',
             'sections.studyMode',
             'curricula.course',
             'curricula.studyMode',

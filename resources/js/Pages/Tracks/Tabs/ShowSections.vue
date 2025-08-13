@@ -119,6 +119,13 @@ const addSection = () => {
                         >
                             {{ $t("sections.year") }}
                         </th>
+
+                        
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                        >
+                            {{ $t("students") }}
+                        </th>
                         <th
                             class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
@@ -173,6 +180,11 @@ const addSection = () => {
                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
                             {{ section.year.name }}
+                        </td>
+                        <td
+                            class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                        >
+                            {{ (section.students ?? []).length }}
                         </td>
                         <td
                             class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"

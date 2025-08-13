@@ -188,7 +188,10 @@ class AssignmentController extends Controller
             $yearId = $student->year_id;
 
             // target section is a section that belongs to the same studymode and year as the student
-            $sectionGroup = $sections->get($student->study_mode_id);
+            $sectionGroup = null;
+            if ($sections->has($student->study_mode_id)) {
+                $sectionGroup = $sections->get($student->study_mode_id);
+            }
             $targetSection = null;
 
             if ($sectionGroup && $sectionGroup->isNotEmpty()) {
@@ -223,28 +226,16 @@ class AssignmentController extends Controller
                 }
 
                 $yearSuffix = substr($year->name, -2);
-                $section_id = 'SC' . '-' . $yearSuffix . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT);
 
                 // If the section already exists, use it
-                $section = Section::where('code', $section_id)
-                    ->where('program_id', $track->program_id)
+                $section = Section::where('year_id', $year->id)
                     ->where('study_mode_id', $student->study_mode_id)
                     ->where('track_id', $track->id)
                     ->first();
                 
                 if (!$section) {
-                    $section = Section::updateOrCreate([
-                        'name' => $year->name . ' - ' . $track->name . ' Section-1',
-                        'code' => $section_id,
-                        'program_id' => $track->program_id,
-                        'track_id' => $track->id,
-                    'study_mode_id' => $student->study_mode_id,
-                    'year_id' => $year->id,
-                    'semester_id' => $semester->id,
-                ]);
+                    return redirect()->route('tracks.show', $track->id)->with('error', 'Section not found.');
                 }
-
-                $track->sections()->save($section);
 
                 $targetSectionId = $section->id;
                 $sections[$yearId] = $targetSectionId;

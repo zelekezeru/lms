@@ -261,14 +261,13 @@ class AssignmentController extends Controller
         }
     }
 
-    // 
     // Route::post('/student-studyMode/sort/{center}', [AssignmentController::class, 'sortStudentsToStudyModes'])->name('student-studyMode.sort');
-    public function sortStudentsToStudyModes(Request $request, Center $center)
+    public function sortStudentsToStudyModes(Request $request, Track $track)
     {
-        $students = $center->students;
-        
+        $students = $track->students;
+
         if ($students->isEmpty()) {
-            return redirect()->route('centers.show', $center->id)->with('error', 'No students found in this center.');
+            return redirect()->route('tracks.show', $track->id)->with('error', 'No students found in this track.');
         }
 
         foreach ($students as $student) {

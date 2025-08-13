@@ -98,6 +98,32 @@ const sortStudentsToSections = () => {
         }
     });
 };
+// sortStudentsToSections
+const sortStudentsToStudyMode = () => {
+    Swal.fire({
+        title: t("students.sort_studyMode"),
+        text: t("students.confirm_sorting"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: t("confirm"),
+        cancelButtonText: t("cancel"),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            useForm().post(route("student-studyMode.sort", props.center.id), {
+                onSuccess: () => {
+                    Swal.fire(
+                        t("students.success"),
+                        t("students.students_sorted_successfully"),
+                        "success"
+                    );
+                },
+                onError: () => {
+                    Swal.fire(t("error"), usePage().props.errors[0], "error");
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>
@@ -110,6 +136,14 @@ const sortStudentsToSections = () => {
             <PrimaryButton @click="sortStudentsToSections">
                 <FolderOpenIcon class="w-5 h-5 mr-2" />
                 {{ $t("students.sort_sections") }}
+            </PrimaryButton>
+        </div>
+
+        <div class="flex items-center justify-between mb-4">
+            <!-- Button to sort students -->
+            <PrimaryButton @click="sortStudentsToStudyMode">
+                <FolderOpenIcon class="w-5 h-5 mr-2" />
+                {{ $t("students.sort_studyMode") }}
             </PrimaryButton>
         </div>
 

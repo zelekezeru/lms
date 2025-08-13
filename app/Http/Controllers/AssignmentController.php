@@ -176,7 +176,7 @@ class AssignmentController extends Controller
         // Load all sections grouped by study modes... because students should not be assigned to a section with different study mode as theirs
         // this results in structure like...
 
-        $sections = $track->sections()->get()->groupBy('study_mode_id');
+        $sections = $track->sections()->get();
 
         // Load only necessary fields to reduce memory usage
         $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id', 'track_id')
@@ -186,20 +186,13 @@ class AssignmentController extends Controller
         $updates = [];
         foreach ($students as $student) {
             $yearId = $student->year_id;
-
-            // target section is a section that belongs to the same studymode and year as the student
-            $sectionGroup = null;
-            if ($sections->has($student->study_mode_id)) {
-                $sectionGroup = $sections->get($student->study_mode_id);
-            }
+            
             $targetSection = null;
 
-            if ($sectionGroup && $sectionGroup->isNotEmpty()) {
-                $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
-                    return $section->year_id == $yearId;
-                });
-            }
-            
+            $targetSection = $sections->where('study_mode_id', $student->study_mode_id)
+                ->where('year_id', $yearId)
+                ->first();
+
 
             // if there is no target section found create it
             if ($targetSection) {
@@ -243,13 +236,12 @@ class AssignmentController extends Controller
 
             // Only update if section_id is different
             if ($student->section_id !== $targetSectionId) {
-                $updates[] = [
-                    'id' => $student->id,
-                    'section_id' => $targetSectionId,
-                ];
+                $student->section_id = $targetSectionId;
+                $student->save();
+                $sections[$yearId] = $targetSectionId;
             }
         }
-
+        
         DB::beginTransaction();
 
         // We need to make sure that this barely happens since it will ruin the data record if students section is sorted unintentionally

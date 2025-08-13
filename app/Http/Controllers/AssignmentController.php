@@ -182,9 +182,7 @@ class AssignmentController extends Controller
         $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id', 'track_id')
             ->where('track_id', $track->id)
             ->get();
-        
-        $availableYears = Year::whereIn('id', $students->pluck('year_id')->unique())->pluck('name', 'id');
-        dd($availableYears);
+            
         $updates = [];
         foreach ($students as $student) {
             $yearId = $student->year_id;
@@ -193,12 +191,10 @@ class AssignmentController extends Controller
             $sectionGroup = $sections->get($student->study_mode_id);
             $targetSection = null;
 
-            if ($sectionGroup) {
-                if ($sectionGroup->isNotEmpty()) {
-                    $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
-                        return $section->year_id == $yearId;
-                    });
-                }
+            if ($sectionGroup && $sectionGroup->isNotEmpty()) {
+                $targetSection = $sectionGroup->first(function ($section) use ($yearId) {
+                    return $section->year_id == $yearId;
+                });
             }
             
 

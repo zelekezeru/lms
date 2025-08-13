@@ -109,7 +109,7 @@ const sortStudentsToStudyMode = () => {
         cancelButtonText: t("cancel"),
     }).then((result) => {
         if (result.isConfirmed) {
-            useForm().post(route("student-studyMode.sort", props.center.id), {
+            useForm().post(route("student-studyMode.sort", props.track.id), {
                 onSuccess: () => {
                     Swal.fire(
                         t("students.success"),

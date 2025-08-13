@@ -271,7 +271,7 @@ class AssignmentController extends Controller
         if ($students->isEmpty()) {
             return redirect()->back()->with('error', 'No students found in this track.');
         }
-
+        
         foreach ($students as $student) {
             // Find the study mode for the student
             $studyMode = StudyMode::where('name', 'DISTANCE')->first();
@@ -282,7 +282,7 @@ class AssignmentController extends Controller
             }
         }
 
-        return redirect()->route('centers.show', $center->id)->with('success', 'Students sorted to study modes successfully.');
+        return redirect()->back()->with('success', 'Students sorted to study modes successfully.');
     }
 
     // Assign Track Courses to Section

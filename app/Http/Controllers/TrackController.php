@@ -276,7 +276,7 @@ class TrackController extends Controller
 
         // Get all curricula from the source track for the selected study mode
         $fromCurricula = Curriculum::where('track_id', $fromTrackId)
-            ->where('study_mode_id', 1)
+            ->where('study_mode_id', $studyModeId)
             ->get();
 
         // Remove existing curricula for the target track and study mode

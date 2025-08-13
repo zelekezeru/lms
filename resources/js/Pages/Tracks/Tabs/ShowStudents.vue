@@ -40,6 +40,7 @@ const filteredStudents = computed(() => {
     return props.students.data.filter(
         (student) =>
             (student.firstName && student.firstName.toLowerCase().includes(q)) ||
+            (student.middleName && student.middleName.toLowerCase().includes(q)) ||
             (student.lastName && student.lastName.toLowerCase().includes(q)) ||
             (student.idNo && student.idNo.toLowerCase().includes(q))
     );

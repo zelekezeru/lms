@@ -128,17 +128,13 @@ const deleteSemester = (id) => {
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("semesters.destroy", { semester: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        t("common.delete_success"),
-                        "The semester has been deleted.",
-                        "success"
-                    );
+                    Swal.fire(t("common.delete_success"), "", "success");
                 },
             });
         }

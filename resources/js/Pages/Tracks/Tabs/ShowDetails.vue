@@ -18,6 +18,7 @@ import {
     BookOpenIcon,
     HomeModernIcon,
 } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 // Define the props for the track
 const props = defineProps({
     track: {
@@ -25,25 +26,24 @@ const props = defineProps({
         required: true,
     },
 });
+
+const { t } = useI18n();
 // Delete function with SweetAlert confirmation
 const deleteTrack = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tracks.destroy", { track: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The Track has been deleted.",
-                        "success"
-                    );
+                    Swal.fire(t("common.delete_success"), "", "success");
                 },
             });
         }
@@ -58,9 +58,9 @@ const deleteTrack = (id) => {
         <div class="grid gap-4 sm:grid-cols-2">
             <!-- Track Code -->
             <div>
-                <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.code') }}</span
-                >
+                <span class="block text-sm text-gray-500 dark:text-gray-400">{{
+                    $t("tracks.code")
+                }}</span>
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
@@ -69,25 +69,27 @@ const deleteTrack = (id) => {
             </div>
             <!-- Track Program -->
             <div>
-                <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.program') }}</span
-                >
+                <span class="block text-sm text-gray-500 dark:text-gray-400">{{
+                    $t("tracks.program")
+                }}</span>
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
-                ><Link
-                    :href="
-                        route('programs.show', { program: track.program.id })
-                    "
-                >
-                    {{ track.program.name }}
-                </Link>
+                    ><Link
+                        :href="
+                            route('programs.show', {
+                                program: track.program.id,
+                            })
+                        "
+                    >
+                        {{ track.program.name }}
+                    </Link>
                 </span>
             </div>
             <!-- Description -->
             <div>
-                <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.description') }}</span
-                >
+                <span class="block text-sm text-gray-500 dark:text-gray-400">{{
+                    $t("tracks.description")
+                }}</span>
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
@@ -96,13 +98,13 @@ const deleteTrack = (id) => {
             </div>
             <!-- Duration -->
             <div>
-                <span class="block text-sm text-gray-500 dark:text-gray-400"
-                    >{{ $t('tracks.duration') }}</span
-                >
+                <span class="block text-sm text-gray-500 dark:text-gray-400">{{
+                    $t("tracks.duration")
+                }}</span>
                 <span
                     class="block text-lg font-medium text-gray-900 dark:text-gray-100"
                 >
-                    {{ track.duration }} {{ $t('tracks.duration_years') }}
+                    {{ track.duration }} {{ $t("tracks.duration_years") }}
                 </span>
             </div>
         </div>
@@ -118,7 +120,7 @@ const deleteTrack = (id) => {
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>{{ $t('common.edit') }}</span>
+                <span>{{ $t("common.edit") }}</span>
             </Link>
             <button
                 v-if="userCan('delete-tracks')"
@@ -126,7 +128,7 @@ const deleteTrack = (id) => {
                 class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />
-                <span>{{ $t('common.delete') }}</span>
+                <span>{{ $t("common.delete") }}</span>
             </button>
         </div>
     </div>

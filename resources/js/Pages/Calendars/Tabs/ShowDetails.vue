@@ -50,21 +50,7 @@ function refreshData() {
                 <p
                     class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2"
                 >
-                    Please review all
-                    <span class="font-semibold text-blue-600 dark:text-blue-300"
-                        >course submissions</span
-                    >,
-                    <span
-                        class="font-semibold text-green-600 dark:text-green-300"
-                        >academic statuses</span
-                    >,
-                    <span
-                        class="font-semibold text-purple-600 dark:text-purple-300"
-                        >curriculum completions</span
-                    >, and other semester-related data before proceeding to
-                    <span class="font-bold text-red-600 dark:text-red-400"
-                        >close the current semester</span
-                    >.
+                    {{ $t("calendars.semester_closing_warning") }}
                 </p>
             </div>
             <div class="flex items-center text-center justify-center">
@@ -112,7 +98,7 @@ function refreshData() {
                                 class="w-5 h-5 mr-2"
                                 :class="{ 'animate-spin': refreshing }"
                             />
-                            <span>Refresh</span>
+                            <span>{{ $t("common.refresh") }}</span>
                         </button>
 
                         <Link
@@ -125,7 +111,7 @@ function refreshData() {
                             class="flex items-center px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-700 rounded-lg shadow hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200"
                         >
                             <EyeIcon class="w-5 h-5 mr-2" />
-                            <span>View</span>
+                            <span>{{ $t("common.view") }}</span>
                         </Link>
                     </div>
                 </div>
@@ -154,7 +140,7 @@ function refreshData() {
                                 d="M6 18L18 6M6 6l12 12"
                             />
                         </svg>
-                        <span>Close Semester</span>
+                        <span>{{ $t("calendars.close_semester") }}</span>
                     </button>
                 </div>
             </div>

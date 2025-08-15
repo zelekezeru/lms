@@ -113,7 +113,13 @@ function exportPDF() {
     y += 30;
 
     props.semesters.forEach((semester, index) => {
-        const grades = semester.grades.filter(
+        // Sort semesters by year before processing grades
+        const sortedSemesters = [...props.semesters].sort((a, b) => {
+            const yearA = a.year?.name ? parseInt(a.year.name) : 0;
+            const yearB = b.year?.name ? parseInt(b.year.name) : 0;
+            return yearA - yearB;
+        });
+        const grades = sortedSemesters[index].grades.filter(
             (g) => g.student_id === student.id
         );
         if (grades.length === 0) return;

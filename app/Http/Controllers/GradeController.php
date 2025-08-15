@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Weight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class GradeController extends Controller
 {
@@ -125,7 +126,7 @@ class GradeController extends Controller
         $fields = $request->validated();
 
         $data = [
-            'changed_by' => auth()->id(),
+            'changed_by' => Auth::user()->id,
             'changed_grade' => $fields['changed_grade'] ?? null,
             'grade_comment' => $fields['grade_comment'] ?? null,
             'grade_letter' => $fields['changed_letter'] ?? $grade->grade_letter,
@@ -156,5 +157,51 @@ class GradeController extends Controller
         return inertia('Grades/SearchResults', [
             'grades' => $grades,
         ]);
+    }
+
+    // Store Student Grade
+    public function storeStudentGrade(Request $request, Student $student)
+    {
+        $fields = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'grade_letter' => 'required|string|max:2',
+            'grade_point' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $courseOffering = $student->enrollments()
+            ->where('course_id', $fields['course_id'])
+            ->first();
+
+        dd($courseOffering);
+        $data = [
+            'student_id' => $student->id,
+            'course_id' => $fields['course_id'],
+            'grade_letter' => $fields['grade_letter'],
+            'grade_point' => $fields['grade_point'],
+            'grade_description' => $fields['grade_description'] ?? null,
+            'grade_scale' => 100,
+            'grade_status' => $fields['grade_status'] ?? 'completed',
+            'user_id' => Auth::id(),
+            'year_id' => $fields['year_id'] ?? null,
+            'semester_id' => $fields['semester_id'] ?? null,
+            'section_id' => $fields['section_id'] ?? null,
+
+        ];
+
+        try {
+            DB::beginTransaction();
+
+            Grade::create($data);
+
+            DB::commit();
+
+            return back()->with('success', 'Grade created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->withErrors(['weights' => $e->getMessage()]);
+        }
+
+        return redirect()->back()->with('success', 'Grade created successfully.');
     }
 }

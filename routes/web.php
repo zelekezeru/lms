@@ -9,6 +9,7 @@ use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\CenterController;
 use App\Http\Controllers\FinancePortalController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InstructorPortalController;
@@ -143,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
+    
     // Reporting
     Route::get('/reports/distanceReport', [ExportController::class, 'distanceReport'])->name('reports.distanceReport');
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('downloadDistanceReportPDF');
@@ -208,7 +210,9 @@ Route::middleware(['auth'])->group(function () {
     // Route to get assessments for a specific track
     Route::get('/curriculums/track/{track}', [CurriculumController::class, 'trackCurriculum'])->name('curriculums.track');
 
+    // Assessment for specific student in a section
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
+    Route::post('students/{student}/grades', [GradeController::class, 'storeStudentGrade'])->name('students.grades');
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
     Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');

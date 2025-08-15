@@ -46,6 +46,16 @@ const filteredStudents = computed(() => {
     );
 });
 
+const sectionCurriculum = (trackId) => {
+    // Redirect to the curriculum track page for the given track
+    route("curriculums.track", { track: trackId }).then(() => {
+        Swal.fire('Success',
+            "Curriculum track assigned successfully",
+            "success"
+        );
+    });
+};
+
 const assignStudentToSection = (studentId) => {
     studentSectionForm[studentId].processing = true;
 
@@ -107,6 +117,13 @@ const sortStudentsToSections = () => {
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {{ $t("students.students") }}
             </h2>
+
+            <!-- Button to assign curriculum year of section to the student grades -->
+            <PrimaryButton @click="sectionCurriculum = true">
+                <FolderOpenIcon class="w-5 h-5 mr-2" />
+                {{ $t("students.assign_curriculum") }}
+            </PrimaryButton>
+
             <!-- Button to sort students -->
             <PrimaryButton @click="sortStudentsToSections">
                 <FolderOpenIcon class="w-5 h-5 mr-2" />

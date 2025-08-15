@@ -9,6 +9,7 @@ use App\Models\Section; // Import the StudentsExport class
 use App\Models\Student;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DistanceReportExport;
 
 // Optional: To add a header row
 // Optional: To customize the data in the export
@@ -23,7 +24,8 @@ class ExportController extends Controller
 
         $students = $section->students()->with('user', 'status', 'church')->orderBy('first_name')->orderBy('middle_name')->get();
 
-        return Excel::download(new StudentsExport($students), $section->name.' Center list.xlsx');
+        $centers = Center::with(['students.grades'])->get();
+        return Excel::download(new StudentsExport($centers), 'Center list.xlsx');
     }
 
     // Export Center StudentsExcel with a parameter list
@@ -59,5 +61,19 @@ class ExportController extends Controller
         }
 
         return Excel::download(new UsersExport($users), 'users.xlsx');
+    }
+
+    public function distanceReport()
+    {
+        $centers = Center::with(['students.grades'])->get();
+
+        // Check if centers were found.
+        if ($centers->isEmpty()) {
+            return back()->with('error', 'No data available to export.');
+        }
+        
+        $reportExport = new DistanceReportExport($centers);
+        
+        return Excel::download($reportExport, 'distance-report.xlsx');
     }
 }

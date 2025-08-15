@@ -47,8 +47,6 @@ class UsersExport implements FromCollection, WithHeadings
                     'Status' => $user->employee->status ?? '',
                 ];
             }
-
-            return $data;
         });
     }
 

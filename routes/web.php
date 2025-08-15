@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrarPortalController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
@@ -141,7 +142,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/imported-students', [ImportController::class, 'showImportedStudents'])->name('sections.imported-students');
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
-    Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
+    Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
+    // Reporting
+    Route::get('/reports/distanceReport', [ExportController::class, 'distanceReport'])->name('reports.distanceReport');
+    Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('downloadDistanceReportPDF');
+
 
     // Add these routes for student results import/export
     Route::get('/student-results/export/{section}', [ExportController::class, 'exportStudentResults'])->name('studentResults.export');
@@ -200,7 +205,9 @@ Route::middleware(['auth'])->group(function () {
     // Assessment routes
     Route::get('/assessments/section_course/{section}/{course}', [AssessmentController::class, 'section_course'])->name('assessments.section_course');
     Route::get('/assessments/center_course/{center}/{course}', [AssessmentController::class, 'center_course'])->name('assessments.center_course');
-    
+    // Route to get assessments for a specific track
+    Route::get('/curriculums/track/{track}', [CurriculumController::class, 'trackCurriculum'])->name('curriculums.track');
+
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');

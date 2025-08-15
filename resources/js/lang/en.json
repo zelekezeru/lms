@@ -378,7 +378,8 @@
         "not_available": "N/A",
         "success": "Success",
         "student_assigned_successfully": "Student assigned to section successfully",
-        "sort_studyMode": "Sort to StudyMode"
+        "sort_studyMode": "Sort to StudyMode",
+        "assign_curriculum": "Assign Curriculum"
     },
 
     "rooms": {

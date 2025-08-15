@@ -52,7 +52,7 @@ th, td {
                     :key="center.id"
                     class="border px-2 py-1 dark:bg-gray-800 dark:text-gray-100"
                 >
-                Center - {{ center.name }}
+                {{ center.name }}
                 </th>
             </tr>
             </thead>

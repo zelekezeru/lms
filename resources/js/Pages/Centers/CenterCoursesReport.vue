@@ -52,13 +52,13 @@ th, td {
                     :key="center.id"
                     class="border px-2 py-1 dark:bg-gray-800 dark:text-gray-100"
                 >
-                Center - {{ center.id }}
+                Center - {{ center.name }}
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="row in rows" :key="row.no" class="text-center">
-                <td class="border px-2 py-1 dark:text-gray-100">{{ row.no }}</td>
+            <tr v-for="(row, idx) in rows" :key="row.no" class="text-center">
+                <td class="border px-2 py-1 dark:text-gray-100">{{ idx + 1 }}</td>
                 <td class="border px-2 py-1 dark:text-gray-100">{{ row.name }}</td>
                 <td class="border px-2 py-1 dark:text-gray-100">{{ row.total }}</td>
                 <td

@@ -19,6 +19,7 @@ import {
     CogIcon,
     QuestionMarkCircleIcon,
     QueueListIcon,
+    UserGroupIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarItem from "./SidebarItem.vue";
@@ -211,9 +212,9 @@ const wrapperClasses = computed(() => {
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
-                        :icon="PlusIcon"
-                        :label="$t('sidebar.add_student')"
-                        :href="route('students.create')"
+                        :icon="UserGroupIcon"
+                        :label="$t('sidebar.student_home')"
+                        :href="route('students.home')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>

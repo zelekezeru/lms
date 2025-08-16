@@ -155,6 +155,7 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
     </h2>
 
     <button
+        v-if="userCan('add.grades')"
         :key="`add-grade-${props.student.id}`"
         class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold shadow hover:from-blue-700 hover:to-blue-500 transition flex items-center ml-2"
         @click="openGradeCreateModal"
@@ -175,7 +176,7 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Semester</th>
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Grade Letter</th>
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Grade Point</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+            <th v-if="userCan('edit.grades')" class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
@@ -191,7 +192,7 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
             <td class="px-4 py-2 text-blue-600 dark:text-blue-400 font-semibold">{{ grade.grade_point || '-' }}</td>
             <td class="px-4 py-2">
               <button
-                v-if="grade.id"
+                v-if="userCan('edit.grades')"
                 :key="`edit-${grade.id}`"
                 class="text-blue-600 dark:text-blue-400 hover:underline ml-2 flex items-center"
                 @click="openGradeEditModal(grade)"

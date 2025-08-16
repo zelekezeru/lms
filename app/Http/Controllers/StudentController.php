@@ -95,6 +95,34 @@ class StudentController extends Controller
         ]);
     }
 
+    public function home()
+    {
+        $students = Student::with('user', 'status')->get();
+
+        $totalStudents = $students->count();
+
+        $activeStudents = $students->where('status.is_active', true)->count();
+
+        $graduatedStudents = $students->where('status.is_graduated', true)->count();
+
+        $regularStudents = $students->where('study_mode_id', 1)->count();
+        $extentionStudents = $students->where('study_mode_id', 2)->count();
+        $onlineStudents = $students->where('study_mode_id', 3)->count();
+        $distanceStudents = $students->where('study_mode_id', 4)->count();
+
+
+        return inertia('Students/StudentsHome', [
+            'students' => $students,
+            'totalStudents' => $totalStudents,
+            'activeStudents' => $activeStudents,
+            'graduatedStudents' => $graduatedStudents,
+            'regularStudents' => $regularStudents,
+            'extentionStudents' => $extentionStudents,
+            'onlineStudents' => $onlineStudents,
+            'distanceStudents' => $distanceStudents,
+        ]);
+    }
+
     public function show(Student $student)
     {
         // CHeck if student status is null

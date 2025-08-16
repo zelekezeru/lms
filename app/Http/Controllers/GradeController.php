@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GradeUpdateRequest;
+use App\Models\CourseOffering;
+use App\Models\Enrollment;
 use App\Models\Grade;
 use App\Models\Student;
 use App\Models\Weight;
@@ -166,13 +168,37 @@ class GradeController extends Controller
             'course_id' => 'required|exists:courses,id',
             'grade_letter' => 'required|string|max:2',
             'grade_point' => 'required|numeric|min:0|max:100',
-        ]);
+                ]);
 
-        $courseOffering = $student->enrollments()
-            ->where('course_id', $fields['course_id'])
+        $courseOffering = CourseOffering::where('course_id', $fields['course_id'])
+                                        ->where('section_id', $student->section_id)
+                                        ->with('course', 'section.studyMode.semesters', 'instructor')
+                                        ->get()->keyBy(function ($item) {
+                                            // Create a unique key for lookup if needed, or just get the first one
+                                            return $item->section_id;
+                                        })->first();
+
+        $semester = $courseOffering->section->studyMode->semesters->first();
+
+        $enrollment = $student->enrollments()
+            ->where('course_offering_id', $courseOffering->id)
+            ->where('student_id', $student->id)
             ->first();
 
-        dd($courseOffering);
+        if (!$enrollment) {
+            $enrollment = Enrollment::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'course_offering_id' => $courseOffering->id,
+                    'semester_id' => $semester->id,
+                ],
+                [
+                    'status' => 'enrolled',
+                    'academic_status' => 'in_progress',
+                ]
+            );
+        }
+        
         $data = [
             'student_id' => $student->id,
             'course_id' => $fields['course_id'],
@@ -182,16 +208,29 @@ class GradeController extends Controller
             'grade_scale' => 100,
             'grade_status' => $fields['grade_status'] ?? 'completed',
             'user_id' => Auth::id(),
-            'year_id' => $fields['year_id'] ?? null,
-            'semester_id' => $fields['semester_id'] ?? null,
-            'section_id' => $fields['section_id'] ?? null,
+            'semester_id' => $semester->id ?? null,
+            'year_id' => $semester->year_id ?? null,
+            'section_id' => $student->section_id ?? null,
 
         ];
 
         try {
             DB::beginTransaction();
 
-            Grade::create($data);
+            Grade::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'course_id' => $fields['course_id'],
+                    'section_id' => $student->section_id,
+                ],
+                $data
+            );
+
+            $academicStatus = ($fields['grade_letter'] === 'F') ? 'failed' : 'completed';
+
+            $enrollment->update([
+                'academic_status' => $academicStatus,
+            ]);
 
             DB::commit();
 

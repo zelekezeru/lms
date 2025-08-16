@@ -144,7 +144,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
-    
+    Route::post('/graduated-students/import', [ImportController::class, 'importGraduatedStudents'])->name('graduatedStudents.import');
+
     // Reporting
     Route::get('/reports/distanceReport', [ExportController::class, 'distanceReport'])->name('reports.distanceReport');
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('downloadDistanceReportPDF');
@@ -194,10 +195,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/enrollment-student/{student}/drop', [StudentController::class, 'dropEnrollment'])->name('enrollments-student.drop');
 
     // Student Managment
+    Route::get('/students/home', [StudentController::class, 'home'])->name('students.home');
     Route::get('/students/{student}/profile', [ProfileController::class, 'profile'])->name('students.profile');
     Route::post('/students/{student}/updateProfile', [ProfileController::class, 'updateProfile'])->name('students.updateProfile');
     Route::post('/students/{student}/verify', [StudentController::class, 'verify'])->name('students.verify');
     Route::get('/students/{student}/transcript', [StudentController::class, 'transcript'])->name('students.transcript');
+
+    Route::post('/students/status', [StatusController::class, 'updateStatus'])->name('students.status');
 
     // Student Scholarship 
     Route::post('/students/{student}/request-scholarship', [StatusController::class, 'requestScholarship'])->name('students.request-scholarship');

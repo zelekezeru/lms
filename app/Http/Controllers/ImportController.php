@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\CenterImport;
 use App\Imports\StudentsImport;
 use App\Imports\GradesImport;
+use App\Imports\GraduatedStudentsImport;
 use App\Imports\ResultsImport;
 use App\Imports\s;
 use App\Models\Section;
@@ -161,5 +162,18 @@ class ImportController extends Controller
                 'course' => $courseId,
             ])->with($title, $alert);
         }
+    }
+
+    // Import Graduated Students Id
+    public function importGraduatedStudents(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        $import = new GraduatedStudentsImport();
+        Excel::import($import, $request->file('file'));
+
+        return back()->with('success', 'Students Status imported successfully.');
     }
 }

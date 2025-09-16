@@ -2,6 +2,8 @@
     "save": "Save",
     "submit": "Submit",
     "cancel": "Cancel",
+    "active": "Active",
+    "inactive": "Inactive",
     "delete": "Delete",
     "edit": "Edit",
     "view": "View",

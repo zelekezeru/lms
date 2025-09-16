@@ -1,4 +1,5 @@
 <script setup>
+import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -8,7 +9,7 @@ const props = defineProps({ form: Object });
 const emit = defineEmits(["submit"]);
 
 // Ensure guard_name is included in form data
-props.form.guard_name = props.form.guard_name || 'web';
+props.form.guard_name = props.form.guard_name || "web";
 </script>
 
 <template>
@@ -16,7 +17,7 @@ props.form.guard_name = props.form.guard_name || 'web';
         <div class="mb-4">
             <InputLabel
                 for="name"
-                :value="$t('permission.name')"
+                :value="$t('permissions.name')"
                 class="block mb-1 dark:text-gray-200"
             />
             <TextInput
@@ -33,9 +34,8 @@ props.form.guard_name = props.form.guard_name || 'web';
                 class="mt-2 text-sm text-red-600 dark:text-red-400"
             />
         </div>
-        
-        
-        <input type="hidden" v-model="form.guard_name" value="web"/>
+
+        <input type="hidden" v-model="form.guard_name" value="web" />
 
         <div class="mt-6 flex justify-center">
             <button
@@ -43,8 +43,10 @@ props.form.guard_name = props.form.guard_name || 'web';
                 :disabled="form.processing"
                 class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-                <span v-if="!form.processing">{{ $t('common.save', 'Submit') }}</span>
-                <span v-else>{{ $t('common.loading', 'Submitting...') }}</span>
+                <span v-if="!form.processing">{{
+                    $t("common.save", "Submit")
+                }}</span>
+                <span v-else>{{ $t("common.loading", "Submitting...") }}</span>
             </button>
         </div>
     </form>

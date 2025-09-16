@@ -57,13 +57,21 @@ const resetForm = () => {
 // Submit semester (create or update)
 const submitSemester = () => {
     const action = isEditing.value
-        ? router.put(route("semesters.update", selectedSemester.value.id), semesterForm.value, {
-              onSuccess: () => {
-                  Swal.fire("Updated!", "Semester has been updated.", "success");
-                  resetForm();
-                  showForm.value = false;
-              },
-          })
+        ? router.put(
+              route("semesters.update", selectedSemester.value.id),
+              semesterForm.value,
+              {
+                  onSuccess: () => {
+                      Swal.fire(
+                          "Updated!",
+                          "Semester has been updated.",
+                          "success"
+                      );
+                      resetForm();
+                      showForm.value = false;
+                  },
+              }
+          )
         : router.post(route("semesters.store"), semesterForm.value, {
               onSuccess: () => {
                   Swal.fire("Added!", "Semester has been added.", "success");
@@ -138,61 +146,102 @@ const editSemester = (semester) => {
             :key="semester.id"
             class="rounded-xl p-5 shadow-md border dark:border-gray-700 bg-white dark:bg-[#1E293B]"
         >
-            <div class="flex items-center mb-3 text-indigo-600 dark:text-indigo-400">
+            <div
+                class="flex items-center mb-3 text-indigo-600 dark:text-indigo-400"
+            >
                 <CalendarDaysIcon class="w-6 h-6 mr-2" />
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-                    <Link :href="route('semesters.show', { semester: semester.id })" class="hover:underline">
-                        {{ semester.name || $t('semester.no_name', 'No Name') }}
+                    <Link
+                        :href="
+                            route('semesters.show', { semester: semester.id })
+                        "
+                        class="hover:underline"
+                    >
+                        {{ semester.name || $t("semester.no_name", "No Name") }}
                     </Link>
                 </h2>
             </div>
             <div class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
                 <p>
-                    <CheckBadgeIcon class="w-4 h-4 inline-block mr-1 text-green-500" />
-                    <span>{{ $t('common.status') }}: </span>
+                    <CheckBadgeIcon
+                        class="w-4 h-4 inline-block mr-1 text-green-500"
+                    />
+                    <span>{{ $t("common.status") }}: </span>
                     <span
-                        :class="semester.status === 'Active'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900 px-2 py-0.5 rounded-full font-semibold'
-                            : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 px-2 py-0.5 rounded-full font-semibold'"
+                        :class="
+                            semester.status === 'Active'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900 px-2 py-0.5 rounded-full font-semibold'
+                                : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200 px-2 py-0.5 rounded-full font-semibold'
+                        "
                     >
-                        {{ $t('status.' + semester.status.toLowerCase(), semester.status) }}
+                        {{
+                            $t(
+                                "common." + semester.status.toLowerCase(),
+                                semester.status
+                            )
+                        }}
                     </span>
                 </p>
                 <p>
-                    <ClipboardDocumentCheckIcon class="w-4 h-4 inline-block mr-1 text-yellow-500" />
-                    <span>{{ $t('semester.approved') }}:</span>
+                    <ClipboardDocumentCheckIcon
+                        class="w-4 h-4 inline-block mr-1 text-yellow-500"
+                    />
+                    <span>{{ $t("semester.approved") }}:</span>
                     <span
-                        :class="semester.is_approved
-                            ? 'text-green-600 font-semibold'
-                            : 'text-red-600 font-semibold'"
+                        :class="
+                            semester.is_approved
+                                ? 'text-green-600 font-semibold'
+                                : 'text-red-600 font-semibold'
+                        "
                     >
-                        {{ semester.is_approved ? $t('common.yes') : $t('common.no') }}
+                        {{
+                            semester.is_approved
+                                ? $t("common.yes")
+                                : $t("common.no")
+                        }}
                     </span>
                 </p>
                 <p>
-                    <CheckCircleIcon class="w-4 h-4 inline-block mr-1 text-purple-500" />
-                    <span>{{ $t('semester.completed', 'Completed') }}:</span>
+                    <CheckCircleIcon
+                        class="w-4 h-4 inline-block mr-1 text-purple-500"
+                    />
+                    <span>{{ $t("semester.completed", "Completed") }}:</span>
                     <span
-                        :class="semester.is_completed
-                            ? 'text-green-600 font-semibold'
-                            : 'text-red-600 font-semibold'"
+                        :class="
+                            semester.is_completed
+                                ? 'text-green-600 font-semibold'
+                                : 'text-red-600 font-semibold'
+                        "
                     >
-                        {{ semester.is_completed ? $t('common.yes') : $t('common.no') }}
+                        {{
+                            semester.is_completed
+                                ? $t("common.yes")
+                                : $t("common.no")
+                        }}
                     </span>
                 </p>
                 <p>
-                    <CalendarDaysIcon class="w-4 h-4 inline-block mr-1 text-blue-500" />
-                    <span>{{ $t('semester.start_date') }}:</span> {{ semester.start_date }}
+                    <CalendarDaysIcon
+                        class="w-4 h-4 inline-block mr-1 text-blue-500"
+                    />
+                    <span>{{ $t("semester.start_date") }}:</span>
+                    {{ semester.start_date }}
                 </p>
                 <p>
-                    <CalendarDaysIcon class="w-4 h-4 inline-block mr-1 text-blue-500" />
-                    <span>{{ $t('semester.end_date') }}:</span> {{ semester.end_date }}
+                    <CalendarDaysIcon
+                        class="w-4 h-4 inline-block mr-1 text-blue-500"
+                    />
+                    <span>{{ $t("semester.end_date") }}:</span>
+                    {{ semester.end_date }}
                 </p>
             </div>
             <div class="mt-4 text-right">
-                <button @click="editSemester(semester)" class="text-blue-600 hover:underline text-sm flex items-center space-x-1">
+                <button
+                    @click="editSemester(semester)"
+                    class="text-blue-600 hover:underline text-sm flex items-center space-x-1"
+                >
                     <PencilSquareIcon class="w-4 h-4" />
-                    <span>{{ $t('common.edit') }}</span>
+                    <span>{{ $t("common.edit") }}</span>
                 </button>
             </div>
         </div>

@@ -5,6 +5,7 @@ import { Link, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 
 // Define the props for the tenant
 defineProps({
@@ -22,23 +23,25 @@ const handleImageLoad = () => {
     imageLoaded.value = true;
 };
 
+const { t } = useI18n();
 // Delete function with SweetAlert confirmation
 const deleteTenant = (id) => {
     Swal.fire({
-        title: $t("tenant.delete_confirm_title"),
-        text: $t("tenant.delete_confirm_text"),
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("tenant.delete_confirm_confirm"),
+        confirmButtonText: t("common.delete_confirm_button"),
+        denyButtonText: t("common.delete_cancel_button"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tenants.destroy", { tenant: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("tenant.delete_success_title"),
-                        $t("tenant.delete_success_text"),
+                        t("common.delete_success"),
+                        t("tenant.deleted_text"),
                         "success"
                     );
                 },
@@ -145,16 +148,16 @@ const deleteTenant = (id) => {
                     <!-- Status -->
                     <div class="flex flex-col">
                         <span class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ $t("tenant.status") }}
+                            {{ $t("common.status") }}
                         </span>
                         <span
                             class="text-lg font-medium text-gray-900 dark:text-gray-100"
                         >
                             <div v-if="tenant.status == 0" class="text-red-500">
-                                {{ $t("tenant.inactive") }}
+                                {{ $t("common.inactive") }}
                             </div>
                             <div v-else class="text-green-500">
-                                {{ $t("tenant.active") }}
+                                {{ $t("common.active") }}
                             </div>
                         </span>
                     </div>
@@ -215,17 +218,17 @@ const deleteTenant = (id) => {
                             class="flex items-center space-x-1 text-blue-500 hover:text-blue-700"
                         >
                             <PencilIcon class="w-5 h-5" />
-                            <span>{{ $t("tenant.edit") }}</span>
+                            <span>{{ $t("common.edit") }}</span>
                         </Link>
                     </div>
                     <!-- Delete Button -->
                     <div v-if="userCan('delete-tenants')">
                         <button
-                            @click="deletetenant(tenant.id)"
+                            @click="deleteTenant(tenant.id)"
                             class="flex items-center space-x-1 text-red-500 hover:text-red-700"
                         >
                             <TrashIcon class="w-5 h-5" />
-                            <span>{{ $t("tenant.delete") }}</span>
+                            <span>{{ $t("common.delete") }}</span>
                         </button>
                     </div>
                 </div>

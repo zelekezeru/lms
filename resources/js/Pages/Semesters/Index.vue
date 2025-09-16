@@ -23,7 +23,7 @@ defineProps({
 
 const search = ref(usePage().props.search || "");
 const refreshing = ref(false);
-
+const viewMode = ref("table");
 const searchSemesters = () => {
     router.get(
         route("semesters.index"),
@@ -224,6 +224,7 @@ const deleteSemester = (id) => {
                 </tbody>
             </Table>
         </div>
+
         <!-- Pagination -->
         <div class="mt-3 flex justify-center space-x-6">
             <Link

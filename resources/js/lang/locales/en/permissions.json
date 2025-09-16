@@ -1,6 +1,7 @@
 {
     "title": "Permissions",
     "permission": "Permission",
+    "id": "Id",
     "add": "Add Permission",
     "search": "Search permissions...",
     "refresh": "Refresh",

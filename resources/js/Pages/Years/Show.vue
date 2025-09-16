@@ -13,7 +13,7 @@ import {
 } from "@heroicons/vue/24/solid";
 import ShowSemesters from "./ShowSemesters.vue";
 import Form from "../Semesters/Form.vue";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
+import { CalendarIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 
 // Props
 const props = defineProps({
@@ -173,13 +173,13 @@ const deleteYear = (id) => {
                                     v-if="year.status === 'Active'"
                                     class="text-green-600 dark:text-green-400"
                                 >
-                                    {{ $t("status.active") }}
+                                    {{ $t("common.active") }}
                                 </span>
                                 <span
                                     v-else
                                     class="text-red-600 dark:text-red-400"
                                 >
-                                    {{ $t("status.inactive", "Inactive") }}
+                                    {{ $t("common.inactive", "Inactive") }}
                                 </span>
                             </div>
                         </div>

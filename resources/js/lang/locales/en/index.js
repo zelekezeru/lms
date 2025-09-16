@@ -10,7 +10,7 @@ import rooms from "./rooms.json";
 import year from "./years.json";
 import semester from "./semesters.json";
 import calendars from "./calendars.json";
-import permission from "./permissions.json";
+import permissions from "./permissions.json";
 import role from "./roles.json";
 import tenant from "./tenants.json";
 import centers from "./centers.json";
@@ -30,7 +30,7 @@ export default {
     year,
     semester,
     calendars,
-    permission,
+    permissions,
     role,
     tenant,
     centers,

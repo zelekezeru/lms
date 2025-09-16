@@ -9,6 +9,7 @@ import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import Thead from "@/Components/Thead.vue";
+import { useI18n } from "vue-i18n";
 
 defineProps({
     tenants: {
@@ -33,24 +34,25 @@ const refreshData = () => {
         },
     });
 };
-
+const { t } = useI18n();
 // Delete function with SweetAlert confirmation
-const deletetenant = (id) => {
+const deleteTenant = (id) => {
     Swal.fire({
-        title: $t("tenant.delete_confirm_title"),
-        text: $t("tenant.delete_confirm_text"),
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: $t("common.yes"),
+        confirmButtonText: t("common.delete_confirm_button"),
+        denyButtonText: t("common.delete_cancel_button"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("tenants.destroy", { tenant: id }), {
                 onSuccess: () => {
                     Swal.fire(
-                        $t("tenant.deleted_title"),
-                        $t("tenant.deleted_text"),
+                        t("common.delete_success"),
+                        t("tenant.deleted_text"),
                         "success"
                     );
                 },
@@ -75,7 +77,7 @@ const searchTenants = () => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ $t('tenant.title') }}
+                {{ $t("tenant.title") }}
             </h1>
         </div>
 
@@ -113,7 +115,7 @@ const searchTenants = () => {
                     :href="route('tenants.create')"
                     class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                    + {{ $t('tenant.add') }}
+                    + {{ $t("tenant.add") }}
                 </Link>
 
                 <button
@@ -125,21 +127,44 @@ const searchTenants = () => {
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    {{ $t('common.refresh') }}
+                    {{ $t("common.refresh") }}
                 </button>
             </div>
         </div>
 
         <!-- Tenants Table OR No Results Message -->
-        <div v-if="tenants.data.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
+        <div
+            v-if="tenants.data.length > 0"
+            class="overflow-x-auto shadow-md sm:rounded-lg"
+        >
             <Table>
                 <TableHeader>
                     <tr>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">{{ $t('tenant.name') }}</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">{{ $t('tenant.code') }}</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'email'">{{ $t('tenant.email') }}</Thead>
-                        <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'phone'">{{ $t('tenant.phone') }}</Thead>
-                        <Thead>{{ $t('common.actions') }}</Thead>
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'name'"
+                            >{{ $t("tenant.name") }}</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'code'"
+                            >{{ $t("tenant.code") }}</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'email'"
+                            >{{ $t("tenant.email") }}</Thead
+                        >
+                        <Thead
+                            :sortable="true"
+                            :sort-info="sortInfo"
+                            :sortColumn="'phone'"
+                            >{{ $t("tenant.phone") }}</Thead
+                        >
+                        <Thead>{{ $t("common.actions") }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
@@ -148,8 +173,15 @@ const searchTenants = () => {
                         :key="tenant.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                     >
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            <Link :href="route('tenants.show', { tenant: tenant.id })">
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                            <Link
+                                :href="
+                                    route('tenants.show', { tenant: tenant.id })
+                                "
+                            >
                                 {{ tenant.name }}
                             </Link>
                         </th>
@@ -159,15 +191,28 @@ const searchTenants = () => {
                         <td class="px-6 py-4">{{ tenant.email }}</td>
                         <td class="px-6 py-4">{{ tenant.phone }}</td>
                         <td class="px-6 py-4 flex justify-between">
-                            <Link :href="route('tenants.show', { tenant: tenant.id })" class="text-blue-500 hover:text-blue-700">
+                            <Link
+                                :href="
+                                    route('tenants.show', { tenant: tenant.id })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <Link :href="route('tenants.edit', { tenant: tenant.id })" class="text-green-500 hover:text-green-700">
+                            <Link
+                                :href="
+                                    route('tenants.edit', { tenant: tenant.id })
+                                "
+                                class="text-green-500 hover:text-green-700"
+                            >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
-                            <button @click="deletetenant(tenant.id)" class="text-red-500 hover:text-red-700">
+                            <button
+                                @click="deleteTenant(tenant.id)"
+                                class="text-red-500 hover:text-red-700"
+                            >
                                 <TrashIcon class="w-5 h-5" />
-                                <span>{{ $t('common.delete') }}</span>
+                                <span>{{ $t("common.delete") }}</span>
                             </button>
                         </td>
                     </tr>
@@ -177,7 +222,7 @@ const searchTenants = () => {
 
         <!-- No Search Results Message -->
         <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
-            <p>{{ $t('tenant.no_results') }}</p>
+            <p>{{ $t("tenant.no_results") }}</p>
         </div>
 
         <!-- Pagination Links -->
@@ -197,4 +242,3 @@ const searchTenants = () => {
         </div>
     </AppLayout>
 </template>
-

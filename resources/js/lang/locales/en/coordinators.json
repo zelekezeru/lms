@@ -1,0 +1,23 @@
+{
+    "no": "No.",
+    "title": "Coordinators",
+    "add": "Add Coordinator",
+    "search": "Search coordinators...",
+    "refresh": "Refresh",
+    "name": "Coordinator Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "status": "Status",
+    "select_status": "Select Status (default: Active)",
+    "active": "Active",
+    "action": "Action",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "no_coordinators_found": "No coordinators found.",
+    "create_title": "Create New Coordinator",
+    "create_description": "Fill in the coordinator details below.",
+    "edit_title": "Edit Coordinator",
+    "edit_description": "Edit the coordinator information."
+}

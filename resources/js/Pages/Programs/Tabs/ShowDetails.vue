@@ -10,24 +10,21 @@ const props = defineProps({
 });
 
 // Delete function with SweetAlert confirmation
-const deleteProgram = (id) => {
+const deleteSemester = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: t("common.delete_confirm"),
+        text: t("common.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
-            router.delete(route("programs.destroy", { program: id }), {
+            router.delete(route("programs.destroy", { semester: id }), {
                 onSuccess: () => {
-                    Swal.fire(
-                        "Deleted!",
-                        "The Program has been deleted.",
-                        "success"
-                    );
+                    Swal.fire(t("common.delete_success"), "", "success");
                 },
             });
         }
@@ -38,41 +35,45 @@ const deleteProgram = (id) => {
 <template>
     <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{$t('programs.details.code')}}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{
+                $t("programs.details.code")
+            }}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.code }}</span
             >
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{$t('programs.details.name')}}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{
+                $t("programs.details.name")
+            }}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.name }}</span
             >
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >{{$t('programs.details.language')}}</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{
+                $t("programs.details.language")
+            }}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.language }}</span
             >
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >{{$t('programs.details.description')}}</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{
+                $t("programs.details.description")
+            }}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.description }}</span
             >
         </div>
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >{{$t('programs.details.program_director')}}</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{
+                $t("programs.details.program_director")
+            }}</span>
             <span
                 class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ program.director?.name || "N/A" }}</span
@@ -89,7 +90,7 @@ const deleteProgram = (id) => {
                 class="inline-flex items-center space-x-2 text-blue-500 hover:text-blue-700"
             >
                 <PencilIcon class="w-5 h-5" />
-                <span>{{$t('programs.details.edit')}}</span>
+                <span>{{ $t("programs.details.edit") }}</span>
             </Link>
             <button
                 v-if="userCan('delete-programs')"
@@ -97,7 +98,7 @@ const deleteProgram = (id) => {
                 class="inline-flex items-center ml-4 space-x-2 text-red-500 hover:text-red-700"
             >
                 <TrashIcon class="w-5 h-5" />
-                <span>{{$t('programs.details.delete')}}</span>
+                <span>{{ $t("programs.details.delete") }}</span>
             </button>
         </div>
     </div>

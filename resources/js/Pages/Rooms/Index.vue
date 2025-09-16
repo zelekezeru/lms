@@ -88,7 +88,7 @@ const searchRooms = () => {
                 <button
                     @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
-                    :title="$t('rooms.toggle_view')"
+                    :title="$t('common.toggle_view')"
                 >
                     <component
                         :is="

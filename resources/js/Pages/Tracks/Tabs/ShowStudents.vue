@@ -19,7 +19,7 @@ const { t } = useI18n(); // ✅ Destructure the `t` function
 
 const props = defineProps({
     track: { type: Object, required: true },
-    students: { type: Array, required: true },
+    students: { type: Object, required: true },
 });
 
 const studentSectionForm = useForm({});
@@ -39,8 +39,10 @@ const filteredStudents = computed(() => {
     const q = search.value.toLowerCase();
     return props.students.data.filter(
         (student) =>
-            (student.firstName && student.firstName.toLowerCase().includes(q)) ||
-            (student.middleName && student.middleName.toLowerCase().includes(q)) ||
+            (student.firstName &&
+                student.firstName.toLowerCase().includes(q)) ||
+            (student.middleName &&
+                student.middleName.toLowerCase().includes(q)) ||
             (student.lastName && student.lastName.toLowerCase().includes(q)) ||
             (student.idNo && student.idNo.toLowerCase().includes(q))
     );
@@ -49,7 +51,8 @@ const filteredStudents = computed(() => {
 const sectionCurriculum = (trackId) => {
     // Redirect to the curriculum track page for the given track
     route("curriculums.track", { track: trackId }).then(() => {
-        Swal.fire('Success',
+        Swal.fire(
+            "Success",
             "Curriculum track assigned successfully",
             "success"
         );
@@ -115,7 +118,7 @@ const sortStudentsToSections = () => {
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t("students.students") }}
+                {{ $t("students.title") }}
             </h2>
 
             <!-- Button to assign curriculum year of section to the student grades -->
@@ -130,7 +133,6 @@ const sortStudentsToSections = () => {
                 {{ $t("students.sort_sections") }}
             </PrimaryButton>
         </div>
-
 
         <!-- Search input -->
         <div class="mb-2 flex justify-start">
@@ -151,7 +153,7 @@ const sortStudentsToSections = () => {
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                     >
-                        {{ $t("students.students") }}
+                        {{ $t("students.title") }}
                     </h2>
                 </div>
 
@@ -162,8 +164,8 @@ const sortStudentsToSections = () => {
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
                                 <th
-                                     class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
-                                    >
+                                    class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                >
                                     {{ $t("students.no") }}
                                 </th>
                                 <th
@@ -177,7 +179,7 @@ const sortStudentsToSections = () => {
                                     {{ $t("students.id") }}
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200  border-gray-300 dark:border-gray-600"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.current_section") }}
                                 </th>

@@ -5,6 +5,7 @@
     "capacity": "Capacity",
     "name": "Room Name",
     "language": "Language",
+    "location": "Location",
     "description": "Description",
     "duration_years": "Duration (in years)",
     "room_director": "Room Director",

@@ -190,8 +190,9 @@ const imageLoaded = ref(false);
                                             ).length
                                                 ? ""
                                                 : ", "
-                                        }}</Link
-                                    >
+                                        }}
+                                        <div></div
+                                    ></Link>
                                 </td>
                                 <!-- Course Show Page -->
                                 <td

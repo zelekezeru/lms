@@ -19,8 +19,8 @@ class RoomController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->search.'%')
-                    ->orWhere('location', 'like', '%'.$request->search.'%');
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('location', 'like', '%' . $request->search . '%');
             });
         }
 
@@ -90,7 +90,7 @@ class RoomController extends Controller
     {
         $room->update($request->validated());
 
-        return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
+        return redirect()->route('rooms.show', $room)->with('success', 'Room updated successfully.');
     }
 
     /**

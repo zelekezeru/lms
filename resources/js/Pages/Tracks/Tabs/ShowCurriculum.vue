@@ -12,7 +12,7 @@ import {
     BookOpenIcon,
     CalendarDaysIcon,
 } from "@heroicons/vue/24/solid";
-import { MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     track: Object,

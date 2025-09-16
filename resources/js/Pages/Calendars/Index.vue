@@ -58,12 +58,12 @@ const tabs = [
         label: "Close Semesters",
         icon: ArrowDownOnSquareIcon,
     },
-    {
-        key: "sections",
-        label: "Active Sections",
-        icon: PresentationChartBarIcon,
-    },
-    { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
+    // {
+    //     key: "sections",
+    //     label: "Active Sections",
+    //     icon: PresentationChartBarIcon,
+    // },
+    // { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
 ];
 
 const setSemesterOf = ref(null);
@@ -131,21 +131,14 @@ const backToStatus = () => {
                     :back-to-status="backToStatus"
                 />
 
-                <!-- Courses Panel -->
-                <ShowSections
-                    v-else-if="selectedTab === 'sections'"
-                    :sections="props.sections"
-                    :gradesPercentage="props.gradesPercentage"
-                />
-
                 <!-- Semesters Panel -->
-                <ShowSemesters
+                <!-- <ShowSemesters
                     v-else-if="selectedTab === 'semesters'"
                     :oldSemesters="props.oldSemesters"
                     :active-semester="props.activeSemester"
                     :search="search"
                     @search="searchSemesters"
-                />
+                /> -->
             </div>
         </transition>
     </AppLayout>

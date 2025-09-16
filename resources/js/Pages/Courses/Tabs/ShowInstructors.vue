@@ -3,12 +3,6 @@ import { defineProps, ref } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {
-    CogIcon,
-    AcademicCapIcon,
-    UsersIcon,
-    BookOpenIcon,
-} from "@heroicons/vue/24/solid";
 import Modal from "@/Components/Modal.vue";
 import { Listbox } from "primevue";
 import InputError from "@/Components/InputError.vue";
@@ -27,7 +21,6 @@ const props = defineProps({
 });
 
 const assignInstructors = ref(false);
-console.log("hi");
 
 const instructorAssignmentForm = useForm({
     instructors: props.course.instructors.map((instructor) => instructor.id),
@@ -76,13 +69,6 @@ const submitInstructorAssignment = () => {
             <div
                 class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
             >
-                <div class="flex items-center justify-between mb-4">
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                        Instructors
-                    </h2>
-                </div>
                 <!-- Instructor instructors list -->
                 <div class="overflow-x-auto">
                     <table
@@ -109,7 +95,9 @@ const submitInstructorAssignment = () => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(instructor, index) in [...course.instructors].sort((a, b) => a.name.localeCompare(b.name))"
+                                v-for="(instructor, index) in [
+                                    ...course.instructors,
+                                ].sort((a, b) => a.name.localeCompare(b.name))"
                                 :key="instructor.id"
                                 :class="
                                     index % 2 === 0
@@ -144,12 +132,14 @@ const submitInstructorAssignment = () => {
                                 >
                                     <Link
                                         class="text-green-500 hover:text-green-700"
-                                        :href="route('instructors.show', {instructor: instructor.id})"
+                                        :href="
+                                            route('instructors.show', {
+                                                instructor: instructor.id,
+                                            })
+                                        "
                                     >
                                         <EyeIcon class="w-5 h-5 inline-block" />
-                                        <span class="inline-block"
-                                            >View</span
-                                        >
+                                        <span class="inline-block">View</span>
                                     </Link>
                                 </td>
                             </tr>

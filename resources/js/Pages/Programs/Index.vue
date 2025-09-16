@@ -126,18 +126,18 @@ const searchPrograms = () => {
                 <button
                     @click="refreshData"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-blue-800 rounded-md hover:bg-blue-700"
-                    :title="$t('programs.refresh')"
+                    :title="$t('common.refresh')"
                 >
                     <ArrowPathIcon
                         class="w-5 h-5 mr-2"
                         :class="{ 'animate-spin': refreshing }"
                     />
-                    {{ $t("programs.refresh") }}
+                    {{ $t("common.refresh") }}
                 </button>
                 <button
                     @click="viewMode = viewMode === 'table' ? 'card' : 'table'"
                     class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition bg-gray-600 rounded-md hover:bg-gray-700"
-                    :title="$t('programs.toggle_view')"
+                    :title="$t('common.toggle_view')"
                 >
                     <component
                         :is="

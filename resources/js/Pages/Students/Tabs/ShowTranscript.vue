@@ -10,6 +10,28 @@ const props = defineProps({
     semesters: { type: Object, required: true },
 });
 
+// Sort semesters by year name and then by semester name
+const sortedSemesters = computed(() => {
+    // A mapping to ensure 'First Semester' comes before 'Second Semester'
+    const semesterOrder = {
+        'First Semester': 1,
+        'Second Semester': 2,
+    };
+
+    return [...props.semesters].sort((a, b) => {
+        // Compare by year name (e.g., '1st Year' comes before '2nd Year')
+        const yearA = a.year?.name || '';
+        const yearB = b.year?.name || '';
+        if (yearA < yearB) return -1;
+        if (yearA > yearB) return 1;
+
+        // If years are the same, compare by semester name
+        const semA = a.name || '';
+        const semB = b.name || '';
+        return semesterOrder[semA] - semesterOrder[semB];
+    });
+});
+
 // Grade Conversion
 function getGradePointFromLetter(point) {
     point = parseFloat(point);
@@ -46,7 +68,8 @@ function calculateGPA(grades, studentId) {
 const cumulativeGPAList = computed(() => {
     let totalPoints = 0;
     let totalCredits = 0;
-    return props.semesters.map((semester, index) => {
+    // Iterate over the sorted semesters
+    return sortedSemesters.value.map((semester, index) => {
         const grades = semester.grades.filter(
             (g) => g.student_id === props.student.id
         );
@@ -72,7 +95,8 @@ function exportPDF() {
         format: "a4",
     });
     const student = props.student;
-    const semesters = props.semesters;
+    // Use the sorted semesters for the PDF
+    const semesters = sortedSemesters.value;
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const footerY = pageHeight - 30;
@@ -105,7 +129,8 @@ function exportPDF() {
     );
     y += 30;
 
-    props.semesters.forEach((semester, index) => {
+    // Use the sorted list for the loop
+    semesters.forEach((semester, index) => {
         const grades = semester.grades.filter(
             (g) => g.student_id === student.id
         );
@@ -246,7 +271,7 @@ function exportPDF() {
         <p><strong>Study Mode:</strong> {{ student.studyMode?.name }}</p>
     </div>
 
-    <div v-for="(semester, index) in semesters" :key="index" class="mb-8">
+    <div v-for="(semester, index) in sortedSemesters" :key="index" class="mb-8">
         <h2 class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">
             {{ semester.year?.name ?? "Unknown Year" }} -
             {{ semester.name ?? "Unknown Semester" }}

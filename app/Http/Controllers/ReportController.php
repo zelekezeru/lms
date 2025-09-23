@@ -13,7 +13,15 @@ class ReportController extends Controller
 {
     public function downloadDistanceReportPDF()
     {
-        $centers = Center::with('students.grades')->get();
+        // Get all centers with students and their grades
+        $centers = Center::with(['students.grades', 'students.status'])->get();
+
+        // Filter out students who are graduated
+        foreach ($centers as $center) {
+            $center->students = $center->students->filter(function ($student) {
+                return optional($student->status)->is_graduated != 1;
+            })->values();
+        }
 
         // Get all unique course IDs
         $allCourseIds = $centers

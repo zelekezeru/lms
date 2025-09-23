@@ -63,7 +63,7 @@ class CenterController extends Controller
                 ->orderBy('middle_name')
                 ->paginate(50)
         );
-
+        
         // Get courses from students who have grades in those courses
         $courses = CenterCourse::where('center_id', $center->id)
             ->with('course')

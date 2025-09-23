@@ -28,48 +28,41 @@ function getGradePointFromLetter(point) {
     return 0.0;
 }
 
-// GPA Calculations
+// GPA for a single semester
 function calculateGPA(grades, studentId) {
     const filtered = grades.filter((g) => g.student_id === studentId);
     let totalPoints = 0;
     let totalCredits = 0;
     filtered.forEach((g) => {
-        const gradePoint = getGradePointFromLetter(parseFloat(g.grade_point));
+        const gp = getGradePointFromLetter(parseFloat(g.grade_point) || 0);
         const credit = parseFloat(g.course?.credit_hours || 0);
-        totalPoints += gradePoint * credit;
+        totalPoints += gp * credit;
         totalCredits += credit;
     });
     return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00";
 }
 
-// Progressive Cumulative GPA
+// Weighted Progressive Cumulative GPA
 const cumulativeGPAList = computed(() => {
-    let list = [];
-    let totalGPA = 0;
-    let count = 0;
-    props.semesters.forEach((semester, index) => {
+    let totalPoints = 0;
+    let totalCredits = 0;
+    return props.semesters.map((semester, index) => {
         const grades = semester.grades.filter(
             (g) => g.student_id === props.student.id
         );
-        if (grades.length > 0) {
-            const gpa = parseFloat(calculateGPA(grades, props.student.id));
-            totalGPA += gpa;
-            count++;
-            list.push({
-                semesterIndex: index,
-                cumulativeGPA: (totalGPA / count).toFixed(2),
-            });
-        } else {
-            list.push({
-                semesterIndex: index,
-                cumulativeGPA:
-                    count > 0 ? (totalGPA / count).toFixed(2) : "0.00",
-            });
-        }
+        grades.forEach((g) => {
+            const gp = getGradePointFromLetter(parseFloat(g.grade_point) || 0);
+            const credit = parseFloat(g.course?.credit_hours || 0);
+            totalPoints += gp * credit;
+            totalCredits += credit;
+        });
+        return {
+            semesterIndex: index,
+            cumulativeGPA:
+                totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00",
+        };
     });
-    return list;
 });
-console.log(props.semesters);
 
 // PDF Export
 function exportPDF() {
@@ -113,13 +106,7 @@ function exportPDF() {
     y += 30;
 
     props.semesters.forEach((semester, index) => {
-        // Sort semesters by year before processing grades
-        const sortedSemesters = [...props.semesters].sort((a, b) => {
-            const yearA = a.year?.name ? parseInt(a.year.name) : 0;
-            const yearB = b.year?.name ? parseInt(b.year.name) : 0;
-            return yearA - yearB;
-        });
-        const grades = sortedSemesters[index].grades.filter(
+        const grades = semester.grades.filter(
             (g) => g.student_id === student.id
         );
         if (grades.length === 0) return;
@@ -131,7 +118,7 @@ function exportPDF() {
             0
         );
         const totalPoints = grades.reduce((acc, g) => {
-            const gp = getGradePointFromLetter(parseFloat(g.grade_point));
+            const gp = getGradePointFromLetter(parseFloat(g.grade_point) || 0);
             const credit = parseFloat(g.course?.credit_hours || 0);
             return acc + gp * credit;
         }, 0);
@@ -151,7 +138,7 @@ function exportPDF() {
             `${g.course?.credit_hours || 0}`,
             g.grade_letter || "N/A",
             (
-                getGradePointFromLetter(parseFloat(g.grade_point)) *
+                getGradePointFromLetter(parseFloat(g.grade_point) || 0) *
                 parseFloat(g.course?.credit_hours || 0)
             ).toFixed(2),
         ]);
@@ -207,7 +194,7 @@ function exportPDF() {
         footerY + 7,
         { align: "right" }
     );
-    doc.text("Email: registerar@sits.edu.et", pageWidth - 50, footerY + 16, {
+    doc.text("Email: registrar@sits.edu.et", pageWidth - 50, footerY + 16, {
         align: "right",
     });
     doc.text(
@@ -260,17 +247,13 @@ function exportPDF() {
     </div>
 
     <div v-for="(semester, index) in semesters" :key="index" class="mb-8">
-        <h2
-            class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2"
-        >
+        <h2 class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">
             {{ semester.year?.name ?? "Unknown Year" }} -
             {{ semester.name ?? "Unknown Semester" }}
         </h2>
 
         <div v-if="semester.grades.length > 0">
-            <table
-                class="min-w-full border rounded bg-white dark:bg-gray-800 shadow"
-            >
+            <table class="min-w-full border rounded bg-white dark:bg-gray-800 shadow">
                 <thead
                     class="bg-gray-100 dark:bg-gray-700 text-sm font-semibold text-gray-800 dark:text-gray-200"
                 >
@@ -305,13 +288,9 @@ function exportPDF() {
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr
-                        class="bg-gray-50 dark:bg-gray-800 text-sm font-semibold"
-                    >
+                    <tr class="bg-gray-50 dark:bg-gray-800 text-sm font-semibold">
                         <td class="px-4 py-2 text-right" colspan="3"></td>
-                        <td
-                            class="px-4 py-2 text-green-700 dark:text-green-400"
-                        >
+                        <td class="px-4 py-2 text-green-700 dark:text-green-400">
                             <div>
                                 <p>
                                     Semester GPA:
@@ -331,9 +310,7 @@ function exportPDF() {
                                 </p>
                             </div>
                         </td>
-                        <td
-                            class="px-4 py-2 text-green-700 dark:text-green-400"
-                        >
+                        <td class="px-4 py-2 text-green-700 dark:text-green-400">
                             <div>
                                 <p>
                                     Total Points:
@@ -347,7 +324,9 @@ function exportPDF() {
                                                 (acc, g) =>
                                                     acc +
                                                     getGradePointFromLetter(
-                                                        g.grade_point
+                                                        parseFloat(
+                                                            g.grade_point
+                                                        ) || 0
                                                     ) *
                                                         parseFloat(
                                                             g.course

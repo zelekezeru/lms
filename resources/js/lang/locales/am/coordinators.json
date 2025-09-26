@@ -1,0 +1,21 @@
+{
+    "title": "አስተባባሪዎች",
+    "add": "አስተባባሪ አክል",
+    "search": "አስተባባሪዎችን ፈልግ...",
+    "refresh": "አድስ",
+    "name": "የአስተባባሪ ስም",
+    "email": "ኢሜይል",
+    "phone": "ስልክ",
+    "address": "አድራሻ",
+    "status": "ሁኔታ",
+    "select_status": "ሁኔታ ይምረጡ (ነባሪ፡ በሥራ ላይ ያለ)",
+    "active": "በሥራ ላይ ያለ",
+    "inactive": "በሥራ ላይ የሌለ",
+    "edit": "አስተካክል",
+    "delete": "አጥፋ",
+    "no_coordinators_found": "ምንም አስተባባሪዎች አልተገኙም",
+    "create_title": "አዲስ አስተባባሪ ፍጠር",
+    "create_description": "ከታች የአስተባባሪውን ዝርዝር ይሙሉ",
+    "edit_title": "አስተባባሪ አስተካክል",
+    "edit_description": "የአስተባባሪውን መረጃ አስተካክል"
+}

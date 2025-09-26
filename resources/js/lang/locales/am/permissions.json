@@ -1,0 +1,16 @@
+{
+    "title": "ፈቃዶች",
+    "permission": "ፈቃድ",
+    "add": "ፈቃድ አክል",
+    "search": "ፈቃዶችን ፈልግ...",
+    "refresh": "አድስ",
+    "name": "የፈቃድ ስም",
+    "action": "ድርጊት",
+    "view": "እይ",
+    "edit": "አስተካክል",
+    "delete": "አጥፋ",
+    "delete_confirm_title": "እርግጠኛ ነዎት?",
+    "delete_confirm_text": "ይህንን መቀልበስ አይችሉም!",
+    "deleted_title": "ተሰርዟል!",
+    "deleted_text": "ፈቃዱ ተሰርዟል።"
+}

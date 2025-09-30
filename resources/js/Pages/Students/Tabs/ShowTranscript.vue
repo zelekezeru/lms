@@ -14,20 +14,20 @@ const props = defineProps({
 const sortedSemesters = computed(() => {
     // A mapping to ensure 'First Semester' comes before 'Second Semester'
     const semesterOrder = {
-        'First Semester': 1,
-        'Second Semester': 2,
+        "First Semester": 1,
+        "Second Semester": 2,
     };
 
     return [...props.semesters].sort((a, b) => {
         // Compare by year name (e.g., '1st Year' comes before '2nd Year')
-        const yearA = a.year?.name || '';
-        const yearB = b.year?.name || '';
+        const yearA = a.year?.name || "";
+        const yearB = b.year?.name || "";
         if (yearA < yearB) return -1;
         if (yearA > yearB) return 1;
 
         // If years are the same, compare by semester name
-        const semA = a.name || '';
-        const semB = b.name || '';
+        const semA = a.name || "";
+        const semB = b.name || "";
         return semesterOrder[semA] - semesterOrder[semB];
     });
 });
@@ -52,7 +52,7 @@ function getGradePointFromLetter(point) {
 
 // GPA for a single semester
 function calculateGPA(grades, studentId) {
-    const filtered = grades.filter((g) => g.student_id === studentId);
+    const filtered = grades.filter((g) => g.student_id == studentId);
     let totalPoints = 0;
     let totalCredits = 0;
     filtered.forEach((g) => {
@@ -71,7 +71,7 @@ const cumulativeGPAList = computed(() => {
     // Iterate over the sorted semesters
     return sortedSemesters.value.map((semester, index) => {
         const grades = semester.grades.filter(
-            (g) => g.student_id === props.student.id
+            (g) => g.student_id == props.student.id
         );
         grades.forEach((g) => {
             const gp = getGradePointFromLetter(parseFloat(g.grade_point) || 0);
@@ -82,7 +82,9 @@ const cumulativeGPAList = computed(() => {
         return {
             semesterIndex: index,
             cumulativeGPA:
-                totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00",
+                totalCredits > 0
+                    ? (totalPoints / totalCredits).toFixed(2)
+                    : "0.00",
         };
     });
 });
@@ -132,9 +134,9 @@ function exportPDF() {
     // Use the sorted list for the loop
     semesters.forEach((semester, index) => {
         const grades = semester.grades.filter(
-            (g) => g.student_id === student.id
+            (g) => g.student_id == student.id
         );
-        if (grades.length === 0) return;
+        if (grades.length == 0) return;
 
         const semGPA = calculateGPA(grades, student.id);
         const cumGPA = cumulativeGPAList.value[index]?.cumulativeGPA || "0.00";
@@ -272,13 +274,17 @@ function exportPDF() {
     </div>
 
     <div v-for="(semester, index) in sortedSemesters" :key="index" class="mb-8">
-        <h2 class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2">
+        <h2
+            class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2"
+        >
             {{ semester.year?.name ?? "Unknown Year" }} -
             {{ semester.name ?? "Unknown Semester" }}
         </h2>
 
         <div v-if="semester.grades.length > 0">
-            <table class="min-w-full border rounded bg-white dark:bg-gray-800 shadow">
+            <table
+                class="min-w-full border rounded bg-white dark:bg-gray-800 shadow"
+            >
                 <thead
                     class="bg-gray-100 dark:bg-gray-700 text-sm font-semibold text-gray-800 dark:text-gray-200"
                 >
@@ -297,7 +303,7 @@ function exportPDF() {
                         )"
                         :key="grade.id"
                         :class="
-                            i % 2 === 0
+                            i % 2 == 0
                                 ? 'bg-white dark:bg-gray-800'
                                 : 'bg-gray-50 dark:bg-gray-700'
                         "
@@ -313,9 +319,13 @@ function exportPDF() {
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr class="bg-gray-50 dark:bg-gray-800 text-sm font-semibold">
+                    <tr
+                        class="bg-gray-50 dark:bg-gray-800 text-sm font-semibold"
+                    >
                         <td class="px-4 py-2 text-right" colspan="3"></td>
-                        <td class="px-4 py-2 text-green-700 dark:text-green-400">
+                        <td
+                            class="px-4 py-2 text-green-700 dark:text-green-400"
+                        >
                             <div>
                                 <p>
                                     Semester GPA:
@@ -335,7 +345,9 @@ function exportPDF() {
                                 </p>
                             </div>
                         </td>
-                        <td class="px-4 py-2 text-green-700 dark:text-green-400">
+                        <td
+                            class="px-4 py-2 text-green-700 dark:text-green-400"
+                        >
                             <div>
                                 <p>
                                     Total Points:
@@ -343,7 +355,7 @@ function exportPDF() {
                                         semester.grades
                                             .filter(
                                                 (g) =>
-                                                    g.student_id === student.id
+                                                    g.student_id == student.id
                                             )
                                             .reduce(
                                                 (acc, g) =>
@@ -369,7 +381,7 @@ function exportPDF() {
                                         semester.grades
                                             .filter(
                                                 (g) =>
-                                                    g.student_id === student.id
+                                                    g.student_id == student.id
                                             )
                                             .reduce(
                                                 (acc, g) =>

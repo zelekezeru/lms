@@ -172,53 +172,37 @@ onMounted(createChart);
 
                 <!-- Course Results Table -->
                 <section>
-                    <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
-                    >
-                        Course Results
-                    </h2>
-                    <div
-                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                    >
-                        <table
-                            class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400"
-                        >
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-300 dark:border-gray-600">
+                        <h2 class="text-xl font-bold mb-4">Course Results</h2>
+                        <table class="w-full">
                             <thead class="bg-gray-100 dark:bg-gray-700">
                                 <tr>
-                                    <th class="py-3 px-6">Course</th>
-                                    <th class="py-3 px-6">Credits</th>
-                                    <th class="py-3 px-6">Grade</th>
-                                    <th class="py-3 px-6">Instructor</th>
+                                    <th class="text-left px-3 py-2 font-medium text-xs w-8 text-gray-800 dark:text-gray-200">#</th>
+                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Course Name</th>
+                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Credit Hours</th>
+                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Grade</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody v-if="student.grades && student.grades.length > 0">
                                 <tr
-                                    class="border-t border-gray-200 dark:border-gray-700"
+                                    v-for="(grade, index) in student.grades.slice(0, 5)"
+                                    :key="grade.id"
+                                    :class="[
+                                        index % 2 === 0
+                                            ? 'bg-white dark:bg-gray-800'
+                                            : 'bg-gray-50 dark:bg-gray-700',
+                                        'border-b border-gray-200 dark:border-gray-600',
+                                    ]"
                                 >
-                                    <td class="py-4 px-6">
-                                        Intro to Computer Science
-                                    </td>
-                                    <td class="py-4 px-6">3</td>
-                                    <td class="py-4 px-6 font-semibold">A</td>
-                                    <td class="py-4 px-6">Dr. Jane Doe</td>
+                                    <td class="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">{{ index + 1 }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{{ grade.course.name }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{{ grade.course.credit_hours }}</td>
+                                    <td class="px-4 py-3 text-md font-bold text-blue-700 dark:text-blue-300">{{ grade.grade_letter }}</td>
                                 </tr>
-                                <tr
-                                    class="border-t border-gray-200 dark:border-gray-700"
-                                >
-                                    <td class="py-4 px-6">Intro to Aljebera</td>
-                                    <td class="py-4 px-6">5</td>
-                                    <td class="py-4 px-6 font-semibold">C</td>
-                                    <td class="py-4 px-6">Dr. Jane Doe</td>
-                                </tr>
-                                <tr
-                                    class="border-t border-gray-200 dark:border-gray-700"
-                                >
-                                    <td class="py-4 px-6">
-                                        Fundemintal Computer Science
-                                    </td>
-                                    <td class="py-4 px-6">3</td>
-                                    <td class="py-4 px-6 font-semibold">A</td>
-                                    <td class="py-4 px-6">Dr. Jane Doe</td>
+                            </tbody>
+                            <tbody v-else>
+                                <tr>
+                                    <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">No grades available.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -226,14 +210,12 @@ onMounted(createChart);
                 </section>
 
                 <!-- Payment Information -->
-                <section>
+                <!-- <section>
                     <h2
                         class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
                     >
                         Payment Information
                     </h2>
-
-                    <!-- Summary Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div
                             class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition"
@@ -287,8 +269,7 @@ onMounted(createChart);
                             </p>
                         </div>
                     </div>
-
-                    <!-- Payment History Table -->
+                    
                     <div
                         class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
                     >
@@ -327,11 +308,11 @@ onMounted(createChart);
                                         </button>
                                     </td>
                                 </tr>
-                                <!-- ...other rows -->
+                                
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </section> -->
             </div>
         </div>
     </AppLayout>

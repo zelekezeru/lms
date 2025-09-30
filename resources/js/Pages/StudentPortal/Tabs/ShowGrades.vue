@@ -85,7 +85,7 @@ const exportGradesPDF = () => {
     <div class="container mx-auto p-6">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-bold">Grades for {{ student.firstName }} {{ student.lastName }}</h1>
-            <Button label="Download Grades" icon="pi pi-download" @click="downloadGradesPdf" />
+            <!-- <Button label="Download Grades" icon="pi pi-download" @click="downloadGradesPdf" /> -->
         </div>
 
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-300 dark:border-gray-600">

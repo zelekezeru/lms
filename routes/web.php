@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/result', [StudentPortalController::class, 'result'])->name('student.result');
         Route::get('/payments', [StudentPortalController::class, 'payment'])->name('student.payment');
         Route::get('/grades', [StudentPortalController::class, 'grades'])->name('student.grades');
+        Route::get('/transcripts', [StudentPortalController::class, 'transcripts'])->name('student.transcripts');
     });
 
     // Instructor Portal

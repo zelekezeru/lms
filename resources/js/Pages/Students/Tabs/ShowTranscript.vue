@@ -91,17 +91,17 @@ const cumulativeGPAList = computed(() => {
 
 // PDF Export
 function exportPDF() {
-    // NOTE: Switched to PORTRAIT to better fit the two-column vertical stack,
+    // NOTE: Switched to landscape to better fit the two-column vertical stack,
     // which looks like the provided image.
     const doc = new jsPDF({
-        orientation: "portrait", 
+        orientation: "landscape", 
         unit: "mm",
         format: "a4",
     });
     const student = props.student;
     const semesters = sortedSemesters.value;
-    const pageWidth = doc.internal.pageSize.getWidth(); // A4 Portrait width (~210mm)
-    const pageHeight = doc.internal.pageSize.getHeight(); // A4 Portrait height (~297mm)
+    const pageWidth = doc.internal.pageSize.getWidth(); // A4 landscape width (~210mm)
+    const pageHeight = doc.internal.pageSize.getHeight(); // A4 landscape height (~297mm)
     
     // Margins and Layout
     const marginLeft = 10;

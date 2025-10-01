@@ -85,9 +85,9 @@ const cumulativeGPAList = computed(() => {
 
 // PDF Export
 function exportPDF() {
-    // 1. Initialize PDF in PORTRAIT mode for better multi-semester flow
+    // 1. Initialize PDF in landscape mode for better multi-semester flow
     const doc = new jsPDF({
-        orientation: "portrait", 
+        orientation: "landscape", 
         unit: "mm",
         format: "a4",
     });

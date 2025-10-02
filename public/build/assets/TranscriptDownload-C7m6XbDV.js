@@ -1,0 +1,1 @@
+import"./jspdf.plugin.autotable-C32orScH.js";import"./app-C8cTBpbo.js";const p={__name:"TranscriptDownload",props:{student:{type:Object,required:!0},semesters:{type:Object,required:!0}},setup(e){return()=>{}}};export{p as default};

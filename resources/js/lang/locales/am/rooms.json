@@ -5,6 +5,7 @@
     "capacity": "የመያዝ አቅም",
     "name": "የክፍል ስም",
     "language": "ቋንቋ",
+    "location": "ቦታ",
     "description": "መግለጫ",
     "duration_years": "የሚቆይበት ጊዜ (በዓመታት)",
     "room_director": "የክፍል አስተዳዳሪ",

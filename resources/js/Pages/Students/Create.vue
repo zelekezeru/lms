@@ -57,8 +57,16 @@ const previousStep = () => {
     if (currentStep.value > 1) currentStep.value--;
 };
 
+const pickStep = (stepId) => {
+    const selectedStep = steps.find((step) => step.id == stepId) ?? null;
+
+    if (selectedStep) {
+        currentStep.value = selectedStep.id;
+    }
+};
+
 const submit = () => {
-    form.post(route('students.store'), {
+    form.post(route("students.store"), {
         onSuccess: () => {
             form.reset();
             currentStep.value = 1;
@@ -73,14 +81,15 @@ const submit = () => {
         <!-- Progress Indicator -->
         <div class="flex items-center justify-between mb-6">
             <div
+                @click="pickStep(step.id)"
                 v-for="step in steps"
                 :key="step.id"
-                class="flex items-center"
+                class="flex cursor-pointer items-center"
             >
                 <div
                     :class="{
                         'bg-blue-500 text-white': currentStep === step.id,
-                        'bg-gray-300 text-gray-700': currentStep !== step.id
+                        'bg-gray-300 text-gray-700': currentStep !== step.id,
                     }"
                     class="rounded-full h-10 w-10 flex items-center justify-center font-bold"
                 >
@@ -90,7 +99,7 @@ const submit = () => {
                     class="ml-2 text-sm"
                     :class="{
                         'text-blue-500': currentStep === step.id,
-                        'text-gray-500': currentStep !== step.id
+                        'text-gray-500': currentStep !== step.id,
                     }"
                 >
                     {{ step.label }}
@@ -100,7 +109,7 @@ const submit = () => {
                     class="flex-grow h-1 mx-2"
                     :class="{
                         'bg-blue-500': currentStep > step.id,
-                        'bg-gray-300': currentStep <= step.id
+                        'bg-gray-300': currentStep <= step.id,
                     }"
                 ></div>
             </div>
@@ -144,4 +153,3 @@ const submit = () => {
         </transition>
     </AppLayout>
 </template>
-

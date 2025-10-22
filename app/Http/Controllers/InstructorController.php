@@ -99,7 +99,7 @@ class InstructorController extends Controller
             'password' => $default_password,
             'default_password' => $default_password, // needed for 'confirmed' rule
         ]);
-
+        
         $instructor = Instructor::create([
             'name' => $fields['name'],
 

@@ -32,10 +32,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    instructor: {
-        type: Object,
-        required: true,
-    },
     grades: {
         type: Array,
         required: true,
@@ -45,6 +41,10 @@ const props = defineProps({
         required: true,
     },
     studentResults: {
+        type: Object,
+        required: true,
+    },
+    instructor: {
         type: Object,
         required: true,
     },

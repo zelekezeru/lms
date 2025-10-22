@@ -32,7 +32,7 @@ class ResultController extends Controller
             'results.*.weight_id' => 'required|integer',
             'results.*.point' => 'required|numeric|min:0',
         ]);
-
+        
         foreach ($fields['results'] as $result) {
             Result::updateOrCreate(
                 [

@@ -16,6 +16,7 @@ use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Student;
 use App\Models\Weight;
+use Illuminate\Support\Facades\Auth;
 
 class AssessmentController extends Controller
 {
@@ -28,8 +29,9 @@ class AssessmentController extends Controller
         if (! $courseOffering) {
             return redirect()->back()->with('error', 'No Such course Offering Found.');
         }
-        $courseOffering->load('instructor', 'section.program', 'section.grades', 'enrollments.student');
-
+        $courseOffering->load( 'instructor', 'section.program', 'section.grades', 'enrollments.student');
+        
+        // dd($instructor);
         $section = $courseOffering->section;
 
         $course = $courseOffering->course;
@@ -37,10 +39,8 @@ class AssessmentController extends Controller
         // Check if instructor exists
         if (! $courseOffering->instructor) {
             $instructor = null; // No instructor assigned
-        } elseif ($courseOffering->instructor->user) {
-            $instructor = new InstructorResource($courseOffering->instructor->user);
         } else{
-            $instructor = new InstructorResource($courseOffering->instructor);
+            $instructor = $courseOffering->instructor;
         }
         
         $course = new CourseResource($course);
@@ -52,6 +52,7 @@ class AssessmentController extends Controller
         $enrollments = $courseOffering->enrollments;
         
         $students = StudentResource::collection($courseOffering->enrollments->where('status', 'enrolled')->pluck('student')->sortBy('firstName'));
+        
         $studentResults = [];
         // Fetch students with their course results
         foreach ($students as $student) {
@@ -107,10 +108,10 @@ class AssessmentController extends Controller
             'section' => $section,
             'course' => $course,
             'semester' => $semester,
-            'instructor' => $instructor,
             'weights' => $weights,
             'grades' => $grades,
             'students' => $students,
+            'instructor' => $instructor,
             'studentResults' => $studentResults,
         ]);
     }

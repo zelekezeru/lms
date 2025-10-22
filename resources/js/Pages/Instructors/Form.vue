@@ -10,6 +10,7 @@ import { MultiSelect } from "primevue";
 // Define the expected props
 const props = defineProps({
     form: Object,
+    instructor: { type: Object, required: false },
     tracks: { type: Array, required: true },
     roles: { type: Array, required: true },
     courses: { type: Array, required: true },
@@ -49,19 +50,17 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
-
             <!-- Phone -->
             <div>
                 <InputLabel for="contact_phone" value="Contact Phone" />
                 <TextInput
                     id="contact_phone"
                     type="text"
-                    v-model="form.contact_phone"
+                    v-model="instructor.user.phone"
                     class="w-full"
                 />
                 <InputError :message="form.errors.contact_phone" />
             </div>
-
             <!-- Employment Type -->
             <div>
                 <InputLabel for="employment_type" value="Employment Type" />
@@ -72,8 +71,8 @@ const handleFileChange = (e) => {
                     <option disabled value="">Select Employment Type</option>
                     <option value="FULL-TIME">FULL-TIME</option>
                     <option value="PART-TIME">PART-TIME</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Visitor">Visitor</option>
+                    <option value="CONTRACT">CONTRACT</option>
+                    <option value="VISITOR">VISITOR</option>
                 </select>
                 <InputError :message="form.errors.employment_type" />
             </div>
@@ -84,7 +83,7 @@ const handleFileChange = (e) => {
                 <TextInput
                     id="hire_date"
                     type="date"
-                    v-model="form.hire_date"
+                    v-model="instructor.HireDate"
                     class="w-full"
                 />
                 <InputError :message="form.errors.hire_date" />

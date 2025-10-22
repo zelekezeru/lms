@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Center;
+use App\Models\Student; // added
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
@@ -63,6 +64,25 @@ class ReportController extends Controller
         return Inertia::render('Centers/CenterCoursesReport', [
             'centers' => $centers,
             'rows' => $rows
+        ]);
+    }
+
+    public function studentsReport()
+    {
+        // Students who have Grades
+
+        $hasGrades = Student::with(['grades'])->get();
+
+        // eager load commonly used relations for a student and grades/report
+        $hasGrades->load([
+            'studyMode',
+            'semesters.grades.course',
+            'semesters.grades.instructor',
+        ]);
+        dd($hasGrades);
+
+        return Inertia::render('Students/Report', [
+            'hasGrades' => $hasGrades,
         ]);
     }
 }

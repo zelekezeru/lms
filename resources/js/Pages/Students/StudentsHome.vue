@@ -181,6 +181,17 @@ function userCan(permission) {
             <span class="ml-1">Student{{ props.distanceStudents === 1 ? '' : 's' }} Total</span>
           </span>
         </Link>
+
+        <!-- Students Report -->
+        <Link
+          :href="route('students.report')"
+          class="flex flex-col items-center bg-white dark:bg-gray-800 rounded-xl p-6 shadow border border-gray-300 dark:border-gray-700 bg-gradient-to-br from-gray-500 via-gray-400 to-gray-300 transition hover:scale-105 hover:shadow-2xl duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          <h2 class="text-lg font-extrabold text-white mb-1 flex items-center gap-2 justify-center">
+            <EyeIcon class="w-5 h-5 text-white opacity-80" />
+            Students Report
+          </h2>
+        </Link>
       </div>
     </section>
 

@@ -78,6 +78,7 @@ const submit = (id) => {
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
                 <Form
                     :form="form"
+                    :instructor="instructor"
                     :tracks="tracks"
                     :roles="roles"
                     :courses="courses"

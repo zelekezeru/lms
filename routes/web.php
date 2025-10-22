@@ -202,6 +202,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/students/{student}/verify', [StudentController::class, 'verify'])->name('students.verify');
     Route::get('/students/{student}/transcript', [StudentController::class, 'transcript'])->name('students.transcript');
 
+    // New: Student report route used by route('students.report')
+    Route::get('/students/report', [ReportController::class, 'studentsReport'])->name('students.report');
+
     Route::post('/students/status', [StatusController::class, 'updateStatus'])->name('students.status');
 
     // Student Scholarship 

@@ -10,7 +10,6 @@ import { MultiSelect } from "primevue";
 // Define the expected props
 const props = defineProps({
     form: Object,
-    instructor: { type: Object, required: false },
     tracks: { type: Array, required: true },
     roles: { type: Array, required: true },
     courses: { type: Array, required: true },
@@ -56,7 +55,7 @@ const handleFileChange = (e) => {
                 <TextInput
                     id="contact_phone"
                     type="text"
-                    v-model="instructor.user.phone"
+                    v-model="form.contact_phone"
                     class="w-full"
                 />
                 <InputError :message="form.errors.contact_phone" />
@@ -83,7 +82,7 @@ const handleFileChange = (e) => {
                 <TextInput
                     id="hire_date"
                     type="date"
-                    v-model="instructor.HireDate"
+                    v-model="form.hire_date"
                     class="w-full"
                 />
                 <InputError :message="form.errors.hire_date" />

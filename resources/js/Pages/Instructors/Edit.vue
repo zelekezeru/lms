@@ -20,8 +20,8 @@ const form = useForm({
     email: props.instructor?.email || "",
     courses: props.instructor.courses.map((course) => course.id) || "",
     role_name: props.instructor?.roleName || "",
-    contact_phone: props.instructor?.ContactPhone || "",
-    hire_date: props.instructor?.hireDate || "",
+    contact_phone: props.instructor.user?.phone || "",
+    hire_date: props.instructor?.hire_date || "",
     specialization: props.instructor?.specialization || "",
     bio: props.instructor?.bio || "",
     status: props.instructor?.status || "",
@@ -78,7 +78,6 @@ const submit = (id) => {
             <div class="bg-white-100 dark:bg-gray-900 shadow-lg rounded-lg p-6">
                 <Form
                     :form="form"
-                    :instructor="instructor"
                     :tracks="tracks"
                     :roles="roles"
                     :courses="courses"

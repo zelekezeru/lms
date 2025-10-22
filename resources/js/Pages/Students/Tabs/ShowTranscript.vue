@@ -3,9 +3,7 @@ import { ref, computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { notoEthiopic } from "noto-ethiopic";
-
-const doc = new jsPDF();
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 // Props
 const props = defineProps({
@@ -15,23 +13,18 @@ const props = defineProps({
 
 // Sort semesters by year name and then by semester name
 const sortedSemesters = computed(() => {
-    // A mapping to ensure 'First Semester' comes before 'Second Semester'
     const semesterOrder = {
         "First Semester": 1,
         "Second Semester": 2,
     };
-
     return [...props.semesters].sort((a, b) => {
-        // Compare by year name (e.g., '1st Year' comes before '2nd Year')
         const yearA = a.year?.name || "";
         const yearB = b.year?.name || "";
         if (yearA < yearB) return -1;
         if (yearA > yearB) return 1;
-
-        // If years are the same, compare by semester name
         const semA = a.name || "";
         const semB = b.name || "";
-        return semesterOrder[semA] - semesterOrder[semB];
+        return (semesterOrder[semA] || 0) - (semesterOrder[semB] || 0);
     });
 });
 
@@ -55,7 +48,7 @@ function getGradePointFromLetter(point) {
 
 // GPA for a single semester
 function calculateGPA(grades, studentId) {
-    const filtered = grades.filter((g) => g.student_id == studentId);
+    const filtered = (grades || []).filter((g) => g.student_id == studentId);
     let totalPoints = 0;
     let totalCredits = 0;
     filtered.forEach((g) => {

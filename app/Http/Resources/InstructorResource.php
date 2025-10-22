@@ -16,11 +16,14 @@ class InstructorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'user' => new UserResource($this->whenLoaded('user')),
             'id' => $this->id,
             'tenant_id' => $this->tenant_id,
             'user_id' => $this->user_id,
-            'email' => $this->user->email,
-            'ContactPhone' => $this->user->phone,
+
+            // Safely access user fields to avoid "property on null" errors
+            'email' => optional($this->user)->email,
+            'ContactPhone' => optional($this->user)->phone,
             'HireDate' => $this->hire_date,
             'bio' => $this->bio,
             'status' => $this->status,
@@ -29,9 +32,11 @@ class InstructorResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
-            'user' => new UserResource($this->whenLoaded('user')),
+            // Only build a URL if profile_img is present
+            'profileImg' => $this->when(optional($this->user)->profile_img, function () {
+                return Storage::url($this->user->profile_img);
+            }, null),
 
-            'profileImg' => Storage::url($this->user->profile_img),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),
             'classSchedules' => ClassScheduleResource::collection($this->whenLoaded('classSchedules')),
             'classSessions' => ClassSessionResource::collection($this->whenLoaded('classSessions')),

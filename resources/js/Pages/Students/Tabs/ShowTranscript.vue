@@ -3,6 +3,9 @@ import { ref, computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { notoEthiopic } from "noto-ethiopic";
+
+const doc = new jsPDF();
 
 // Props
 const props = defineProps({
@@ -93,6 +96,8 @@ const cumulativeGPAList = computed(() => {
 function exportPDF() {
     // NOTE: Switched to landscape to better fit the two-column vertical stack,
     // which looks like the provided image.
+    doc.setFont("notoEthiopic", "normal");
+    
     const doc = new jsPDF({
         orientation: "landscape", 
         unit: "mm",
@@ -141,7 +146,7 @@ function exportPDF() {
         // 2. STUDENT INFO BLOCK (Tightly packed 2-column)
         let infoY = 20;
         doc.setFontSize(8);
-        doc.setFont('times', 'normal'); // Use a standard font for text
+        doc.setFont('nyala', 'normal'); // Use a standard font for text
         const infoCol1 = marginLeft + 100;
         const infoCol2 = marginLeft + 40 + (innerWidth / 2);
 
@@ -167,9 +172,9 @@ function exportPDF() {
         
         // Signature Block
         const signatureBlockX = pageWidth / 2;
-        doc.setFont('times', 'bold');
+        doc.setFont('nyala', 'bold');
         doc.text(`Registrar's Signature: ______________________________`, marginLeft, footerY);
-        doc.setFont('times', 'normal');
+        doc.setFont('nyala', 'normal');
         // Grading Scale Block
         const comment = `This record is valid only with the registrar's signature and the Shiloh International Theological Seminary seal.`;
         doc.text(comment, marginLeft, footerY + 4);
@@ -234,14 +239,14 @@ function exportPDF() {
 
         // 2. Add Semester Title
         doc.setFontSize(8);
-        doc.setFont('times', 'bold');
+        doc.setFont('nyala', 'bold');
         doc.text(
             `${semester.year?.name ?? "Unknown Year"} - ${semester.name ?? "Unknown Semester"}`,
             startX,
             currentY
         );
         currentY += 4;
-        doc.setFont('times', 'normal');
+        doc.setFont('nyala', 'normal');
 
         // 3. AutoTable for Courses
         const tableData = grades.map((g) => [
@@ -285,7 +290,7 @@ function exportPDF() {
 
         // --- 4. CORRECTED SEMESTER SUMMARY FOOTER ---
         doc.setFontSize(7);
-        doc.setFont('times', 'bold');
+        doc.setFont('nyala', 'bold');
         
         // Calculate the absolute X-end positions for CRD and Points columns
         const courseCodeWidth = 15;
@@ -331,9 +336,9 @@ function exportPDF() {
         // CUMULATIVE POINTS VALUE (Right aligned under Points column)
         doc.text(`${cumPointsValue}`, pointsColXEnd, currentY + 7, { align: 'right' }); 
         
-        doc.setFont('times', 'normal'); 
+        doc.setFont('nyala', 'normal'); 
         
-        currentY += 10; 
+        currentY += 30; 
 
         // 5. Update Column Y positions
         if (isLeftColumn) {
@@ -345,7 +350,7 @@ function exportPDF() {
         semesterCounter++;
 
         // 6. Page Break Logic (Handles reaching the bottom of the right column)
-        const breakPoint = pageHeight - 50; 
+        const breakPoint = pageHeight - 60; 
         if (semesterCounter % 2 === 0 && currentY > breakPoint) {
             doc.addPage();
             drawPageBordersAndInfo(); // Draw header/footer on the new page

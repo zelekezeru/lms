@@ -19,7 +19,6 @@ class InstructorResource extends JsonResource
             'id' => $this->id,
             'tenant_id' => $this->tenant_id,
             'user_id' => $this->user_id,
-            'name' => $this->user->name,
             'email' => $this->user->email,
             'ContactPhone' => $this->user->phone,
             'HireDate' => $this->hire_date,

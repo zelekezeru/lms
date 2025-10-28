@@ -79,6 +79,11 @@ class ReportController extends Controller
             'semesters.grades.course',
             'semesters.grades.instructor',
         ]);
+
+        // count students who has grades
+        $hasGrades = $hasGrades->filter(function ($student) {
+            return $student->grades->isNotEmpty();
+        })->values();
         dd($hasGrades);
 
         return Inertia::render('Students/Report', [

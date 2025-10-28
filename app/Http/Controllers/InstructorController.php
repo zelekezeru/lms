@@ -29,7 +29,7 @@ class InstructorController extends Controller
             $query->where('specialization', 'LIKE', "%{$search}%")
                 ->orWhere('employment_type', 'LIKE', "%{$search}%");
         }
-
+        
         // Move orderBy('name') before paginate()
         $instructors = InstructorResource::collection(
             $query->join('users', 'instructors.user_id', '=', 'users.id')
@@ -99,7 +99,7 @@ class InstructorController extends Controller
             'password' => $default_password,
             'default_password' => $default_password, // needed for 'confirmed' rule
         ]);
-        
+
         $instructor = Instructor::create([
             'name' => $fields['name'],
 

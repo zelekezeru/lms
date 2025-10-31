@@ -116,7 +116,7 @@ function submit() {
                         props.center?.code || 'N/A'
                     }}</span>
                 </div>
-                <div
+                <!-- <div
                     class="flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700"
                 >
                     <span
@@ -126,7 +126,7 @@ function submit() {
                     <span class="text-lg font-semibold"
                         >{{ props.coordinator?.name || 'N/A' }}
                     </span>
-                </div>
+                </div> -->
             </div>
         </div>
 

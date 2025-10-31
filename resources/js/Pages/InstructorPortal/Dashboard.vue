@@ -68,8 +68,8 @@ onMounted(createChart);
         </div>
 
         <!-- Main Content -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="col-span-3 space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-4">
+            <div class="col-span-4 space-y-8">
                 <section>
                     <div class="mb-8">
                         <h1
@@ -88,6 +88,7 @@ onMounted(createChart);
                             :key="section.id"
                             class="transition duration-300 transform hover:-translate-y-1 hover:shadow-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 space-y-5"
                         >
+                        
                             <!-- Section Header -->
                             <div class="flex justify-between items-start">
                                 <div>
@@ -166,7 +167,7 @@ onMounted(createChart);
                         Courses You’re Teaching
                     </h2>
                     <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                     >
                         <div
                             v-for="course in instructor.courses"

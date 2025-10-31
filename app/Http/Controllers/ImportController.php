@@ -85,7 +85,31 @@ class ImportController extends Controller
         $newStudents = $import->getRegisteredStudentIds();
         $duplicateStudents = $import->getExistingUserIds();
 
-        $newStudents = Student::whereIn('id', $newStudents)->with('user')->get();
+        // Normalize $newStudents to a flat array of IDs to avoid nested arrays being passed to whereIn
+        if (!empty($newStudents)) {
+            $ids = collect($newStudents)
+                ->flatten()
+                ->map(function ($item) {
+                    if (is_array($item) && isset($item['id'])) {
+                        return $item['id'];
+                    }
+                    if (is_object($item) && isset($item->id)) {
+                        return $item->id;
+                    }
+                    return $item;
+                })
+                ->filter(function ($id) {
+                    return !is_null($id) && $id !== '';
+                })
+                ->unique()
+                ->values()
+                ->all();
+        } else {
+            $ids = [];
+        }
+
+        // Ensure we never pass nested arrays or empty arrays into whereIn
+        $newStudents = !empty($ids) ? Student::whereIn('id', $ids)->with('user')->get() : collect([]);
 
         $section = Section::where('center_id', $centerId)->first();
 

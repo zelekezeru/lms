@@ -65,7 +65,7 @@ const deleteSection = (id) => {
         <!-- Page Title -->
         <div class="my-6 text-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                Sections
+                Sections List in Tracks
             </h1>
         </div>
 

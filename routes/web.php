@@ -146,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
     Route::post('/graduated-students/import', [ImportController::class, 'importGraduatedStudents'])->name('graduatedStudents.import');
+    Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
 
     // Reporting
     Route::get('/reports/distanceReport', [ExportController::class, 'distanceReport'])->name('reports.distanceReport');

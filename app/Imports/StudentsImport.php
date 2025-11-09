@@ -107,7 +107,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 }
 
                 $userUuid = $this->generateUserUuid($academicYear, $this->study_mode_id ?? 1);
-
+                
                 $defaultPassword = $this->generateDefaultPassword($firstName, $phone);
                 
                 $user = User::firstOrCreate(
@@ -330,9 +330,14 @@ class StudentsImport implements ToCollection, WithHeadingRow
             $studyModeName = '';
         }
 
-        $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+        // Find the latest Student Id
+        $latestStudent = Student::orderBy('id', 'desc')->first();
+        
+        $count = str_pad($latestStudent->id + 1, 4, '0', STR_PAD_LEFT);
+        
         // last 2 digits of the year
         $academicYear = substr($academicYear, -2);
+
         return "SITS-$studyModeName-{$count}-{$academicYear}";
     }
 

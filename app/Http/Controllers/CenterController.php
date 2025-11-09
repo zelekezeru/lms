@@ -123,10 +123,16 @@ class CenterController extends Controller
     public function store(CenterStoreRequest $request)
     {
         $fields = $request->validated();
+        
         // Generate Center Code
-        $counCenters = Center::count();
+        $lastCenter = Center::orderBy('created_at', 'desc')->first();
+        if ($lastCenter) {
+            $lastCenterId = $lastCenter->id;
+        } else {
+            $lastCenterId = 0;
+        }
 
-        $fields['code'] = 'SITS-C-' . str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
+        $fields['code'] = 'SITS-C-' . str_pad($lastCenterId + 1, 3, '0', STR_PAD_LEFT);
 
         $center = Center::updateOrCreate($fields);
 

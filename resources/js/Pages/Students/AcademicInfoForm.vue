@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { defineProps, defineEmits, ref, watch, onMounted } from "vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
@@ -21,11 +21,18 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    centers: {
+        type: Array,
+        required: true,
+    },
 });
+
 
 const selectedYearSemesters = ref(
     props.years.find((year) => year.id == props.form.year_id)?.semesters ?? []
 );
+
+const showCenterField = ref(false);
 
 // watch and updated the list of semesters
 watch(
@@ -48,6 +55,17 @@ const selectedProgramStudyModes = ref(
         ?.studyModes ?? []
 );
 
+watch(
+    () => props.form.study_mode_id,
+    (newVal) => {
+        // Check if selectedProgramStudyModes contains the selected id and its name is 'DISTANCE'
+        const selectedMode = selectedProgramStudyModes.value?.find(
+            (mode) => mode.id === newVal
+        );
+        showCenterField.value = selectedMode?.id === 4; // Assuming '4' is the ID for 'DISTANCE' mode
+    }
+);
+
 // watch for changes in value of props.form.program_id and updated the list of tracks and study modes
 watch(
     () => props.form.program_id,
@@ -62,8 +80,23 @@ watch(
         selectedProgramStudyModes.value = props.programs.find(
             (program) => program.id == props.form.program_id
         )?.studyModes;
+
+        // Reset center field visibility
+        // If the selected study mode is DISTANCE, keep the center field visible
+        const selectedMode = selectedProgramStudyModes.value?.find(
+            (mode) => mode.id === props.form.study_mode_id
+        );
+        showCenterField.value = selectedMode?.name?.toUpperCase() === "DISTANCE";
     }
 );
+
+onMounted(() => {
+    // Set center field visibility if study_mode_id is already set
+    const selectedMode = selectedProgramStudyModes.value?.find(
+        (mode) => mode.id === props.form.study_mode_id
+    );
+    showCenterField.value = selectedMode?.name?.toUpperCase() === "DISTANCE";
+});
 
 // Emits
 const emit = defineEmits(["next", "previous"]);
@@ -184,6 +217,28 @@ const emit = defineEmits(["next", "previous"]);
                 />
                 <InputError
                     :message="form.errors?.study_mode_id"
+                    class="mt-2 text-sm text-red-500"
+                />
+            </div>
+
+            <!-- Center Dropdown (conditionally shown) -->
+            <div v-if="showCenterField">
+                <InputLabel
+                    for="center_id"
+                    value="Select Center"
+                    class="block mb-1 text-gray-800 dark:text-gray-200"
+                />
+                <Select
+                    id="center_id"
+                    v-model="form.center_id"
+                    :options="centers"
+                    option-value="id"
+                    option-label="name"
+                    placeholder="Select Center"
+                    class="w-full px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
+                />
+                <InputError
+                    :message="form.errors?.center_id"
                     class="mt-2 text-sm text-red-500"
                 />
             </div>

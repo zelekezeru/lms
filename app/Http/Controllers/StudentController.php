@@ -14,6 +14,7 @@ use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\UserDocumentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\CenterResource;
 use App\Http\Services\StudentRegistrationService;
 use App\Http\Services\StudentsFilterService;
 use App\Models\CourseOffering;
@@ -31,6 +32,7 @@ use App\Models\Student;
 use App\Models\StudyMode;
 use App\Models\User;
 use App\Models\Year;
+use App\Models\Center;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -237,10 +239,13 @@ class StudentController extends Controller
 
         $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
 
+        $centers = CenterResource::collection(Center::orderBy('name', 'asc')->get());
+
         return inertia('Students/Create', [
             'programs' => $programs,
             'years' => $years,
             'studyModes' => $studyModes,
+            'centers' => $centers,
         ]);
     }
 

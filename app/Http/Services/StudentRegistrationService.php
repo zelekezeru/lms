@@ -42,7 +42,7 @@ class StudentRegistrationService extends Controller
         // Date of Birth
         $dateOfBirth = $request->input('date_of_birth');
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
-
+        
         DB::beginTransaction();
 
         try {
@@ -84,7 +84,14 @@ class StudentRegistrationService extends Controller
             DB::rollBack();
             return;
         }
-        // Create a new user for the student
+
+        // Attach Student to Center(s) if Distance mode
+        if ($request->has('study_mode_id') && $request->input('study_mode_id') == 4 && $request->input('center_id')) {
+            
+            // Accept both single value and array for center_id
+            $centerIds = is_array($request['center_id']) ? $request['center_id'] : [$request['center_id']];
+            $student->centers()->sync($centerIds);
+        }
 
         return $student;
     }

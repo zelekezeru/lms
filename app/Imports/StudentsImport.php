@@ -142,6 +142,7 @@ class StudentsImport implements ToCollection, WithHeadingRow
 
                 $this->registeredCount++;
                 $this->registeredStudentIds[] = $student->id;
+                
             }
         });
     }

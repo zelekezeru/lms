@@ -31,6 +31,7 @@ class ImportController extends Controller
         $import = new StudentsImport($request->section_id, $center_id = null, $request);
 
         Excel::import($import, $request->file('file'));
+        
         // show the imported data
         $registeredCount = $import->getRegisteredCount();
         $notRegisteredCount = $import->getNotRegisteredCount();
@@ -42,10 +43,10 @@ class ImportController extends Controller
         $newStudents = $import->getRegisteredStudentIds();
         
         $duplicateStudents = $import->getExistingUserIds();
-
+        
         return inertia('Students/importedStudents', [
             'section' => $section,
-            'students' => Student::whereIn('id', $newStudents)->with('user')->get(),
+            'students' => $newStudents,
             'existingUser' => $duplicateStudents,
         ])->with([
             'import_report' => [

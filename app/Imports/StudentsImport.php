@@ -123,7 +123,10 @@ class StudentsImport implements ToCollection, WithHeadingRow
                 );
                 
                 $student = Student::updateOrCreate(
-                    ['user_id' => $user->id],
+                    [
+                        'user_id' => $user->id,
+                        'id_no' => $userUuid,
+                    ],
                     $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone, $section->id)
                 );
 

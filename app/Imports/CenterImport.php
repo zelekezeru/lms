@@ -122,26 +122,16 @@ class CenterImport implements ToCollection, WithHeadingRow
                 );
 
                 // 6. Student creation
-                $studentData = [
-                    'id_no' => $userUuid,
-                    'first_name' => $firstName,
-                    'middle_name' => $middleName,
-                    'last_name' => $lastName,
-                    'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
-                    'mobile_phone' => $phone,
-                    'address' => $row['address'] ?? null,
-                    'date_of_birth' => $this->parseDate($row['date_of_birth'] ?? null),
-                    'program_id' => $program->id,
-                    'track_id' => $track->id,
-                    'section_id' => $section->id,
-                    'study_mode_id' => $this->study_mode_id,
-                    'year_id' => $year->id,
-                    'semester_id' => $semester->id,
-                    'tenant_id' => $this->tenant_id,
-                    'user_id' => $user->id,
-                ];
 
-                $student = Student::updateOrCreate(['user_id' => $user->id], $studentData);
+                $student = Student::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'year_id' => $year->id,
+                        'mobile_phone' => $phone,
+                    ],
+                    
+                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone)
+                );
 
                 $this->registeredCount++;
                 $this->registeredStudentIds[] = $student->id;
@@ -401,6 +391,40 @@ class CenterImport implements ToCollection, WithHeadingRow
             'church_address' => $churchAddress,
         ]);
     }
+    
+    // Prepare student data for creation or update
+    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId, $phone)
+    {
+        return [
+            'id_no' => $userUuid,
+            'old_id' => $row['old_id'] ?? null,
+            'first_name' => $firstName,
+            'middle_name' => $middleName,
+            'last_name' => $lastName,
+            'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
+            'mobile_phone' => $phone ?? '+251900000000',
+            'address' => $row['address'] ?? null,
+            'date_of_birth' => $this->parseDateOfBirth($row['date_of_birth'] ?? null),
+            'program_id' => $this->program_id,
+            'track_id' => $this->track_id,
+            'study_mode_id' => $this->study_mode_id,
+            'year_id' => $year->id,
+            'semester_id' => $semester->id,
+            'tenant_id' => $this->tenant_id,
+            'user_id' => $userId,
+        ];
+    }
+
+    // Parse date of birth from various formats
+    protected function parseDateOfBirth($date)
+    {
+        if (!$date) return null;
+        try {
+            return Carbon::parse($date)->format('Y-m-d');
+        } catch (\Exception) {
+            return null;
+        }
+    }
 
     private function flashError($title, $text)
     {
@@ -410,8 +434,6 @@ class CenterImport implements ToCollection, WithHeadingRow
             'text' => $text,
         ]);
     }
-
-    
 
     public function getRegisteredCount()
     {
@@ -430,11 +452,11 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     public function getRegisteredStudentIds()
     {
-        return Student::whereIn('id', $this->registeredStudentIds)->get();
+        return User::whereIn('id', $this->registeredStudentIds)->orderBy('name')->get();
     }
 
     public function getExistingUserIds()
     {
-        return User::whereIn('id', $this->existingUserIds)->get();
+        return User::whereIn('id', $this->existingUserIds)->orderBy('name')->get();
     }
 }

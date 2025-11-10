@@ -73,58 +73,31 @@ class ImportController extends Controller
         // Assuming CenterImport exposes these properties after import
         $import = new CenterImport($request->center_id);
         Excel::import($import, $request->file('file'));
-
+        
         // show the imported data
         $registeredCount = $import->getRegisteredCount();
         $notRegisteredCount = $import->getNotRegisteredCount();
         $duplicateData = $import->getDuplicateDataCount();
 
-        $centerId = $request->input('center_id');
-        $center = Center::findOrFail($centerId)->load('students.user');
-        
+        $center = Center::findOrFail($request->input('center_id'));
+
         // Get only the newly registered student IDs from the import
         $newStudents = $import->getRegisteredStudentIds();
+        
         $duplicateStudents = $import->getExistingUserIds();
-
-        // Normalize $newStudents to a flat array of IDs to avoid nested arrays being passed to whereIn
-        if (!empty($newStudents)) {
-            $ids = collect($newStudents)
-                ->flatten()
-                ->map(function ($item) {
-                    if (is_array($item) && isset($item['id'])) {
-                        return $item['id'];
-                    }
-                    if (is_object($item) && isset($item->id)) {
-                        return $item->id;
-                    }
-                    return $item;
-                })
-                ->filter(function ($id) {
-                    return !is_null($id) && $id !== '';
-                })
-                ->unique()
-                ->values()
-                ->all();
-        } else {
-            $ids = [];
-        }
-
-        // Ensure we never pass nested arrays or empty arrays into whereIn
-        $newStudents = !empty($ids) ? Student::whereIn('id', $ids)->with('user')->get() : collect([]);
-
-        $section = Section::where('center_id', $centerId)->first();
-
+        
         return inertia('Students/importedStudents', [
-            'section' => $section,
+            'section' => $center,
             'students' => $newStudents,
             'existingUser' => $duplicateStudents,
+        ])->with([
             'import_report' => [
                 'registeredCount' => $registeredCount,
                 'notRegisteredCount' => $notRegisteredCount,
                 'duplicateData' => $duplicateData,
+                'duplicateStudents' => $duplicateStudents,
                 'success' => "Students imported successfully. ",
             ],
-            'students' => $newStudents,
         ]);
     }
 

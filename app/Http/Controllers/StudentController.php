@@ -213,6 +213,10 @@ class StudentController extends Controller
                 'grades' => fn($q) => $q->where('student_id', $student->id)->with(['course', 'section', 'semester']),
             ])->orderBy('name', 'asc')->get();
 
+        $availableSemesters = Semester::whereHas('year', function ($query) use ($student) {
+            $query->where('name', '>=', $student->year->name);
+        })->orderBy('year_id', 'desc')->get();
+
         return Inertia::render('Students/Show', [
             'student' => $student,
             'user' => $user,
@@ -227,6 +231,7 @@ class StudentController extends Controller
             'semesters' => $semesters,
             'grades' => $grades,
             'activeSemester' => $activeSemester,
+            'availableSemesters' => SemesterResource::collection($availableSemesters),
         ]);
     }
 
@@ -423,7 +428,6 @@ class StudentController extends Controller
         $fields = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
         ]);
-
 
         $alreadyRegistered = SemesterStudent::where('student_id', $student->id)
             ->where('semester_id', $fields['semester_id'])

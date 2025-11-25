@@ -41,6 +41,7 @@ const props = defineProps({
     grades: Object,
     activeSemester: Object,
     showVerifyModal: Boolean,
+    availableSemesters: Array,
 });
 
 const selectedTab = ref("details");
@@ -238,7 +239,6 @@ const deleteStudent = (id) => {
                     </template>
                 </div>
             </nav>
-
             <!-- 📝 Page Title -->
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
@@ -292,6 +292,7 @@ const deleteStudent = (id) => {
                         :status="status"
                         :semesters="semesters"
                         :activeSemester="activeSemester"
+                        :availableSemesters="availableSemesters"
                     />
 
                     <ShowPayments

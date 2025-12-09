@@ -170,7 +170,7 @@ function submit() {
                 class="flex flex-col md:flex-row items-stretch justify-between gap-8 mb-4 p-8"
             >
                 <!-- Export Section -->
-                <div
+                <!-- <div
                     class="relative bg-gradient-to-br from-green-50 via-green-100 to-green-200 dark:from-green-900 dark:via-green-800 dark:to-green-700 rounded-3xl shadow-2xl border-2 border-green-200 dark:border-green-700 w-full md:w-1/2 px-8 py-8 flex flex-col items-center transition-transform hover:scale-105 duration-300"
                 >
                     <div
@@ -220,7 +220,7 @@ function submit() {
                         </svg>
                         Export Student Results
                     </a>
-                </div>
+                </div> -->
 
                 <!-- Import Section -->
                 <div

@@ -96,8 +96,23 @@ class ResultsImport implements ToCollection
                 }
 
                 $student = $this->students->get(trim($rowArray[1]));
-                $section = Section::find($student->section_id ?? $this->sectionId);                
+                if (!$student) {
+                    // Student not found in preloaded collection; skip this row
+                    $this->alert = 'Student not found: ' . trim($rowArray[1]);
+                    continue;
+                }
+
+                $section = Section::find($student->section_id ?? $this->sectionId);
+                if (!$section) {
+                    $this->alert = 'Section not found for student: ' . $student->id;
+                    continue;
+                }
+
                 $studyMode = $section->studyMode;
+                if (!$studyMode) {
+                    $this->alert = 'Study mode not found for section: ' . $section->id;
+                    continue;
+                }
                 
                 $courseOffering = CourseOffering::where('course_id', $this->courseId)
                     ->where('section_id', $section->id) // Use student's section if available, otherwise use provided section ID
@@ -126,18 +141,22 @@ class ResultsImport implements ToCollection
                 
                 if (!$year) {
                     $this->alert = 'Year not found for the course offering.';
-                    return;
+                    continue;
                 }
 
                 // Find the semester
                 $semester = $this->findSemester($studyMode, $year, $courseOffering);
+                if (!$semester) {
+                    $this->alert = 'Semester not found or could not be created for the course offering.';
+                    continue;
+                }
                 
                 // Get related models from the single course offering
                 $instructor = $courseOffering->instructor ?? Instructor::first();
                 
                 // Register the student for the semester if not already registered
                 if (SemesterStudent::where('student_id', $student->id)->where('semester_id', $semester->id)->doesntExist()) {
-                    $semesterReg = $this->registerSemester($student, $semester);
+                    $this->registerSemester($student, $semester);
                 }
                 
                 // Create/update weights for this course and section once outside the student loop

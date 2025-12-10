@@ -96,7 +96,7 @@ class PaymentController extends Controller
             'paid_amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
             'status' => 'required|string|in:pending,completed,canceled',
-            'reference_number' => 'nullable|string|max:255',
+            'payment_reference' => 'nullable|string|max:255',
         ]);
 
         $student = Student::find($data['student_id']);

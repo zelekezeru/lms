@@ -80,7 +80,7 @@ const paymentCreationForm = useForm({
     total_amount: null,
     description: null,
     status: null,
-    reference_number: null,
+    payment_reference: null,
 });
 
 const paymentUpdateForm = useForm({
@@ -90,7 +90,7 @@ const paymentUpdateForm = useForm({
     status: props.payments[0]?.status || "pending",
     paid_amount: props.payments[0]?.paid_amount || 0,
     payment_date: new Date().toISOString().slice(0, 10),
-    reference_number: props.payments[0]?.reference_number || "",
+    payment_reference: props.payments[0]?.payment_reference || "",
     _method: "PATCH",
 });
 
@@ -172,7 +172,7 @@ const showUpdatePaymentModal = (payment) => {
     paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10);
     paymentUpdateForm.paid_amount = payment.paid_amount;
     paymentUpdateForm.status = payment.status;
-    paymentUpdateForm.reference_number = payment.reference_number;
+    paymentUpdateForm.payment_reference = payment.payment_reference;
 
     updatePaymentModal.value = true;
 };
@@ -306,7 +306,7 @@ const submitNewPayment = () => {
                 paymentCreationForm.total_amount = null;
                 paymentCreationForm.description = null;
                 paymentCreationForm.status = null;
-                paymentCreationForm.reference_number = null;
+                paymentCreationForm.payment_reference = null;
                 Swal.fire({
                     title: "Success!",
                     text: "Payment has been created successfully.",
@@ -620,7 +620,7 @@ const updatePayment = () => {
                         </p>
                         <p>
                             <strong>Reference:</strong>
-                            {{ payment.reference_number || "N/A" }}
+                            {{ payment.payment_reference || "N/A" }}
                         </p>
 
                         <div
@@ -1136,20 +1136,20 @@ const updatePayment = () => {
                     <!-- Reference Number -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label
-                            for="reference_number"
+                            for="payment_reference"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
                             Reference Number (Optional)
                         </label>
                         <input
                             type="text"
-                            v-model="paymentCreationForm.reference_number"
-                            id="reference_number"
+                            v-model="paymentCreationForm.payment_reference"
+                            id="payment_reference"
                             class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                         />
                         <InputError
                             :message="
-                                paymentCreationForm.errors.reference_number
+                                paymentCreationForm.errors.payment_reference
                             "
                             class="mt-2 text-sm text-red-500"
                         />
@@ -1394,19 +1394,21 @@ const updatePayment = () => {
                     <!-- Reference Number -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label
-                            for="reference_number"
+                            for="payment_reference"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
                             Reference Number
                         </label>
                         <input
                             type="text"
-                            v-model="paymentUpdateForm.reference_number"
-                            id="reference_number"
+                            v-model="paymentUpdateForm.payment_reference"
+                            id="payment_reference"
                             class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                         />
                         <InputError
-                            :message="paymentUpdateForm.errors.reference_number"
+                            :message="
+                                paymentUpdateForm.errors.payment_reference
+                            "
                             class="mt-2 text-sm text-red-500"
                         />
                     </div>

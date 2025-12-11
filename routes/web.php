@@ -139,6 +139,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
 
     Route::post('/students/{student}/payment-code', [StudentController::class, 'generatePaymentCode'])->name('students.payment-code');
+    Route::get('/students/importPaymentcodes', [StudentController::class, 'importPaymentcodes'])->name('students.importPaymentcodes');
 
     // Excel Operation Routes
     Route::get('/sections/{section}/imported-students', [ImportController::class, 'showImportedStudents'])->name('sections.imported-students');
@@ -147,6 +148,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
     Route::post('/graduated-students/import', [ImportController::class, 'importGraduatedStudents'])->name('graduatedStudents.import');
     Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
+    Route::post('/students/paymentcodes', [ImportController::class, 'paymentcodes'])->name('students.paymentcodes');
+
 
     // Reporting
     Route::get('/reports/distanceReport', [ExportController::class, 'distanceReport'])->name('reports.distanceReport');

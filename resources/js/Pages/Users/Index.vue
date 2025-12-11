@@ -31,6 +31,16 @@ const refreshData = () => {
     });
 };
 
+const search = ref(usePage().props.search || "");
+// Search function
+const searchusers = () => {
+    router.get(
+        route("users.index"),
+        { ...route().params, search: search.value },
+        { preserveState: true }
+    );
+};
+
 // Delete function with SweetAlert confirmation
 const deleteuser = (id) => {
     Swal.fire({
@@ -56,7 +66,6 @@ const deleteuser = (id) => {
     });
 };
 
-const search = ref("");
 const filteredUsers = computed(() => {
     if (!props.users || !props.users.data) return [];
     if (!search.value) return props.users.data;
@@ -100,12 +109,13 @@ const filteredUsers = computed(() => {
                 />
                 Refresh Data
             </button>
+
             <input
-                v-model="search"
                 type="text"
+                v-model="search"
                 placeholder="Search users..."
-                class="ml-4 px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
-                style="min-width: 220px"
+                class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                @input="searchusers"
             />
         </div>
 

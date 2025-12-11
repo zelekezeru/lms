@@ -192,6 +192,32 @@ function userCan(permission) {
             Students Report
           </h2>
         </Link>
+        
+        <!-- Students Payment Code -->
+        <Link
+          :href="route('students.importPaymentcodes')"
+          class="relative group overflow-hidden rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-indigo-300/30 flex items-center gap-4"
+          aria-label="Import Students Payment Codes"
+        >
+          <!-- decorative blobs -->
+          <span class="absolute -top-6 -right-6 w-36 h-36 bg-white/10 rounded-full filter blur-2xl pointer-events-none"></span>
+          <span class="absolute -bottom-6 -left-6 w-28 h-28 bg-white/5 rounded-full filter blur-xl pointer-events-none"></span>
+
+          <!-- icon -->
+          <div class="flex-shrink-0 w-14 h-14 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <EyeIcon class="w-7 h-7 text-white/95" />
+          </div>
+
+          <!-- content -->
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg sm:text-xl font-semibold leading-tight truncate">
+              Students Payment Code
+            </h3>
+            <p class="mt-1 text-sm text-white/85 truncate">
+              Import or manage student payment codes via Excel. Click to open the import tool.
+            </p>
+          </div>
+        </Link>
       </div>
     </section>
 

@@ -9,6 +9,7 @@ import {
     PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/solid";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline";
 
 // Define the props for the user
 const props = defineProps({
@@ -67,6 +68,14 @@ const submitProfileImageUpdate = () => {
         },
     });
 };
+
+const showPassword = ref(false);
+
+function hashPassword(password) {
+    // Simple hash for display (not secure, just for obfuscation)
+    if (!password) return "";
+    return "*".repeat(password.length);
+}
 
 // Delete function with SweetAlert confirmation
 const deleteUser = (id) => {
@@ -177,14 +186,33 @@ const deleteUser = (id) => {
                                 </span>
                             </div>
                             <!-- Default Password -->
-                            <div v-if="userCan('default-password') && user.default_password" class="flex flex-col">
-                                <span class="text-sm text-gray-500 dark:text-gray-400"
+                            <div
+                                v-if="
+                                    userCan('default-password') &&
+                                    user.default_password
+                                "
+                                class="flex flex-col"
+                            >
+                                <span
+                                    class="text-sm text-gray-500 dark:text-gray-400"
                                     >Default Password</span
                                 >
-                                <span
-                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ user.default_password }}
+                                <span class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                    <span v-if="showPassword">
+                                        {{ user.default_password }}
+                                    </span>
+                                    <span v-else>
+                                        {{ hashPassword(user.default_password) }}
+                                    </span>
+                                    <button
+                                        @click="showPassword = !showPassword"
+                                        class="ml-2 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                                        type="button"
+                                    >
+                                        <EyeSlashIcon v-if="showPassword" class="w-4 h-4 inline-block" />
+                                        <EyeIcon v-else class="w-4 h-4 inline-block" />
+                                        {{ showPassword ? 'Hide' : 'Show' }}
+                                    </button>
                                 </span>
                             </div>
                         </div>

@@ -267,6 +267,12 @@ class StudentController extends Controller
         return redirect()->back()->with('success', 'Payment Code Generated Successfully.');
     }
 
+    // Show the form to import payment codes
+    public function importPaymentcodes()
+    {
+        return Inertia::render('Students/ImportPaymentCodes');
+    }
+
     // Store the student innformation to the store method in Auth/StudentRegistrationController
     public function store(StudentStoreRequest $request): RedirectResponse
     {
@@ -432,10 +438,15 @@ class StudentController extends Controller
         $alreadyRegistered = SemesterStudent::where('student_id', $student->id)
             ->where('semester_id', $fields['semester_id'])
             ->first();
-
+        
+        $semester = Semester::find($fields['semester_id']);
+        
         if ($alreadyRegistered) {
+            if($student->status->is_scholarship_approved === 1 && $student->status->is_scholarship === 1){
+                $message = 'Already Registered to ' . $semester->name . ' Semester.';
+            } else {
             $message = $alreadyRegistered->payment_status == 'unpaid' ? 'The Student Is Already Registered But hasn\'t fully Paid For This Semester.' : 'The Student Is Already Registered And Has Paid Fully For This Semester.';
-
+            }
             return back()->withErrors(['error' => $message]);
         }
         // retrieve the section of the student and the year level and semester of the section he/she belongs too

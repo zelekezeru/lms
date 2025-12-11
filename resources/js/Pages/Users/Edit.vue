@@ -16,9 +16,9 @@ const form = useForm({
     id: props.user.id || "",
     name: props.user.name || "",
     email: props.user.email || "",
+    phone: props.user.phone || "",
     password: "",
     password_confirmation: "",
-    phone: props.user.phone | "",
     roles: props.user.roles.map((role) => role.id) || [], // Get the first role name if available
     profile_img: props.user.profile_img || "",
     _method: "PUT", // Indicates PUT method for the update

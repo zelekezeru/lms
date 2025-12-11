@@ -20,6 +20,7 @@ import {
     QuestionMarkCircleIcon,
     QueueListIcon,
     UserGroupIcon,
+    PresentationChartLineIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
 import SidebarItem from "./SidebarItem.vue";
@@ -181,12 +182,6 @@ const wrapperClasses = computed(() => {
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
-                        :icon="CogIcon"
-                        :label="$t('sidebar.manage_instructors')"
-                        :href="route('instructors.index')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
                         :icon="BriefcaseIcon"
                         :label="$t('sidebar.manage_employees')"
                         :href="route('employees.index')"
@@ -196,6 +191,19 @@ const wrapperClasses = computed(() => {
                         :icon="BriefcaseIcon"
                         :label="$t('sidebar.manage_users')"
                         :href="route('users.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                        :label="$t('sidebar.manage_instructors')"
+                    :icon="PresentationChartLineIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        :label="$t('sidebar.manage_instructors')"
+                        :href="route('instructors.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
@@ -249,12 +257,6 @@ const wrapperClasses = computed(() => {
                         :href="route('inventories.index')"
                         :isCollapsed="!isOpen"
                     />
-                    <!-- <SidebarItem
-                        :icon="HandRaisedIcon"
-                        :label="$t('sidebar.inventory_items')"
-                        :href="route('inventorySuppliers.index')"
-                        :isCollapsed="!isOpen"
-                    /> -->
                     <SidebarItem
                         :icon="FolderIcon"
                         :label="$t('sidebar.inventory_categories')"
@@ -280,13 +282,13 @@ const wrapperClasses = computed(() => {
             <div class="px-2 pb-4 mt-auto">
                 <SidebarItem
                     :icon="CogIcon"
-                        :label="$t('sidebar.profile')"
+                    :label="$t('sidebar.profile')"
                     :href="route('profile.edit')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
                     :icon="QuestionMarkCircleIcon"
-                        :label="$t('sidebar.help')"
+                    :label="$t('sidebar.help')"
                     href="#"
                     :isCollapsed="!isOpen"
                 />

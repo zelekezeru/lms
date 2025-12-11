@@ -6,6 +6,7 @@ use App\Imports\CenterImport;
 use App\Imports\StudentsImport;
 use App\Imports\GradesImport;
 use App\Imports\GraduatedStudentsImport;
+use App\Imports\StudentPaymentCodesImport;
 use App\Imports\ResultsImport;
 use App\Imports\s;
 use App\Models\Section;
@@ -173,5 +174,28 @@ class ImportController extends Controller
         Excel::import($import, $request->file('file'));
 
         return back()->with('success', 'Students Status imported successfully.');
+    }
+
+    // Import Student Payment Codes
+    public function paymentcodes(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+        $import = new StudentPaymentCodesImport();
+        Excel::import($import, $request->file('file'));
+
+        $report = [
+            'updated' => $import->getUpdatedCount(),
+            'skipped_missing' => $import->getSkippedMissing(),
+            'skipped_duplicate' => $import->getSkippedDuplicate(),
+            'not_found' => $import->getNotFound(),
+            'conflicts' => $import->getConflicts(),
+        ];
+
+        return back()->with([
+            'success' => 'Student Payment Codes imported successfully.',
+            'import_report' => $report,
+        ]);
     }
 }

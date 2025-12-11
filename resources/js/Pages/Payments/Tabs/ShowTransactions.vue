@@ -34,51 +34,67 @@ const props = defineProps({
 </script>
 
 <template>
-    
     <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
             Transactions
         </h1>
         <Table>
-            <Thead>
-            <tr>
-                <TableHeader>Payment Method</TableHeader>
-                <TableHeader>Amount</TableHeader>
-                <TableHeader>Date</TableHeader>
-                <TableHeader>Status</TableHeader>
-            </tr>
-            </Thead>
-            <tbody is="TableZebraRows">
-            <tr v-for="payment in payments.data" :key="payment.id">
-                <td>
-                {{
-                    paymentMethods[payment.payment_method_id]
-                        ? paymentMethods[payment.payment_method_id].name
-                        : 'Unknown'
-                }}
-                </td>
-                <td>{{ payment.total_amount }}</td>
-                <td>{{ payment.payment_date }}</td>
-                <td>
-                    <span :class="{
-                        'text-yellow-500': payment.status === 'pending',
-                        'text-green-500': payment.status === 'completed',
-                        'text-red-500': payment.status === 'failed',
-                        'text-blue-500': payment.status === 'paid_by_college',
-                    }">
-                        <span v-if="payment.status === 'paid_by_college'"><b>Scholarship</b></span>
-                        <span v-else-if="payment.status === 'pending'"><b>Pending</b></span>
-                        <span v-else-if="payment.status === 'completed'"><b>Completed</b></span>
-                        <span v-else-if="payment.status === 'failed'"><b>Failed</b></span>
-                        <span v-else><b>{{ payment.status }}</b></span>
-                    </span>
-                </td>
-            </tr>
+            <TableHeader>
+                <tr>
+                    <Thead>Payment Method</Thead>
+                    <Thead>Amount</Thead>
+                    <Thead>Date</Thead>
+                    <Thead>Status</Thead>
+                </tr>
+            </TableHeader>
+            <tbody>
+                <TableZebraRows
+                    v-for="payment in payments.data"
+                    :key="payment.id"
+                >
+                    <Td>
+                        {{
+                            paymentMethods[payment.payment_method_id]
+                                ? paymentMethods[payment.payment_method_id].name
+                                : "Unknown"
+                        }}
+                    </Td>
+                    <Td>{{ payment.total_amount }}</Td>
+                    <Td>{{ payment.payment_date }}</Td>
+                    <Td>
+                        <span
+                            :class="{
+                                'text-yellow-500': payment.status === 'pending',
+                                'text-green-500':
+                                    payment.status === 'completed',
+                                'text-red-500': payment.status === 'failed',
+                                'text-blue-500':
+                                    payment.status === 'paid_by_college',
+                            }"
+                        >
+                            <span v-if="payment.status === 'paid_by_college'"
+                                ><b>Scholarship</b></span
+                            >
+                            <span v-else-if="payment.status === 'pending'"
+                                ><b>Pending</b></span
+                            >
+                            <span v-else-if="payment.status === 'completed'"
+                                ><b>Completed</b></span
+                            >
+                            <span v-else-if="payment.status === 'failed'"
+                                ><b>Failed</b></span
+                            >
+                            <span v-else
+                                ><b>{{ payment.status }}</b></span
+                            >
+                        </span>
+                    </Td>
+                </TableZebraRows>
             </tbody>
         </Table>
         <template v-if="!payments.data.length">
             <p class="text-gray-500 dark:text-gray-400">
-            No transactions available at the moment.
+                No transactions available at the moment.
             </p>
         </template>
     </div>

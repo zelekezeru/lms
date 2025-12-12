@@ -120,6 +120,9 @@ class InstructorController extends Controller
 
         $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
 
+        $instructor->user_id = $user->id;
+        $instructor->save();
+
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }
 

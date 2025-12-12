@@ -16,6 +16,7 @@ import {
     BriefcaseIcon,
     PlusIcon,
     ChartPieIcon,
+    PresentationChartLineIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
@@ -147,32 +148,39 @@ const wrapperClasses = computed(() => {
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="User Management"
+                        :label="$t('sidebar.user_management')"
                     :icon="UserIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
-                        :icon="CogIcon"
-                        label="Manage Instructors"
-                        :href="route('instructors.index')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Employees"
+                        :label="$t('sidebar.manage_employees')"
                         :href="route('employees.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Users"
+                        :label="$t('sidebar.manage_users')"
                         :href="route('users.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Student Management"
+                        :label="$t('sidebar.manage_instructors')"
+                    :icon="PresentationChartLineIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        :label="$t('sidebar.manage_instructors')"
+                        :href="route('instructors.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                        :label="$t('sidebar.student_management')"
                     :icon="UsersIcon"
                     :sidebar-visible="isOpen"
                 >

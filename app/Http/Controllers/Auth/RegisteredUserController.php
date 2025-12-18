@@ -146,7 +146,6 @@ class RegisteredUserController extends Controller
 
             // Instructor User
             elseif ($role == 'INSTRUCTOR') {
-
                 $user = User::create($fields);
                 
                 // Profile Image Handling         

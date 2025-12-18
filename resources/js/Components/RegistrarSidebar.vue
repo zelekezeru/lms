@@ -17,6 +17,7 @@ import {
     PlusIcon,
     ChartPieIcon,
     PresentationChartLineIcon,
+    UserGroupIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
@@ -186,20 +187,14 @@ const wrapperClasses = computed(() => {
                 >
                     <SidebarItem
                         :icon="UsersIcon"
-                        label="Manage Students"
+                        :label="$t('sidebar.all_students')"
                         :href="route('students.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
-                        :icon="PlusIcon"
-                        label="Register Student"
-                        :href="route('students.create')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
-                        :icon="CogIcon"
-                        label="User Documents"
-                        :href="route('userDocuments.index')"
+                        :icon="UserGroupIcon"
+                        :label="$t('sidebar.student_home')"
+                        :href="route('students.home')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>

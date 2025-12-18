@@ -129,6 +129,7 @@ const filteredUsers = computed(() => {
                         <Thead>Profile</Thead>
                         <Thead>Email</Thead>
                         <Thead>Phone</Thead>
+                        <Thead>Role</Thead>
                         <Thead>Action</Thead>
                     </tr>
                 </TableHeader>
@@ -180,6 +181,13 @@ const filteredUsers = computed(() => {
                         </td>
                         <td class="px-6 py-4">
                             {{ user.phone }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                            >
+                                {{ user.roles[0]?.name || 'N/A' }}
+                            </span>
                         </td>
                         <td class="flex px-6 py-4 gap-3">
                             <Link

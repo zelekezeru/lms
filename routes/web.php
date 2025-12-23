@@ -33,12 +33,19 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Inertia\Inertia;
 
-Route::middleware('auth')->group(function () {});
-
 Route::middleware(['auth'])->group(function () {
     // Password Change Route
     Route::get('change-password', [AuthenticatedSessionController::class, 'change'])->name('password.change');
-    // Student Dashboard
+
+    // profile related routes
+    Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('switch-role', [AuthenticatedSessionController::class, 'switchRole'])->name('switch-role');
+
+    // Main Dashboard 
     Route::get('/', function () {
         $user = User::find(Auth::id());
 
@@ -60,12 +67,15 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('admin.dashboard');
         }
     })->name('dashboard');
+
     // Admin Dashboard
     Route::get('/admin-dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
 
     // Student Portal
     Route::group(['prefix' => 'st-portal', 'middleware' => ['role:STUDENT']], function () {
+        // Student Dashboard
         Route::get('/', [StudentPortalController::class, 'index'])->name('student.dashboard');
+        // Student Other Pages
         Route::get('/enrollments', [StudentPortalController::class, 'enrollments'])->name('student.enrollments');
         Route::get('/enrollments/{enrollment}', [StudentPortalController::class, 'enrollmentDetail'])->name('student.enrollments.show');
         Route::get('/classSchedules', [StudentPortalController::class, 'classSchedules'])->name('student.classSchedules');
@@ -79,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Instructor Portal
     Route::group(['prefix' => 'in-portal', 'middleware' => ['role:INSTRUCTOR']], function () {
+        // Instructor Dashboard Pages
         Route::get('/', [InstructorPortalController::class, 'index'])->name('instructor.dashboard');
         Route::get('/courses', [InstructorPortalController::class, 'courses'])->name('instructor.courses');
         Route::get('/courses/{course}', [InstructorPortalController::class, 'courseDetail'])->name('instructor.courses.detail')->middleware('can:view-course-details,course');
@@ -98,12 +109,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/classSchedules', [InstructorPortalController::class, 'classSchedules'])->name('instructor.classSchedules');
         Route::get('/classSessions', [InstructorPortalController::class, 'classSessions'])->name('instructor.classSessions');
     });
-    // Instructor Portal
+
+    // Registrar Portal
     Route::group(['prefix' => 'reg-portal', 'middleware' => ['role:REGISTRAR']], function () {
+        // Registrar Dashboard
         Route::get('/', [RegistrarPortalController::class, 'index'])->name('registrar.dashboard');
 
         Route::get('students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('registrar.students');
     });
+
 
     Route::group(['prefix' => 'fin-portal', 'middleware' => ['role:FINANCE-ADMIN|FINANCE-USER']], function () {
         Route::get('/', [FinancePortalController::class, 'index'])->name('finance.dashboard');
@@ -112,14 +126,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    // Profiles related routes
-    Route::get('/profile/show', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::post('switch-role', [AuthenticatedSessionController::class, 'switchRole'])->name('switch-role');
-
+    // Profiles 
     // User Ducuments
     Route::get('/newDocument/{user_id}', [UserDocumentController::class, 'newDocument'])->name('userDocuments.newDocument');
 
@@ -159,7 +166,7 @@ Route::middleware(['auth'])->group(function () {
     // Add these routes for student results import/export
     Route::get('/student-results/export/{section}', [ExportController::class, 'exportStudentResults'])->name('studentResults.export');
     Route::post('/section-results/import', [ImportController::class, 'importSectionResults'])->name('sectionResults.import');
-    
+
     // Make sure to use POST method when calling this route in your forms or AJAX requests.
     Route::post('/section-students/import', [ImportController::class, 'sectionStudents'])->name('sectionStudents.import');
     Route::post('/center-students/import', [ImportController::class, 'centerStudents'])->name('centerStudents.import');
@@ -183,7 +190,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/studyMode-program', [AssignmentController::class, 'assignStudyModeToProgram'])->name('studyMode-program.assign');
     Route::post('/update-section-course/{section}', [AssignmentController::class, 'updateSectionCourse'])->name('update-section-course');    // For One Student To One Section Assignement
     Route::post('/student-section', [AssignmentController::class, 'assignStudentToSection'])->name('student-section.assign');
-    
+
     // Sort Students to Sections
     Route::post('/student-section/sort/{track}', [AssignmentController::class, 'sortStudentsToSections'])->name('student-section.sort');
     Route::get('/trackCourses-section/{section}', [AssignmentController::class, 'assignTrackCoursesToSection'])->name('trackCourses-section.assign');
@@ -229,6 +236,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
     Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');
     Route::post('/centers/{center}/courses/assign', [AssignmentController::class, 'assignCoursesToCenter'])->name('center-courses.assign');
+
+    // Additional Payment Management Routes
+    Route::post('/payments/completeAllPayments/{semester}', [PaymentController::class, 'completeAllPayments'])->name('payments.completeAllPayments');
+
 
     // Resource Routes
     $resourceRoutes = [

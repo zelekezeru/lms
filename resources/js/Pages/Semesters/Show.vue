@@ -6,8 +6,13 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { DatePicker, Listbox, MultiSelect } from "primevue";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/vue/24/outline";
+import {
+    CheckCircleIcon,
+    ExclamationCircleIcon,
+    XCircleIcon,
+} from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // Props
 const props = defineProps({
@@ -140,6 +145,34 @@ const deleteSemester = (id) => {
         }
     });
 };
+
+const completeAllPayments = (id) => {
+    Swal.fire({
+        title: t("semester.complete_all_payments_confirm"),
+        text: t("semester.complete_all_payments_confirm_text"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.post(
+                route("payments.completeAllPayments", { semester: id }),
+                {
+                    onSuccess: () => {
+                        Swal.fire(
+                            t("semester.complete_all_payments_success"),
+                            "",
+                            "success"
+                        );
+                    },
+                }
+            );
+        }
+    });
+};
 </script>
 
 <template>
@@ -155,6 +188,15 @@ const deleteSemester = (id) => {
             <div
                 class="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl shadow p-6 space-y-10"
             >
+                <div>
+                    <button
+                        @click="completeAllPayments(semester.id)"
+                        class="inline-flex items-center px-5 mr-3 py-2.5 bg-red-800 hover:bg-red-900 text-white font-semibold rounded-lg shadow-sm transition duration-200"
+                    >
+                        <ExclamationCircleIcon class="w-7 mr-3" />
+                        Mark All Payments As Completed
+                    </button>
+                </div>
                 <!-- Grid Info -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">

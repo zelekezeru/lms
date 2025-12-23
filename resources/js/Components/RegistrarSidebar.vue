@@ -16,6 +16,8 @@ import {
     BriefcaseIcon,
     PlusIcon,
     ChartPieIcon,
+    PresentationChartLineIcon,
+    UserGroupIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 import SidebarDropdownMenu from "./SidebarDropdownMenu.vue";
@@ -147,51 +149,52 @@ const wrapperClasses = computed(() => {
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="User Management"
+                        :label="$t('sidebar.user_management')"
                     :icon="UserIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
-                        :icon="CogIcon"
-                        label="Manage Instructors"
-                        :href="route('instructors.index')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Employees"
+                        :label="$t('sidebar.manage_employees')"
                         :href="route('employees.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
                         :icon="BriefcaseIcon"
-                        label="Manage Users"
+                        :label="$t('sidebar.manage_users')"
                         :href="route('users.index')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>
 
                 <SidebarDropdownMenu
-                    label="Student Management"
+                        :label="$t('sidebar.manage_instructors')"
+                    :icon="PresentationChartLineIcon"
+                    :sidebar-visible="isOpen"
+                >
+                    <SidebarItem
+                        :icon="CogIcon"
+                        :label="$t('sidebar.manage_instructors')"
+                        :href="route('instructors.index')"
+                        :isCollapsed="!isOpen"
+                    />
+                </SidebarDropdownMenu>
+
+                <SidebarDropdownMenu
+                        :label="$t('sidebar.student_management')"
                     :icon="UsersIcon"
                     :sidebar-visible="isOpen"
                 >
                     <SidebarItem
                         :icon="UsersIcon"
-                        label="Manage Students"
+                        :label="$t('sidebar.all_students')"
                         :href="route('students.index')"
                         :isCollapsed="!isOpen"
                     />
                     <SidebarItem
-                        :icon="PlusIcon"
-                        label="Register Student"
-                        :href="route('students.create')"
-                        :isCollapsed="!isOpen"
-                    />
-                    <SidebarItem
-                        :icon="CogIcon"
-                        label="User Documents"
-                        :href="route('userDocuments.index')"
+                        :icon="UserGroupIcon"
+                        :label="$t('sidebar.student_home')"
+                        :href="route('students.home')"
                         :isCollapsed="!isOpen"
                     />
                 </SidebarDropdownMenu>

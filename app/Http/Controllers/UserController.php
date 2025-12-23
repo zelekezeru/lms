@@ -23,8 +23,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::with('status');
-
+        $query = User::with('status', 'roles');
+        
         // Apply search filter
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
@@ -52,7 +52,7 @@ class UserController extends Controller
         $usersCount = $query->count();
         
         $users = UserResource::collection($paginatedUsers);
-
+        
         return inertia('Users/Index', [
             'users' => $users,
         ]);
@@ -177,6 +177,7 @@ class UserController extends Controller
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
+            'phone' => $fields['phone'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 

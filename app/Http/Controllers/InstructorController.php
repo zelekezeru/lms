@@ -10,6 +10,7 @@ use App\Http\Resources\InstructorResource;
 use App\Models\Course;
 use App\Models\Instructor;
 use App\Models\Track;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -102,9 +103,7 @@ class InstructorController extends Controller
 
         $instructor = Instructor::create([
             'name' => $fields['name'],
-
-            // User id temporary
-            'user_id' => 3,
+            'user_id' => null,
             'specialization' => $fields['specialization'],
             'employment_type' => $fields['employment_type'],
             'bio' => $fields['bio'],
@@ -118,7 +117,8 @@ class InstructorController extends Controller
 
         $registeredUserController = new RegisteredUserController;
 
-        $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);
+        // call the registration action (may redirect/return a response), then lookup the created user
+        $user = $registeredUserController->store($request, 'INSTRUCTOR', 'User', $instructor);        
 
         return redirect(route('instructors.show', $instructor))->with('success', 'Instructor created successfully.');
     }

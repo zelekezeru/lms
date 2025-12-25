@@ -8,6 +8,7 @@ use App\Models\Enrollment;
 use App\Models\Grade;
 use App\Models\Student;
 use App\Models\Weight;
+use App\Models\Year;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -177,8 +178,9 @@ class GradeController extends Controller
                                             // Create a unique key for lookup if needed, or just get the first one
                                             return $item->section_id;
                                         })->first();
+        $year = Year::where('name', $student->year->name + $courseOffering->year_level - 1)->first();
 
-        $semester = $courseOffering->section->studyMode->semesters->first();
+        $semester = $year->semesters->where('level', $courseOffering->semester_level)->first();
 
         $enrollment = $student->enrollments()
             ->where('course_offering_id', $courseOffering->id)

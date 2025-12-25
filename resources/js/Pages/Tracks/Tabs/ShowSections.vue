@@ -8,6 +8,9 @@ import { EyeIcon } from "@heroicons/vue/24/outline";
 import { Select } from "primevue";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { useI18n } from "vue-i18n"; // ✅ Add this line
+
+const { t } = useI18n(); // ✅ Destructure the `t` function
 
 // Define the props for the track
 const props = defineProps({
@@ -77,6 +80,33 @@ const addSection = () => {
         }
     );
 };
+
+
+const massRegisterStudents = (sectionId) => {
+    Swal.fire({
+        title: t("students.mass_register"),
+        text: t("students.confirm_mass_register"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: t("confirm"),
+        cancelButtonText: t("cancel"),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            useForm().post(route("sections.mass-register-students", { section: sectionId }), {
+                onSuccess: () => {
+                    Swal.fire(
+                        t("students.success"),
+                        t("students.mass_register_success"),
+                        "success"
+                    );
+                },
+                onError: () => {
+                    Swal.fire(t("error"), usePage().props.errors[0], "error");
+                },
+            });
+        }
+    });
+};
 </script>
 
 <template>
@@ -129,6 +159,11 @@ const addSection = () => {
                             class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
                         >
                             {{ $t("sections.semester") }}
+                        </th>
+                        <th
+                            class="w-60 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                        >
+                            Mass Register
                         </th>
                         <th
                             class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -189,6 +224,12 @@ const addSection = () => {
                             class="w-80 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                         >
                             {{ section.semester.name }}
+                        </td>
+                        <td>
+                            <PrimaryButton @click="massRegisterStudents(section.id)" class="ml-2">
+                                <PlusCircleIcon class="w-5 h-5 mr-2" />
+                                {{ $t("students.mass_register") }}
+                            </PrimaryButton>
                         </td>
                         <td
                             class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"

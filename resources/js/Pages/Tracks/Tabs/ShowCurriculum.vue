@@ -275,7 +275,7 @@ const assignCurriculum = () => {
                         {{ t("programs.tracks.curriculum.create") }}
                     </button>
                     <!-- Button to assign courses -->
-                    <Link
+                    <!-- <Link
                         :href="
                             route('trackCourses-sections.assign', {
                                 track: track.id,
@@ -288,7 +288,7 @@ const assignCurriculum = () => {
                         <span class="font-medium">{{
                             $t("sections.assign_track_courses")
                         }}</span>
-                    </Link>
+                    </Link> -->
                     <!-- copy curriculum from other tracks -->
                     <div class="flex items-right gap-4">
                         <Select

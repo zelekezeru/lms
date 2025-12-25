@@ -112,6 +112,7 @@ const sortStudentsToSections = () => {
         }
     });
 };
+
 </script>
 
 <template>

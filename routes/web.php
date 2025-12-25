@@ -141,6 +141,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Student Semester Registration
     Route::post('/students/{student}/registerSemester', [StudentController::class, 'registerSemester'])->name('students.registerSemester');
+    
+    // Mass Register Students to Semester for a Track and Section
+    Route::post('/tracks/{track}/mass-register-students', [StudentController::class, 'massRegisterStudents'])->name('tracks.mass-register-students');
+    Route::post('/sections/{section}/mass-register-students', [StudentController::class, 'massRegisterStudents'])->name('sections.mass-register-students');
 
     // User Profile Picture Update
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
@@ -239,6 +243,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Additional Payment Management Routes
     Route::post('/payments/completeAllPayments/{semester}', [PaymentController::class, 'completeAllPayments'])->name('payments.completeAllPayments');
+
 
 
     // Resource Routes

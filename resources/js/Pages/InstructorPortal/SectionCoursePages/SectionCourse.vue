@@ -10,6 +10,7 @@ import Announcements from "./Tabs/Announcments.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ClassSchedules from "./Tabs/ClassSchedules.vue";
 import ClassSessions from "./Tabs/ClassSessions.vue";
+import StudentResults from "@/Pages/StudentPortal/StudentResults.vue";
 
 const props = defineProps({
     course: {
@@ -51,6 +52,9 @@ const props = defineProps({
     rooms: {
         type: Array,
         required: true,
+    },
+    studentResults: {
+        type: Array,
     },
 });
 
@@ -208,6 +212,7 @@ const changeTab = (tabName) => {
                             :instructor="instructor"
                             :semester="semester"
                             :students="students"
+                            :studentResults="studentResults"
                         />
                         <Attendance
                             v-if="activeTab === 'attendance'"

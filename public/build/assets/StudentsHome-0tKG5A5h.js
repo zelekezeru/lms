@@ -1,0 +1,1 @@
+import{b as t,o,a}from"./app-Dy-NPSHL.js";/* empty css            */const m={__name:"StudentsHome",setup(n){return(r,e)=>(o(),t("div",null,e[0]||(e[0]=[a("h1",null,"Welcome to the Students Home Page",-1)])))}};export{m as default};

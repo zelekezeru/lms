@@ -49,6 +49,10 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    studentsUnformatted: {
+        type: Array,
+        required: true,
+    },
     rooms: {
         type: Array,
         required: true,
@@ -211,7 +215,7 @@ const changeTab = (tabName) => {
                             :weights="weights"
                             :instructor="instructor"
                             :semester="semester"
-                            :students="students"
+                            :students="studentsUnformatted"
                             :studentResults="studentResults"
                         />
                         <Attendance

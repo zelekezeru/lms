@@ -227,10 +227,11 @@ class InstructorPortalController extends Controller
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
         $grades = $section->grades()->where('course_id', $course->id)->get();
 
-        $students =
+        $studentsUnformatted =
             $courseOffering->enrollments->where('status', 'enrolled')->pluck('student');
-
+        $students = StudentResource::collection($studentsUnformatted);
         $studentResults = [];
+
         // Fetch students with their course results
         foreach ($students as $student) {
             $studentResults[$student->id] = [];
@@ -279,6 +280,7 @@ class InstructorPortalController extends Controller
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,
             'course' => $course,
+            'studentsUnformatted' => $studentsUnformatted,
             'students' => $students,
             'semester' => $semester,
             'classSchedules' => $classSchedules,

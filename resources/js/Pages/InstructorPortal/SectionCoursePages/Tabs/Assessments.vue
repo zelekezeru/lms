@@ -124,6 +124,7 @@ const changeTab = (tabKey) => {
                 :instructor="instructor"
                 :grades="grades"
                 :studentsList="students"
+                :student-results="studentResults"
             />
         </div>
     </transition>

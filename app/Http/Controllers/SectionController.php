@@ -138,7 +138,7 @@ class SectionController extends Controller
             'classSchedules.semester',
             'classSchedules.room',
         ]));
-
+        
         $courses = CourseResource::collection(Course::withExists(['courseOfferings as related_to_course_offering' => function ($query) use ($section) {
             return $query->where('section_id', $section->id);
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
@@ -160,6 +160,8 @@ class SectionController extends Controller
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
 
+        $courseOffering = $section->courseOfferings()->with('course', 'instructor')->get()->keyBy('course_id');
+        
         return Inertia::render('Sections/Show', [
             'section' => $section,
             'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(50))),
@@ -175,6 +177,7 @@ class SectionController extends Controller
             'currentSemester' => $currentSemester,
             'importableCourses' => $importableCourses,
             'sectionCourses' => $sectionCourses,
+            'courseOffering' => $courseOffering,
         ]);
     }
 

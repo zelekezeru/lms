@@ -48,6 +48,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    courseOffering: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Tabs
@@ -114,6 +118,7 @@ const user = usePage().props.auth.user;
                             :course="course"
                             :semester="semester"
                             :instructor="instructor"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Results Panel -->
@@ -126,6 +131,7 @@ const user = usePage().props.auth.user;
                             :weights="weights"
                             :studentsList="students"
                             :studentResults="studentResults"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Weights Panel -->
@@ -136,6 +142,7 @@ const user = usePage().props.auth.user;
                             :course="course"
                             :semester="semester"
                             :instructor="instructor"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Grades Panel -->
@@ -149,6 +156,7 @@ const user = usePage().props.auth.user;
                             :grades="grades"
                             :studentsList="students"
                             :studentResults="studentResults"
+                            :courseOffering="courseOffering"
                         />
                     </div>
                 </transition>

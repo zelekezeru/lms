@@ -30,6 +30,7 @@ const props = defineProps({
     currentSemester: Object,
     rooms: Array,
     importableCourses: Array,
+    courseOffering: Object,
 });
 
 const selectedTab = ref("details");
@@ -197,6 +198,7 @@ onMounted(() => {
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
+                        :courseOffering="courseOffering"
                     />
 
                     <Deferred
@@ -242,6 +244,7 @@ onMounted(() => {
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
                         :importableCourses="importableCourses"
+                        :courseOffering="courseOffering"
                     />
                 </div>
             </transition>

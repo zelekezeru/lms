@@ -6,9 +6,8 @@ import { ArrowPathIcon, EyeIcon } from '@heroicons/vue/24/outline'
 // Example data, replace with your actual logic
 
 const props = defineProps({
-    sections: Object,
     search: String,
-    gradesPercentage: Object,
+    gradesPercentages: Object,
 });
 
 // If using i18n and route helpers, make sure they're globally available
@@ -28,9 +27,6 @@ const props = defineProps({
             Name
           </th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-            Program
-          </th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
             Number of Students
           </th>
           <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -39,21 +35,19 @@ const props = defineProps({
         </tr>
       </thead>
       <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr v-for="section, index in props.sections.data" :key="section.id">
+        <tr v-for="gradesPercentage, index in props.gradesPercentages" :key="gradesPercentage.section_id">
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ index + 1 }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ section.code }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ gradesPercentage.section.code }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-            <Link :href="route('sections.show', { section: section.id })" class="text-blue-500 hover:text-blue-700">
-              {{ section.name }}
+            <Link :href="route('sections.show', { section: gradesPercentage.section_id })" class="text-blue-500 hover:text-blue-700">
+              {{ gradesPercentage.section.name }}
             </Link>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ section.program.name }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ section.students.length }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ gradesPercentage.section_students }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
 
-            <div v-for="gradesPercentage in props.gradesPercentage" :key="gradesPercentage.section_id">
-              <span v-if="gradesPercentage.section_id === section.id" class="text-xs text-gray-500 dark:text-gray-400">
-                
+            <div class="flex items-center">
+              <span class="flex items-center space-x-2">
                 <div class="flex items-center space-x-2">
                   <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded h-2">
                     <div

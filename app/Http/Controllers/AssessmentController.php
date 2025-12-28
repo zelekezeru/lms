@@ -113,6 +113,7 @@ class AssessmentController extends Controller
             'students' => $students,
             'instructor' => $instructor,
             'studentResults' => $studentResults,
+            'courseOffering' => $courseOffering,
         ]);
     }
 

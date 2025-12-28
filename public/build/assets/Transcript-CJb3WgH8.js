@@ -1,1 +1,0 @@
-import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{b as e,o as s,a as o}from"./app-Dy-NPSHL.js";/* empty css            */const n={},a={class:"transcript-page"};function c(i,t){return s(),e("div",a,t[0]||(t[0]=[o("h1",null,"Student Transcript",-1)]))}const f=r(n,[["render",c]]);export{f as default};

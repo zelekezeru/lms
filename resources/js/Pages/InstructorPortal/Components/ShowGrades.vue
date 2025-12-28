@@ -13,6 +13,7 @@ const props = defineProps({
   instructor: Object,
   studentsList: Object,
   studentResults: Object, // <-- This comes from your controller
+  courseOffering: Object,
 });
 
 const sumOfWeightPoints = computed(() =>
@@ -50,6 +51,7 @@ const getGradeLetter = (point) => {
   if (point >= 67) return "D+";
   if (point >= 64) return "D";
   if (point >= 60) return "D-";
+  if (point == 0) return "NG";
   return "F";
 };
 
@@ -136,7 +138,35 @@ const submitImport = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+          <tr v-for="(student, index) in props.studentsList.sort(
+                        (a, b) => {
+                            const nameA = (
+                                a.first_name +
+                                ' ' +
+                                (a.middle_name || '')
+                            ).toUpperCase();
+                            const nameB = (
+                                b.first_name +
+                                ' ' +
+                                (b.middle_name || '')
+                            ).toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    )"  
+                    :key="student.id"
+                    :class="
+                        index % 2 === 0
+                            ? 'bg-white dark:bg-gray-800'
+                            : 'bg-gray-50 dark:bg-gray-700'
+                    "
+                    class="border-b border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300"
+                >
             <td class="px-4 py-2">{{ index + 1 }}</td>
             <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }} {{ student.last_name }}</td>
             <td v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">

@@ -43,6 +43,10 @@ const props = defineProps({
     studentResults: {
         type: Array,
     },
+    courseOffering: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Tabs
@@ -102,6 +106,7 @@ const changeTab = (tabKey) => {
                 :weights="weights"
                 :studentsList="students"
                 :student-results="studentResults"
+                :course-offering="courseOffering"
             />
 
             <!-- Weights Panel -->
@@ -112,6 +117,7 @@ const changeTab = (tabKey) => {
                 :course="course"
                 :semester="semester"
                 :instructor="instructor"
+                :course-offering="courseOffering"
             />
 
             <!-- Grades Panel -->
@@ -125,6 +131,7 @@ const changeTab = (tabKey) => {
                 :grades="grades"
                 :studentsList="students"
                 :student-results="studentResults"
+                :course-offering="courseOffering"
             />
         </div>
     </transition>

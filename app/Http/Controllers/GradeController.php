@@ -31,7 +31,6 @@ class GradeController extends Controller
 
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'grades' => 'required|array',
             'grades.*.student_id' => 'required|integer|exists:students,id',
@@ -43,12 +42,14 @@ class GradeController extends Controller
             'grades.*.grade_comment' => 'nullable|string',
             'grades.*.changed_grade' => 'nullable',
             'grades.*.grade_status' => 'required|string',
-            'grades.*.user_id' => 'required|integer|exists:users,id',
             'grades.*.year_id' => 'required|integer',
             'grades.*.semester_id' => 'required|integer',
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
+        $data['grades'] = array_map(fn($grade) => array_merge($grade, [
+            'user_id' => Auth::id(),
+        ]), $data['grades']);
 
         DB::beginTransaction();
 
@@ -69,7 +70,7 @@ class GradeController extends Controller
                     ->where('course_id', $gradeData['course_id'])
                     ->where('section_id', $gradeData['section_id'])
                     ->update(['completed' => 1]);
-
+                
                 Grade::updateOrCreate(
                     [
                         'student_id' => $gradeData['student_id'],
@@ -92,7 +93,7 @@ class GradeController extends Controller
 
                 if ($enrollment) {
                     $enrollment->update([
-                        'status' => 'completed',
+                        'status' => 'enrolled',
                         'academic_status' => $gradeData['grade_letter'] === 'F' ? 'failed' : 'completed',
                     ]);
                 }

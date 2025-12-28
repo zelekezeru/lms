@@ -13,6 +13,7 @@ const props = defineProps({
     instructor: Object,
     studentsList: Array,
     studentResults: Array,
+    courseOffering: Object,
 });
 
 const sumOfWeightPoints = computed(() => {
@@ -74,6 +75,13 @@ const getStudentTotalPoints = (studentId) => {
 };
 
 const getStudentGradeLetter = (studentId) => {
+    // Check if all assessments are filled for this student
+    for (const weight of props.weights) {
+        const point = getStudentResultPoint(studentId, weight.id);
+        if (point === null || point === undefined || point === "") {
+            return 'Incomplete';
+        }
+    }
     const total = parseFloat(getStudentTotalPoints(studentId));
     if (isNaN(total)) return null;
     if (total >= 94) return "A (4.0)";
@@ -87,6 +95,7 @@ const getStudentGradeLetter = (studentId) => {
     if (total >= 67) return "D+ (1.3)";
     if (total >= 64) return "D (1.0)";
     if (total >= 60) return "D- (0.7)";
+    if (total == 0) return "NG";
     return "F (0.0)";
 };
 
@@ -106,7 +115,10 @@ const submitWeightResults = () => {
 
     for (const student of props.studentsList) {
         const point = parseFloat(resultForm.value[student.id][weightId]);
-        if (isNaN(point) || point < 0 || point > weight.point) {
+        if(isNaN(point)) {
+            continue;
+        }
+        if (point < 0 || point > weight.point) {
             Swal.fire({
                 icon: "error",
                 title: "Invalid input",
@@ -168,7 +180,7 @@ const submitWeightResults = () => {
                                 >{{ weight.name }} ({{ weight.point }}pt)</span
                             >
                             <button
-                                v-if="!activeWeightId"
+                                v-if="!activeWeightId && courseOffering.completed === 0"
                                 @click="activateWeight(weight.id)"
                                 class="ml-2 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded"
                             >

@@ -216,7 +216,7 @@ class InstructorPortalController extends Controller
         );
 
         $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student', 'classSchedules.room', 'classSessions.room', 'classSessions.attendances.student');
-
+        
         if (! CourseOffering::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
             abort(500);
         }
@@ -225,13 +225,13 @@ class InstructorPortalController extends Controller
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
-        $grades = $section->grades()->where('course_id', $course->id)->get();
+        $grades = $section->grades()->where('course_id', $course->id)->with('student')->get();
 
         $studentsUnformatted =
             $courseOffering->enrollments->where('status', 'enrolled')->pluck('student');
         $students = StudentResource::collection($studentsUnformatted);
         $studentResults = [];
-
+        
         // Fetch students with their course results
         foreach ($students as $student) {
             $studentResults[$student->id] = [];
@@ -290,6 +290,7 @@ class InstructorPortalController extends Controller
             'grades' => $grades,
             'instructor' => $instructor,
             'studentResults' => $studentResults,
+            'courseOffering' => $courseOffering,
         ]);
     }
 

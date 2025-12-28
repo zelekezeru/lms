@@ -35,6 +35,10 @@ const props = defineProps({
     redirectTo: {
         type: String,
         required:false
+    },
+    courseOffering: {
+        type: Object,
+        required: true,
     }
 });
 
@@ -104,6 +108,52 @@ const isWeightFull = computed(() => {
   return total >= 100;
 });
 
+const editingWeightId = ref(null);
+const editWeightForm = useForm({
+    name: "",
+    point: "",
+    description: "",
+    course_id: props.course.id,
+    section_id: props.section.id,
+    semester_id: props.semester.id,
+});
+
+const startEditWeight = (weight) => {
+    editingWeightId.value = weight.id;
+    editWeightForm.name = weight.name;
+    editWeightForm.point = weight.point;
+    editWeightForm.description = weight.description;
+    editWeightForm.course_id = weight.course_id;
+    editWeightForm.section_id = weight.section_id;
+    editWeightForm.semester_id = weight.semester_id;
+};
+
+const cancelEditWeight = () => {
+    editingWeightId.value = null;
+    editWeightForm.reset();
+};
+
+const updateWeight = (weightId) => {
+    // Validate total weight
+    const otherWeightsTotal = props.weights
+        .filter(w => w.id !== weightId)
+        .reduce((sum, w) => sum + parseFloat(w.point || 0), 0);
+    const newWeight = parseFloat(editWeightForm.point || 0);
+    if (otherWeightsTotal + newWeight > 100) {
+        Swal.fire("Error", "Total weight cannot exceed 100.", "error");
+        return;
+    }
+    editWeightForm.put(route("weights.update", { weight: weightId, redirectTo: props.redirectTo ?? route('assessments.section_course', {
+        course: props.course.id,
+        section: props.section.id
+    }) }), {
+        onSuccess: () => {
+            Swal.fire("Updated!", "Weight updated successfully.", "success");
+            cancelEditWeight();
+        },
+    });
+};
+
 </script>
 
 <template>
@@ -155,35 +205,53 @@ const isWeightFull = computed(() => {
                             >
                                 Description
                             </th>
+                            <th
+                                v-if="courseOffering.completed === 0"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200" colspan="2"
+                            >
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr
-                            v-for="(
-                                weight, index
-                            ) in weights"
+                            v-for="(weight, index) in weights"
                             :key="weight.id"
-                            :class="
-                                index % 2 === 0
-                                    ? 'bg-white dark:bg-gray-800'
-                                    : 'bg-gray-50 dark:bg-gray-700'
-                            "
+                            :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
                             class="border-b border-gray-300 dark:border-gray-600"
                         >
-                            <td
-                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                            >
-                                {{ weight.name }}
+                            <td class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                <div v-if="editingWeightId === weight.id">
+                                    <TextInput v-model="editWeightForm.name" type="text" class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100" />
+                                </div>
+                                <div v-else>
+                                    {{ weight.name }}
+                                </div>
                             </td>
-                            <td
-                                class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
-                            >
-                                {{ weight.point }}
+                            <td class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600">
+                                <div v-if="editingWeightId === weight.id">
+                                    <TextInput v-model="editWeightForm.point" type="number" min="0" class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100" />
+                                </div>
+                                <div v-else>
+                                    {{ weight.point }}
+                                </div>
                             </td>
-                            <td
-                                class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ weight.description }}
+                            <td class="w-60 px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                                <div v-if="editingWeightId === weight.id">
+                                    <TextInput v-model="editWeightForm.description" type="text" class="w-full px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100" />
+                                </div>
+                                <div v-else>
+                                    {{ weight.description }}
+                                </div>
+                            </td>
+                            <td v-if="editingWeightId === weight.id" class="px-4 py-2">
+                                <div class="flex items-center gap-2">
+                                    <button class="px-4 py-1 h-9 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition-all duration-200" @click="updateWeight(weight.id)">Save</button>
+                                    <button class="px-4 py-1 h-9 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 rounded-md shadow-md hover:from-gray-400 hover:to-gray-500 transition-all duration-200" @click="cancelEditWeight" type="button">Cancel</button>
+                                </div>
+                            </td>
+                            <td v-else-if="courseOffering.completed === 0" class="px-4 py-2">
+                                <button class="px-4 py-1 h-9 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition-all duration-200" @click="startEditWeight(weight)">Edit</button>
                             </td>
                         </tr>
 

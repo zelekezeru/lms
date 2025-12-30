@@ -207,6 +207,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/curricula/copy-from-track', [TrackController::class, 'copyCurriculaFromTrack'])->name('curricula.copy-from-track');
 
 
+    Route::get('/course-offering/{id}/status', [AssessmentController::class, 'updateCourseOfferingStatus'])->name('courseOffering.status');
+
     Route::post('/enrollment-student/{student}/add', [StudentController::class, 'addEnrollment'])->name('enrollments-student.add');
     Route::post('/enrollment-student/{student}/drop', [StudentController::class, 'dropEnrollment'])->name('enrollments-student.drop');
 

@@ -180,7 +180,7 @@ const submitWeightResults = () => {
                                 >{{ weight.name }} ({{ weight.point }}pt)</span
                             >
                             <button
-                                v-if="!activeWeightId && courseOffering.completed === 0"
+                                v-if="!activeWeightId && courseOffering.completed == 0"
                                 @click="activateWeight(weight.id)"
                                 class="ml-2 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded"
                             >

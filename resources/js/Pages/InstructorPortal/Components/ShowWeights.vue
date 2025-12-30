@@ -206,7 +206,7 @@ const updateWeight = (weightId) => {
                                 Description
                             </th>
                             <th
-                                v-if="courseOffering.completed === 0"
+                                v-if="courseOffering.completed == 0"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200" colspan="2"
                             >
                                 Actions
@@ -250,7 +250,7 @@ const updateWeight = (weightId) => {
                                     <button class="px-4 py-1 h-9 bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 rounded-md shadow-md hover:from-gray-400 hover:to-gray-500 transition-all duration-200" @click="cancelEditWeight" type="button">Cancel</button>
                                 </div>
                             </td>
-                            <td v-else-if="courseOffering.completed === 0" class="px-4 py-2">
+                            <td v-else-if="courseOffering.completed == 0" class="px-4 py-2">
                                 <button class="px-4 py-1 h-9 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition-all duration-200" @click="startEditWeight(weight)">Edit</button>
                             </td>
                         </tr>

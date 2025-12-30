@@ -153,4 +153,18 @@ class AssessmentController extends Controller
             'student' => $student,
         ]);
     }
+
+    public function updateCourseOfferingStatus($id)
+    {
+        $courseOffering = CourseOffering::find($id);
+
+        if (! $courseOffering) {
+            return redirect()->back()->with('error', 'Course Offering not found.');
+        }
+
+        $courseOffering->completed = ! $courseOffering->completed;
+        $courseOffering->save();
+
+        return redirect()->back()->with('success', 'Course Offering status updated.');
+    }
 }

@@ -63,6 +63,13 @@ const props = defineProps({
                 >
                     {{ courseOffering.completed ? "Completed" : "In Progress" }}
                 </span>
+                <Link
+                    :href="route('courseOffering.status', { id: courseOffering.id })"
+                    method="get"
+                    class="ml-4 px-3 py-1 rounded bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold transition"
+                >
+                    {{ courseOffering.completed ? "Mark In Progress" : "Mark Completed" }}
+                </Link>
             </div>
         </div>
     </div>

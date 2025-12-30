@@ -1,1 +1,0 @@
-import{b as t,o,a}from"./app-DqqQ9sw6.js";const l={__name:"StudentsHome",setup(n){return(s,e)=>(o(),t("div",null,e[0]||(e[0]=[a("h1",null,"Welcome to the Students Home Page",-1)])))}};export{l as default};

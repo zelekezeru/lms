@@ -88,13 +88,21 @@ const generateGrades = () => {
 
 // ✅ Ensure all weights are filled
 const allWeightsHaveValues = computed(() =>
-  props.studentsList.every((student) =>
-    props.weights.every(
-      (weight) =>
-        props.studentResults[student.id][weight.id]?.point !== null &&
-        props.studentResults[student.id][weight.id]?.point !== undefined
+  props.studentsList
+    // Only consider students who have at least one weight with a non-null, non-undefined, non-empty, and not NG point
+    .filter(student =>
+      props.weights.some(weight => {
+        const point = props.studentResults[student.id]?.[weight.id]?.point;
+        return point !== null && point !== undefined && point !== '' && point !== 'NG';
+      })
     )
-  )
+    // For those students, check that all their weights are filled (not null, undefined, or empty)
+    .every(student =>
+      props.weights.every(weight => {
+        const point = props.studentResults[student.id]?.[weight.id]?.point;
+        return point !== null && point !== undefined && point !== '' && point !== 'NG';
+      })
+    )
 );
 
 // ✅ Get submitted grade

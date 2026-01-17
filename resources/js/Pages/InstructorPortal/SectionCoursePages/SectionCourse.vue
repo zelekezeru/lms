@@ -105,7 +105,7 @@ const changeTab = (tabName) => {
             </h1>
 
             <!-- Toggle Button (mobile only) -->
-            <div class="lg:hidden mb-4 flex justify-end">
+            <div class="xl:hidden lg:block mb-4 flex justify-end">
                 <button
                     @click="showMobileNav = !showMobileNav"
                     class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"

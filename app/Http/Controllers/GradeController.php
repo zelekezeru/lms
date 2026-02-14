@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GradeUpdateRequest;
+use App\Models\CourseOffering;
+use App\Models\Enrollment;
 use App\Models\Grade;
 use App\Models\Student;
 use App\Models\Weight;
+use App\Models\Year;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class GradeController extends Controller
 {
@@ -34,18 +38,21 @@ class GradeController extends Controller
             'grades.*.grade_letter' => 'required|string',
             'grades.*.grade_description' => 'nullable|string',
             'grades.*.grade_scale' => 'required|string',
-            'grades.*.grade_complaint' => 'required|boolean',
+            'grades.*.grade_complaint' => 'nullable|boolean',
             'grades.*.grade_comment' => 'nullable|string',
             'grades.*.changed_grade' => 'nullable',
             'grades.*.grade_status' => 'required|string',
-            'grades.*.user_id' => 'required|integer|exists:users,id',
             'grades.*.year_id' => 'required|integer',
             'grades.*.semester_id' => 'required|integer',
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
+        $data['grades'] = array_map(fn($grade) => array_merge($grade, [
+            'user_id' => Auth::id(),
+        ]), $data['grades']);
+
         DB::beginTransaction();
-        
+
         try {
             foreach ($data['grades'] as $gradeData) {
                 $weights = Weight::where('course_id', $gradeData['course_id'])
@@ -63,7 +70,7 @@ class GradeController extends Controller
                     ->where('course_id', $gradeData['course_id'])
                     ->where('section_id', $gradeData['section_id'])
                     ->update(['completed' => 1]);
-                    
+                
                 Grade::updateOrCreate(
                     [
                         'student_id' => $gradeData['student_id'],
@@ -86,6 +93,7 @@ class GradeController extends Controller
 
                 if ($enrollment) {
                     $enrollment->update([
+                        'status' => 'enrolled',
                         'academic_status' => $gradeData['grade_letter'] === 'F' ? 'failed' : 'completed',
                     ]);
                 }
@@ -121,9 +129,17 @@ class GradeController extends Controller
     {
         $fields = $request->validated();
 
-        $grade->update($fields);
+        $data = [
+            'changed_by' => Auth::user()->id,
+            'changed_grade' => $fields['changed_grade'] ?? null,
+            'grade_comment' => $fields['grade_comment'] ?? null,
+            'grade_letter' => $fields['changed_letter'] ?? $grade->grade_letter,
+            'grade_point' => $fields['changed_grade'] ?? $grade->grade_point,
+        ];
+        
+        $grade->update($data);
 
-        return redirect()->route('grades.index')->with('success', 'Grade updated successfully.');
+        return redirect()->back()->with('success', 'Grade updated successfully.');
     }
 
     public function destroy(Grade $grade)
@@ -145,5 +161,89 @@ class GradeController extends Controller
         return inertia('Grades/SearchResults', [
             'grades' => $grades,
         ]);
+    }
+
+    // Store Student Grade
+    public function storeStudentGrade(Request $request, Student $student)
+    {
+        $fields = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'grade_letter' => 'required|string|max:2',
+            'grade_point' => 'required|numeric|min:0|max:100',
+                ]);
+
+        $courseOffering = CourseOffering::where('course_id', $fields['course_id'])
+                                        ->where('section_id', $student->section_id)
+                                        ->with('course', 'section.studyMode.semesters', 'instructor')
+                                        ->get()->keyBy(function ($item) {
+                                            // Create a unique key for lookup if needed, or just get the first one
+                                            return $item->section_id;
+                                        })->first();
+        $year = Year::where('name', $student->year->name + $courseOffering->year_level - 1)->first();
+
+        $semester = $year->semesters->where('level', $courseOffering->semester_level)->first();
+
+        $enrollment = $student->enrollments()
+            ->where('course_offering_id', $courseOffering->id)
+            ->where('student_id', $student->id)
+            ->first();
+
+        if (!$enrollment) {
+            $enrollment = Enrollment::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'course_offering_id' => $courseOffering->id,
+                    'semester_id' => $semester->id,
+                ],
+                [
+                    'status' => 'enrolled',
+                    'academic_status' => 'in_progress',
+                ]
+            );
+        }
+        
+        $data = [
+            'student_id' => $student->id,
+            'course_id' => $fields['course_id'],
+            'grade_letter' => $fields['grade_letter'],
+            'grade_point' => $fields['grade_point'],
+            'grade_description' => $fields['grade_description'] ?? null,
+            'grade_scale' => 100,
+            'grade_status' => $fields['grade_status'] ?? 'completed',
+            'user_id' => Auth::id(),
+            'semester_id' => $semester->id ?? null,
+            'year_id' => $semester->year_id ?? null,
+            'section_id' => $student->section_id ?? null,
+
+        ];
+
+        try {
+            DB::beginTransaction();
+
+            Grade::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'course_id' => $fields['course_id'],
+                    'section_id' => $student->section_id,
+                ],
+                $data
+            );
+
+            $academicStatus = ($fields['grade_letter'] === 'F') ? 'failed' : 'completed';
+
+            $enrollment->update([
+                'academic_status' => $academicStatus,
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Grade created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->withErrors(['weights' => $e->getMessage()]);
+        }
+
+        return redirect()->back()->with('success', 'Grade created successfully.');
     }
 }

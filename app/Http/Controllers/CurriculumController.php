@@ -81,6 +81,17 @@ class CurriculumController extends Controller
         return redirect()->back();
     }
 
+    // trackCurriculum
+    public function trackCurriculum(Track $track)
+    {
+        return Inertia::render('Curriculums/Track', [
+            'curricula' => Curriculum::with(['course', 'track', 'semester', 'instructor'])
+                ->where('track_id', $track->id)
+                ->get(),
+            'track' => $track,
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */

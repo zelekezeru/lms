@@ -7,6 +7,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionController extends Controller
 {
@@ -34,7 +35,10 @@ class PermissionController extends Controller
 
     public function store(PermissionRequest $request)
     {
+
         $permission = Permission::create($request->validated());
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
     }
@@ -60,6 +64,8 @@ class PermissionController extends Controller
         // Update the permission record
         $permission->update($fields);
 
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         return redirect()->route('permissions.show', $permission)->with('success', 'Permission updated successfully.');
     }
 
@@ -75,7 +81,7 @@ class PermissionController extends Controller
         $search = $request->search;
         $permissions = Permission::where('permission_name', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Permissions/Index', compact('permissions'));
     }

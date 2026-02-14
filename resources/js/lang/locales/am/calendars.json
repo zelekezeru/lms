@@ -1,0 +1,8 @@
+{
+    "semester_closing_warning": "Please review all Course Submissions, Academic Statuses, Curriculum Completions, and other semester-related data before proceeding to close the current semester.",
+    "close_form_header": "Close & Set New Active Semester",
+    "close_form_subheader": "Select a study mode and choose a semester to activate. This action will close the current active semester and set a new one.",
+    "close_semester": "Close Semester",
+    "close_form_placeholder": "Choose Study Mode",
+    "confrim_closing_semester": "I confirm I want to close the current semester and activate the selected one."
+}

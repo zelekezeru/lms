@@ -1,0 +1,17 @@
+{
+    "title": "Permissions",
+    "permission": "Permission",
+    "id": "Id",
+    "add": "Add Permission",
+    "search": "Search permissions...",
+    "refresh": "Refresh",
+    "name": "Permission Name",
+    "action": "Action",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_confirm_title": "Are you sure?",
+    "delete_confirm_text": "You won't be able to revert this!",
+    "deleted_title": "Deleted!",
+    "deleted_text": "The permission has been deleted."
+}

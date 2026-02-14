@@ -30,7 +30,7 @@ class CourseController extends Controller
             })
             ->latest();
 
-        $courses = $coursesQuery->paginate(15)->appends(['search' => $search]);
+        $courses = $coursesQuery->paginate(50)->appends(['search' => $search]);
 
         return inertia('Courses/Index', [
             'courses' => CourseResource::collection($courses),
@@ -62,7 +62,7 @@ class CourseController extends Controller
 
         $year = substr(Carbon::now()->year, -2);
 
-        $course_id = 'CR'.'/'.str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
+        $course_id = 'CR'.'/'.str_pad(Course::count() + 1, 3, '0', STR_PAD_LEFT);
 
         $fields['code'] = $course_id;
 
@@ -75,7 +75,10 @@ class CourseController extends Controller
         foreach ($programs as $program) {
             $courses = $program->courses->pluck('id');
             foreach ($program->tracks as $track) {
-                $track->courses()->syncWithPivotValues($courses, ['is_common' => true]);
+                // Keep existing attachments and just add the new course
+                $existingCourses = $track->courses()->pluck('courses.id')->toArray();
+                $newCourses = array_unique(array_merge($existingCourses, [$course->id]));
+                $track->courses()->syncWithPivotValues($newCourses, ['is_common' => true]);
             }
         }
 
@@ -148,7 +151,7 @@ class CourseController extends Controller
         $courses = Course::where('course_name', 'like', "%$search%")
             ->orWhere('course_id', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Courses/Index', compact('courses'));
     }

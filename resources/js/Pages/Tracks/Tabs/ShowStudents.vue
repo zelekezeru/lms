@@ -1,12 +1,13 @@
 <script setup>
-import { defineProps, ref } from "vue";
-import { Link, useForm } from "@inertiajs/vue3";
+import { defineProps, ref, computed } from "vue";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     ArrowDownIcon,
     ArrowPathIcon,
     ChevronDownIcon,
+    FolderOpenIcon,
     PlusCircleIcon,
 } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
@@ -18,7 +19,7 @@ const { t } = useI18n(); // ✅ Destructure the `t` function
 
 const props = defineProps({
     track: { type: Object, required: true },
-    students: { type: Array, required: true },
+    students: { type: Object, required: true },
 });
 
 const studentSectionForm = useForm({});
@@ -30,6 +31,33 @@ props.students.data.forEach((student) => {
     };
 });
 const createStudent = ref(false);
+const search = ref("");
+
+// Computed for filtered students
+const filteredStudents = computed(() => {
+    if (!search.value) return props.students.data;
+    const q = search.value.toLowerCase();
+    return props.students.data.filter(
+        (student) =>
+            (student.firstName &&
+                student.firstName.toLowerCase().includes(q)) ||
+            (student.middleName &&
+                student.middleName.toLowerCase().includes(q)) ||
+            (student.lastName && student.lastName.toLowerCase().includes(q)) ||
+            (student.idNo && student.idNo.toLowerCase().includes(q))
+    );
+});
+
+const sectionCurriculum = (trackId) => {
+    // Redirect to the curriculum track page for the given track
+    route("curriculums.track", { track: trackId }).then(() => {
+        Swal.fire(
+            "Success",
+            "Curriculum track assigned successfully",
+            "success"
+        );
+    });
+};
 
 const assignStudentToSection = (studentId) => {
     studentSectionForm[studentId].processing = true;
@@ -58,14 +86,63 @@ const assignStudentToSection = (studentId) => {
         },
     });
 };
+// sortStudentsToSections
+const sortStudentsToSections = () => {
+    Swal.fire({
+        title: t("students.sort_sections"),
+        text: t("students.confirm_sorting"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: t("confirm"),
+        cancelButtonText: t("cancel"),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            useForm().post(route("student-section.sort", props.track.id), {
+                onSuccess: () => {
+                    Swal.fire(
+                        t("students.success"),
+                        t("students.students_sorted_successfully"),
+                        "success"
+                    );
+                },
+                onError: () => {
+                    Swal.fire(t("error"), usePage().props.errors[0], "error");
+                },
+            });
+        }
+    });
+};
+
 </script>
 
 <template>
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t("students.students") }}
+                {{ $t("students.title") }}
             </h2>
+
+            <!-- Button to assign curriculum year of section to the student grades -->
+            <PrimaryButton @click="sectionCurriculum = true">
+                <FolderOpenIcon class="w-5 h-5 mr-2" />
+                {{ $t("students.assign_curriculum") }}
+            </PrimaryButton>
+
+            <!-- Button to sort students -->
+            <PrimaryButton @click="sortStudentsToSections">
+                <FolderOpenIcon class="w-5 h-5 mr-2" />
+                {{ $t("students.sort_sections") }}
+            </PrimaryButton>
+        </div>
+
+        <!-- Search input -->
+        <div class="mb-2 flex justify-start">
+            <input
+                type="text"
+                v-model="search"
+                :placeholder="$t('students.search_placeholder')"
+                class="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+            />
         </div>
 
         <!-- Track Study Students List -->
@@ -77,7 +154,7 @@ const assignStudentToSection = (studentId) => {
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-gray-100"
                     >
-                        {{ $t("students.students") }}
+                        {{ $t("students.title") }}
                     </h2>
                 </div>
 
@@ -87,6 +164,11 @@ const assignStudentToSection = (studentId) => {
                     >
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
+                                <th
+                                    class="w-10 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    {{ $t("students.no") }}
+                                </th>
                                 <th
                                     class="w-40 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600"
                                 >
@@ -98,12 +180,12 @@ const assignStudentToSection = (studentId) => {
                                     {{ $t("students.id") }}
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.current_section") }}
                                 </th>
                                 <th
-                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
+                                    class="w-80 px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600"
                                 >
                                     {{ $t("students.assign_to") }}
                                 </th>
@@ -111,7 +193,7 @@ const assignStudentToSection = (studentId) => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(student, index) in students.data"
+                                v-for="(student, index) in filteredStudents"
                                 :key="student.id"
                                 :class="
                                     index % 2 === 0
@@ -120,6 +202,11 @@ const assignStudentToSection = (studentId) => {
                                 "
                                 class="border-b border-gray-300 dark:border-gray-600"
                             >
+                                <td
+                                    class="w-10 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
+                                >
+                                    {{ index + 1 }}
+                                </td>
                                 <td
                                     class="w-40 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 border-r border-gray-300 dark:border-gray-600"
                                 >
@@ -131,7 +218,7 @@ const assignStudentToSection = (studentId) => {
                                         "
                                     >
                                         {{ student.firstName }}
-                                        {{ student.lastName }}
+                                        {{ student.middleName }}
                                     </Link>
                                 </td>
                                 <td

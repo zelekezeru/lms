@@ -101,7 +101,7 @@ onMounted(createCharts);
       </div>
 
       <!-- Summary Cards -->
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+       <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div class="p-6 transition bg-white shadow dark:bg-gray-800 rounded-xl hover:shadow-lg">
           <div class="flex items-center space-x-4">
             <AcademicCapIcon class="w-8 h-8 text-blue-500" />

@@ -1,0 +1,11 @@
+{
+    "title": "Admin Dashboard",
+    "subtitle": "Manage the LMS, monitor progress, and review key metrics.",
+    "courses": "Courses",
+    "students": "Students",
+    "instructors": "Instructors",
+    "revenue": "Revenue",
+    "enrollment_chart": "Student Enrollment Over Time",
+    "user_distribution": "User Distribution",
+    "manage_instructors": "Manage Instructors"
+}

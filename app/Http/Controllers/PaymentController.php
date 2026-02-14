@@ -15,19 +15,42 @@ use App\Models\Semester;
 use App\Models\SemesterStudent;
 use App\Models\Student;
 use App\Models\StudyMode;
+use Carbon\Carbon;
 use Illuminate\Http\Request; // Add this line to import StudentResource
 use Illuminate\Support\Facades\Auth; // Add this line to import StudyModeResource
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia; // Import Auth facade
+use Throwable;
 
 class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $payments = PaymentResource::collection(
-            Payment::with(['student', 'paymentType', 'paymentCategory', 'paymentScheduleItem', 'paymentMethod', 'semester'])
-                ->paginate(30)
-        );
+        $date = $request->query('date') ?? null;
 
+        $paymentsQuery =
+            Payment::with([
+                'student',
+                'paymentType',
+                'paymentCategory',
+                'paymentScheduleItem',
+                'paymentMethod',
+                'semester'
+            ]);
+
+        if ($date) {
+            if ($date == 'today') {
+                $paymentsQuery->whereBetween('updated_at', [
+                    Carbon::today()->startOfDay(),
+                    Carbon::today()->endOfDay()
+                ]);
+            }
+        }
+
+        // if user cant view all payments decrease the scope of payments list to only payments updated by the current user
+        if (! Auth::user()->can('view-all-payments')) {
+            $paymentsQuery->where('updated_by', Auth::user()->id);
+        }
         $paymentCategories = PaymentCategory::get();
         $paymentMethods = PaymentMethod::get();
         $students = StudentResource::collection(Student::all()->sortBy('name'));
@@ -42,7 +65,7 @@ class PaymentController extends Controller
         ];
 
         return Inertia::render('Payments/Index', [
-            'payments' => $payments,
+            'payments' => PaymentResource::collection($paymentsQuery->paginate(30)),
             'paymentCategories' => $paymentCategories,
             'paymentMethods' => $paymentMethods,
             'paymentTypes' => $paymentTypes,
@@ -75,7 +98,7 @@ class PaymentController extends Controller
             'paid_amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
             'status' => 'required|string|in:pending,completed,canceled',
-            'reference_number' => 'nullable|string|max:255',
+            'payment_reference' => 'nullable|string|max:255',
         ]);
 
         $student = Student::find($data['student_id']);
@@ -133,6 +156,8 @@ class PaymentController extends Controller
             }
         }
 
+        $data['updated_by'] = Auth::id();
+
         $payment = Payment::create($data);
 
         return redirect()->route('students.show', $request->student_id)->with('success', 'Payment recorded successfully.')->with('reload', true);
@@ -178,6 +203,8 @@ class PaymentController extends Controller
         $semester = $student->studyMode->activeSemester();
         $semesterStudent = $semester->SemesterStudents()->where('student_id', $payment->student_id)->where('payment_status', 'unpaid')->first();
 
+        $data['updated_by'] = Auth::user()->id;
+
         $payment->update($data);
         if ($payment->paymentType->duration == 'per-course') {
 
@@ -202,7 +229,7 @@ class PaymentController extends Controller
         } else if ($payment->paymentType->duration == 'one-time' && $payment->paymentType->type == 'Registration Fee') {
             if ($payment->total_amount == $payment->paid_amount || $student->status->is_scholarship) {
                 $student->status->update([
-                    'is_active' => true
+                    'is_active' => false
                 ]);
             }
         }
@@ -221,5 +248,40 @@ class PaymentController extends Controller
         $payment->delete();
 
         return redirect()->route('payments.index')->with('success', 'Payment deleted successfully.');
+    }
+
+    public function completeAllPayments(Semester $semester)
+    {
+        $payments = $semester->payments;
+        $enrollments = $semester->enrollments;
+        $authUser = Auth::user();
+
+        try {
+            DB::transaction(function () use ($payments, $enrollments, $authUser, $semester) {
+                $semesterStudentRecords = SemesterStudent::where('semester_id', $semester->id)
+                    ->where('payment_status', 'unpaid')
+                    ->update(['payment_status' => 'paid']);
+                foreach ($payments as $payment) {
+                    $totalAmount = $payment->total_amount;
+                    $payment->update([
+                        'status' => 'completed',
+                        'paid_amount' => $totalAmount,
+                        'is_active' => false,
+                        'updated_by' => $authUser->id,
+                    ]);
+                }
+                foreach ($enrollments as $enrollment) {
+                    $enrollment->update([
+                        'status' => 'enrolled',
+                        'academic_status' => 'in_progress',
+                    ]);
+                }
+            });
+
+            return back()->with('success', 'Operation successful');
+        } catch (Throwable $e) {
+            throw ($e);
+            return back()->with('error', 'Operation failed');
+        }
     }
 }

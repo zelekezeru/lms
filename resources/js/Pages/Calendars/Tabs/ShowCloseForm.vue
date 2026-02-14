@@ -51,7 +51,7 @@ const submit = () => {
         class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-blue-100 dark:border-gray-700 mt-10"
     >
         <h2 class="text-2xl font-bold text-blue-700 dark:text-blue-200 mb-2">
-            Close & Set New Active Semester
+            {{ $t("calendars.close_form_header") }}
         </h2>
         <p class="text-gray-600 dark:text-gray-400 mb-6 text-sm">
             Select a study mode and choose a semester to activate. This action
@@ -64,14 +64,14 @@ const submit = () => {
                 <label
                     class="block mb-2 font-medium text-gray-900 dark:text-gray-200"
                 >
-                    Study Mode
+                    {{ $t("programs.studymode.title") }}
                 </label>
                 <Select
                     v-model="form.study_mode_id"
                     :options="studyModes"
                     optionLabel="name"
                     optionValue="id"
-                    placeholder="Choose Study Mode"
+                    :placeholder="$t('calendars.close_form_placeholder')"
                     class="w-full"
                     panelClass="z-[1000]"
                 />
@@ -162,8 +162,7 @@ const submit = () => {
                     for="approval"
                     class="text-sm text-gray-800 dark:text-gray-200"
                 >
-                    I confirm I want to close the current semester and activate
-                    the selected one.
+                    {{ $t("calendars.confirm_closing_semester") }}
                 </label>
             </div>
             <p class="text-sm text-red-500" v-if="form.errors.approval">
@@ -177,7 +176,7 @@ const submit = () => {
                     class="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white px-6 py-2 rounded-xl shadow-md transition disabled:opacity-50"
                     :disabled="form.processing || !selectedStudyMode"
                 >
-                    Submit
+                    {{ $t("common.submit") }}
                 </button>
             </div>
         </form>

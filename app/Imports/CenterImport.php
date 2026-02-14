@@ -9,6 +9,7 @@ use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\StudyMode;
+use App\Models\Section;
 use App\Models\User;
 use App\Models\Year;
 use Illuminate\Support\Collection;
@@ -25,8 +26,15 @@ class CenterImport implements ToCollection, WithHeadingRow
     protected $center_id;
     protected $tenant_id;
     protected $study_mode_id;
+    protected $program_id;
+    protected $track_id;
 
     protected $duplicate_entries = [];
+    protected $registeredCount = 0;
+    protected $notRegisteredCount = 0;
+    protected $duplicateData = 0;
+    protected $registeredStudentIds = [];
+    protected $existingUserIds = [];
 
     public function __construct($center_id)
     {
@@ -38,34 +46,40 @@ class CenterImport implements ToCollection, WithHeadingRow
         // Load the center and coordinator with user
         $center = Center::with('coordinator.user')->findOrFail($this->center_id);
 
-        // Determine tenant and study mode
-        $studyMode = StudyMode::where('name', 'DISTANCE')->firstOrFail();
-
-        $this->study_mode_id = $studyMode->id;
-
-        $this->tenant_id = optional(optional($center->coordinator)->user)->tenant_id ?? Auth::user()->tenant_id;
+        $this->tenant_id = Auth::user()->tenant_id;
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
+                // Determine tenant and study mode
+
                 // 1. Program & track & section
-                $program = $this->resolveProgram($row['program'] ?? null);
-                if (!$program) continue;
+                if (!$this->hasRequiredFields($row, ['full_name', 'phone', 'sex', 'program'])) {
+                    $this->notRegisteredCount++;
+                    continue;
+                }
+
+                [$firstName, $middleName, $lastName] = $this->parseFullName($row['full_name']);
+                if (!$firstName) {
+                    $this->notRegisteredCount++;
+                    continue;
+                }
+
+                $program = $this->resolveProgram($row['program'] ?? null, $row['study_mode'] ?? null);
+                
+                if (!is_object($program)) {
+                    $this->notRegisteredCount++;
+                    $this->flashError('Program Not Found', "Program not found for code: " . ($row['program'] ?? 'N/A'));
+                    continue;
+                }
 
                 $track = $program->tracks()->first();
                 if (!$track) {
                     $this->flashError('Track Not Found', "No track found for program {$program->code}");
                     continue;
                 }
-
-                $section = $track->sections()->first();
-                if (!$section) {
-                    $this->flashError('Section Not Found', "No section found for track {$track->name}");
-                    continue;
-                }
-
                 // 2. Validate row fields
                 if (!$this->hasRequiredFields($row, ['full_name', 'phone', 'sex'])) {
-                    $this->duplicate_entries[] = $row['full_name'] ?? '[Unknown Name]';
+                    $this->notRegisteredCount++;
                     continue;
                 }
 
@@ -76,14 +90,22 @@ class CenterImport implements ToCollection, WithHeadingRow
 
                 // 4. Email & UUID
                 $email = $this->generateEmail($firstName, $middleName);
-                if (User::where('email', $email)->exists()) {
-                    $this->flashError('Duplicate User', "User with email $email already exists.");
+
+                $phone = $this->formatPhone($row['phone'] ?? '');
+
+                $existingUser = User::where('email', $email)->where('phone', $phone)->first();
+
+                if ($existingUser) {
+                    $this->duplicateData++;
+                    $this->existingUserIds[] = $existingUser->id;
                     continue;
                 }
 
                 [$year, $semester, $academicYear] = $this->getOrCreateYearAndSemester($row['entry_year'] ?? null);
 
-                $userUuid = $this->generateUserUuid($academicYear);
+                                $section = $this->sectionAssigned($track, $year);
+
+                $userUuid = $this->generateUserUuid($academicYear, $this->study_mode_id ?? 1);
 
                 // 5. User creation
                 $defaultPassword = $this->generateDefaultPassword($firstName, $row['phone'] ?? '');
@@ -92,40 +114,35 @@ class CenterImport implements ToCollection, WithHeadingRow
                     [
                         'user_uuid' => $userUuid,
                         'name' => "$firstName $middleName",
+                        'phone' => $phone,
+                        'tenant_id' => $this->tenant_id,
                         'password' => Hash::make($defaultPassword),
                         'default_password' => $defaultPassword,
                     ]
                 );
 
                 // 6. Student creation
-                $studentData = [
-                    'id_no' => $userUuid,
-                    'first_name' => $firstName,
-                    'middle_name' => $middleName,
-                    'last_name' => $lastName,
-                    'sex' => strtoupper($row['sex']),
-                    'mobile_phone' => $this->formatPhone($row['phone']),
-                    'address' => $row['address'] ?? null,
-                    'date_of_birth' => $this->parseDate($row['date_of_birth'] ?? null),
-                    'program_id' => $program->id,
-                    'track_id' => $track->id,
-                    'section_id' => $section->id,
-                    'study_mode_id' => $this->study_mode_id,
-                    'year_id' => $year->id,
-                    'semester_id' => $semester->id,
-                    'tenant_id' => $this->tenant_id,
-                    'user_id' => $user->id,
-                ];
 
-                $student = Student::updateOrCreate(['user_id' => $user->id], $studentData);
+                $student = Student::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'year_id' => $year->id,
+                        'mobile_phone' => $phone,
+                    ],
+                    
+                    $this->prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $user->id, $phone)
+                );
+
+                $this->registeredCount++;
+                $this->registeredStudentIds[] = $student->id;
 
                 $user->assignRole('STUDENT');
 
-                // 7. Attach center if not attached
-                $student->centers()->syncWithoutDetaching([$this->center_id]);
-
                 // 8. Status
                 $this->createStudentStatus($student);
+
+                // 7. Attach center if not attached
+                $student->centers()->syncWithoutDetaching([$this->center_id]);
 
                 // 9. Church info
                 if (!empty($row['pastor_name']) || !empty($row['church_name'])) {
@@ -139,33 +156,81 @@ class CenterImport implements ToCollection, WithHeadingRow
      * ✅  Helper methods below
      * --------------------------------------------- */
 
-    private function resolveProgram($code)
+
+    private function hasRequiredFields($row, $fields)
     {
-        if (!$code) {
-            $this->flashError('Program Missing', 'Program field is required.');
-            return null;
+        foreach ($fields as $field) {
+            if (!isset($row[$field]) || empty($row[$field])) {
+                $this->flashError('Missing Fields', "Field '$field' is required.");
+                return false;
+            }
         }
-
-        $program = Program::where('code', strtoupper($code))->first();
-        if (!$program) {
-            $this->flashError('Program Not Found', "Program {$code} does not exist.");
-            return null;
-        }
-
-        return $program;
+        return true;
     }
 
-    private function parseFullName($fullName)
+    protected function resolveProgram($code, $studyModeName)
     {
-        $parts = preg_split('/\s+/', trim($fullName));
-        if (count($parts) === 3) {
-            return [$parts[0], $parts[1], $parts[2]];
-        } elseif (count($parts) === 2) {
-            return [$parts[0], $parts[1], 'User'];
-        } else {
-            $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
+        if (!$code) {
             return null;
         }
+
+        $code = strtoupper(trim($code));
+        if (str_contains($code, '-')) {
+            $code = str_replace('-', '/', $code);
+        }
+
+        $program = Program::where('code', $code)->first();
+
+        if (!$program) {
+            $program = Program::where('name', 'like', "%$code%")->first();
+        }
+
+        if($studyModeName != null)
+        {
+            $studyMode = StudyMode::where('name', $studyModeName)->first();
+
+            if ($studyMode) {
+                $this->study_mode_id = $studyMode->id;
+            }
+        }else{
+            $studyMode = StudyMode::where('name', 'DISTANCE')->first();
+            $program?->studyModes()->syncWithoutDetaching($studyMode->id);
+            $this->study_mode_id = $studyMode->id;
+        }
+        
+        if ($program) {
+            $this->program_id = $program->id;
+            $this->track_id = $program->tracks()->first()?->id;
+            $this->study_mode_id = $program->studyModes()->first()?->id;
+
+            return $program;
+        } else {
+            $this->program_id = $this->program_id;
+            $this->track_id = $this->track_id;
+            return null;
+        }
+    }
+
+    private function sectionAssigned($track, $year)
+    {
+        if ($track->sections()->where('year_id', $year->id)->exists()) {
+            $section = $track->sections()->where('year_id', $year->id)->first();
+        } else {
+
+            $section = Section::updateOrCreate([
+                    'name' => $year->name . '-' . $track->name . ' Section-1',
+                'code' => 'SC-' . substr($year->name, -2) . '-' . str_pad(Section::where('year_id', $year->id)->count() + 1, 2, '0', STR_PAD_LEFT),
+                'program_id' => $track->program_id,
+                'track_id' => $track->id,
+                    'study_mode_id' => $this->study_mode_id,
+                    'year_id' => $year->id,
+                    'semester_id' => Semester::where('year_id', $year->id)->first()->id,
+                    'center_id' => $this->center_id ?? null,
+                ]);
+            $track->sections()->save($section);
+        }
+
+        return $section;
     }
 
     private function generateEmail($first, $middle)
@@ -175,20 +240,24 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     private function getOrCreateYearAndSemester($entryYear)
     {
-        if ($entryYear) {
+        if (Year::where('name', $entryYear)->exists()) {
+
             $year = Year::where('name', $entryYear)->first();
-        }
 
-        if (empty($year)) {
-            $year = Year::where('status', 'Active')->first();
-        }
-
-        if (!$year) {
-            $year = Year::create(['name' => $entryYear ?? now()->year, 'status' => 'Active']);
-        }
-
-        $semester = Semester::where('year_id', $year->id)->first();
-        if (!$semester) {
+            if ($year->semesters()->exists()) {
+                $semester = $year->semesters()->first();
+            } else {
+                $semester = Semester::create([
+                    'name' => '1st - ' . $year->name,
+                    'year_id' => $year->id,
+                    'level' => 1,
+                    'start_date' => now()->startOfYear(),
+                    'end_date' => now()->endOfYear(),
+                ]);
+            }
+        } else {
+            $year = Year::create(['name' => $entryYear, 'status' => 'Inactive']);
+        
             $semester = Semester::create([
                 'name' => '1st - ' . $year->name,
                 'year_id' => $year->id,
@@ -199,16 +268,56 @@ class CenterImport implements ToCollection, WithHeadingRow
         }
 
         $academicYear = substr($year->name, -2);
-
+        
         return [$year, $semester, $academicYear];
     }
 
-    private function generateUserUuid($academicYear)
+    private function parseFullName($fullName)
     {
+        $parts = preg_split('/\s+/', trim($fullName));
+        if (count($parts) === 3) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ucfirst(strtolower($parts[2]))
+            ];
+        } elseif (count($parts) === 2) {
+            return [
+            ucfirst(strtolower($parts[0])),
+            ucfirst(strtolower($parts[1])),
+            ''
+            ];
+        } else {
+            $this->flashError('Invalid Full Name', 'Name must be First Middle Last.');
+            return null;
+        }
+    }
+
+    private function generateUserUuid($academicYear, $studyModeId = null)
+    {
+        if ($studyModeId) {
+            $studyMode = StudyMode::find($studyModeId);
+            if ($studyMode) {
+                $studyModeName = ucfirst(strtolower($studyMode->name));
+            }
+        }
+
+        if ($studyModeName === 'Regular') {
+            $studyModeName = 'R';
+        } elseif ($studyModeName === 'Distance') {
+            $studyModeName = 'D';
+        } elseif ($studyModeName === 'Online') {
+            $studyModeName = 'O';
+        } elseif ($studyModeName === 'Extention') {
+            $studyModeName = 'E';
+        } else {
+            $studyModeName = '';
+        }
+
         $count = str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
         // last 2 digits of the year
         $academicYear = substr($academicYear, -2);
-        return "SITS-D-{$count}-{$academicYear}";
+        return "SITS-$studyModeName-{$count}-{$academicYear}";
     }
 
     private function generateDefaultPassword($firstName, $phone)
@@ -219,8 +328,21 @@ class CenterImport implements ToCollection, WithHeadingRow
 
     private function formatPhone($phone)
     {
-        if (!$phone) return '0900000000';
-        return str_starts_with($phone, '9') ? '0' . $phone : $phone;
+        if (!$phone) return '+251 900000000';
+
+        if (str_starts_with($phone, '9')) {
+            return '+251 ' . $phone;
+        } elseif (str_starts_with($phone, '7')) {
+            return '+254 ' . $phone;
+        } elseif (str_starts_with($phone, '6') || str_starts_with($phone, '8')) {
+            return '+27 ' . $phone;
+        } elseif (!str_starts_with($phone, '0')) {
+            // Remove leading 0 if present
+            $phone = ltrim($phone, '0');
+            return '+251 ' . $phone;
+        }else{
+            return $phone; // Already in correct format
+        }
     }
 
     private function parseDate($value)
@@ -247,8 +369,15 @@ class CenterImport implements ToCollection, WithHeadingRow
     private function createStudentChurch(Student $student, array $fields, $fallbackAddress = null): void
     {
         $pastorPhone = $fields['pastor_phone'] ?? null;
+        // Normalize pastor phone number
         if ($pastorPhone && str_starts_with($pastorPhone, '9')) {
-            $pastorPhone = '0' . $pastorPhone;
+            $pastorPhone = '+251 ' . $pastorPhone;
+        } elseif ($pastorPhone && str_starts_with($pastorPhone, '7')) {
+            $pastorPhone = '+254 ' . $pastorPhone;
+        } elseif ($pastorPhone && !str_starts_with($pastorPhone, '0')) {
+            $pastorPhone = '+251 ' . $pastorPhone;
+        } elseif (!$pastorPhone) {
+            $pastorPhone = '+251 900000000'; // Default phone if not provided
         }
 
         $churchAddress = $fields['church_address'] ?? $fallbackAddress;
@@ -262,6 +391,40 @@ class CenterImport implements ToCollection, WithHeadingRow
             'church_address' => $churchAddress,
         ]);
     }
+    
+    // Prepare student data for creation or update
+    protected function prepareStudentData($row, $firstName, $middleName, $lastName, $userUuid, $year, $semester, $userId, $phone)
+    {
+        return [
+            'id_no' => $userUuid,
+            'old_id' => $row['old_id'] ?? null,
+            'first_name' => $firstName,
+            'middle_name' => $middleName,
+            'last_name' => $lastName,
+            'sex' => isset($row['sex']) ? strtoupper($row['sex']) : '',
+            'mobile_phone' => $phone ?? '+251900000000',
+            'address' => $row['address'] ?? null,
+            'date_of_birth' => $this->parseDateOfBirth($row['date_of_birth'] ?? null),
+            'program_id' => $this->program_id,
+            'track_id' => $this->track_id,
+            'study_mode_id' => $this->study_mode_id,
+            'year_id' => $year->id,
+            'semester_id' => $semester->id,
+            'tenant_id' => $this->tenant_id,
+            'user_id' => $userId,
+        ];
+    }
+
+    // Parse date of birth from various formats
+    protected function parseDateOfBirth($date)
+    {
+        if (!$date) return null;
+        try {
+            return Carbon::parse($date)->format('Y-m-d');
+        } catch (\Exception) {
+            return null;
+        }
+    }
 
     private function flashError($title, $text)
     {
@@ -272,14 +435,28 @@ class CenterImport implements ToCollection, WithHeadingRow
         ]);
     }
 
-    private function hasRequiredFields($row, $fields)
+    public function getRegisteredCount()
     {
-        foreach ($fields as $field) {
-            if (!isset($row[$field]) || empty($row[$field])) {
-                $this->flashError('Missing Fields', "Field '$field' is required.");
-                return false;
-            }
-        }
-        return true;
+        return $this->registeredCount;
+    }
+
+    public function getNotRegisteredCount()
+    {
+        return $this->notRegisteredCount;
+    }
+
+    public function getDuplicateDataCount()
+    {
+        return $this->duplicateData;
+    }
+
+    public function getRegisteredStudentIds()
+    {
+        return User::whereIn('id', $this->registeredStudentIds)->orderBy('name')->get();
+    }
+
+    public function getExistingUserIds()
+    {
+        return User::whereIn('id', $this->existingUserIds)->orderBy('name')->get();
     }
 }

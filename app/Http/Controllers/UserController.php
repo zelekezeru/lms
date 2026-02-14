@@ -21,10 +21,38 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = UserResource::collection(User::orderBy('name')->paginate(30));
+        $query = User::with('status', 'roles');
+        
+        // Apply search filter
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
 
+            $query->whereHas('status', function ($q) {
+                $q->where('is_deleted', false);
+            })->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('phone', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Set up sorting
+        $allowedSorts = ['name', 'phone', 'email', 'id_no'];
+        $sortColumn = $request->input('sortColumn', 'name');
+        $sortDirection = $request->input('sortDirection', 'asc');
+
+        if (in_array($sortColumn, $allowedSorts) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        // Paginate and transform
+        $paginatedUsers = $query->paginate(60)->withQueryString();
+        $usersCount = $query->count();
+        
+        $users = UserResource::collection($paginatedUsers);
+        
         return inertia('Users/Index', [
             'users' => $users,
         ]);
@@ -48,7 +76,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $user = new UserResource($user->load('tenant', 'roles'));
-
+        
         return inertia('Users/Show', [
             'user' => $user,
         ]);
@@ -135,10 +163,21 @@ class UserController extends Controller
             ]);
         }
 
+         // if user and doesnt have an Employee instance create it
+        if ($user->hasRole('EMPLOYEE') && ! $user->employee) {
+            $user->employee()->create([
+                'user_id' => $user->id,
+                'job_position' => "Employee",
+                'employment_type' => "FULL-TIME",
+                'office_hours' => 48,
+            ]);
+        }
+
         // Update user details
         $user->update([
             'name' => $fields['name'],
             'email' => $fields['email'],
+            'phone' => $fields['phone'],
             'profile_img' => $profile_path ?? $user->profile_img,
         ]);
 

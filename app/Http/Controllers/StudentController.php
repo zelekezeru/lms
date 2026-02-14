@@ -14,6 +14,7 @@ use App\Http\Resources\StudyModeResource;
 use App\Http\Resources\UserDocumentResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\YearResource;
+use App\Http\Resources\CenterResource;
 use App\Http\Services\StudentRegistrationService;
 use App\Http\Services\StudentsFilterService;
 use App\Models\CourseOffering;
@@ -31,6 +32,8 @@ use App\Models\Student;
 use App\Models\StudyMode;
 use App\Models\User;
 use App\Models\Year;
+use App\Models\Track;
+use App\Models\Center;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,24 +73,56 @@ class StudentController extends Controller
         }
 
         // Paginate and transform
-        $paginatedStudents = $query->paginate(30)->withQueryString();
+        $paginatedStudents = $query->paginate(60)->withQueryString();
+        $studentsCount = $query->count();
 
         $students = StudentResource::collection($paginatedStudents);
 
         $programs = ProgramResource::collection(Program::with('studyModes', 'tracks.sections.studyMode', 'tracks.sections.year')->orderBy('name', 'asc')->get());
+        $studyModes = StudyModeResource::collection(StudyMode::orderBy('name', 'asc')->get());
 
         $years = YearResource::collection(Year::orderBy('name', 'asc')->get());
 
         // Return with Inertia
         return inertia('Students/Index', [
             'students' => $students,
+            'studentsCount' => $studentsCount,
             'programs' => $programs,
+            'studyModes' => $studyModes,
             'years' => $years,
             'search' => $request->search,
             'sortInfo' => [
                 'currentSortColumn' => $sortColumn,
                 'currentSortDirection' => $sortDirection,
             ],
+        ]);
+    }
+
+    public function home()
+    {
+        $students = Student::with('user', 'status')->get();
+
+        $totalStudents = $students->count();
+
+        $activeStudents = $students->where('status.is_active', true)->count();
+
+        $graduatedStudents = $students->where('status.is_graduated', true)->count();
+
+        $regularStudents = $students->where('study_mode_id', 1)->count();
+        $extentionStudents = $students->where('study_mode_id', 2)->count();
+        $onlineStudents = $students->where('study_mode_id', 3)->count();
+        $distanceStudents = $students->where('study_mode_id', 4)->count();
+
+
+        return inertia('Students/StudentsHome', [
+            'students' => $students,
+            'totalStudents' => $totalStudents,
+            'activeStudents' => $activeStudents,
+            'graduatedStudents' => $graduatedStudents,
+            'regularStudents' => $regularStudents,
+            'extentionStudents' => $extentionStudents,
+            'onlineStudents' => $onlineStudents,
+            'distanceStudents' => $distanceStudents,
         ]);
     }
 
@@ -146,13 +181,13 @@ class StudentController extends Controller
         $studyModes = StudyModeResource::collection($studyModes);
 
         // Check if the student has a section & Fetch courses accordingly
-        if ($student->section === null) {
-            $sections = Section::where('program_id', $student->program->id)
+        $sections = Section::where('program_id', $student->program->id)
                 ->get()->load('program', 'courseOfferings.course');
+                
+        if ($student->section === null) {
             $courses = [];
         } else {
             $courses = $student->section->courseOfferings()->with('course')->get()->pluck('course');
-            $sections = [];
         }
 
         // Fetch Payment Categories and Methods
@@ -174,7 +209,14 @@ class StudentController extends Controller
         $documents = UserDocumentResource::collection($student->user->userDocuments);
 
         $semesters = $student->semesters()
-            ->with(['year', 'grades' => fn($q) => $q->with(['course', 'section', 'semester']),])->get();
+            ->with([
+                'year',
+                'grades' => fn($q) => $q->where('student_id', $student->id)->with(['course', 'section', 'semester']),
+            ])->orderBy('name', 'asc')->get();
+
+        $availableSemesters = Semester::whereHas('year', function ($query) use ($student) {
+            $query->where('name', '>=', $student->year->name);
+        })->orderBy('year_id', 'desc')->get();
 
         return Inertia::render('Students/Show', [
             'student' => $student,
@@ -190,22 +232,26 @@ class StudentController extends Controller
             'semesters' => $semesters,
             'grades' => $grades,
             'activeSemester' => $activeSemester,
+            'availableSemesters' => SemesterResource::collection($availableSemesters),
         ]);
     }
 
     public function create(): Response
     {
 
-        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->get());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->orderBy('name', 'asc')->get());
 
         $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
 
-        $studyModes = StudyModeResource::collection(StudyMode::all());
+        $studyModes = StudyModeResource::collection(StudyMode::with('semesters.year')->get());
+
+        $centers = CenterResource::collection(Center::orderBy('name', 'asc')->get());
 
         return inertia('Students/Create', [
             'programs' => $programs,
             'years' => $years,
             'studyModes' => $studyModes,
+            'centers' => $centers,
         ]);
     }
 
@@ -220,6 +266,12 @@ class StudentController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Payment Code Generated Successfully.');
+    }
+
+    // Show the form to import payment codes
+    public function importPaymentcodes()
+    {
+        return Inertia::render('Students/ImportPaymentCodes');
     }
 
     // Store the student innformation to the store method in Auth/StudentRegistrationController
@@ -239,9 +291,10 @@ class StudentController extends Controller
 
     public function edit(Student $student): Response
     {
-        $programs = ProgramResource::collection(Program::with('studyModes', 'tracks')->get());
+        $programs = ProgramResource::collection(Program::with('tracks', 'studyModes')->orderBy('name', 'asc')->get());
 
-        $years = YearResource::collection(Year::with('semesters')->get());
+        $years = YearResource::collection(Year::with('semesters')->orderBy('name', 'desc')->get());
+
         $student = new StudentResource($student->load('user', 'program', 'track', 'year', 'semester', 'section', 'studyMode', 'status'));
 
         return Inertia::render('Students/Edit', [
@@ -343,7 +396,7 @@ class StudentController extends Controller
         $students = Student::where('first_name', 'like', "%$search%")
             ->orWhere('student_id', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Students/Index', compact('students'));
     }
@@ -373,29 +426,145 @@ class StudentController extends Controller
             'semesters' => $semesters,
         ]);
     }
+    
 
     /**
      * Register a student to a semester.
      */
+
+    public function massRegisterStudents(Section $section)
+    {
+        foreach($section->students as $student)
+        {
+            SemesterStudent::where('student_id', $student->id)->delete();
+
+            $studentSemester = $student->semester;
+
+            $activeSemester = $student->studyMode->activeSemester();
+
+            if ($studentSemester && $activeSemester && $studentSemester->year && $activeSemester->year) {
+                $studentTrackDuration = $student->track->duration;
+                $activeSemesterYear = $activeSemester->year->name;
+
+                if ($studentSemester->year->name + $studentTrackDuration - 1 < $activeSemesterYear) {
+                    // If the student's track finishing year is less than the active semester year, adjust the active semester
+                    $activeSemester = Semester::whereHas('year', function ($query) use ($studentSemester, $studentTrackDuration) {
+                        $query->where('name', $studentSemester->year->name + $studentTrackDuration - 1);
+                    })->orderBy('level', 'desc')->first();
+                }
+            }
+            
+            $semesters = Semester::whereHas('year', function ($query) use ($studentSemester, $activeSemester) {
+                if ($studentSemester && $studentSemester->year) {
+                    $query->where('name', '>=', $studentSemester->year->name);
+                }
+                if ($activeSemester && $activeSemester->year) {
+                    $query->where('name', '<=', $activeSemester->year->name);
+                }
+            })
+            ->orderBy('start_date', 'asc')
+            ->orderBy('level', 'asc')
+            ->get();
+            
+            foreach($semesters as $semester) {
+
+                if($semester->name == '2nd Semester of 2025' )
+                {
+                    continue;
+                }
+                $year = $semester->year;
+
+                $semesterLevel = $semester->level;
+
+                $section = $student->section;
+
+                $yearLevel = intval($year->name) - intval($section->year->name) + 1;
+
+                // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
+                $courseOfferings = $section->courseOfferings()->where('semester_level', $semesterLevel)->where('year_level', $yearLevel)->get();
+                
+                $gradedCourses = $student->grades()->whereIn('grade_status', ['completed', 'passed'])->pluck('course_id')->toArray();
+
+                $courseOfferings = $courseOfferings->filter(function ($courseOffering) use ($gradedCourses) {
+                    return !in_array($courseOffering->course_id, $gradedCourses);
+                });
+
+                foreach ($courseOfferings as $courseOffering) {
+                    // Remove any duplicate enrollments for this student, course offering, and semester
+                    Enrollment::where('student_id', $student->id)
+                        ->where('course_offering_id', $courseOffering->id)
+                        ->where('semester_id', $semester->id)
+                        ->delete();
+
+                    Enrollment::updateOrCreate(
+                        [
+                            'student_id' => $student->id,
+                            'course_offering_id' => $courseOffering->id,
+                        ],
+                        [
+                            'semester_id' => $semester->id,
+                            'status' => 'enrolled',
+                            'academic_status' => 'in_progress'
+                        ]
+                    );
+                }
+
+                // Set all previous semester_student records for this student to Inactive
+                DB::table('semester_student')
+                    ->where('student_id', $student->id)
+                    ->where('academic_status', 'in_progress')
+                    ->update(['academic_status' => 'completed']);
+
+                // Update the new/selected semester as Active for this student
+                DB::table('semester_student')->updateOrInsert(
+                    [
+                        'student_id' => $student->id,
+                        'semester_id' => $semester->id,
+                    ],
+                    [
+                        'academic_status' => 'in_progress',
+                        'payment_status' => 'paid',
+
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
+
+            }
+        }
+
+    }
+
     public function registerSemester(Request $request, Student $student)
     {
         $fields = $request->validate([
             'semester_id' => 'required|exists:semesters,id',
         ]);
+        
+        $semester = Semester::find($fields['semester_id']);
 
+        $this->completeEnrolmants($student, $semester);
+
+        return back()->with('success', 'Student registered to semester successfully.');
+            
+    }
+
+    public function completeEnrolmants($student, $semester)
+    {
 
         $alreadyRegistered = SemesterStudent::where('student_id', $student->id)
-            ->where('semester_id', $fields['semester_id'])
-            ->first();
-
+            ->where('semester_id', $semester->id)->first();
+        
         if ($alreadyRegistered) {
+            if($student->status->is_scholarship_approved === 1 && $student->status->is_scholarship === 1){
+                $message = 'Already Registered to ' . $semester->name . ' Semester.';
+            } else {
             $message = $alreadyRegistered->payment_status == 'unpaid' ? 'The Student Is Already Registered But hasn\'t fully Paid For This Semester.' : 'The Student Is Already Registered And Has Paid Fully For This Semester.';
-
+            }
             return back()->withErrors(['error' => $message]);
         }
         // retrieve the section of the student and the year level and semester of the section he/she belongs too
         $section = $student->section;
-        $semester = Semester::find($fields['semester_id']);
 
         if (!$section) {
             return back()->withErrors(['error' => 'Student does not have a section assigned.']);
@@ -410,18 +579,10 @@ class StudentController extends Controller
         // retrieve the courses that student is expected to take in the given year or semester(can still be dropped later if they dont want it)
         $courseOfferings = $section->courseOfferings()->where('semester_level', $semesterLevel)->where('year_level', $yearLevel)->get();
 
-        /**
-         * Arrange the courses so that it is suitable to sync the student to the courses with section_id pivot column
-         * eg:
-         * [
-         *  3 (course_id we want to sync) => ['section_id' => 4], so we this student should take this course in the given section
-         * ]
-         */
-
         foreach ($courseOfferings as $courseOffering) {
             Enrollment::updateOrCreate([
                 'student_id' => $student->id,
-                'semester_id' => $request->semester_id,
+                'semester_id' => $semester->id,
                 'course_offering_id' => $courseOffering->id,
                 'status' => 'pending',
                 'academic_status' => 'in_progress'
@@ -438,7 +599,7 @@ class StudentController extends Controller
         DB::table('semester_student')->updateOrInsert(
             [
                 'student_id' => $student->id,
-                'semester_id' => $request->semester_id,
+                'semester_id' => $semester->id,
             ],
             [
                 'academic_status' => 'in_progress',
@@ -448,8 +609,6 @@ class StudentController extends Controller
                 'created_at' => now(),
             ]
         );
-
-        return back()->with('success', 'Student registered to semester successfully.');
     }
 
     public function addEnrollment(Request $request, Student $student)

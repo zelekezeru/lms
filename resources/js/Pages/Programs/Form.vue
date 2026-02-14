@@ -204,8 +204,8 @@ const emits = defineEmits(["submit"]);
                 >
                     {{
                         form.processing
-                            ? $t("programs.assigning")
-                            : $t("programs.assign")
+                            ? $t("common.assigning")
+                            : $t("common.assign")
                     }}
                 </button>
 

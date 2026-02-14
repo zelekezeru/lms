@@ -8,11 +8,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-
-    programs: {
-        type: Object,
-        required: true,
-    },
 });
 
 const form = useForm({
@@ -42,10 +37,7 @@ const submit = (id) => {
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form
-                    :form="form"
-                    @submit="submit(room.id)"
-                />
+                <Form :form="form" @submit="submit(room.id)" />
             </div>
         </div>
     </AppLayout>

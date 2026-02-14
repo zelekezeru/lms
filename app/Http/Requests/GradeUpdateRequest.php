@@ -22,13 +22,9 @@ class GradeUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'grade_point' => 'required|numeric|min:0|max:100',
-            'description' => 'nullable|string|max:255',
-            'user_id' => 'required|exists:users,id',
-            'year_id' => 'required|exists:years,id',
-            'semester_id' => 'required|exists:semesters,id',
-            'course_id' => 'required|exists:courses,id',
+            'changed_grade' => 'required|numeric|min:0|max:100',
+            'grade_comment' => 'nullable|string|max:500',
+            'changed_letter' => 'required|string|max:2',
         ];
     }
 }

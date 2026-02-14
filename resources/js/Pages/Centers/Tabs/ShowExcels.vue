@@ -87,48 +87,6 @@ function submit() {
                 </h2>
             </div>
         </div>
-        <!-- Section Details -->
-        <div
-            class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-6 pb-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg"
-        >
-            <div
-                class="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-800 dark:text-gray-200"
-            >
-                <div
-                    class="flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700"
-                >
-                    <span
-                        class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1"
-                        >Section:</span
-                    >
-                    <span class="text-lg font-semibold">
-                        {{ props.center?.name || 'N/A' }}</span
-                    >
-                </div>
-                <div
-                    class="flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700"
-                >
-                    <span
-                        class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1"
-                        >Code</span
-                    >
-                    <span class="text-lg font-semibold">{{
-                        props.center?.code || 'N/A'
-                    }}</span>
-                </div>
-                <div
-                    class="flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700"
-                >
-                    <span
-                        class="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1"
-                        >Coordinator</span
-                    >
-                    <span class="text-lg font-semibold"
-                        >{{ props.coordinator?.name || 'N/A' }}
-                    </span>
-                </div>
-            </div>
-        </div>
 
         <div
             class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"

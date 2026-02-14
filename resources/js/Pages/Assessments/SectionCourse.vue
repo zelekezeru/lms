@@ -32,10 +32,6 @@ const props = defineProps({
         type: Array,
         required: true,
     },
-    instructor: {
-        type: Object,
-        required: true,
-    },
     grades: {
         type: Array,
         required: true,
@@ -45,6 +41,14 @@ const props = defineProps({
         required: true,
     },
     studentResults: {
+        type: Object,
+        required: true,
+    },
+    instructor: {
+        type: Object,
+        required: true,
+    },
+    courseOffering: {
         type: Object,
         required: true,
     },
@@ -71,7 +75,7 @@ const user = usePage().props.auth.user;
             >
                 {{ section.name }} - {{ course.name }} Course Assessments
             </h1>
-
+            
             <nav
                 class="flex justify-center space-x-4 mb-6 border-b border-gray-200 dark:border-gray-700"
             >
@@ -114,6 +118,7 @@ const user = usePage().props.auth.user;
                             :course="course"
                             :semester="semester"
                             :instructor="instructor"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Results Panel -->
@@ -126,6 +131,7 @@ const user = usePage().props.auth.user;
                             :weights="weights"
                             :studentsList="students"
                             :studentResults="studentResults"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Weights Panel -->
@@ -136,6 +142,7 @@ const user = usePage().props.auth.user;
                             :course="course"
                             :semester="semester"
                             :instructor="instructor"
+                            :courseOffering="courseOffering"
                         />
 
                         <!-- Grades Panel -->
@@ -149,6 +156,7 @@ const user = usePage().props.auth.user;
                             :grades="grades"
                             :studentsList="students"
                             :studentResults="studentResults"
+                            :courseOffering="courseOffering"
                         />
                     </div>
                 </transition>

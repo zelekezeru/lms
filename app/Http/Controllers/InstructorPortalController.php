@@ -24,15 +24,39 @@ class InstructorPortalController extends Controller
     public function index()
     {
         $instructor = new InstructorResource(
-            request()->user()->instructor->load(
+            request()->user()->instructor->load([
                 'user',
                 'courses',
                 'courseOfferings.section.program',
                 'courseOfferings.section.track',
                 'courseOfferings.section.semester',
                 'courseOfferings.course'
-            )
+            ])
         );
+        //* this is attempt to narrow dow the courseOfferings list to courseOfferings that instructor is currently assigned to... 
+        //* meaning courseOfferings that belong to active semesters of a studyMode are wanted
+        $filteredCourseOfferings = $instructor->courseOfferings->filter(function ($offering) {
+            $section = $offering->section;
+            $sectionYear = $section->year->name;
+
+            //* Get active semester for the studyMode
+            $activeSemester = $section?->studyMode?->semesters
+                ?->firstWhere('pivot.status', 'active');
+
+            if (!$sectionYear || !$activeSemester || !$activeSemester->year) {
+                return false;
+            }
+
+            $activeYear = intval($activeSemester->year->name);
+            $calculatedYearLevel = $activeYear - intval($sectionYear) + 1;
+
+            return $offering->year_level === $calculatedYearLevel
+                && $offering->semester_level === $activeSemester->level;
+        });
+
+        $uniqueAssignments = $filteredCourseOfferings->unique('section_id');
+
+        $instructor->setRelation('courseOfferings', $uniqueAssignments);
 
         return inertia('InstructorPortal/Dashboard', [
             'instructor' => $instructor,
@@ -114,9 +138,16 @@ class InstructorPortalController extends Controller
         $instructor = request()->user()->instructor;
 
         $instructor->load([
+            'classSchedules' => function ($q) {
+                $q->whereHas('courseOffering.section.studyMode.semesters', function ($query) {
+                    $query->where('semester_study_mode.status', 'active');
+                });
+            },
             'classSchedules.room',
             'classSchedules.courseOffering.course',
         ]);
+
+
 
         $instructor = new InstructorResource($instructor);
 
@@ -130,31 +161,42 @@ class InstructorPortalController extends Controller
         $instructor = request()->user()->instructor;
 
         $instructor->load([
+            'classSessions' => function ($q) {
+                $q->whereHas('courseOffering.section.studyMode.semesters', function ($query) {
+                    $query->where('semester_study_mode.status', 'active');
+                });
+            },
             'classSessions.room',
             'classSessions.courseOffering.course',
         ]);
-        $activeSemester = new SemesterResource(Semester::getActiveSemester());
         $instructor = new InstructorResource($instructor);
 
         return inertia('InstructorPortal/ClassSessions', [
             'instructor' => $instructor,
-            'activeSemester' => $activeSemester,
         ]);
     }
 
     public function sectionDetail(Section $section)
     {
-        // Check if the instructor actually teaches the course... we need to move this kinds of permission checking logics to InstructorPortalPolicies later
-        // if (!$course->instructors->contains(request()->user()->instructor->id)) {
-        //     abort(403);
-        // }
+        $activeSemester = $section->studyMode->activeSemester();
+        $yearLevel = intval($activeSemester->year->name) - intval($section->year->name) + 1;
 
         $instructor = new InstructorResource(
-            request()->user()->instructor->load('user', 'courses', 'courseOfferings.section', 'courseOfferings.course')
+            request()->user()->instructor->load(
+                [
+                    'user',
+                    'courses',
+                    'courseOfferings' => function ($query) use ($yearLevel, $activeSemester) {
+                        $query->where('year_level', $yearLevel)->where('semester_level', $activeSemester->level);
+                    },
+                    'courseOfferings.section',
+                    'courseOfferings.course'
+                ]
+            )
         );
 
         $section = new SectionResource($section->load([
-            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id),
+            'courseOfferings' => fn($q) => $q->where('instructor_id', $instructor->id)->where('year_level', $yearLevel)->where('semester_level', $activeSemester->level),
             'courseOfferings.course',
             'program',
             'track',
@@ -174,7 +216,7 @@ class InstructorPortalController extends Controller
         );
 
         $courseOffering = CourseOffering::lookUpFor($course->id, $section->id)->load('enrollments.student', 'classSchedules.room', 'classSessions.room', 'classSessions.attendances.student');
-
+        
         if (! CourseOffering::where('section_id', $section->id)->where('course_id', $course->id)->where('instructor_id', $instructor->id)->exists()) {
             abort(500);
         }
@@ -183,11 +225,52 @@ class InstructorPortalController extends Controller
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
         $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
-        $grades = $section->grades()->where('course_id', $course->id)->get();
+        $grades = $section->grades()->where('course_id', $course->id)->with('student')->get();
 
-        $students = StudentResource::collection(
-            $courseOffering->enrollments->where('status', 'enrolled')->pluck('student')
-        );
+        $studentsUnformatted =
+            $courseOffering->enrollments->where('status', 'enrolled')->pluck('student');
+        $students = StudentResource::collection($studentsUnformatted);
+        $studentResults = [];
+        
+        // Fetch students with their course results
+        foreach ($students as $student) {
+            $studentResults[$student->id] = [];
+            foreach ($weights as $weight) {
+                $result = $weight->results->where('student_id', $student->id)->first();
+                $studentResults[$student->id][$weight->id] = [
+                    'point' => $result ? $result->point : null,
+                    'description' => $result ? $result->description : null,
+                    'changed_point' => $result ? $result->changed_point : null,
+                    'instructor_id' => $result ? $result->instructor_id : null,
+                    'grade_id' => $result ? $result->grade_id : null,
+                    'student_id' => $student->id,
+                    'weight_id' => $weight->id,
+                    'changed_by' => $result ? $result->changed_by : null,
+                    'changed_at' => $result ? $result->changed_at : null,
+                ];
+            }
+        }
+
+        foreach ($weights as $weight) {
+            foreach ($weight->results as $result) {
+                if (!isset($studentResults[$result->student_id])) {
+                    $studentResults[$result->student_id] = [];
+                }
+                if (!isset($studentResults[$result->student_id][$weight->id])) {
+                    $studentResults[$result->student_id][$weight->id] = [
+                        'point' => $result->point,
+                        'description' => $result->description,
+                        'changed_point' => $result->changed_point,
+                        'instructor_id' => $result->instructor_id ?? null,
+                        'grade_id' => $result->grade_id ?? null,
+                        'student_id' => $result->student_id ?? null,
+                        'weight_id' => $weight->id,
+                        'changed_by' => $result->changed_by ?? null,
+                        'changed_at' => $result->changed_at ?? null,
+                    ];
+                }
+            }
+        }
 
         $activeSemester = $section->studyMode->activeSemester();
         $classSchedules = ClassScheduleResource::collection($courseOffering->classSchedules);
@@ -197,6 +280,7 @@ class InstructorPortalController extends Controller
         return inertia('InstructorPortal/SectionCoursePages/SectionCourse', [
             'section' => $section,
             'course' => $course,
+            'studentsUnformatted' => $studentsUnformatted,
             'students' => $students,
             'semester' => $semester,
             'classSchedules' => $classSchedules,
@@ -205,6 +289,8 @@ class InstructorPortalController extends Controller
             'weights' => $weights,
             'grades' => $grades,
             'instructor' => $instructor,
+            'studentResults' => $studentResults,
+            'courseOffering' => $courseOffering,
         ]);
     }
 

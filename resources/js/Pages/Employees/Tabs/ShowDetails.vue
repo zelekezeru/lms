@@ -27,6 +27,14 @@ const props = defineProps({
     },
 });
 
+const showPassword = ref(false);
+
+function hashPassword(password) {
+    // Simple hash for display (not secure, just for obfuscation)
+    if (!password) return "";
+    return "*".repeat(password.length);
+}
+
 // Delete function with SweetAlert confirmation
 const deleteInstructor = (id) => {
     Swal.fire({
@@ -154,8 +162,11 @@ const submitProfileImageUpdate = () => {
         <!-- Employee User ID -->
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">User ID</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ employee.user.user_uuid }}
+            <span class="text-lg font-medium text-blue-700 dark:text-blue-700">
+                <Link
+                        :href="route('users.show', { user: employee.user_id })"
+                    >{{ employee.user.user_uuid }}
+                </Link>
             </span>
         </div>
         <!-- Role -->
@@ -195,10 +206,33 @@ const submitProfileImageUpdate = () => {
             </span>
         </div>
         <!-- Default Password -->
-        <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Default Password</span>
-            <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ employee.user.default_password }}
+        <div
+            v-if="
+                userCan('default-password') &&
+                employee.user.default_password
+            "
+            class="flex flex-col"
+        >
+            <span
+                class="text-sm text-gray-500 dark:text-gray-400"
+                >Default Password</span
+            >
+            <span class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <span v-if="showPassword">
+                    {{ employee.user.default_password }}
+                </span>
+                <span v-else>
+                    {{ hashPassword(employee.user.default_password) }}
+                </span>
+                <button
+                    @click="showPassword = !showPassword"
+                    class="ml-2 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    type="button"
+                >
+                    <EyeSlashIcon v-if="showPassword" class="w-4 h-4 inline-block" />
+                    <EyeIcon v-else class="w-4 h-4 inline-block" />
+                    {{ showPassword ? 'Hide' : 'Show' }}
+                </button>
             </span>
         </div>
         <!-- Action Buttons: span full width on mobile, right on desktop -->

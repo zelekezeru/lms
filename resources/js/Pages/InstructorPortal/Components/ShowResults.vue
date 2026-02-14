@@ -12,7 +12,8 @@ const props = defineProps({
     weights: Array,
     instructor: Object,
     studentsList: Array,
-    studentResults: Object,
+    studentResults: Array,
+    courseOffering: Object,
 });
 
 const sumOfWeightPoints = computed(() => {
@@ -55,6 +56,9 @@ const activateWeight = (weightId) => {
 };
 
 const getStudentResultPoint = (studentId, weightId) => {
+    console.log(props);
+    console.log("jioiiadsifoadsdfalskdfklaskdjl");
+
     return props.studentResults[studentId]?.[weightId]?.point ?? null;
 };
 
@@ -71,6 +75,13 @@ const getStudentTotalPoints = (studentId) => {
 };
 
 const getStudentGradeLetter = (studentId) => {
+    // Check if all assessments are filled for this student
+    for (const weight of props.weights) {
+        const point = getStudentResultPoint(studentId, weight.id);
+        if (point === null || point === undefined || point === "") {
+            return 'Incomplete';
+        }
+    }
     const total = parseFloat(getStudentTotalPoints(studentId));
     if (isNaN(total)) return null;
     if (total >= 94) return "A (4.0)";
@@ -84,6 +95,7 @@ const getStudentGradeLetter = (studentId) => {
     if (total >= 67) return "D+ (1.3)";
     if (total >= 64) return "D (1.0)";
     if (total >= 60) return "D- (0.7)";
+    if (total == 0) return "NG";
     return "F (0.0)";
 };
 
@@ -103,7 +115,10 @@ const submitWeightResults = () => {
 
     for (const student of props.studentsList) {
         const point = parseFloat(resultForm.value[student.id][weightId]);
-        if (isNaN(point) || point < 0 || point > weight.point) {
+        if(isNaN(point)) {
+            continue;
+        }
+        if (point < 0 || point > weight.point) {
             Swal.fire({
                 icon: "error",
                 title: "Invalid input",
@@ -112,7 +127,7 @@ const submitWeightResults = () => {
             return;
         }
         results.push({
-            instructor_id: props.instructor.id,
+            instructor_id: props.instructor?.id,
             weight_id: weightId,
             student_id: student.id,
             point,
@@ -165,7 +180,7 @@ const submitWeightResults = () => {
                                 >{{ weight.name }} ({{ weight.point }}pt)</span
                             >
                             <button
-                                v-if="!activeWeightId"
+                                v-if="!activeWeightId && courseOffering.completed == 0"
                                 @click="activateWeight(weight.id)"
                                 class="ml-2 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded"
                             >
@@ -181,7 +196,27 @@ const submitWeightResults = () => {
             </thead>
             <tbody>
                 <tr
-                    v-for="(student, index) in props.studentsList"
+                    v-for="(student, index) in props.studentsList.sort(
+                        (a, b) => {
+                            const nameA = (
+                                a.first_name +
+                                ' ' +
+                                (a.middle_name || '')
+                            ).toUpperCase();
+                            const nameB = (
+                                b.first_name +
+                                ' ' +
+                                (b.middle_name || '')
+                            ).toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    )"
                     :key="student.id"
                     :class="
                         index % 2 === 0
@@ -192,7 +227,7 @@ const submitWeightResults = () => {
                 >
                     <td class="px-4 py-2">{{ index + 1 }}</td>
                     <td class="px-4 py-2">
-                        {{ student.firstName }} {{ student.middleName }}
+                        {{ student.first_name }} {{ student.middle_name }}
                     </td>
                     <td
                         v-for="weight in props.weights"

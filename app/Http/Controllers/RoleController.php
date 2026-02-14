@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RoleRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleController extends Controller
 {
@@ -22,7 +25,7 @@ class RoleController extends Controller
             return $query->where('name', 'like', "%$search%");
         })
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->withQueryString();
 
         return Inertia::render('Roles/Index', compact('roles', 'search'));
@@ -36,6 +39,8 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         $role = Role::create($request->validated());
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('roles.show', $role)->with('success', 'Role created successfully.');
     }
@@ -72,7 +77,26 @@ class RoleController extends Controller
         // Sync permissions if provided
         if ($request->has('permissions')) {
             $role->permissions()->sync($request->input('permissions'));
+
+            $users = $role->users;
+
+            foreach ($users as $user) {
+                cache()->forget("user_roles_" . $user->id);
+
+                cache()->forget("user_permissions_" . $user->id);
+
+                cache()->remember("user_roles_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                    return $user->getRoleNames();
+                });
+
+                cache()->remember("user_permissions_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                    return $user->getAllPermissions()->pluck('name');
+                });
+            }
         }
+
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('roles.show', $role)->with('success', 'Role updated successfully.');
     }
@@ -89,7 +113,7 @@ class RoleController extends Controller
         $search = $request->search;
         $roles = Role::where('role_name', 'like', "%$search%")
             ->latest()
-            ->paginate(15);
+            ->paginate(50);
 
         return Inertia::render('Roles/Index', compact('roles'));
     }
@@ -109,8 +133,28 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
+        // dump($request['perm']);
+        // dd($role->guard_name);
 
-        $role->permissions()->sync($request['permissions']);
+        $role->syncPermissions($request['permissions']);
+
+        $users = $role->users;
+
+        foreach ($users as $user) {
+            cache()->forget("user_roles_" . $user->id);
+
+            cache()->forget("user_permissions_" . $user->id);
+
+            cache()->remember("user_roles_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                return $user->getRoleNames();
+            });
+
+            cache()->remember("user_permissions_" . $user->id, now()->addMinutes(10), function () use ($user) {
+                return $user->getAllPermissions()->pluck('name');
+            });
+        }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('roles.index')->with('success', 'Permissions assigned successfully.');
     }

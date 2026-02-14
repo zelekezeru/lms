@@ -5,12 +5,12 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import { EyeIcon, TrashIcon, ArrowPathIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import Thead from "@/Components/Thead.vue";
 
-defineProps({
+const props = defineProps({
     users: {
         type: Object,
         required: true,
@@ -29,6 +29,16 @@ const refreshData = () => {
             refreshing.value = false;
         },
     });
+};
+
+const search = ref(usePage().props.search || "");
+// Search function
+const searchusers = () => {
+    router.get(
+        route("users.index"),
+        { ...route().params, search: search.value },
+        { preserveState: true }
+    );
 };
 
 // Delete function with SweetAlert confirmation
@@ -55,6 +65,19 @@ const deleteuser = (id) => {
         }
     });
 };
+
+const filteredUsers = computed(() => {
+    if (!props.users || !props.users.data) return [];
+    if (!search.value) return props.users.data;
+    const term = search.value.toLowerCase();
+    return props.users.data.filter(user =>
+        [user.name, user.email, user.phone]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+    );
+});
 </script>
 
 <template>
@@ -86,6 +109,14 @@ const deleteuser = (id) => {
                 />
                 Refresh Data
             </button>
+
+            <input
+                type="text"
+                v-model="search"
+                placeholder="Search users..."
+                class="pl-10 p-2 border rounded-lg text-gray-900 dark:text-white dark:bg-gray-700"
+                @input="searchusers"
+            />
         </div>
 
         <!-- users Table -->
@@ -98,12 +129,13 @@ const deleteuser = (id) => {
                         <Thead>Profile</Thead>
                         <Thead>Email</Thead>
                         <Thead>Phone</Thead>
+                        <Thead>Role</Thead>
                         <Thead>Action</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
                     <tr
-                        v-for="user, index in users.data"
+                        v-for="(user, index) in filteredUsers"
                         :key="user.id"
                         class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                     >
@@ -149,6 +181,13 @@ const deleteuser = (id) => {
                         </td>
                         <td class="px-6 py-4">
                             {{ user.phone }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                            >
+                                {{ user.roles[0]?.name || 'N/A' }}
+                            </span>
                         </td>
                         <td class="flex px-6 py-4 gap-3">
                             <Link

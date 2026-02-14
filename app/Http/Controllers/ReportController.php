@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Models\Course;
+use App\Models\Center;
+use App\Models\Student; // added
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Collection;
+use Inertia\Inertia;
+
+use Illuminate\Http\Request;
+
+class ReportController extends Controller
+{
+    public function downloadDistanceReportPDF()
+    {
+        // Get all centers with students and their grades
+        $centers = Center::with(['students.grades', 'students.status'])->get();
+
+        // Filter out students who are graduated
+        foreach ($centers as $center) {
+            $center->students = $center->students->filter(function ($student) {
+                return optional($student->status)->is_graduated != 1;
+            })->values();
+        }
+
+        // Get all unique course IDs
+        $allCourseIds = $centers
+            ->flatMap(fn($center) => $center->students)
+            ->flatMap(fn($student) => $student->grades)
+            ->pluck('course_id')
+            ->unique();
+
+        $courses = Course::whereIn('id', $allCourseIds)->get();
+
+        // Pre-calculate counts
+        $courseCountsByCenter = $centers->mapWithKeys(function ($center) {
+            $courseCounts = ($center->students ?? collect())
+                ->flatMap(fn($student) => $student->grades ?? collect())
+                ->pluck('course_id')
+                ->countBy();
+            return [$center->id => $courseCounts];
+        });
+
+        // Build rows
+        $rows = collect();
+        foreach ($courses as $course) {
+            $total = 0;
+            $row = [
+                'no' => $course->id,
+                'name' => $course->name,
+            ];
+
+            foreach ($centers as $center) {
+                $count = $courseCountsByCenter[$center->id][$course->id] ?? 0;
+                $total += $count;
+                $row['center_'.$center->id] = $count;
+            }
+
+            $row['total'] = $total;
+            $rows->push($row);
+        }
+
+        return Inertia::render('Centers/CenterCoursesReport', [
+            'centers' => $centers,
+            'rows' => $rows
+        ]);
+    }
+
+    public function studentsReport()
+    {
+        // Students who have Grades
+
+        $hasGrades = Student::with(['grades'])->get();
+
+        // eager load commonly used relations for a student and grades/report
+        $hasGrades->load([
+            'studyMode',
+            'semesters.grades.course',
+            'semesters.grades.instructor',
+        ]);
+
+        // count students who has grades
+        $hasGrades = $hasGrades->filter(function ($student) {
+            return $student->grades->isNotEmpty();
+        })->values();
+        dd($hasGrades);
+
+        return Inertia::render('Students/Report', [
+            'hasGrades' => $hasGrades,
+        ]);
+    }
+}

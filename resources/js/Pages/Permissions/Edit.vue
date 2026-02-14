@@ -1,21 +1,22 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import Form from './Form.vue';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import Form from "./Form.vue";
 
 const props = defineProps({ permission: Object });
-const form = useForm({ ...props.permission, _method: 'PUT' });
+const form = useForm({ ...props.permission, _method: "PUT" });
 const submit = () => {
-    form.post(route('permissions.update', props.permission.id));
+    form.post(route("permissions.update", props.permission.id));
 };
 </script>
 
 <template>
-    <Head :title="$t('permission.edit_title')" />
     <AppLayout>
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">{{ $t('permission.edit_title') }}</h2>
+            <h2 class="text-xl font-semibold text-gray-800">
+                {{ $t("permission.edit_title") }}
+            </h2>
         </template>
         <Form :form="form" @submit="submit" />
     </AppLayout>

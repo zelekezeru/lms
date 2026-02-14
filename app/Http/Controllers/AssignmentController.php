@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Center;
+use App\Models\CenterCourse;
 use App\Models\Course;
 use App\Models\CourseOffering;
 use App\Models\Instructor;
@@ -10,21 +12,16 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudyMode;
 use App\Models\Track;
+use App\Models\Year;
+use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AssignmentController extends Controller
 {
-    // convention for methods is as follows
-    /**
-     * every post method that actually assigns the lists of model entities from request to a model is  start with "assign"
-     * then follows the entities(targets) that are going to be followed by a Owner of targets
-
-     * so a name like assignCoursesToSection -> accepts an array of ids of courses to be assigned to a section which should be accepted by laravel's route model binding as argument
-
-     * and a name like assignInstructorToCourseSection -> relates a single instructor to a CourseSection model later to be filtered inside the method
-     */
-
     // this method is used to assign courses to a section
     public function assignCoursesToSections(Request $request, Section $section)
     {
@@ -81,14 +78,6 @@ class AssignmentController extends Controller
 
     public function assignCoursesToStudents(Request $request, Student $student)
     {
-        $coursesWithStatus = collect($request['courses'])
-            ->mapWithKeys(function ($courseId) use ($student) {
-                return [$courseId => ['status' => 'Enrolled', 'section_id' => $student->section_id]];
-            })
-            ->toArray();
-
-        $student->courses()->sync($coursesWithStatus);
-
         $student->status()->update([
             'is_enrolled' => true,
             'enrolled_by_name' => Auth::user()->name,
@@ -179,4 +168,153 @@ class AssignmentController extends Controller
 
         return back()->with('success', 'Course updated successfully.');
     }
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function sortStudentsToSections(Track $track)
+    {
+        // Load all sections grouped by study modes... because students should not be assigned to a section with different study mode as theirs
+        // this results in structure like...
+
+        $sections = $track->sections()->get();
+
+        // Load only necessary fields to reduce memory usage
+        $students = Student::select('id', 'year_id', 'section_id', 'study_mode_id', 'track_id')
+            ->where('track_id', $track->id)
+            ->get();
+            
+        $updates = [];
+        foreach ($students as $student) {
+            $yearId = $student->year_id;
+            
+            $targetSection = null;
+
+            $targetSection = $sections->where('study_mode_id', $student->study_mode_id)
+                ->where('year_id', $yearId)
+                ->first();
+
+
+            // if there is no target section found create it
+            if ($targetSection) {
+                $targetSectionId = $targetSection->id;
+            } else {
+                $year = Year::find($yearId);
+                
+                if (! $year || $year->semesters->isEmpty()) {
+                    return redirect()->back()->withErrors('Year not found for student: ' . $student->first_name . ' ' . $student->last_name);
+                }
+                // Create a new section for the student if it doesn't exist
+                $targetSection = Section::create([
+                    'name' => $yearId . ' - ' . $track->name . ' Section 1',
+                    'year_id' => $year->id,
+                    'semester_id' => $year->semesters->first()->id,
+                    'study_mode_id' => $student->study_mode_id,
+                    'track_id' => $track->id,
+                ]);
+                $targetSectionId = $targetSection->id;
+            }
+
+            // Only update if section_id is different
+            if ($student->section_id !== $targetSectionId) {
+                $student->section_id = $targetSectionId;
+                $student->save();
+                $sections[$yearId] = $targetSectionId;
+            }
+        }
+        
+        DB::beginTransaction();
+
+        // We need to make sure that this barely happens since it will ruin the data record if students section is sorted unintentionally
+        try {
+            // Perform batch updates
+            foreach ($updates as $update) {
+                Student::where('id', $update['id'])
+                    ->update(['section_id' => $update['section_id']]);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Students sorted successfully into sections.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Sorting failed: ' . $e->getMessage());
+        }
+    }
+
+    // Assign Track Courses to Section
+    public function assignTrackCoursesToSection(Section $section)
+    {
+        $track = Track::where('id', $section->track_id)->first();
+
+        $fields = [
+            'track_id' => $track->id,
+            'study_mode_id' => $section->study_mode_id,
+        ];
+        // Assign the track to the section
+
+        $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
+            return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
+        }])->get();
+
+        foreach ($trackCourses as $trackCourse) {
+            $curriculum = $trackCourse->curricula->first();
+            if ($curriculum !== null) {
+                // If course Offering exists register the new one and if it is removed from the new curriculum remove it from the section course offerings
+                $courseOffering = CourseOffering::updateOrCreate(
+                    [
+                        'course_id' => $trackCourse->id,
+                        'section_id' => $section->id,
+                    ],
+                    [
+                        'year_level' => $curriculum->year_level ?? null,
+                        'semester_level' => $curriculum->semester_level ?? null,
+                    ]
+                );
+                
+            }
+        }
+
+        return redirect()->route('sections.show', $section->id)->with('success', 'Track assigned to section successfully.');
+    }
+
+    // assignTrackCoursesToSections
+    public function assignTrackCoursesToSections(Track $track)
+    {
+        $sections = $track->sections()->get();
+
+        if ($sections->isEmpty()) {
+            return redirect()->route('tracks.show', $track->id)->with('error', 'No sections found for this track.');
+        }
+
+        foreach ($sections as $section) {
+            $this->assignTrackCoursesToSection($section);
+        }
+
+        return redirect()->route('tracks.show', $track->id)->with('success', 'Courses assigned to sections successfully.');
+    }
+
+    public function assignCoursesToCenter(Request $request, $center)
+    {
+        $validated = $request->validate([
+            'courses' => 'required|array',
+            'courses.*' => 'exists:courses,id',
+        ]);
+
+        $centerCourses = [];
+
+        // Remove all previous course assignments for the center
+        CenterCourse::where('center_id', $center)->delete();
+
+        foreach ($validated['courses'] as $courseId) {
+            $centerCourses[] = CenterCourse::updateOrCreate(
+                [
+                    'center_id' => $center,
+                    'course_id' => $courseId,
+                ]
+            );
+        }
+
+        return redirect()->route('centers.show', $center)->with('success', 'Courses assigned to center successfully.');
+    }
 }
+

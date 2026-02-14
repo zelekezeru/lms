@@ -58,37 +58,63 @@ defineProps({
                     v-for="(payment, index) in payments.data"
                     :key="payment.id"
                 >
-                    <td class="px-6 py-4">{{ index + 1 + (payments.meta.current_page - 1) * payments.meta.per_page }}</td>
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        <Link :href="route('payments.show', { payment: payment.id })">
+                    <td class="px-6 py-4">
+                        {{
+                            index +
+                            1 +
+                            (payments.meta.current_page - 1) *
+                                payments.meta.per_page
+                        }}
+                    </td>
+                    <th
+                        scope="row"
+                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                        <Link
+                            :href="
+                                route('payments.show', { payment: payment.id })
+                            "
+                        >
                             {{ payment.name }}
                         </Link>
                     </th>
                     <td class="px-6 py-4">{{ payment.total_amount }}</td>
                     <td class="px-6 py-4">
-                        {{
-                            payment.payment_method
-                               
-                        }}
+                        {{ payment.payment_method }}
                     </td>
                     <td class="px-6 py-4">
-                        {{
-                            payment.payment_status
-                        }}
+                        {{ payment.payment_status }}
                     </td>
                     <td class="px-6 py-4 flex space-x-6">
                         <div v-if="userCan('view-payments')">
-                            <Link :href="route('payments.show', { payment: payment.id })" class="text-blue-500 hover:text-blue-700">
+                            <Link
+                                :href="
+                                    route('payments.show', {
+                                        payment: payment.id,
+                                    })
+                                "
+                                class="text-blue-500 hover:text-blue-700"
+                            >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
                         </div>
                         <div v-if="userCan('update-payments')">
-                            <Link :href="route('payments.edit', { payment: payment.id })" class="text-green-500 hover:text-green-700">
+                            <Link
+                                :href="
+                                    route('payments.edit', {
+                                        payment: payment.id,
+                                    })
+                                "
+                                class="text-green-500 hover:text-green-700"
+                            >
                                 <PencilSquareIcon class="w-5 h-5" />
                             </Link>
                         </div>
                         <div v-if="userCan('delete-payments')">
-                            <button @click="deletePayment(payment.id)" class="text-red-500 hover:text-red-700">
+                            <button
+                                @click="deletePayment(payment.id)"
+                                class="text-red-500 hover:text-red-700"
+                            >
                                 <TrashIcon class="w-5 h-5" />
                             </button>
                         </div>
@@ -99,7 +125,10 @@ defineProps({
     </div>
 
     <!-- Pagination Links -->
-    <div v-if="payments && payments.meta && payments.meta.links" class="mt-3 flex justify-center space-x-6">
+    <div
+        v-if="payments && payments.meta && payments.meta.links"
+        class="mt-3 flex justify-center space-x-6"
+    >
         <Link
             v-for="link in payments.meta.links"
             :key="link.label"

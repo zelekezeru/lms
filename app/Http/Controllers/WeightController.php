@@ -83,14 +83,14 @@ class WeightController extends Controller
             'sections' => $sections,
         ]);
     }
-
+    
     public function update(WeightUpdateRequest $request, Weight $weight)
     {
         $fields = $request->validated();
 
         $weight->update($fields);
 
-        return redirect()->route('weights.index')->with('success', 'Weight updated successfully.');
+        return redirect()->back()->with('success', 'Weight updated successfully.');
     }
 
     public function destroy(Weight $weight)

@@ -14,17 +14,22 @@ class InstructorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,'.$this->instructor->user->id,
-            'contact_phone' => 'sometimes|required||string|max:15',
+            // User table validations
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$this->instructor->user->id,
+            'contact_phone' => 'required|string|max:15',
 
-            'specialization' => 'sometimes|required|string|max:255',
-            'courses' => 'sometimes|required|array|min:1',
-            'employment_type' => 'required|in:FULL-TIME, PART-TIME, CONTRACT,Visitor',
+            // Instructor table validations
+            'specialization' => 'required|string|max:255',
+            'courses' => 'required|min:1|array',
+            'employment_type' => 'required',
+
             'hire_date' => 'required|date',
             'status' => 'required|in:Active,Inactive,Suspended',
-            'bio' => 'sometimes|string',
-            'profile_img' => 'nullable|image:jpg,jpeg,png,gif,svg,webp|max:5150',
+            'bio' => 'nullable|string',
+
+            // profile image
+            'profile_img' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }
 }

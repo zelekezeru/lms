@@ -11,6 +11,11 @@ const props = defineProps({
     years: Array,
     studyModes: Array,
     semester: Object,
+    hideYears: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
 const selectedStudyModes = ref(
@@ -111,7 +116,7 @@ const emits = defineEmits(["submit"]);
                 />
             </div>
 
-            <div>
+            <div v-if="!hideYears">
                 <InputLabel for="year_id" value="Select Year" />
                 <Select
                     id="year_id"

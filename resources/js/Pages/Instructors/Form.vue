@@ -49,7 +49,6 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
-
             <!-- Phone -->
             <div>
                 <InputLabel for="contact_phone" value="Contact Phone" />
@@ -61,7 +60,6 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.contact_phone" />
             </div>
-
             <!-- Employment Type -->
             <div>
                 <InputLabel for="employment_type" value="Employment Type" />
@@ -72,8 +70,8 @@ const handleFileChange = (e) => {
                     <option disabled value="">Select Employment Type</option>
                     <option value="FULL-TIME">FULL-TIME</option>
                     <option value="PART-TIME">PART-TIME</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Visitor">Visitor</option>
+                    <option value="CONTRACT">CONTRACT</option>
+                    <option value="VISITOR">VISITOR</option>
                 </select>
                 <InputError :message="form.errors.employment_type" />
             </div>

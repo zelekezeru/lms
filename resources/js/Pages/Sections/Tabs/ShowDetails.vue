@@ -50,11 +50,14 @@ const props = defineProps({
 
         <!-- Program name -->
         <div class="flex flex-col">
-            <span class="text-sm text-gray-500 dark:text-gray-400"
-                >Program name</span
-            >
+            <span class="text-sm text-gray-500 dark:text-gray-400">Program name</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.program.name }}
+                <Link
+                    :href="route('programs.show', { program: section.program.id })"
+                    class="text-inherit hover:underline"
+                >
+                    {{ section.program?.name }}
+                </Link>
             </span>
         </div>
 
@@ -62,7 +65,12 @@ const props = defineProps({
         <div class="flex flex-col">
             <span class="text-sm text-gray-500 dark:text-gray-400">Track</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.track.name }}
+            <Link
+                :href="route('tracks.show', { track: section.track.id })"
+                class="text-inherit hover:underline"
+            >
+                {{ section.track?.name }}
+            </Link>
             </span>
         </div>
 
@@ -72,7 +80,7 @@ const props = defineProps({
                 >Academic Year</span
             >
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.year.name }}
+                {{ section.year?.name }}
             </span>
         </div>
 
@@ -82,7 +90,7 @@ const props = defineProps({
                 >Semester</span
             >
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.semester.name }}
+                {{ section.semester?.name }}
             </span>
         </div>
 
@@ -92,14 +100,14 @@ const props = defineProps({
                 >Study Mode</span
             >
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.studyMode.name }}
+                {{ section.studyMode?.name }}
             </span>
         </div>
 
         <div class="flex flex-col" v-if="section.studyMode.id == 4">
             <span class="text-sm text-gray-500 dark:text-gray-400">Center</span>
             <span class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ section.center.name }}
+                {{ section.center?.name }}
             </span>
         </div>
 

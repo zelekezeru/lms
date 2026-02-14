@@ -2,22 +2,25 @@
 import { ref, computed } from "vue";
 import { useForm, router } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const props = defineProps({
   section: Object,
   course: Object,
   semester: Object,
   weights: Array,
+  grades: Array,
   instructor: Object,
-  studentsList: Array,
+  studentsList: Object,
   studentResults: Object, // <-- This comes from your controller
+  courseOffering: Object,
 });
 
 const sumOfWeightPoints = computed(() =>
   props.weights.reduce((sum, weight) => sum + (parseFloat(weight.point) || 0), 0)
 );
 
-const authUser = ref({ id: props.instructor.id });
+const authUser = ref({ id: props.instructor?.id });
 
 const gradeForm = useForm({ grades: [] });
 
@@ -48,6 +51,7 @@ const getGradeLetter = (point) => {
   if (point >= 67) return "D+";
   if (point >= 64) return "D";
   if (point >= 60) return "D-";
+  if (point == 0) return "NG";
   return "F";
 };
 
@@ -84,13 +88,21 @@ const generateGrades = () => {
 
 // ✅ Ensure all weights are filled
 const allWeightsHaveValues = computed(() =>
-  props.studentsList.every((student) =>
-    props.weights.every(
-      (weight) =>
-        props.studentResults[student.id][weight.id]?.point !== null &&
-        props.studentResults[student.id][weight.id]?.point !== undefined
+  props.studentsList
+    // Only consider students who have at least one weight with a non-null, non-undefined, non-empty, and not NG point
+    .filter(student =>
+      props.weights.some(weight => {
+        const point = props.studentResults[student.id]?.[weight.id]?.point;
+        return point !== null && point !== undefined && point !== '' && point !== 'NG';
+      })
     )
-  )
+    // For those students, check that all their weights are filled (not null, undefined, or empty)
+    .every(student =>
+      props.weights.every(weight => {
+        const point = props.studentResults[student.id]?.[weight.id]?.point;
+        return point !== null && point !== undefined && point !== '' && point !== 'NG';
+      })
+    )
 );
 
 // ✅ Get submitted grade
@@ -121,12 +133,6 @@ const submitImport = () => {
     <div v-if="!props.section.grades || props.section.grades.filter(g => g.course_id === props.course.id).length === 0">
       <h2 class="text-xl font-bold mb-4">Grade Generation Form</h2>
 
-      <!-- Import file -->
-      <form @submit.prevent="submitImport" enctype="multipart/form-data" class="mb-4">
-        <input type="file" ref="fileInput" accept=".csv,.xlsx,.xls" class="border p-2 rounded text-sm" required>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Import</button>
-      </form>
-
       <table class="min-w-full border rounded shadow bg-white dark:bg-gray-900">
         <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
           <tr>
@@ -140,9 +146,37 @@ const submitImport = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+          <tr v-for="(student, index) in props.studentsList.sort(
+                        (a, b) => {
+                            const nameA = (
+                                a.first_name +
+                                ' ' +
+                                (a.middle_name || '')
+                            ).toUpperCase();
+                            const nameB = (
+                                b.first_name +
+                                ' ' +
+                                (b.middle_name || '')
+                            ).toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    )"  
+                    :key="student.id"
+                    :class="
+                        index % 2 === 0
+                            ? 'bg-white dark:bg-gray-800'
+                            : 'bg-gray-50 dark:bg-gray-700'
+                    "
+                    class="border-b border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-300"
+                >
             <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
+            <td class="px-4 py-2">{{ student.first_name }} {{ student.middle_name }} {{ student.last_name }}</td>
             <td v-for="weight in props.weights" :key="weight.id" class="px-4 py-2 text-center">
               {{
                 props.studentResults[student.id][weight.id]?.point ??
@@ -185,11 +219,18 @@ const submitImport = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(student, index) in props.studentsList" :key="student.id" class="text-sm">
+          <tr v-for="(grade, index) in props.grades" :key="grade.student.id" class="text-sm">
             <td class="px-4 py-2">{{ index + 1 }}</td>
-            <td class="px-4 py-2">{{ student.firstName }} {{ student.middleName }}</td>
-            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_point ?? "N/A" }}</td>
-            <td class="px-4 py-2">{{ getStudentGrade(student.id)?.grade_letter ?? "N/A" }}</td>
+            <td class="px-4 py-2 text-white">
+              <a
+              :href="route('students.show', grade.student.id)"
+              class="text-blue-600 hover:underline"
+              >
+              {{ grade.student.first_name }} {{ grade.student.middle_name }}
+              </a>
+            </td>
+            <td class="px-4 py-2">{{ grade?.grade_point ?? "N/A" }}</td>
+            <td class="px-4 py-2">{{ grade?.grade_letter ?? "N/A" }}</td>
           </tr>
         </tbody>
       </table>

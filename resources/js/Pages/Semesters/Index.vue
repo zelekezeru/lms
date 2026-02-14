@@ -5,19 +5,16 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import {
     EyeIcon,
-    TrashIcon,
-    PencilSquareIcon,
     ArrowPathIcon,
     Squares2X2Icon,
     TableCellsIcon,
-    CalendarIcon,
 } from "@heroicons/vue/24/solid";
-import { AcademicCapIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 import Table from "@/Components/Table.vue";
 import TableHeader from "@/Components/TableHeader.vue";
 import TableZebraRows from "@/Components/TableZebraRows.vue";
 import Thead from "@/Components/Thead.vue";
+import { useI18n } from "vue-i18n";
 
 defineProps({
     semesters: Object,
@@ -26,8 +23,7 @@ defineProps({
 
 const search = ref(usePage().props.search || "");
 const refreshing = ref(false);
-const viewMode = ref("card");
-
+const viewMode = ref("table");
 const searchSemesters = () => {
     router.get(
         route("semesters.index"),
@@ -46,20 +42,28 @@ const refreshData = () => {
     });
 };
 
+const { t } = useI18n();
+
+// Delete function with SweetAlert confirmation
 const deleteSemester = (id) => {
     Swal.fire({
-        title: "Are you sure?",
-        text: "This will permanently delete the semester.",
+        title: t("semester.delete_confirm_title"),
+        text: t("semester.delete_confirm_text"),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: t("common.yes"),
+        cancelButtonText: t("common.no"),
     }).then((result) => {
         if (result.isConfirmed) {
             router.delete(route("semesters.destroy", { semester: id }), {
                 onSuccess: () => {
-                    Swal.fire("Deleted!", "Semester deleted.", "success");
+                    Swal.fire(
+                        t("semester.deleted_title"),
+                        t("semester.deleted_text"),
+                        "success"
+                    );
                 },
             });
         }
@@ -140,36 +144,26 @@ const deleteSemester = (id) => {
         </div>
 
         <!-- Table View -->
-        <div
-            v-if="viewMode === 'table'"
-            class="overflow-x-auto shadow sm:rounded-lg"
-        >
+        <div class="overflow-x-auto shadow sm:rounded-lg">
             <Table>
                 <TableHeader>
                     <tr>
                         <Thead sortable :sort-info="sortInfo" sortColumn="name"
                             >Semester</Thead
                         >
-                        <Thead>Year</Thead>
-                        <Thead
-                            sortable
-                            :sort-info="sortInfo"
-                            sortColumn="start_date"
-                            >Start Date</Thead
-                        >
-                        <Thead
-                            sortable
-                            :sort-info="sortInfo"
-                            sortColumn="end_date"
-                            >End Date</Thead
-                        >
-                        <Thead>Actions</Thead>
+                        <Thead>{{ $t("semester.year") }}</Thead>
+                        <Thead>{{ $t("semester.regular") }}</Thead>
+                        <Thead>{{ $t("semester.distance") }}</Thead>
+                        <Thead>{{ $t("semester.extension") }}</Thead>
+                        <Thead>{{ $t("semester.online") }}</Thead>
+                        <Thead>{{ $t("common.action") }}</Thead>
                     </tr>
                 </TableHeader>
                 <tbody>
                     <TableZebraRows
                         v-for="semester in semesters.data"
                         :key="semester.id"
+                        :i="0"
                     >
                         <th
                             scope="row"
@@ -189,17 +183,30 @@ const deleteSemester = (id) => {
                         <td class="px-6 py-4">
                             {{ semester.year?.name ?? "N/A" }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{
-                                new Date(
-                                    semester.start_date
-                                ).toLocaleDateString()
-                            }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{
-                                new Date(semester.end_date).toLocaleDateString()
-                            }}
+                        <td
+                            v-for="modeName in [
+                                'REGULAR',
+                                'DISTANCE',
+                                'ONLINE',
+                                'EXTENSION',
+                            ]"
+                            :key="modeName"
+                            class="px-6 py-4"
+                        >
+                            <span
+                                v-if="
+                                    semester.studyModes &&
+                                    semester.studyModes.some(
+                                        (m) => m.name === modeName
+                                    )
+                                "
+                                class="font-bold text-green-600"
+                            >
+                                Active
+                            </span>
+                            <span v-else class="font-bold text-red-400">
+                                Inactive
+                            </span>
                         </td>
                         <td class="flex space-x-2">
                             <Link
@@ -212,64 +219,19 @@ const deleteSemester = (id) => {
                             >
                                 <EyeIcon class="w-5 h-5" />
                             </Link>
-                            <button
-                                v-if="userCan('delete-semesters')"
-                                @click="deleteSemester(semester.id)"
-                                class="text-red-500 hover:text-red-700"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                            </button>
                         </td>
                     </TableZebraRows>
                 </tbody>
             </Table>
         </div>
 
-        <!-- Card View -->
-        <div
-            v-else
-            class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 md:grid-cols-3"
-        >
-            <div
-                v-for="semester in semesters.data"
-                :key="semester.id"
-                class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-600"
-            >
-                <Link
-                    :href="route('semesters.show', { semester: semester.id })"
-                    class="block"
-                >
-                    <div
-                        class="flex items-center mb-2 font-bold text-gray-900 dark:text-white"
-                    >
-                        <AcademicCapIcon class="w-5 h-5 mr-2 text-indigo-500" />
-                        {{ semester.name }}
-                    </div>
-                    <div
-                        class="flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                        <CalendarIcon class="w-5 h-5 mr-2 text-orange-500" />
-                        <span class="font-semibold mr-1">Start:</span>
-                        {{ new Date(semester.start_date).toLocaleDateString() }}
-                    </div>
-                    <div
-                        class="flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                        <CalendarIcon class="w-5 h-5 mr-2 text-rose-500" />
-                        <span class="font-semibold mr-1">End:</span>
-                        {{ new Date(semester.end_date).toLocaleDateString() }}
-                    </div>
-                </Link>
-            </div>
-        </div>
-
         <!-- Pagination -->
-        <div class="flex justify-center mt-6 space-x-2">
+        <div class="mt-3 flex justify-center space-x-6">
             <Link
                 v-for="link in semesters.meta.links"
                 :key="link.label"
-                :href="link.url || '#'"
-                class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"
+                :href="link.url ? `${link.url}&search=${search}` : '#'"
+                class="p-2 px-4 text-sm font-medium rounded-lg transition-colors"
                 :class="{
                     'text-gray-700 dark:text-gray-400': true,
                     'cursor-not-allowed opacity-50': !link.url,

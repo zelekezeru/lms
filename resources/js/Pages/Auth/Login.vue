@@ -3,6 +3,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import LanguageToggle from "@/Components/LanguageToggle.vue";
+import { onMounted } from "vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -20,6 +21,19 @@ const submit = () => {
         onFinish: () => form.reset("password"),
     });
 };
+
+onMounted(() => {
+    // Check for saved theme in localStorage or system preference
+    const userTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+    ).matches;
+    if (userTheme === "dark" || (!userTheme && systemPrefersDark)) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.remove("dark");
+    }
+});
 </script>
 
 <template>
@@ -47,7 +61,7 @@ const submit = () => {
                 <h2
                     class="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-blue-500 to-blue-400 mb-6 drop-shadow-md"
                 >
-                    {{ $t("login") }}
+                    {{ $t("auth.login") }}
                 </h2>
 
                 <form @submit.prevent="submit" class="space-y-4">
@@ -57,7 +71,7 @@ const submit = () => {
                             for="email"
                             class="text-sm text-gray-700 dark:text-gray-300 mb-1 block"
                         >
-                            {{ $t("email") }}
+                            {{ $t("auth.email") }}
                         </label>
                         <TextInput
                             id="email"
@@ -80,7 +94,7 @@ const submit = () => {
                             for="password"
                             class="text-sm text-gray-700 dark:text-gray-300 mb-1 block"
                         >
-                            {{ $t("password") }}
+                            {{ $t("auth.password") }}
                         </label>
                         <TextInput
                             type="password"
@@ -110,14 +124,14 @@ const submit = () => {
                             for="remember"
                             class="text-sm text-gray-600 dark:text-gray-300"
                         >
-                            {{ $t("remember_me") }}
+                            {{ $t("auth.remember_me") }}
                         </label>
                     </div>
 
                     <!-- Button -->
                     <div class="pt-2">
                         <PrimaryButton type="submit">
-                            {{ $t("login") }}
+                            {{ $t("auth.login") }}
                         </PrimaryButton>
                     </div>
                 </form>
@@ -128,7 +142,7 @@ const submit = () => {
                         href="/forgot-password"
                         class="text-blue-600 hover:underline dark:text-blue-400"
                     >
-                        {{ $t("forgot_password") }}
+                        {{ $t("auth.forgot_password") }}
                     </Link>
                 </p>
             </div>

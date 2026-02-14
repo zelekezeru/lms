@@ -156,6 +156,7 @@ const deleteTrack = (id) => {
                         <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'name'">{{ $t('tracks.name') }}</Thead>
                         <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'code'">{{ $t('tracks.code') }}</Thead>
                         <Thead :sortable="true" :sort-info="sortInfo" :sortColumn="'description'">{{ $t('tracks.description') }}</Thead>
+                        <Thead>{{ $t('tracks.has_curriculum') }}</Thead>
                         <Thead>{{ $t('tracks.actions') }}</Thead>
                     </tr>
                 </TableHeader>
@@ -166,6 +167,14 @@ const deleteTrack = (id) => {
                         </th>
                         <td class="px-6 py-4">{{ track.code }}</td>
                         <td class="px-6 py-4">{{ track.description }}</td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="inline-flex items-center px-2 py-1 text-sm font-semibold rounded-full"
+                                :class="track.curricula_count ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'"
+                            >
+                                {{ track.curricula_count ? $t('common.yes') : $t('common.no') }}
+                            </span>
+                        </td>
                         <td class="flex px-6 py-4 space-x-6">
                             <Link
                                 v-if="userCan('view-tracks')"
@@ -227,7 +236,7 @@ const deleteTrack = (id) => {
         <!-- Pagination -->
         <div class="flex justify-center mt-3 space-x-6">
             <Link
-                v-for="link in tracks.meta.links"
+                v-for="link in tracks.links"
                 :key="link.label"
                 :href="link.url ? `${link.url}&search=${search}` : '#'"
                 class="p-2 px-4 text-sm font-medium transition-colors rounded-lg"

@@ -50,7 +50,7 @@ class TenantController extends Controller
                 $query->orderBy($sortColumn, $sortDirection);
             }
 
-            $tenants = TenantResource::collection($query->paginate(15)->withQueryString());
+            $tenants = TenantResource::collection($query->paginate(50)->withQueryString());
 
             return inertia('Tenants/Index', [
                 'tenants' => $tenants,

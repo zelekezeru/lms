@@ -45,12 +45,11 @@ const addTrack = () => {
 };
 </script>
 
-
 <template>
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {{ $t('programs.tracks.title') }}
+                {{ $t("programs.tracks.title") }}
             </h2>
             <button
                 @click="createTrack = !createTrack"
@@ -60,7 +59,7 @@ const addTrack = () => {
                     :is="createTrack ? XMarkIcon : PlusCircleIcon"
                     class="w-8 h-8"
                 />
-                {{ $t('programs.tracks.add') }}
+                {{ $t("programs.tracks.add") }}
             </button>
         </div>
 
@@ -74,14 +73,20 @@ const addTrack = () => {
                     >
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700">
-                                <th class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600">
-                                    {{ $t('programs.tracks.name') }}
+                                <th
+                                    class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600"
+                                >
+                                    {{ $t("programs.tracks.name") }}
                                 </th>
-                                <th class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600">
-                                    {{ $t('programs.tracks.description') }}
+                                <th
+                                    class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600"
+                                >
+                                    {{ $t("programs.tracks.description") }}
                                 </th>
-                                <th class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600">
-                                    {{ $t('programs.tracks.duration') }}
+                                <th
+                                    class="w-40 px-4 py-2 text-sm font-medium text-left text-gray-700 border-r border-gray-300 dark:text-gray-200 dark:border-gray-600"
+                                >
+                                    {{ $t("programs.tracks.duration") }}
                                 </th>
                             </tr>
                         </thead>
@@ -89,18 +94,34 @@ const addTrack = () => {
                             <tr
                                 v-for="(track, index) in program.tracks"
                                 :key="track.id"
-                                :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
+                                :class="
+                                    index % 2 === 0
+                                        ? 'bg-white dark:bg-gray-800'
+                                        : 'bg-gray-50 dark:bg-gray-700'
+                                "
                                 class="border-b border-gray-300 dark:border-gray-600"
                             >
-                                <td class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600">
-                                    <Link :href="route('tracks.show', { track: track.id })">
+                                <td
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600"
+                                >
+                                    <Link
+                                        :href="
+                                            route('tracks.show', {
+                                                track: track.id,
+                                            })
+                                        "
+                                    >
                                         {{ track.name }}
                                     </Link>
                                 </td>
-                                <td class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600">
+                                <td
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600"
+                                >
                                     {{ track.description }}
                                 </td>
-                                <td class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600">
+                                <td
+                                    class="w-40 px-4 py-2 text-sm text-gray-600 border-r border-gray-300 dark:text-gray-300 dark:border-gray-600"
+                                >
                                     {{ track.duration }}
                                 </td>
                             </tr>
@@ -122,7 +143,9 @@ const addTrack = () => {
                                         <TextInput
                                             v-model="trackForm.name"
                                             type="text"
-                                            :placeholder="$t('programs.tracks.name')"
+                                            :placeholder="
+                                                $t('programs.tracks.name')
+                                            "
                                             class="w-full px-2 py-1 border rounded-md h-9 dark:bg-gray-800 dark:text-gray-100"
                                         />
                                     </td>
@@ -131,7 +154,11 @@ const addTrack = () => {
                                         <TextInput
                                             v-model="trackForm.description"
                                             type="text"
-                                            :placeholder="$t('programs.tracks.description')"
+                                            :placeholder="
+                                                $t(
+                                                    'programs.tracks.description'
+                                                )
+                                            "
                                             class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
                                     </td>
@@ -139,14 +166,16 @@ const addTrack = () => {
                                         <TextInput
                                             v-model="trackForm.duration"
                                             type="number"
-                                            :placeholder="$t('programs.tracks.duration')"
+                                            :placeholder="
+                                                $t('programs.tracks.duration')
+                                            "
                                             class="max-w-[70%] px-2 py-1 h-9 border rounded-md dark:bg-gray-800 dark:text-gray-100"
                                         />
                                         <PrimaryButton
                                             class="px-4 py-1 text-white bg-green-500 rounded-md h-9 hover:bg-green-600"
                                             @click="addTrack"
                                         >
-                                            {{ $t('common.save') }}
+                                            {{ $t("common.save") }}
                                         </PrimaryButton>
                                     </td>
                                 </tr>
@@ -158,4 +187,3 @@ const addTrack = () => {
         </div>
     </div>
 </template>
-

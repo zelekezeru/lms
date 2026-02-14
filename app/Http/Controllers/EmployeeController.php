@@ -32,7 +32,7 @@ class EmployeeController extends Controller
                 })->orWhere('job_position', 'like', "%{$search}%");
             })
             ->latest()
-            ->paginate(15)
+            ->paginate(50)
             ->appends(['search' => $search]);
 
         return inertia('Employees/Index', [
@@ -46,7 +46,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::whereNot('name', 'STUDENT')->get();
 
         return inertia('Employees/Create', [
             'roles' => $roles,
@@ -65,7 +65,7 @@ class EmployeeController extends Controller
 
         $user_phone = substr($fields['contact_phone'], -4);
 
-        $default_password = strtolower($firstName).'@'.$user_phone; // Default password for new users
+        $default_password = strtolower($firstName) . '@' . $user_phone; // Default password for new users
 
         // Merge the default password into the request
         $request->merge([
@@ -110,7 +110,7 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $roles = Role::all();
+        $roles = Role::whereNot('name', 'STUDENT')->get();
 
         return inertia('Employees/Edit', [
             'employee' => new EmployeeResource($employee->load('user')),
@@ -170,7 +170,7 @@ class EmployeeController extends Controller
 
         $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
 
-        $userUuid = $tenant.'/EM/'.str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT).'/'.$year;
+        $userUuid = $tenant . '/EM/' . str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         return $userUuid;
     }

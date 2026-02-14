@@ -13,51 +13,13 @@ const props = defineProps({
     status: Object,
     semesters: Array,
     activeSemester: Object,
+    availableSemesters: Array,
 });
 
 // Clone and track the status
 const student = ref({ ...props.student });
 
 // Use Inertia's useForm to manage submission
-
-// Submit updated status
-// function submitStatusChange(field, value) {
-//     // Prepare the data to send.  Include the student's ID and the specific field being updated.
-//     const postData = {
-//         studentId: student.value.id, // Explicitly include student ID
-//         [field]: value, // e.g., is_active: true
-//     };
-
-//     router.post(
-//         route("students.verify", { student: student.value.id }), // Use the named route, include student ID as route parameter.
-//         postData, // Send the data object
-//         {
-//             onSuccess: () => {
-//                 Swal.fire(
-//                     "Validated!",
-//                     "Student Validation updated successfully.",
-//                     "success"
-//                 );
-//             },
-//             onError: (errors) => {
-//                 Swal.fire(
-//                     "Failed!",
-//                     Object.values(usePage().props.errors).join("\n") ??
-//                         "An unexpected error occurred while updating the student validation.",
-//                     "error"
-//                 );
-//             },
-//         }
-//     );
-// }
-
-// const updateAndSubmit = (field) => {
-//     student.value = {
-//         ...student.value,
-//         [field]: student.value[field] === 1 ? 0 : 1, // Toggle the value
-//     };
-//     submitStatusChange(field, student.value[field]);
-// };
 
 const status = ref({ ...props.status });
 
@@ -90,7 +52,7 @@ const tabs = [
                 <span>{{ tab.label }}</span>
             </button>
         </nav>
-
+        
         <!-- scholarship Panel -->
         <transition
             mode="out-in"
@@ -113,6 +75,7 @@ const tabs = [
                     :semesters="semesters"
                     :active-semester="activeSemester"
                     :update-route="updateRoute"
+                    :available-semesters="availableSemesters"
                 />
                 <!-- Documents Panel -->
                 <ShowScholarship

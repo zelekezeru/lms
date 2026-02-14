@@ -16,16 +16,21 @@ import ShowCourses from "./Tabs/ShowCourses.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowClassSchedules from "./Tabs/showClassSchedules.vue";
 import ShowExcels from "./Tabs/ShowExcels.vue";
+import ShowAssessments from "./Tabs/ShowAssessments.vue";
+
 
 const props = defineProps({
     section: Object,
     students: Object,
     courses: Object,
+    sectionCourses: Object,
     instructors: Object,
     currentYearLevel: Number,
     currentSemesterLevel: Number,
     currentSemester: Object,
     rooms: Array,
+    importableCourses: Array,
+    courseOffering: Object,
 });
 
 const selectedTab = ref("details");
@@ -42,6 +47,11 @@ const tabs = [
     {
         key: "excels",
         label: "Excel Managment",
+        icon: ClipboardDocumentListIcon,
+    },
+    {
+        key: "assessments",
+        label: "Import Assessments",
         icon: ClipboardDocumentListIcon,
     },
 ];
@@ -156,7 +166,7 @@ onMounted(() => {
             <h1
                 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
             >
-                {{ section.name }} Section
+                {{ section.name }}
             </h1>
 
             <!-- 🌐 Main Content -->
@@ -183,10 +193,12 @@ onMounted(() => {
                     <ShowCourses
                         v-else-if="selectedTab === 'courses'"
                         :courses="courses"
+                        :sectionCourses="sectionCourses"
                         :section="section"
                         :instructors="instructors"
                         :currentYearLevel="currentYearLevel"
                         :currentSemesterLevel="currentSemesterLevel"
+                        :courseOffering="courseOffering"
                     />
 
                     <Deferred
@@ -223,10 +235,16 @@ onMounted(() => {
                         :courses="courses"
                     />
 
-                    <ShowExcels
-                        v-else-if="selectedTab === 'excels'"
+                    <ShowAssessments
+                        v-else-if="selectedTab === 'assessments'"
                         :section="section"
-                        :courses="courses"
+                        :courses="sectionCourses"
+                        :students="students"
+                        :instructors="instructors"
+                        :currentYearLevel="currentYearLevel"
+                        :currentSemesterLevel="currentSemesterLevel"
+                        :importableCourses="importableCourses"
+                        :courseOffering="courseOffering"
                     />
                 </div>
             </transition>

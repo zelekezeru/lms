@@ -116,37 +116,6 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="props.form.errors.office_hours" />
             </div>
-
-            <!-- Profile Image Upload & Preview -->
-            <div>
-                <InputLabel for="profile_img" value="Profile Image" />
-                <div class="flex items-center gap-4">
-                    <label
-                        for="profile_img"
-                        class="cursor-pointer px-4 py-2 text-white flex items-center gap-2 rounded-md shadow transition bg-black hover:bg-blue-700"
-                    >
-                        <PhotoIcon class="w-5 h-5" /> Upload Image
-                    </label>
-                    <input
-                        id="profile_img"
-                        type="file"
-                        accept="image/*"
-                        class="hidden"
-                        @change="handleFileChange"
-                    />
-                    <div
-                        v-if="props.form.imagePreview"
-                        class="w-16 h-16 rounded-full border shadow overflow-hidden"
-                    >
-                        <img
-                            :src="props.form.imagePreview"
-                            alt="Profile Preview"
-                            class="object-cover w-full h-full"
-                        />
-                    </div>
-                </div>
-                <InputError :message="props.form.errors.profile_img" />
-            </div>
         </div>
 
         <div class="mt-6 flex justify-center">

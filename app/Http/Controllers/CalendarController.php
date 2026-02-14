@@ -31,40 +31,37 @@ class CalendarController extends Controller
             $query->where('name', 'LIKE', "%{$search}%")
                 ->orWhere('status', 'LIKE', "%{$search}%");
         }
-
-        // $oldSemesters = $query->where('is_completed', 1)->orderBy('status', 'asc')
-        //     ->orderByDesc('start_date')
-        //     ->get();
-
-        // $oldSemesters = SemesterResource::collection($oldSemesters->load('sections', 'grades', 'year'));
-
+        
         $studyModes = StudyModeResource::collection(StudyMode::with(['semesters' => fn($q) => $q->wherePivot('status', 'inactive')->orderBy('created_at'), 'semesters.year'])->get());
-        $noActiveSemesterFound = $studyModes->contains(function ($studyMode) {
-            return ! $studyMode->activeSemester();
-        });
 
-        $gradesPercentage = null;
+        $activeSemester = null;
+        foreach ($studyModes as $studyMode) {
+            $semester = $studyMode->activeSemester();
+            if ($semester) {
+                $activeSemester = $semester;
+                break;
+            }
+        }
+        $noActiveSemesterFound = is_null($activeSemester);
 
+        $sections = Section::with(['students', 'semester'])->get();
 
-        // if (! $noActiveSemesterFound) {
+        $gradesPercentages = null;
 
-        //     foreach ($activeSemester->sections as $section) {
-        //         $gradesPercentage[] = $this->sectionSemesterGradesPercentage($activeSemester->resource, $section);
-        //     }
-        // }
-
-        $sections = $noActiveSemesterFound ? [] : SectionResource::collection(Section::with(['year', 'students', 'semester', 'program'])->paginate(30));
-
-        // $submittedGrades = $this->submittedGrades();
-
-        // dd($submittedGrades);
+        $gradesPercentages = [];
+        if (! $noActiveSemesterFound) {
+            foreach ($sections as $section) {
+                $gradesPercentages[] = $this->sectionSemesterGradesPercentage($activeSemester, $section);
+            }
+        }
+        
         return Inertia::render('Calendars/Index', [
             'studyModes' => $studyModes,
             // 'oldSemesters' => $oldSemesters,
             // 'activeSemester' => $activeSemester,
             'search' => $request->search,
             'sections' => $sections,
-            // 'gradesPercentage' => $gradesPercentage,
+            'gradesPercentages' => $gradesPercentages,
         ]);
     }
 
@@ -207,12 +204,16 @@ class CalendarController extends Controller
 
         $percentage = $totalCourses > 0 ? round(($submittedCourses / $totalCourses) * 100, 2) : 0;
 
+        $section_students = count($section->students);
         return [
             'section_id' => $section->id,
             'semester_id' => $activeSemester->id,
             'total_courses' => $totalCourses,
             'submitted_courses' => $submittedCourses,
             'percentage_submitted' => $percentage,
+            'courses' => CourseResource::collection($courses->values()),
+            'section' => $section,
+            'section_students' => $section_students
         ];
     }
 }

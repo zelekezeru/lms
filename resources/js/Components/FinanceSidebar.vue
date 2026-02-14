@@ -14,6 +14,7 @@ import {
     PlayCircleIcon,
     CalendarDaysIcon,
     UsersIcon,
+    ArrowLeftCircleIcon,
 } from "@heroicons/vue/24/outline";
 import SidebarItem from "./SidebarItem.vue";
 
@@ -51,7 +52,7 @@ const wrapperClasses = computed(() => {
                         v-if="isOpen"
                         class="ml-2 text-xl font-bold text-gray-800 dark:text-white"
                     >
-                        Student Portal
+                        Finance Portal
                     </span>
                 </div>
             </a>
@@ -61,7 +62,7 @@ const wrapperClasses = computed(() => {
                 <SidebarItem
                     :icon="AcademicCapIcon"
                     label="Dashboard"
-                    :href="route('student.dashboard')"
+                    :href="route('finance.dashboard')"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
@@ -71,15 +72,15 @@ const wrapperClasses = computed(() => {
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
-                    :icon="CalendarDaysIcon"
-                    label="All Class Schedules"
-                    :href="route('student.classSchedules')"
+                    :icon="CurrencyDollarIcon"
+                    label="Today's Payments"
+                    :href="route('payments.index', { date: 'today' })"
                     :isCollapsed="!isOpen"
                 />
                 <SidebarItem
-                    :icon="PlayCircleIcon"
-                    label="All Class Sessions"
-                    :href="route('student.classSessions')"
+                    :icon="ArrowLeftCircleIcon"
+                    label="All Payments"
+                    :href="route('payments.index')"
                     :isCollapsed="!isOpen"
                 />
             </nav>

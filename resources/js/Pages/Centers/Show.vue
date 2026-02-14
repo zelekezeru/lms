@@ -12,6 +12,7 @@ import ShowDetails from "./Tabs/ShowDetails.vue";
 import ShowCoordinators from "./Tabs/ShowCoordinators.vue";
 import ShowStudents from "./Tabs/ShowStudents.vue";
 import ShowExcels from "./Tabs/ShowExcels.vue";
+import ShowCourses from "./Tabs/ShowCourses.vue";
 import {
   ArrowPathIcon,
   TrashIcon,
@@ -25,6 +26,7 @@ import {
   CogIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
+import ShowAssessments from "./Tabs/ShowAssessments.vue";
 
 defineProps({
     center: {
@@ -36,6 +38,18 @@ defineProps({
         required: true,
     },
     students: {
+        type: Array,
+        required: true,
+    },
+    courses: {
+        type: Array,
+        required: true,
+    },
+    allCourses: {
+        type: Array,
+        required: true,
+    },
+    importableCourses: {
         type: Array,
         required: true,
     },
@@ -62,8 +76,10 @@ const tabs = [
     { key: 'details', label: 'Details', icon: CogIcon },
     { key: 'coordinators', label: 'Coordinators', icon: UserGroupIcon },
     { key: 'students', label: 'Students', icon: UsersIcon },
+    { key: 'courses', label: 'Center Courses', icon: ClipboardDocumentListIcon },
     { key: "excels", label: "Excel Managment", icon: ClipboardDocumentListIcon },
-    
+    { key: "assessments", label: "Import Assessments", icon: ClipboardDocumentListIcon },
+
 ];
 
 const search = ref(serverSearch || "");
@@ -155,11 +171,27 @@ const searchCoordinators = () => {
                     @close="showStudentsModal = false"
                 />
 
+                <ShowCourses
+                    v-else-if="selectedTab == 'courses'"
+                    :center="center"
+                    :courses="courses"
+                    :all-courses="allCourses"
+                    :coordinator="coordinator?.user"
+                />
+
                 <!-- Excel Management Panel -->
                 <ShowExcels
                     v-else-if="selectedTab == 'excels'"
                     :center="center"
                     :coordinator="coordinator?.user"
+                />
+
+                <!-- Assessment import -->
+                <ShowAssessments
+                    v-else-if="selectedTab == 'assessments'"
+                    :center="center"
+                    :coordinator="coordinator?.user"
+                    :importableCourses="importableCourses"
                 />
             </div>
         </transition>

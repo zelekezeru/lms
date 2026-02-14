@@ -19,13 +19,13 @@ const props = defineProps({
 // Initialize form data
 const form = useForm({
     name: props.program.name || "",
-    courses: props.program.courses.map(course => course.id) || [],
+    courses: props.program.courses.map((course) => course.id) || [],
     language: props.program.language || "",
     description: props.program.description || "",
     duration: props.program.duration || "",
     address: props.program.address || "",
     user_id: props.program.user_id || "",
-    _method: "PATCH", 
+    _method: "PATCH",
 });
 
 // Submit form function
@@ -48,18 +48,20 @@ const submit = (id) => {
             <!-- Centered and Enhanced Title -->
             <div class="mb-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {{ $t('programs.edit_title', { name: program.name }) }}
+                    {{ $t("programs.edit_title", { name: program.name }) }}
                 </h2>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                    {{ $t('programs.edit_description') }}
-                </p>
             </div>
 
             <!-- Form Card -->
             <div
                 class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition"
             >
-                <Form :form="form" :courses="courses" @submit="submit(program.id)" :users="users" />
+                <Form
+                    :form="form"
+                    :courses="courses"
+                    @submit="submit(program.id)"
+                    :users="users"
+                />
             </div>
         </div>
     </AppLayout>

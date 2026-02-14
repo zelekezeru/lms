@@ -201,6 +201,7 @@ class RolePermissionSeeder extends Seeder
 
             // Payment (CRUD)
             'view-payments',
+            'view-all-payments',
             'create-payments',
             'update-payments',
             'delete-payments',

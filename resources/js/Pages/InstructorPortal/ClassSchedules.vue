@@ -13,10 +13,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    activeSemester: {
-        type: Object,
-        required: true,
-    },
 });
 const selectedDay = ref("Monday");
 const days = [
@@ -41,9 +37,7 @@ const filteredClassSchedules = computed(() => {
             <!-- Header -->
             <div class="text-center">
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
-                    Your Class Schedules for
-                    {{ activeSemester.year.name }} Semester -
-                    {{ activeSemester.level }}
+                    Your Class Schedules
                 </h1>
             </div>
 

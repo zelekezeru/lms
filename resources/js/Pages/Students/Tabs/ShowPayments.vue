@@ -1,18 +1,12 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
-import { Head, Link, router, useForm, usePage } from "@inertiajs/vue3";
+import { Link, useForm, usePage } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
-import { Listbox, MultiSelect, Select } from "primevue";
+import { Listbox, Select } from "primevue";
 import { computed, defineProps, ref, watch } from "vue";
 import InputError from "@/Components/InputError.vue";
-import {
-    CogIcon,
-    PencilSquareIcon,
-    XMarkIcon,
-    PlusCircleIcon,
-} from "@heroicons/vue/24/solid";
+import { CogIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
     student: {
@@ -65,9 +59,6 @@ const semesterPayments = ref(
 watch(
     () => [selectedSemester.value, selectedStatus.value, props.payments],
     ([newSemester, newStatus]) => {
-        console.log("Semester:", newSemester);
-        console.log("Status:", newStatus);
-
         semesterPayments.value = props.payments.filter((payment) => {
             const matchesSemester =
                 !newSemester || payment.semester?.id === newSemester;
@@ -89,7 +80,7 @@ const paymentCreationForm = useForm({
     total_amount: null,
     description: null,
     status: null,
-    reference_number: null,
+    payment_reference: null,
 });
 
 const paymentUpdateForm = useForm({
@@ -99,7 +90,7 @@ const paymentUpdateForm = useForm({
     status: props.payments[0]?.status || "pending",
     paid_amount: props.payments[0]?.paid_amount || 0,
     payment_date: new Date().toISOString().slice(0, 10),
-    reference_number: props.payments[0]?.reference_number || "",
+    payment_reference: props.payments[0]?.payment_reference || "",
     _method: "PATCH",
 });
 
@@ -178,10 +169,10 @@ const showUpdatePaymentModal = (payment) => {
 
     paymentUpdateForm.payment_type_id = payment.payment_type_id;
     paymentUpdateForm.description = payment.description;
-    (paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10)),
-        (paymentUpdateForm.paid_amount = payment.paid_amount);
+    paymentUpdateForm.payment_date = new Date().toISOString().slice(0, 10);
+    paymentUpdateForm.paid_amount = payment.paid_amount;
     paymentUpdateForm.status = payment.status;
-    paymentUpdateForm.reference_number = payment.reference_number;
+    paymentUpdateForm.payment_reference = payment.payment_reference;
 
     updatePaymentModal.value = true;
 };
@@ -238,10 +229,12 @@ watch(
 watch(
     () => paymentUpdateForm.paid_amount,
     (newVal) => {
-        if (newVal == paymentUpdateForm.total_amount) {
-            paymentUpdateForm.status = "completed";
-        } else {
-            paymentUpdateForm.status = "pending";
+        if (selectedPayment.value != null) {
+            if (newVal == selectedPayment.value.total_amount) {
+                paymentUpdateForm.status = "completed";
+            } else {
+                paymentUpdateForm.status = "pending";
+            }
         }
     }
 );
@@ -254,6 +247,18 @@ watch(
         } else {
             paymentCreationForm.paid_amount =
                 props.payments[0]?.paid_amount || 0;
+        }
+    }
+);
+
+watch(
+    () => paymentUpdateForm.status,
+    (newVal) => {
+        if (selectedPaymentType.value && newVal == "completed") {
+            paymentUpdateForm.paid_amount = selectedPayment.value.total_amount;
+        } else {
+            paymentUpdateForm.paid_amount =
+                selectedPayment.value?.paid_amount || 0;
         }
     }
 );
@@ -301,7 +306,7 @@ const submitNewPayment = () => {
                 paymentCreationForm.total_amount = null;
                 paymentCreationForm.description = null;
                 paymentCreationForm.status = null;
-                paymentCreationForm.reference_number = null;
+                paymentCreationForm.payment_reference = null;
                 Swal.fire({
                     title: "Success!",
                     text: "Payment has been created successfully.",
@@ -332,8 +337,6 @@ const updatePayment = () => {
         route("payments.update", { payment: selectedPayment.value.id }),
         {
             onSuccess: () => {
-                console.log(paymentUpdateForm.paid_amount);
-
                 paymentUpdateForm.reset();
                 closeUpdatePaymentModal();
                 Swal.fire(
@@ -383,13 +386,16 @@ const updatePayment = () => {
                 }}
             </h2>
             <template v-if="student.paymentCode == null">
-                <button
-                    @click="addCode = true"
-                    class="inline-flex items-center px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-bold shadow-md border border-blue-600 hover:from-blue-600 hover:to-blue-800 transition"
-                >
-                    <CogIcon class="w-5 h-5 mr-2" />
-                    <span>Add Payment Code</span>
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button
+                        @click="addCode = true"
+                        class="flex items-center justify-center w-full sm:inline-flex sm:w-auto px-1 py-1 rounded-lg sm:rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-sm font-bold shadow-md border border-blue-600 hover:from-blue-600 hover:to-blue-800 transition"
+                        aria-label="Add Payment Code"
+                    >
+                        <CogIcon class="w-5 h-5" />
+                        <span class="text-xs">Add Code</span>
+                    </button>
+                </div>
             </template>
             <template v-else>
                 <button
@@ -405,7 +411,7 @@ const updatePayment = () => {
         <div class="my-4 ml-4 flex items-center space-x-2">
             <template v-if="student.paymentCode">
                 <span
-                    class="inline-flex items-center px-4 py-3 py-1 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse"
+                    class="inline-flex items-center px-4 py-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 text-white text-sm font-bold shadow-md border border-green-500 animate-pulse"
                 >
                     <svg
                         class="w-4 h-4 mr-2 text-white"
@@ -614,7 +620,7 @@ const updatePayment = () => {
                         </p>
                         <p>
                             <strong>Reference:</strong>
-                            {{ payment.reference_number || "N/A" }}
+                            {{ payment.payment_reference || "N/A" }}
                         </p>
 
                         <div
@@ -1130,20 +1136,20 @@ const updatePayment = () => {
                     <!-- Reference Number -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label
-                            for="reference_number"
+                            for="payment_reference"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
                             Reference Number (Optional)
                         </label>
                         <input
                             type="text"
-                            v-model="paymentCreationForm.reference_number"
-                            id="reference_number"
+                            v-model="paymentCreationForm.payment_reference"
+                            id="payment_reference"
                             class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                         />
                         <InputError
                             :message="
-                                paymentCreationForm.errors.reference_number
+                                paymentCreationForm.errors.payment_reference
                             "
                             class="mt-2 text-sm text-red-500"
                         />
@@ -1304,7 +1310,7 @@ const updatePayment = () => {
                             Status
                         </label>
                         <Select
-                            v-model="selectedPayment.status"
+                            v-model="paymentUpdateForm.status"
                             :options="statusOptions"
                             optionLabel="label"
                             optionValue="value"
@@ -1388,19 +1394,21 @@ const updatePayment = () => {
                     <!-- Reference Number -->
                     <div class="w-full md:w-1/2 lg:w-1/4 px-2 mb-4">
                         <label
-                            for="reference_number"
+                            for="payment_reference"
                             class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
                         >
                             Reference Number
                         </label>
                         <input
                             type="text"
-                            v-model="paymentUpdateForm.reference_number"
-                            id="reference_number"
+                            v-model="paymentUpdateForm.payment_reference"
+                            id="payment_reference"
                             class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:shadow-outline"
                         />
                         <InputError
-                            :message="paymentUpdateForm.errors.reference_number"
+                            :message="
+                                paymentUpdateForm.errors.payment_reference
+                            "
                             class="mt-2 text-sm text-red-500"
                         />
                     </div>

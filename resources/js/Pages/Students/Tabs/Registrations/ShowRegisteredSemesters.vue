@@ -8,6 +8,7 @@ const props = defineProps({
     student: Object,
     semesters: Array,
     activeSemester: Object,
+    availableSemesters: Array,
 });
 
 const selectedSemesterId = ref("");
@@ -57,7 +58,7 @@ const registerForSemester = () => {
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                 Student Semester Registration
             </h2>
-
+            
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                 <div>
                     <label
@@ -76,14 +77,23 @@ const registerForSemester = () => {
                         >
                             Select Current Semester
                         </option>
+                        
                         <option
-                            :key="activeSemester.id"
+                            v-if="activeSemester"
+                            :key="'active-' + activeSemester.id"
                             :value="activeSemester.id"
+                            class="bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-200 font-bold"
+                        >
+                            {{ activeSemester.name }} - Active
+                        </option>
+                        <option
+                            v-for="semester in availableSemesters"
+                            :key="semester.id"
+                            :value="semester.id"
+                            :disabled="activeSemester && semester.id === activeSemester.id"
                             class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                         >
-                            {{ activeSemester.name }} ({{
-                                activeSemester.year.name
-                            }})
+                            {{ semester.name }}
                         </option>
                     </select>
                 </div>

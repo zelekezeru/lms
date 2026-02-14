@@ -7,12 +7,24 @@ import {
     Cog6ToothIcon,
     CheckCircleIcon,
     UserPlusIcon,
+    GlobeAltIcon
 } from "@heroicons/vue/24/outline";
 import { ref, onMounted } from "vue";
 import Chart from "chart.js/auto";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import en from "@/lang/locales/en";
 
-const user = usePage().props.auth.user;
+const props = defineProps({
+    programs: { type: Array, required: true },
+    user: { type: Object, required: true },
+    totalStudents: { type: Number, required: true },
+    totalCourses: { type: Number, required: true },
+    enrollments: { type: Object, required: true },
+    courseDistribution: { type: Object, required: true },
+    availablePrograms: { type: Number, required: true },
+    availableCenters: { type: Number, required: true },
+    recentActivities: { type: Array, required: true },
+});
 
 // Chart refs
 const studentsChart = ref(null);
@@ -24,11 +36,11 @@ onMounted(() => {
         new Chart(studentsChart.value, {
             type: "bar",
             data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                labels: [props.enrollments.labels[0], props.enrollments.labels[1], props.enrollments.labels[2], props.enrollments.labels[3], props.enrollments.labels[4], props.enrollments.labels[5]],
                 datasets: [
                     {
                         label: "New Students",
-                        data: [120, 190, 170, 220, 180, 230],
+                        data: [props.enrollments.data[0], props.enrollments.data[1], props.enrollments.data[2], props.enrollments.data[3], props.enrollments.data[4], props.enrollments.data[5]],
                         backgroundColor: "rgba(37, 99, 235, 0.7)", // blue-600
                         borderRadius: 6,
                     },
@@ -49,11 +61,11 @@ onMounted(() => {
         new Chart(coursesChart.value, {
             type: "doughnut",
             data: {
-                labels: ["Science", "Arts", "Commerce", "Technology"],
+                labels: props.courseDistribution.labels.map(label => label),
                 datasets: [
                     {
                         label: "Courses",
-                        data: [24, 18, 30, 10],
+                        data: props.courseDistribution.data.map(item => item),
                         backgroundColor: [
                             "rgba(34,197,94, 0.7)", // green-500
                             "rgba(139,92,246, 0.7)", // purple-500
@@ -65,6 +77,7 @@ onMounted(() => {
                     },
                 ],
             },
+
             options: {
                 responsive: true,
                 plugins: {
@@ -76,26 +89,24 @@ onMounted(() => {
 });
 
 // Sample recent activities with icons & badges
-const recentActivities = [
-    {
-        icon: UserPlusIcon,
-        text: "Added new student: John Doe",
-        time: "2 hours ago",
-        badge: "New",
-    },
-    {
-        icon: CheckCircleIcon,
-        text: "Grade submitted for CSC101",
-        time: "4 hours ago",
-        badge: "Success",
-    },
-    {
-        icon: Cog6ToothIcon,
-        text: "Updated profile settings",
-        time: "1 day ago",
-        badge: "Update",
-    },
-];
+const recentActivities = props.recentActivities.map(activity => ({
+    icon:
+        activity.type === "New Student"
+            ? UserPlusIcon
+            : activity.type === "Registered new Instructor"
+            ? UserPlusIcon
+            : activity.type === "Created new grade"
+            ? CheckCircleIcon
+            : UserPlusIcon, // fallback icon
+    text: `${activity.type}: ${activity.name}`,
+    time: activity.created_at
+        ? new Date(activity.created_at).toLocaleString()
+        : "",
+    badge:
+        activity.type === "Created new grade"
+            ? "Success"
+            : "New",
+}));
 </script>
 
 <template>
@@ -103,7 +114,7 @@ const recentActivities = [
         <h1 class="text-2xl font-extrabold mb-6 text-gray-900 dark:text-white">
             Welcome, {{ user.name }}
         </h1>
-
+        
         <!-- Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             <div
@@ -119,7 +130,7 @@ const recentActivities = [
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-white"
                     >
-                        1,542
+                        {{ totalStudents }}
                     </h2>
                 </div>
             </div>
@@ -136,7 +147,7 @@ const recentActivities = [
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-white"
                     >
-                        82
+                        {{ totalCourses }}
                     </h2>
                 </div>
             </div>
@@ -148,29 +159,29 @@ const recentActivities = [
                     <p
                         class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
                     >
-                        Grades Submitted
+                        Available Programs
                     </p>
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-white"
                     >
-                        6,320
+                        {{ availablePrograms }}
                     </h2>
                 </div>
             </div>
             <div
                 class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.03] transition-transform cursor-default"
             >
-                <Cog6ToothIcon class="w-10 h-10 text-orange-600" />
+                <GlobeAltIcon class="w-10 h-10 text-orange-600" />
                 <div>
                     <p
                         class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
                     >
-                        Settings Updates
+                        Distance Centers
                     </p>
                     <h2
                         class="text-xl font-semibold text-gray-900 dark:text-white"
                     >
-                        5
+                        {{ availableCenters }}
                     </h2>
                 </div>
             </div>

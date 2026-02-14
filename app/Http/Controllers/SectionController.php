@@ -34,10 +34,19 @@ class SectionController extends Controller
 {
     public function index()
     {
+        $tracks = Track::with(['program', 'courses', 'students', 'sections', 'sections.year', 'sections.students'])
+            ->has('sections')
+            ->get()
+            ->sortBy('name');
         $sections = SectionResource::collection(Section::with(['user', 'program', 'track', 'year', 'semester'])->get());
+        
+        $sections = $sections->sortBy(function ($section) {
+            return $section->program->name . ' ' . $section->track->name;
+        })->values();
 
         return Inertia::render('Sections/Index', [
             'sections' => $sections,
+            'tracks' => $tracks,
         ]);
     }
 
@@ -63,17 +72,22 @@ class SectionController extends Controller
         $fields = $request->validated();
         // Section code generation logic
 
-        $year = substr(Carbon::now()->year, -2);
+        $year = Year::where('id', $fields['year_id'])->first();
+        
+        $year_string = substr($year->name, -2);
 
-        $section_id = 'SC' . '-' . $year . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
+        $section_id = 'SC' . '-' . $year_string . '-' . str_pad(Section::count() + 1, 2, '0', STR_PAD_LEFT);
 
         $fields['code'] = $section_id;
+
+        $fields['name'] = $year->name . ' - ' . Track::find($fields['track_id'])->name . ' Section-1';
+
         $track = Track::find($fields['track_id']);
 
         $trackCourses = $track->courses()->with(['curricula' => function ($q) use ($fields) {
             return $q->where('track_id', $fields['track_id'])->where('study_mode_id', $fields['study_mode_id']);
         }])->get();
-
+                
         DB::beginTransaction();
         try {
             $section = Section::create($fields);
@@ -124,10 +138,20 @@ class SectionController extends Controller
             'classSchedules.semester',
             'classSchedules.room',
         ]));
-
+        
         $courses = CourseResource::collection(Course::withExists(['courseOfferings as related_to_course_offering' => function ($query) use ($section) {
             return $query->where('section_id', $section->id);
         }])->orderBy('name')->orderByDesc('related_to_course_offering')->get());
+
+        // Courses that are attached to the section track offerings
+        $sectionCourses = $courses->filter(function ($course) use ($section) {
+            return $course->related_to_course_offering;
+        })->values();
+        
+        $importableCourses = $section->track->courses()->with(['curricula' => function ($q) use ($section) {
+            $q->where('track_id', $section->track_id)
+                ->where('study_mode_id', $section->study_mode_id);
+        }])->get();
 
         $currentSemester = $section->studyMode->activeSemester();
         $currentYearLevel = intval($currentSemester->year->name) - intval($section->year->name) + 1;
@@ -136,9 +160,11 @@ class SectionController extends Controller
 
         $rooms = RoomResource::collection(Room::orderBy('capacity')->get());
 
+        $courseOffering = $section->courseOfferings()->with('course', 'instructor')->get()->keyBy('course_id');
+        
         return Inertia::render('Sections/Show', [
             'section' => $section,
-            'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(15))),
+            'students' => Inertia::defer(fn() => StudentResource::collection($section->students()->orderBy('first_name', 'asc')->orderBy('middle_name', 'asc')->paginate(50))),
             'courses' => $courses,
             'instructors' => $instructors,
             'studyModes' => $section->studyMode,
@@ -149,6 +175,9 @@ class SectionController extends Controller
             'currentYearLevel' => $currentYearLevel,
             'currentSemesterLevel' => $currentSemesterLevel,
             'currentSemester' => $currentSemester,
+            'importableCourses' => $importableCourses,
+            'sectionCourses' => $sectionCourses,
+            'courseOffering' => $courseOffering,
         ]);
     }
 

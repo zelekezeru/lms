@@ -17,13 +17,16 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             // Personal Information
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],            
+            'roles' => ['required', 'array', 'min:1'],
+            'phone' => ['nullable', 'string', 'max:20'],
             'email' => [
                 'required',
-                Rule::unique('users')->ignore(request()->user()->id),
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user->id),
             ],
-            'roles' => ['required', 'array'],
-            'roles*' => ['exists:roles,id'],
             'profile_img' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:5150',
         ];
     }

@@ -42,7 +42,7 @@ class StudentRegistrationService extends Controller
         // Date of Birth
         $dateOfBirth = $request->input('date_of_birth');
         $fields['date_of_birth'] = Carbon::parse($dateOfBirth)->format('Y-m-d');
-
+        
         DB::beginTransaction();
 
         try {
@@ -58,18 +58,22 @@ class StudentRegistrationService extends Controller
             $student = $this->createStudent($fields);
 
             $activeSemester = $student->studyMode->activeSemester();
+
+            // Registration Types are required for all studymodes
             $registrationFee = $student->studyMode->paymentTypes()->where('type', 'Registration Fee')->where('duration', 'one-time')->first();
 
-            Payment::create([
-                'student_id' => $student->id,
-                'payment_type_id' => $registrationFee?->id,
-                'semester_id' => $activeSemester?->id,
-                'tenant_id' => 1,
-                'created_by' => Auth::id(),
-                'status' => 'pending',
-                'paid_amount' => 0,
-                'total_amount' => $registrationFee->amount,
-            ]);
+            if ($registrationFee) {
+                Payment::create([
+                    'student_id' => $student->id,
+                    'payment_type_id' => $registrationFee?->id,
+                    'semester_id' => $activeSemester?->id,
+                    'tenant_id' => 1,
+                    'created_by' => Auth::id(),
+                    'status' => 'pending',
+                    'paid_amount' => 0,
+                    'total_amount' => $registrationFee->amount,
+                ]);
+            }
 
             // Create related records (status and church)
             $this->createStudentStatus($student);
@@ -80,7 +84,14 @@ class StudentRegistrationService extends Controller
             DB::rollBack();
             return;
         }
-        // Create a new user for the student
+
+        // Attach Student to Center(s) if Distance mode
+        if ($request->has('study_mode_id') && $request->input('study_mode_id') == 4 && $request->input('center_id')) {
+            
+            // Accept both single value and array for center_id
+            $centerIds = is_array($request['center_id']) ? $request['center_id'] : [$request['center_id']];
+            $student->centers()->sync($centerIds);
+        }
 
         return $student;
     }
@@ -248,7 +259,6 @@ class StudentRegistrationService extends Controller
 
             $user->update([
                 'name' => $name,
-                'email' => $student_email,
                 'phone' => $fields['mobile_phone'],
             ]);
         }
@@ -332,6 +342,7 @@ class StudentRegistrationService extends Controller
             'year_id' => $fields['year_id'],
             'semester_id' => $fields['semester_id'],
             'program_id' => $fields['program_id'],
+            'study_mode_id' => $fields['study_mode_id'],
             'track_id' => $fields['track_id'],
         ];
 

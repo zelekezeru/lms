@@ -35,8 +35,8 @@ class SemesterController extends Controller
             $query->orderBy($sortColumn, $sortDirection);
         }
 
-        $semesters = SemesterResource::collection($query->with('year')->orderBy('year_id', 'desc')->orderBy('level')->paginate(30));
-
+        $semesters = SemesterResource::collection($query->with('year')->orderBy('status', 'asc')->orderBy('start_date', 'desc')->with('studyModes')->paginate(30));
+        
         return inertia('Semesters/Index', [
             'semesters' => $semesters, // Corrected to return the semesters collection
             'sortInfo' => [
@@ -172,18 +172,14 @@ class SemesterController extends Controller
             return back()->withErrors('Not Allowed', 'Cannot delete an archived semester.');
         } elseif ($semester->students()->count() > 0) {
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated students.');
-        } elseif ($semester->courses()->count() > 0) {
-            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated courses.');
+        } elseif ($semester->enrollments()->count() > 0) {
+            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated enrollments.');
         } elseif ($semester->results()->count() > 0) {
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated results.');
-        } elseif ($semester->attendance()->count() > 0) {
-            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated attendance records.');
         } elseif ($semester->grades()->count() > 0) {
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated grades.');
         } elseif ($semester->payments()->count() > 0) {
             return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated payments.');
-        } elseif ($semester->schedules()->count() > 0) {
-            return back()->withErrors('Not Allowed', 'Cannot delete a semester with associated schedules.');
         } else {
             // If all checks pass, delete the semester
             $semester->delete();

@@ -9,6 +9,7 @@ import {
     PresentationChartBarIcon,
 } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
+import StudentResults from "@/Pages/StudentPortal/StudentResults.vue";
 
 const props = defineProps({
     section: {
@@ -39,6 +40,13 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    studentResults: {
+        type: Array,
+    },
+    courseOffering: {
+        type: Object,
+        required: true,
+    },
 });
 
 // Tabs
@@ -53,7 +61,7 @@ const selectedTab = ref("results");
 const changeTab = (tabKey) => {
     selectedTab.value = tabKey;
     route().params.assessmentTab = tabKey;
-}
+};
 </script>
 
 <template>
@@ -97,6 +105,8 @@ const changeTab = (tabKey) => {
                 :instructor="instructor"
                 :weights="weights"
                 :studentsList="students"
+                :student-results="studentResults"
+                :course-offering="courseOffering"
             />
 
             <!-- Weights Panel -->
@@ -107,6 +117,7 @@ const changeTab = (tabKey) => {
                 :course="course"
                 :semester="semester"
                 :instructor="instructor"
+                :course-offering="courseOffering"
             />
 
             <!-- Grades Panel -->
@@ -119,6 +130,8 @@ const changeTab = (tabKey) => {
                 :instructor="instructor"
                 :grades="grades"
                 :studentsList="students"
+                :student-results="studentResults"
+                :course-offering="courseOffering"
             />
         </div>
     </transition>

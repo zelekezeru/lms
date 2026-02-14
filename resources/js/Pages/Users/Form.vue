@@ -43,7 +43,6 @@ const handleFileChange = (e) => {
                 />
                 <InputError :message="form.errors.name" />
             </div>
-
             <div>
                 <InputLabel for="phone" value="Phone Number" />
                 <TextInput
@@ -69,6 +68,20 @@ const handleFileChange = (e) => {
                     checkmark
                 />
                 <InputError :message="form.errors.roles" />
+            </div>
+
+            <div v-if="userCan('change_email')">
+                <InputLabel for="email" value="Email Address" />
+                <TextInput
+                    id="email"
+                    v-model="form.email"
+                    required
+                    class="w-full"
+                />
+                <InputError :message="form.errors.email" />
+            </div>
+            <div v-else>
+                <input type="text" class="hidden" :value="form.email" />
             </div>
         </div>
 

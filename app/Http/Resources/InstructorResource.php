@@ -22,14 +22,16 @@ class InstructorResource extends JsonResource
             'name' => $this->user->name,
             'email' => $this->user->email,
             'ContactPhone' => $this->contact_phone,
+            'hire_date' => $this->hire_date,
             'bio' => $this->bio,
             'status' => $this->status,
             'specialization' => $this->specialization,
             'employmentType' => $this->employment_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'userRole' => $this->user ? $this->user->roles()->first()->name : null,
 
-            'user' => new UserResource($this->whenLoaded('user')),
+            'user' => $this->whenLoaded('user'),
 
             'profileImg' => Storage::url($this->user->profile_img),
             'courses' => CourseResource::collection($this->whenLoaded('courses')),

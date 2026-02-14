@@ -60,6 +60,11 @@ class Semester extends Model
         return $this->hasMany(Grade::class);
     }
 
+    public function results()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function semesterStudents()
     {
         return $this->hasMany(SemesterStudent::class);
@@ -68,5 +73,10 @@ class Semester extends Model
     public function semester()
     {
         return $this->hasOne(Semester::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

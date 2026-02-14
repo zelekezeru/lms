@@ -46,7 +46,7 @@ class StudentsFilterService
         if ($request->input('year')) {
             $query->where('year_id', $request->input('year'));
         }
-
+        
         if ($request->input('program')) {
             $query->where('program_id', $request->input('program'));
         }

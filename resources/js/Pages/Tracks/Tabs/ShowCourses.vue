@@ -187,6 +187,27 @@ const submitCourseAssignment = () => {
             <h1 class="text-lg mb-5">
                 {{ $t('courses.pick_courses') }}
             </h1>
+
+            <!-- Select All Checkbox -->
+            <div class="mb-3 flex items-center">
+                <input
+                    type="checkbox"
+                    id="selectAllCourses"
+                    :checked="courses.length > 0 && courseAssignmentForm.courses.length === courses.length"
+                    :indeterminate.prop="courseAssignmentForm.courses.length > 0 && courseAssignmentForm.courses.length < courses.length"
+                    @change="e => {
+                        if (e.target.checked) {
+                            courseAssignmentForm.courses = courses.map(c => c.id)
+                        } else {
+                            courseAssignmentForm.courses = []
+                        }
+                    }"
+                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded"
+                />
+                <label for="selectAllCourses" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Select All Courses
+                </label>
+            </div>
             <Listbox
                 id="cousesList"
                 v-model="courseAssignmentForm.courses"

@@ -17,6 +17,8 @@ defineProps({
         required: false,
     },
     programs: Array,
+    studyModes: Array,
+    studentsCount: Number,
     tracks: Array,
     years: Array,
 });
@@ -133,6 +135,8 @@ const deletestudent = (id) => {
         <StudentList
             :students="students"
             :programs="programs"
+            :studyModes="studyModes"
+            :studentsCount="studentsCount"
             :years="years"
             :sort-info="sortInfo"
             :deleteStudent="deleteStudent"

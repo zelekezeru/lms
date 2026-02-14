@@ -84,6 +84,11 @@ class Course extends Model
         return $this->hasMany(Curriculum::class);
     }
 
+    public function centers()
+    {
+        return $this->belongsToMany(Center::class);
+    }
+
     public function prerequisites()
     {
         return $this->belongsToMany(Course::class, 'course_prerequisites', 'course_id', 'prerequisite_id');

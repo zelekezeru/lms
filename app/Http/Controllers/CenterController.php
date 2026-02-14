@@ -9,11 +9,23 @@ use App\Http\Resources\CoordinatorResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Center;
+use App\Models\CenterCourse;
+use App\Models\Course;
+use App\Models\Program;
+use App\Models\Section;
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Track;
 use Illuminate\Http\Request;
 
 class CenterController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function index(Request $request)
     {
         $query = Center::with('coordinator');
@@ -31,7 +43,8 @@ class CenterController extends Controller
         }
 
         $centers = CenterResource::collection(
-            $query->with(['coordinator.user', 'students',])->paginate(15)->withQueryString()
+            $query->with(['coordinator.user', 'students'])
+                ->orderBy('name')->paginate(30)->withQueryString()
         );
 
         return inertia('Centers/Index', [
@@ -45,22 +58,58 @@ class CenterController extends Controller
 
         $students = StudentResource::collection(
             $center->students()
-            ->with(['user', 'program'])
-            ->orderBy('first_name')
-            ->orderBy('middle_name')
-            ->get()
+                ->with(['user', 'program', 'section'])
+                ->orderBy('first_name')
+                ->orderBy('middle_name')
+                ->paginate(50)
         );
         
-        if($center->coordinator){
+        // Get courses from students who have grades in those courses
+        $courses = CenterCourse::where('center_id', $center->id)
+            ->with('course')
+            ->get()
+            ->pluck('course')
+            ->unique('id')
+            ->values()
+            ->map(function ($course) use ($center) {
+            // Count grades for this course from all students in the center
+            $gradeCount = $center->students
+                ->flatMap(function ($student) use ($course) {
+                return $student->grades->where('course_id', $course->id);
+                })
+                ->count();
+            $course->grade_count = $gradeCount;
+            return $course;
+            });
+        
+        $allCourses = $center->students
+            ->flatMap(function ($student) {
+            return $student->track ? $student->track->courses : collect();
+            })
+            ->unique('id')
+            ->values();
+
+        $importableCourses = Program::findOrFail(11)
+            ->tracks()
+            ->with(['courses' => function ($query) {
+                $query->orderBy('name');
+            }])
+            ->first()
+            ?->courses ?? collect();
+
+        if ($center->coordinator) {
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
-        }else{
+        } else {
             $coordinator = null;
         }
-        
+
         return inertia('Centers/Show', [
             'center' => $center,
             'coordinator' => $coordinator,
             'students' => $students,
+            'courses' => $courses,
+            'allCourses' => $allCourses,
+            'importableCourses' => $importableCourses,
         ]);
     }
 
@@ -74,13 +123,19 @@ class CenterController extends Controller
     public function store(CenterStoreRequest $request)
     {
         $fields = $request->validated();
+        
         // Generate Center Code
-        $counCenters = Center::count();
+        $lastCenter = Center::orderBy('created_at', 'desc')->first();
+        if ($lastCenter) {
+            $lastCenterId = $lastCenter->id;
+        } else {
+            $lastCenterId = 0;
+        }
 
-        $fields['code'] = 'SITS-C-'.str_pad($counCenters + 1, 3, '0', STR_PAD_LEFT);
+        $fields['code'] = 'SITS-C-' . str_pad($lastCenterId + 1, 3, '0', STR_PAD_LEFT);
 
         $center = Center::updateOrCreate($fields);
-        
+
         return redirect()->route('centers.show', $center)->with('success', 'Center created successfully.');
     }
 
@@ -97,7 +152,7 @@ class CenterController extends Controller
         $fields = $request->validated();
 
         $center->update($fields);
-        
+
         return redirect()->route('centers.show', $center)->with('success', 'Center updated successfully.');
     }
 
@@ -109,8 +164,7 @@ class CenterController extends Controller
         } elseif ($center->coordinator) {
             // Check if the center has an associated coordinator
             return redirect()->route('centers.index')->with('error', 'Cannot delete center with an associated coordinator.');
-        }
-        else {
+        } else {
             // Delete the center record
             $center->students()->detach(); // Detach all students from the center
             $center->coordinator()->dissociate(); // Dissociate the coordinator
@@ -121,5 +175,39 @@ class CenterController extends Controller
 
             return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
         }
+    }
+
+    public function distanceHome()
+    {
+        $centers = CenterResource::collection(
+            Center::with(['coordinator.user', 'students'])
+                ->orderBy('name')
+                ->get()
+        );
+
+        $totalStudents = $centers->flatMap(function ($center) {
+            return $center->students;
+        })->unique('id')->count();
+
+        $totalCoordinators = $centers->filter(function ($center) {
+            return $center->coordinator !== null;
+        })->count();
+
+        return inertia('Centers/DistanceHome', [
+            'centers' => $centers,
+            'totalStudents' => $totalStudents,
+            'totalCoordinators' => $totalCoordinators,
+        ]);
+    }
+
+    public function distanceStudents()
+    {
+        $students = StudentResource::collection(
+            Student::where('study_mode', 'distance')->get()
+        );
+
+        return inertia('Centers/DistanceStudents', [
+            'students' => $students,
+        ]);
     }
 }

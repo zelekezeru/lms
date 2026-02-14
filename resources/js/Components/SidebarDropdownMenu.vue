@@ -94,7 +94,7 @@ const afterLeave = (el) => {
         >
             <div
                 v-if="isOpen && (sidebarVisible || sidebarHovered)"
-                class="space-y-2 rounded-md p-2 bg-gray-100 dark:bg-gray-700"
+                class="space-y-2 ml-8 mr-4 mt-2 rounded-md p-2 bg-gray-100 dark:bg-gray-700"
             >
                 <slot />
             </div>

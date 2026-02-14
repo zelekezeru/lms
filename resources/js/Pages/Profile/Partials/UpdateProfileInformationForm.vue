@@ -62,7 +62,24 @@ function handleImageChange(event) {
             enctype="multipart/form-data"
         >
             <!-- Name Input -->
-            <div>
+            <p>User Name : <span class="font-bold text-gray-900 dark:text-gray-100">{{ user.name }}</span></p>
+            <!-- don't allow change name for student role -->
+            <template v-if="user.loggedInAs.name !== 'STUDENT'">
+                <div class="mb-4">
+                    <InputLabel for="name" value="Name" />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.name"
+                        required
+                        autofocus
+                        autocomplete="name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.name" />
+                </div>
+            </template>
+            <!-- <div>
                 <InputLabel
                     for="name"
                     value="Name"
@@ -81,7 +98,7 @@ function handleImageChange(event) {
                     class="mt-2 text-sm text-red-600 dark:text-red-400"
                     :message="form.errors.name"
                 />
-            </div>
+            </div> -->
 
             <!-- Profile Image -->
             <div class="mt-6">

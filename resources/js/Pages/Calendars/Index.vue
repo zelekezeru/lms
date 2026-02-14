@@ -21,9 +21,8 @@ import ShowCloseForm from "./Tabs/ShowCloseForm.vue";
 const props = defineProps({
     oldSemesters: Object,
     activeSemester: Object,
-    sections: Array,
     search: String,
-    gradesPercentage: Object,
+    gradesPercentages: Object,
     studyModes: {
         required: true,
         type: Array,
@@ -58,12 +57,8 @@ const tabs = [
         label: "Close Semesters",
         icon: ArrowDownOnSquareIcon,
     },
-    {
-        key: "sections",
-        label: "Active Sections",
-        icon: PresentationChartBarIcon,
-    },
-    { key: "semesters", label: "Older Semesters", icon: LockClosedIcon },
+    // Grade submissions status for active semester
+    { key: "grades", label: "Grade Submissions", icon: PresentationChartBarIcon },
 ];
 
 const setSemesterOf = ref(null);
@@ -131,20 +126,10 @@ const backToStatus = () => {
                     :back-to-status="backToStatus"
                 />
 
-                <!-- Courses Panel -->
-                <ShowSections
-                    v-else-if="selectedTab === 'sections'"
-                    :sections="props.sections"
-                    :gradesPercentage="props.gradesPercentage"
-                />
-
                 <!-- Semesters Panel -->
-                <ShowSemesters
-                    v-else-if="selectedTab === 'semesters'"
-                    :oldSemesters="props.oldSemesters"
-                    :active-semester="props.activeSemester"
-                    :search="search"
-                    @search="searchSemesters"
+                <ShowSections
+                    v-else-if="selectedTab === 'grades'"
+                    :grades-percentages="props.gradesPercentages"
                 />
             </div>
         </transition>

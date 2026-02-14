@@ -1,0 +1,70 @@
+{
+    "title": "የትምህርት መስመሮች",
+    "create_title": "የትምህርት መስመር አክል",
+    "create_description": "ከታች ያለውን የትምህርት መስመር መረጃ ይሙሉ",
+    "edit_title": "\"{name}\" አስተካክል",
+    "edit_description": "የትምህርት መስመሩን ለማዘመን ቅጹን ይሙሉ",
+    "no_tracks": "የትምህርት መስመሮች አልተገኙም",
+    "search": "የትምህርት መስመሮችን ፈልግ...",
+    "refresh": "አድስ",
+    "add": "አዲስ የትምህርት መስመር አክል",
+    "name": "ስም",
+    "description": "መግለጫ",
+    "duration_years": "የሚቆይበት ጊዜ በዓመታት",
+    "duration": "የሚቆይበት ጊዜ",
+    "select_program": "ፕሮግራም ይምረጡ",
+    "in_language": "በ{language} ቋንቋ",
+
+    "curriculum": {
+        "with": "ከ",
+        "mode": "ሁነታ - ሥርዓተ ትምህርት",
+        "create": "ሥርዓተ ትምህርት ፍጠር",
+        "select_study_mode": "የትምህርት ሁነታ ይምረጡ",
+        "expand_all": "ሁሉንም ዘርጋ",
+        "collapse_all": "ሁሉንም ሰብስብ",
+        "edit": "አስተካክል",
+        "year": "ዓመት",
+        "semester": "ሰሚስተር",
+        "curricula": "ሥርዓተ ትምህርቶች",
+        "all_assigned": "ሁሉም ኮርሶች ለሥርዓተ ትምህርቱ ተመድበዋል።",
+        "already_in": "አስቀድሞ ያለበት:",
+        "save": "አስቀምጥ",
+        "choose_study_mode": "የትምህርት ሁነታ ይምረጡ እና ሰሚስተሩን ለማስተካከል ይጫኑ",
+        "design": "የሥርዓተ ትምህርት ንድፍ",
+        "select_year": "ዓመት ይምረጡ",
+        "select_semester": "ሰሚስተር ይምረጡ",
+        "study_mode": "የትምህርት ሁነታ",
+        "select_mode": "ሁነታ ይምረጡ",
+        "description": "የሥርዓተ ትምህርት መግለጫ",
+        "status": "ሁኔታ",
+        "select_status": "ሁኔታ ይምረጡ",
+        "active": "በሥራ ላይ ያለ",
+        "inactive": "በሥራ ላይ የሌለ",
+        "select_courses": "ኮርሶችን ይምረጡ",
+        "search_select_courses": "ኮርሶችን ፈልግ እና ምረጥ",
+        "assigning": "በመመደብ ላይ...",
+        "assign": "መድብ",
+        "assigned_title": "ተመድቧል!",
+        "assigned_text": "ሥርዓተ ትምህርቱ በተሳካ ሁኔታ ተመድቧል።"
+    },
+
+    "show": {
+        "title": "የፕሮግራም ዝርዝሮች",
+        "tabs": {
+            "details": "ዝርዝሮች",
+            "tracks": "የትምህርት መስመሮች",
+            "modes": "የትምህርት ሁነታዎች"
+        }
+    },
+    "delete_confirm_title": "እርግጠኛ ነዎት?",
+    "delete_confirm_text": "ይህንን መቀልበስ አይችሉም!",
+    "deleted_title": "ተሰርዟል!",
+    "deleted_text": "የትምህርት መስመሩ ተሰርዟል።",
+    "tabs": {
+        "details": "Details",
+        "curriculums": "Curricula",
+        "courses": "Courses",
+        "sections": "Sections",
+        "students": "Students"
+    }
+}

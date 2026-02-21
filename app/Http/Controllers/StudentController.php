@@ -468,7 +468,7 @@ class StudentController extends Controller
             
             foreach($semesters as $semester) {
 
-                if($semester->name == '2nd Semester of 2025' )
+                if($semester->name == '1st Semester of 2026' )
                 {
                     continue;
                 }

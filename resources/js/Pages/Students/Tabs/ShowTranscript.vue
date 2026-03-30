@@ -81,6 +81,8 @@ const cumulativeGPAList = computed(() => {
                 totalCredits > 0
                     ? (totalPoints / totalCredits).toFixed(2)
                     : "0.00",
+            cumulativePoints: totalPoints,
+            cumulativeCredits: totalCredits,
         };
     });
 });
@@ -274,6 +276,10 @@ async function exportPDF() {
         doc.text(`Semester GPA: ${semGPA}`, startX, currentY + 3);
         doc.text(`Cumulative GPA: ${cumGPA}`, startX, currentY + 7);
 
+        // Credit and Points Summary
+        doc.text(`Semester Credits: ${semesterCredits}`, startX + 40, currentY + 3);
+        doc.text(`Semester Points: ${semesterPoints.toFixed(2)}`, startX + 40, currentY + 7);
+
         currentY += 10;
 
         // Track column
@@ -433,46 +439,15 @@ const handleImageLoad = () => {
                                 <p>
                                     Total Points:
                                     {{
-                                        semester.grades
-                                            .filter(
-                                                (g) =>
-                                                    g.student_id == student.id
-                                            )
-                                            .reduce(
-                                                (acc, g) =>
-                                                    acc +
-                                                    getGradePointFromLetter(
-                                                        parseFloat(
-                                                            g.grade_point
-                                                        ) || 0
-                                                    ) *
-                                                        parseFloat(
-                                                            g.course
-                                                                ?.credit_hours ||
-                                                                0
-                                                        ),
-                                                0
-                                            )
-                                            .toFixed(2)
+                                        (cumulativeGPAList[index]
+                                            ?.cumulativePoints || 0).toFixed(2)
                                     }}
                                 </p>
                                 <p>
                                     Total Credits:
                                     {{
-                                        semester.grades
-                                            .filter(
-                                                (g) =>
-                                                    g.student_id == student.id
-                                            )
-                                            .reduce(
-                                                (acc, g) =>
-                                                    acc +
-                                                    parseFloat(
-                                                        g.course
-                                                            ?.credit_hours || 0
-                                                    ),
-                                                0
-                                            )
+                                        cumulativeGPAList[index]
+                                            ?.cumulativeCredits || 0
                                     }}
                                 </p>
                             </div>

@@ -88,6 +88,20 @@ const cumulativeGPAList = computed(() => {
 });
 
 async function exportPDF() {
+    // Load the logo
+    let logoBase64 = null;
+    try {
+        const logoResponse = await fetch('/img/logo.png');
+        const logoBlob = await logoResponse.blob();
+        logoBase64 = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(logoBlob);
+        });
+    } catch (e) {
+        console.warn('Failed to load logo:', e);
+    }
+
     // ✅ 1. Initialize jsPDF FIRST
     const doc = new jsPDF({
         orientation: "landscape",
@@ -125,9 +139,10 @@ async function exportPDF() {
         const totalPages = doc.internal.getNumberOfPages();
         const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
 
-        // ✅ Logo (base64 or URL)
-        // const logoBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABM4AAATUCAMAAACnGruaAAAACXBIWXMAAAsSAAALEgHS3X78AAADAFBMVEVHcEzaHyLXubRAAAAAElFTkSuQmCC";
-        // doc.addImage(logoBase64, "PNG", marginLeft + 20, 5, 25, 25);
+        // ✅ Logo
+        if (logoBase64) {
+            doc.addImage(logoBase64, "PNG", marginLeft + 20, 5, 25, 25);
+        }
 
         // ✅ Header
         doc.setFontSize(16);
@@ -277,8 +292,8 @@ async function exportPDF() {
         doc.text(`Cumulative GPA: ${cumGPA}`, startX, currentY + 7);
 
         // Credit and Points Summary
-        doc.text(`Semester Credits: ${semesterCredits}`, startX + 40, currentY + 3);
-        doc.text(`Semester Points: ${semesterPoints.toFixed(2)}`, startX + 40, currentY + 7);
+        doc.text(`Cumulative Credits: ${totalCumulativeCredits}`, startX + 60, currentY + 3);
+        doc.text(`Cumulative Points: ${totalCumulativePoints.toFixed(2)}`, startX + 60, currentY + 7);
 
         currentY += 10;
 

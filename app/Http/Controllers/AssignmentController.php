@@ -128,7 +128,6 @@ class AssignmentController extends Controller
         $studyMode = StudyMode::findOrFail($fields['study_mode_id']);
 
         // Assign the study mode to the program
-        // dd($program->studyModes()->where('study_mode_id', $fields['study_mode_id'])->exists());
         if ($program->studyModes()->where('study_mode_id', $fields['study_mode_id'])->exists()) {
             return redirect()
                 ->route('programs.show', $program->id)

@@ -176,7 +176,6 @@ class StudentController extends Controller
                 $section->setRelation('courseOfferings', $filteredCourseOfferings);
             });
         });
-        // dd($studyModes);
 
         $studyModes = StudyModeResource::collection($studyModes);
 

@@ -110,7 +110,6 @@ class CoordinatorController extends Controller
 
     public function update(CoordinatorUpdateRequest $request, Coordinator $coordinator)
     {
-        dd($coordinator);
         $fields = $request->validated();
 
         $coordinator->update($fields);

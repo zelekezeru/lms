@@ -35,7 +35,6 @@ class StudentPortalController extends Controller
             ]
         ));
 
-        // dd($student->grades[0]->course);
         return inertia('StudentPortal/Dashboard', [
             'student' => $student,
         ]);

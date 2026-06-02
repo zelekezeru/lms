@@ -133,8 +133,6 @@ class RoleController extends Controller
     public function attach(Request $request, $roleId)
     {
         $role = Role::findOrFail($roleId);
-        // dump($request['perm']);
-        // dd($role->guard_name);
 
         $role->syncPermissions($request['permissions']);
 
@@ -164,6 +162,15 @@ class RoleController extends Controller
         $role = Role::findOrFail($roleId);
 
         $role->permissions()->detach($permissionId);
+
+        // Every user holding this role now has stale cached roles/permissions
+        // (see HandleInertiaRequests), so flush them along with Spatie's cache.
+        foreach ($role->users as $user) {
+            cache()->forget("user_roles_" . $user->id);
+            cache()->forget("user_permissions_" . $user->id);
+        }
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->route('roles.index')->with('success', 'Permission removed successfully.');
     }

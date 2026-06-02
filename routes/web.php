@@ -156,7 +156,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sections/{section}/imported-students', [ImportController::class, 'showImportedStudents'])->name('sections.imported-students');
     Route::get('/sections/{section}/students/export', [ExportController::class, 'exportSectionStudents'])->name('sectionStudents.export');
     Route::get('/instructors/export/{role}', [ExportController::class, 'exportUsers'])->name('instructors.export');
-    Route::get('/download-distance-report-pdf', [ReportController::class, 'downloadDistanceReportPDF'])->name('distance.report.pdf');
     Route::post('/graduated-students/import', [ImportController::class, 'importGraduatedStudents'])->name('graduatedStudents.import');
     Route::get('/centers/{center}/students/export', [ExportController::class, 'exportCenterStudents'])->name('centerStudents.export');
     Route::post('/students/paymentcodes', [ImportController::class, 'paymentcodes'])->name('students.paymentcodes');

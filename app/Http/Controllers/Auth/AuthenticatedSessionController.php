@@ -70,6 +70,11 @@ class AuthenticatedSessionController extends Controller
                 return back()->withErrors(['role' => 'Role not found.']);
             }
 
+            // A user may only switch into a role they have actually been assigned.
+            if (! $request->user()->hasRole($role->name)) {
+                return back()->withErrors(['role' => 'You are not assigned to this role.']);
+            }
+
             $request->user()->active_role_id = $role->id;
             $request->user()->save();
 

@@ -30,8 +30,7 @@ class AssessmentController extends Controller
             return redirect()->back()->with('error', 'No Such course Offering Found.');
         }
         $courseOffering->load( 'instructor', 'section.program', 'section.grades', 'enrollments.student');
-        
-        // dd($instructor);
+
         $section = $courseOffering->section;
 
         $course = $courseOffering->course;

@@ -84,7 +84,6 @@ class ReportController extends Controller
         $hasGrades = $hasGrades->filter(function ($student) {
             return $student->grades->isNotEmpty();
         })->values();
-        dd($hasGrades);
 
         return Inertia::render('Students/Report', [
             'hasGrades' => $hasGrades,

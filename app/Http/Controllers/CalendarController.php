@@ -139,7 +139,6 @@ class CalendarController extends Controller
             'study_mode_id' => 'required|numeric|exists:study_modes,id',
         ]);
 
-
         $selectedStudyMode = StudyMode::find($validated['study_mode_id']);
         if (! $selectedStudyMode->semesters()->where('semesters.id', $validated['new_semester_id'])->exists()) {
             return redirect()->back()->withErrors(['common' => 'the provided semester is not not applied to this semester!']);
@@ -156,18 +155,10 @@ class CalendarController extends Controller
             return redirect()->back()->withErrors(['new_semester_id' => 'The semester is closed!']);
         }
 
-        DB::transaction(function () use ($validated, $selectedStudyMode, $activeSemester) {
-            // Set the active semester of the study mode to inactive (if the studymode has an active semester)
-            if ($activeSemester) {
-                $selectedStudyMode->semesters()->syncWithoutDetaching([$activeSemester->id => ['status' => 'closed']]);
-            }
+        // Dispatch background job to handle active status sync and student enrollment asynchronously
+        \App\Jobs\CloseSemesterJob::dispatch($validated['study_mode_id'], $validated['new_semester_id'], Auth::id());
 
-            // set the selected semesters as the new active semester for the selected studymode
-            $selectedStudyMode->semesters()->syncWithoutDetaching([$validated['new_semester_id'] => ['status' => 'active']]);
-            AutoEnrollmentService::autoEnroll($validated['study_mode_id']);
-        });
-
-        return redirect()->route('calendars.index')->with('success', 'Semester closing Instialization successfully Done.');
+        return redirect()->route('calendars.index')->with('success', 'Semester closing and auto-enrollment has been initialized in the background.');
     }
 
     /**

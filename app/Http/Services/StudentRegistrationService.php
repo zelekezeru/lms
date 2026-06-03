@@ -11,7 +11,6 @@ use App\Models\Semester;
 use App\Models\Status;
 use App\Models\Student;
 use App\Models\StudyMode;
-use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,7 +34,7 @@ class StudentRegistrationService extends Controller
         // Generate student-specific data
         $fields['id_no'] = $this->student_id($studyMode);
 
-        $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
+        $fields['tenant_id'] = 1; // Default institution (vestigial multi-tenancy column)
 
         $student_email = $this->student_email($fields);
 
@@ -268,13 +267,11 @@ class StudentRegistrationService extends Controller
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two di
 
-        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
-
         do {
             $initialCount = $count ?? Student::max('id');
             $count = $initialCount + 1; // safer than count()
 
-            $studentUuid = 'SITS-' . $studyMode . '-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
+            $studentUuid = config('app.institution_code') . '-' . $studyMode . '-' . str_pad($count, 4, '0', STR_PAD_LEFT) . '-' . $year;
         } while (User::where('user_uuid', $studentUuid)->exists());
 
         return $studentUuid;

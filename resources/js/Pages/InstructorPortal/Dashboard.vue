@@ -1,9 +1,13 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import {
     AcademicCapIcon,
     BookmarkIcon,
     ArrowRightIcon,
+    ClockIcon,
+    PresentationChartBarIcon,
+    UserGroupIcon,
+    SparklesIcon,
 } from "@heroicons/vue/24/outline";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Chart } from "chart.js/auto";
@@ -19,6 +23,8 @@ const props = defineProps({
 let chart = null;
 const createChart = () => {
     const ctx = document.getElementById("performanceChart");
+    if (!ctx) return; // defensive check
+
     chart = new Chart(ctx, {
         type: "bar",
         data: {
@@ -29,13 +35,38 @@ const createChart = () => {
                     data: [85, 78, 90],
                     backgroundColor: "rgba(59, 130, 246, 0.5)",
                     borderColor: "rgba(59, 130, 246, 1)",
-                    borderWidth: 1,
+                    borderWidth: 1.5,
+                    borderRadius: 6,
                 },
             ],
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#4b5563'
+                    }
+                }
+            },
             scales: {
-                y: { beginAtZero: true },
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#4b5563'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        color: document.documentElement.classList.contains('dark') ? '#9ca3af' : '#4b5563'
+                    },
+                    grid: {
+                        color: document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb'
+                    }
+                },
             },
         },
     });
@@ -46,64 +77,68 @@ onMounted(createChart);
 
 <template>
     <AppLayout>
-        <!-- Header -->
+        <!-- Header Banner with CSS Gradients -->
         <div
-            class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8"
-            style="
-                background-image: url('https://www.pngall.com/wp-content/uploads/5/Teaching-PNG-Free-Image.png');
-            "
+            class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 rounded-2xl overflow-hidden shadow-md mb-8 p-8 md:p-12 lg:py-14"
         >
-            <div class="absolute inset-0 bg-black bg-opacity-25"></div>
-            <div class="relative p-6 md:p-8 lg:p-10">
+            <div class="absolute inset-0 bg-grid-white/[0.08] bg-[size:20px_20px] pointer-events-none"></div>
+            <div class="absolute -right-16 -top-16 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="relative max-w-3xl space-y-4">
+                <div class="inline-flex items-center space-x-2 bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md">
+                    <SparklesIcon class="w-4 h-4 text-yellow-300 animate-pulse" />
+                    <span>Instructor Dashboard</span>
+                </div>
                 <h1
-                    class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-3"
+                    class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight"
                 >
-                    Welcome, {{ instructor.user.name }}
+                    Welcome back, {{ instructor.user.name }}
                 </h1>
-                <p class="text-base md:text-lg text-gray-200 max-w-2xl">
-                    Manage your courses, track student performance, view
-                    feedback, and stay on top of your schedule.
+                <p class="text-sm md:text-base lg:text-lg text-indigo-100 font-medium">
+                    Manage your assigned courses, view student enrollment, track academic performance, and organize your weekly teaching sessions from a centralized portal.
                 </p>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="grid grid-cols-1 md:grid-cols-4">
-            <div class="col-span-4 space-y-8">
-                <section>
-                    <div class="mb-8">
-                        <h1
-                            class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white flex items-center gap-2"
-                        >
-                            <AcademicCapIcon class="w-6 h-6 text-blue-600" />
-                            Sections you're teaching in.
-                        </h1>
-                    </div>
-
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+        <div class="space-y-8">
+            <!-- Sections list -->
+            <section>
+                <div class="mb-6">
+                    <h2
+                        class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2"
                     >
-                        <div
-                            v-for="section in instructor.sections"
-                            :key="section.id"
-                            class="transition duration-300 transform hover:-translate-y-1 hover:shadow-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 space-y-5"
-                        >
-                        
+                        <UserGroupIcon class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        Sections you're teaching in
+                    </h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Quick access to student rosters, grades, and sessions for each section.</p>
+                </div>
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                >
+                    <div
+                        v-for="section in instructor.sections"
+                        :key="section.id"
+                        class="group transition duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-2xl p-6 flex flex-col justify-between"
+                    >
+                        <div class="space-y-4">
                             <!-- Section Header -->
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h3
-                                        class="text-xl font-semibold text-gray-900 dark:text-white"
+                                        class="text-lg font-bold text-gray-900 dark:text-white"
                                     >
                                         {{ section.name }}
                                     </h3>
                                     <span
-                                        class="text-xs text-gray-500 dark:text-gray-400"
+                                        class="text-[10px] uppercase font-semibold tracking-wider text-gray-400 dark:text-gray-500"
                                         >Section Code</span
                                     >
                                 </div>
                                 <span
-                                    class="text-xs font-semibold text-white bg-blue-600 rounded-full px-3 py-1"
+                                    class="text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 rounded-full px-2.5 py-1"
                                 >
                                     {{ section.code }}
                                 </span>
@@ -111,174 +146,141 @@ onMounted(createChart);
 
                             <!-- Program & Track Info -->
                             <div
-                                class="text-sm text-gray-700 dark:text-gray-300 space-y-1"
+                                class="text-xs text-gray-700 dark:text-gray-300 space-y-2 pt-2 border-t border-gray-100 dark:border-gray-700/60"
                             >
                                 <p class="flex items-center gap-2">
                                     <BookmarkIcon
-                                        class="w-4 h-4 text-gray-500"
+                                        class="w-4 h-4 text-gray-400 dark:text-gray-500"
                                     />
-                                    <strong>Program:</strong>
-                                    {{ section.program?.name }} ({{
-                                        section.program?.code
-                                    }})
+                                    <span><strong>Program:</strong> {{ section.program?.name }}</span>
                                 </p>
                                 <p class="flex items-center gap-2">
                                     <BookmarkIcon
-                                        class="w-4 h-4 text-gray-500"
+                                        class="w-4 h-4 text-gray-400 dark:text-gray-500"
                                     />
-                                    <strong>Track:</strong>
-                                    {{ section.track?.name }} ({{
-                                        section.track?.code
-                                    }})
+                                    <span><strong>Track:</strong> {{ section.track?.name }}</span>
                                 </p>
-                                <p>
-                                    <strong>Year Level:</strong>
-                                    {{ section.yearLevel }}
-                                </p>
-                                <p>
-                                    <strong>Semester:</strong>
-                                    {{ section.semester?.level }}
-                                </p>
+                                <div class="flex gap-4 pt-1 font-semibold text-gray-500">
+                                    <p>Year: <span class="text-gray-800 dark:text-gray-200">{{ section.yearLevel }}</span></p>
+                                    <p>Semester: <span class="text-gray-800 dark:text-gray-200">{{ section.semester?.level }}</span></p>
+                                </div>
                             </div>
-
-                            <!-- View Details Button -->
-                            <Link
-                                :href="
-                                    route('instructor.sections.detail', {
-                                        section: section.id,
-                                    })
-                                "
-                                class="group inline-flex items-center justify-center w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-                            >
-                                <ArrowRightIcon
-                                    class="w-4 h-4 mr-2 text-white transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                                View Details
-                            </Link>
                         </div>
-                    </div>
-                </section>
 
-                <!-- Teaching Courses -->
-                <section>
+                        <!-- View Details Button -->
+                        <Link
+                            :href="
+                                route('instructor.sections.detail', {
+                                    section: section.id,
+                                })
+                            "
+                            class="inline-flex items-center justify-center w-full mt-5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition space-x-2"
+                        >
+                            <span>Open Section</span>
+                            <ArrowRightIcon
+                                class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                            />
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Teaching Courses -->
+            <section>
+                <div class="mb-6">
                     <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
+                        class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2"
                     >
+                        <AcademicCapIcon class="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                         Courses You’re Teaching
                     </h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">View information and details on your current course offerings.</p>
+                </div>
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                >
                     <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                        v-for="course in instructor.courses"
+                        :key="course.id"
+                        class="group p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-lg transition flex flex-col justify-between"
                     >
-                        <div
-                            v-for="course in instructor.courses"
-                            :key="course.id"
-                            class="p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all flex flex-col justify-between h-full"
-                        >
+                        <div class="space-y-3">
+                            <div class="p-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg inline-block">
+                                <AcademicCapIcon class="h-6 w-6" />
+                            </div>
                             <div>
-                                <AcademicCapIcon
-                                    class="h-6 w-6 text-indigo-500 mb-2"
-                                />
                                 <h3
-                                    class="text-lg font-semibold text-gray-700 dark:text-gray-200"
+                                    class="text-md font-bold text-gray-800 dark:text-white line-clamp-1"
                                 >
                                     {{ course.name }}
                                 </h3>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400 mt-1"
-                                >
-                                    Sections:
-                                </p>
-                                <p
-                                    class="text-sm text-gray-600 dark:text-gray-400"
-                                >
-                                    Credits: 3
-                                </p>
+                                <p class="text-xs text-gray-400 font-semibold">{{ course.code }}</p>
                             </div>
-                            <Link
-                                :href="
-                                    route('instructor.courses.detail', {
-                                        course: course.id,
-                                    })
-                                "
-                                class="group inline-flex items-center justify-center w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-                            >
-                                <ArrowRightIcon
-                                    class="w-4 h-4 mr-2 text-white transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                                View Details
-                            </Link>
                         </div>
-                    </div>
-                </section>
 
+                        <Link
+                            :href="
+                                route('instructor.courses.detail', {
+                                    course: course.id,
+                                })
+                            "
+                            class="inline-flex items-center justify-center w-full mt-5 px-4 py-2 bg-gray-50 dark:bg-gray-700/40 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/20 hover:text-indigo-600 dark:hover:text-indigo-400 transition space-x-2"
+                        >
+                            <span>Course Outline</span>
+                            <ArrowRightIcon
+                                class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                            />
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedule and Chart Panels (Side by Side Grid) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Schedule Overview -->
-                <section>
-                    <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
-                    >
-                        Weekly Teaching Schedule
-                    </h2>
-                    <div
-                        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
-                    >
-                        <ul class="space-y-2">
-                            <li class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-300"
-                                    >Mon 10am - CS101</span
-                                >
-                                <span class="text-gray-500 dark:text-gray-400"
-                                    >Room 204</span
-                                >
+                <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                            <ClockIcon class="w-5 h-5 text-indigo-500" />
+                            Weekly Teaching Schedule
+                        </h2>
+                        <ul class="space-y-4 divide-y divide-gray-100 dark:divide-gray-700">
+                            <li class="flex justify-between items-center py-2">
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-gray-800 dark:text-white text-sm">CS101 - Intro to CS</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Monday @ 10:00 AM</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg">Room 204</span>
                             </li>
-                            <li class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-300"
-                                    >Wed 2pm - Math201</span
-                                >
-                                <span class="text-gray-500 dark:text-gray-400"
-                                    >Room 101</span
-                                >
+                            <li class="flex justify-between items-center py-2 pt-4">
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-gray-800 dark:text-white text-sm">Math201 - Linear Algebra</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Wednesday @ 2:00 PM</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg">Room 101</span>
                             </li>
-                            <li class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-300"
-                                    >Fri 11am - Physics303</span
-                                >
-                                <span class="text-gray-500 dark:text-gray-400"
-                                    >Room 303</span
-                                >
+                            <li class="flex justify-between items-center py-2 pt-4">
+                                <div class="flex flex-col">
+                                    <span class="font-semibold text-gray-800 dark:text-white text-sm">Physics303 - Classical Mechanics</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Friday @ 11:00 AM</span>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg">Room 303</span>
                             </li>
                         </ul>
                     </div>
                 </section>
 
-                <!-- Payroll Info -->
-                <!-- <section>
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Payroll Information</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div class="flex items-center gap-2 text-green-600">
-                <CurrencyDollarIcon class="w-6 h-6" />
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Paid</p>
-              </div>
-              <p class="mt-2 text-2xl font-bold text-green-500">$6,000.00</p>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div class="flex items-center gap-2 text-yellow-600">
-                <CurrencyDollarIcon class="w-6 h-6" />
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pending</p>
-              </div>
-              <p class="mt-2 text-2xl font-bold text-yellow-500">$1,200.00</p>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition">
-              <div class="flex items-center gap-2 text-gray-600">
-                <CalendarIcon class="w-6 h-6" />
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Payment</p>
-              </div>
-              <p class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">April 1, 2025</p>
-            </div>
-          </div>
-        </section> -->
+                <!-- Class Performance Overview (Bar Chart) -->
+                <section class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border dark:border-gray-700">
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <PresentationChartBarIcon class="w-5 h-5 text-blue-600" />
+                        Class Performance Analytics
+                    </h2>
+                    <div class="relative h-64 w-full">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </section>
             </div>
         </div>
     </AppLayout>

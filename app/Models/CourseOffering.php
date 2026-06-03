@@ -38,6 +38,23 @@ class CourseOffering extends Model
         return $this->hasMany(ClassSession::class);
     }
 
+    public function gradeSubmissionApprovedBy()
+    {
+        return $this->belongsTo(User::class, 'grade_submission_approved_by');
+    }
+
+    /** Grade submission is currently pending admin approval */
+    public function isGradeSubmissionPending(): bool
+    {
+        return $this->grade_submission_status === 'pending';
+    }
+
+    /** Grade submission has been approved — grades are locked */
+    public function isGradeSubmissionApproved(): bool
+    {
+        return $this->grade_submission_status === 'approved';
+    }
+
     public static function lookUpFor($courseId, $sectionId)
     {
         return CourseOffering::where('course_id', $courseId)->where('section_id', $sectionId)->with('section', 'course')->first();

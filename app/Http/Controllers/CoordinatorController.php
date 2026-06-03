@@ -125,18 +125,21 @@ class CoordinatorController extends Controller
 
     public function destroy(Coordinator $coordinator)
     {
-        // Check if the coordinator has associated users
-        if ($coordinator->user->hasRole('COORDINATOR')) {
-            return redirect()->route('coordinators.index')->with('error', 'Cannot delete coordinator with associated users.');
-        } elseif ($coordinator->center->students()->count() > 0) {
-            return redirect()->route('coordinators.index')->with('error', 'Cannot delete coordinator with associated students.');
-        } elseif ($coordinator->center->status === 'active') {
-            return redirect()->route('coordinators.index')->with('error', 'Cannot delete coordinator with an active center.');
-        } else {
-            $coordinator->delete();
-            $coordinator->user->delete(); // Delete the associated user
-
-            return redirect()->route('coordinators.index')->with('error', 'Cannot delete coordinator with associated data.');
+        // Block deletion while the center still has students assigned.
+        if ($coordinator->center && $coordinator->center->students()->count() > 0) {
+            return redirect()->route('coordinators.index')->with('error', 'Cannot delete a coordinator whose center still has students assigned.');
         }
+
+        // Block deletion while the center is active.
+        if ($coordinator->center && $coordinator->center->status === 'Active') {
+            return redirect()->route('coordinators.index')->with('error', 'Cannot delete a coordinator while their center is active.');
+        }
+
+        $user = $coordinator->user;
+
+        $coordinator->delete();
+        $user?->delete(); // Remove the user account created for this coordinator.
+
+        return redirect()->route('coordinators.index')->with('success', 'Coordinator deleted successfully.');
     }
 }

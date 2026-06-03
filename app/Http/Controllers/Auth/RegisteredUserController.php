@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Instructor;
 use App\Models\Student;
-use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
@@ -97,21 +96,12 @@ class RegisteredUserController extends Controller
             $email = $firstName.'.'.$secondName.'@sits.edu.et';
 
             // ID Generation
-            $userUuid = $this->userUuid($role, $model, $tenant_id = null);
+            $userUuid = $this->userUuid($role, $model);
 
             if ($userUuid) {
                 $fields['uuid'] = $userUuid;
             }
 
-            if ($tenant_id == null) {
-                $tenant = Tenant::first();
-            } else {
-                $tenant = Tenant::find($tenant_id);
-            }
-            if (! $tenant) {
-
-                return redirect(route('tenants.create'));
-            }
             // Fields Form fill
 
             $fields = [
@@ -119,33 +109,13 @@ class RegisteredUserController extends Controller
                 'user_uuid' => $userUuid,
                 'phone' => $request->contact_phone,
                 'email' => $email,
-                'tenant_id' => $tenant->id,
+                'tenant_id' => 1,
                 'password' => Hash::make($request['password']),
                 'default_password' => $request['default_password'],
             ];
 
-            // TENANT-ADMIN User
-            if ($role == 'TENANT-ADMIN') {
-
-                $user = User::create($fields);
-                
-                // Profile Image Handling
-                $profile_img = $this->saveProfileImage($request, $user);
-
-                $parent->update([
-                    'user_id' => $user->id,
-                ]);
-
-                $user->assignRole('TENANT-ADMIN');
-
-                event(new Registered($user));
-
-                return redirect(route('tenants.show', $user->tenant_id))->with('success', 'Tenant created successfully.');
-
-            }
-
             // Instructor User
-            elseif ($role == 'INSTRUCTOR') {
+            if ($role == 'INSTRUCTOR') {
                 $user = User::create($fields);
                 
                 // Profile Image Handling         
@@ -189,36 +159,23 @@ class RegisteredUserController extends Controller
         }
     }
 
-    public function userUuid($role, $type, $tenant_id = null)
+    public function userUuid($role, $type)
     {
         $userUuid = null;
 
-        if ($tenant_id == null) {
-            $tenant = Tenant::first();
-        } else {
-            $tenant = Tenant::find($tenant_id);
-        }
-        if (! $tenant) {
+        $prefix = config('app.institution_code');
+        $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-            return redirect(route('tenants.create'));
-
-        } else {
-
-            $year = substr(Carbon::now()->year, -2); // get current year's last two digits
-
-            if ($role == 'TENANT-ADMIN') {
-                $userUuid = $tenant->name.'-'.substr($role, 0, 2).'-'.str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-            } elseif ($role == 'ADMIN') {
-                $userUuid = $tenant->name.'-'.substr($role, 0, 2).'-'.str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-            } elseif ($role == 'INSTRUCTOR') {
-                $userUuid = $tenant->name.'-'.substr($role, 0, 2).'-'.str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
-            } elseif ($role == 'STUDENT') {
-                $userUuid = $tenant->name.'-'.$year.'-'.substr($role, 0, 2).'-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
-            } elseif ($role == 'USER') {
-                $userUuid = $tenant->name.'-'.substr($role, 0, 2).'-'.str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
-            } elseif ($role != null) {
-                $userUuid = $tenant->name.'-'.substr('EMPLOYEE', 0, 2).'-'.str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
-            }
+        if ($role == 'ADMIN') {
+            $userUuid = $prefix.'-'.substr($role, 0, 2).'-'.str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+        } elseif ($role == 'INSTRUCTOR') {
+            $userUuid = $prefix.'-'.substr($role, 0, 2).'-'.str_pad(Instructor::count() + 1, 3, '0', STR_PAD_LEFT);
+        } elseif ($role == 'STUDENT') {
+            $userUuid = $prefix.'-'.$year.'-'.substr($role, 0, 2).'-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+        } elseif ($role == 'USER') {
+            $userUuid = $prefix.'-'.substr($role, 0, 2).'-'.str_pad(User::count() + 1, 4, '0', STR_PAD_LEFT);
+        } elseif ($role != null) {
+            $userUuid = $prefix.'-'.substr('EMPLOYEE', 0, 2).'-'.str_pad(Employee::count() + 1, 3, '0', STR_PAD_LEFT);
         }
 
         return $userUuid;

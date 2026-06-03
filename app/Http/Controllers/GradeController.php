@@ -6,6 +6,7 @@ use App\Http\Requests\GradeUpdateRequest;
 use App\Models\CourseOffering;
 use App\Models\Enrollment;
 use App\Models\Grade;
+use App\Models\GradeAuditLog;
 use App\Models\Student;
 use App\Models\Weight;
 use App\Models\Year;
@@ -47,6 +48,7 @@ class GradeController extends Controller
             'grades.*.section_id' => 'required|integer',
             'grades.*.course_id' => 'required|integer',
         ]);
+
         $data['grades'] = array_map(fn($grade) => array_merge($grade, [
             'user_id' => Auth::id(),
         ]), $data['grades']);
@@ -65,13 +67,19 @@ class GradeController extends Controller
                     throw new \Exception('The sum of the weights must be 100.');
                 }
 
-                // Set the 'completed' column of the section's course offering to 1
-                DB::table('course_offerings')
-                    ->where('course_id', $gradeData['course_id'])
-                    ->where('section_id', $gradeData['section_id'])
-                    ->update(['completed' => 1]);
-                
-                Grade::updateOrCreate(
+                $existingGrade = Grade::where([
+                    'student_id' => $gradeData['student_id'],
+                    'course_id' => $gradeData['course_id'],
+                    'section_id' => $gradeData['section_id'],
+                    'year_id' => $gradeData['year_id'],
+                    'semester_id' => $gradeData['semester_id'],
+                ])->first();
+
+                if ($existingGrade && $existingGrade->is_locked) {
+                    throw new \Exception('Cannot modify grades that are approved and locked.');
+                }
+
+                $grade = Grade::updateOrCreate(
                     [
                         'student_id' => $gradeData['student_id'],
                         'course_id' => $gradeData['course_id'],
@@ -82,8 +90,22 @@ class GradeController extends Controller
                     $gradeData
                 );
 
-                $student = Student::findOrFail($gradeData['student_id']);
+                // Create initial audit log entry
+                GradeAuditLog::create([
+                    'grade_id' => $grade->id,
+                    'student_id' => $gradeData['student_id'],
+                    'course_id' => $gradeData['course_id'],
+                    'section_id' => $gradeData['section_id'],
+                    'changed_by' => Auth::id(),
+                    'change_type' => 'initial',
+                    'old_grade_point' => null,
+                    'old_grade_letter' => null,
+                    'new_grade_point' => $gradeData['grade_point'],
+                    'new_grade_letter' => $gradeData['grade_letter'],
+                    'notes' => 'Initial grade entry',
+                ]);
 
+                $student = Student::findOrFail($gradeData['student_id']);
                 $enrollment = $student->enrollments()
                     ->whereHas(
                         'courseOffering',
@@ -107,8 +129,6 @@ class GradeController extends Controller
 
             return back()->withErrors(['weights' => $e->getMessage()]);
         }
-
-        return redirect()->back()->with('success', 'Grade created successfully.');
     }
 
     public function show(Grade $grade)
@@ -127,16 +147,21 @@ class GradeController extends Controller
 
     public function update(GradeUpdateRequest $request, Grade $grade)
     {
+        if ($grade->is_locked) {
+            return redirect()->back()->withErrors(['grade' => 'Cannot modify grades that are approved and locked.']);
+        }
+
         $fields = $request->validated();
 
         $data = [
             'changed_by' => Auth::user()->id,
             'changed_grade' => $fields['changed_grade'] ?? null,
+            'changed_letter' => $fields['changed_letter'] ?? null,
             'grade_comment' => $fields['grade_comment'] ?? null,
             'grade_letter' => $fields['changed_letter'] ?? $grade->grade_letter,
             'grade_point' => $fields['changed_grade'] ?? $grade->grade_point,
         ];
-        
+
         $grade->update($data);
 
         return redirect()->back()->with('success', 'Grade updated successfully.');
@@ -163,6 +188,118 @@ class GradeController extends Controller
         ]);
     }
 
+    /**
+     * Instructor requests grade submission for a course offering.
+     */
+    public function requestGradeSubmission(Request $request, CourseOffering $courseOffering)
+    {
+        // Ensure not already submitted or approved
+        if ($courseOffering->grade_submission_status === 'approved') {
+            return back()->with('error', 'Grades have already been approved and locked.');
+        }
+
+        if ($courseOffering->grade_submission_status === 'pending') {
+            return back()->with('info', 'Grade submission is already pending admin approval.');
+        }
+
+        $courseOffering->update([
+            'grade_submission_status' => 'pending',
+            'grade_submission_requested_at' => now(),
+        ]);
+
+        return back()->with('success', 'Grade submission requested successfully. Awaiting admin/registrar approval.');
+    }
+
+    /**
+     * Admin/Registrar approves grade submission — locks all grades.
+     */
+    public function approveGradeSubmission(Request $request, CourseOffering $courseOffering)
+    {
+        $request->validate(['notes' => 'nullable|string|max:500']);
+
+        DB::beginTransaction();
+        try {
+            $courseOffering->update([
+                'grade_submission_status' => 'approved',
+                'grade_submission_approved_at' => now(),
+                'grade_submission_approved_by' => Auth::id(),
+                'grade_submission_notes' => $request->notes,
+                'completed' => 1,
+            ]);
+
+            // Lock all grades for this course offering
+            Grade::where('course_id', $courseOffering->course_id)
+                ->where('section_id', $courseOffering->section_id)
+                ->update(['is_locked' => true, 'grade_status' => 'Approved']);
+
+            // Create audit log entries for all grades
+            $grades = Grade::where('course_id', $courseOffering->course_id)
+                ->where('section_id', $courseOffering->section_id)
+                ->get();
+
+            foreach ($grades as $grade) {
+                GradeAuditLog::create([
+                    'grade_id' => $grade->id,
+                    'student_id' => $grade->student_id,
+                    'course_id' => $grade->course_id,
+                    'section_id' => $grade->section_id,
+                    'changed_by' => Auth::id(),
+                    'change_type' => 'submission',
+                    'old_grade_point' => $grade->grade_point,
+                    'old_grade_letter' => $grade->grade_letter,
+                    'new_grade_point' => $grade->grade_point,
+                    'new_grade_letter' => $grade->grade_letter,
+                    'notes' => 'Grade submission approved by admin/registrar',
+                ]);
+            }
+
+            DB::commit();
+            return back()->with('success', 'Grades approved and locked successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to approve grades: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Admin/Registrar rejects grade submission request.
+     */
+    public function rejectGradeSubmission(Request $request, CourseOffering $courseOffering)
+    {
+        $request->validate(['notes' => 'nullable|string|max:500']);
+
+        $courseOffering->update([
+            'grade_submission_status' => 'rejected',
+            'grade_submission_notes' => $request->notes,
+        ]);
+
+        return back()->with('success', 'Grade submission rejected. Instructor can revise and resubmit.');
+    }
+
+    /**
+     * Admin/Registrar toggles grades_submitable status for a semester.
+     */
+    public function toggleSemesterGradesSubmitable(\App\Models\Semester $semester)
+    {
+        $semester->update([
+            'grades_submitable' => !$semester->grades_submitable
+        ]);
+
+        return back()->with('success', 'Semester grade submission window toggled successfully.');
+    }
+
+    /**
+     * Admin/Registrar toggles grades_submitable status for a specific course offering.
+     */
+    public function toggleCourseOfferingGradesSubmitable(CourseOffering $courseOffering)
+    {
+        $courseOffering->update([
+            'grades_submitable' => !$courseOffering->grades_submitable
+        ]);
+
+        return back()->with('success', 'Section course assessment grade submission window toggled successfully.');
+    }
+
     // Store Student Grade
     public function storeStudentGrade(Request $request, Student $student)
     {
@@ -170,17 +307,16 @@ class GradeController extends Controller
             'course_id' => 'required|exists:courses,id',
             'grade_letter' => 'required|string|max:2',
             'grade_point' => 'required|numeric|min:0|max:100',
-                ]);
+        ]);
 
         $courseOffering = CourseOffering::where('course_id', $fields['course_id'])
-                                        ->where('section_id', $student->section_id)
-                                        ->with('course', 'section.studyMode.semesters', 'instructor')
-                                        ->get()->keyBy(function ($item) {
-                                            // Create a unique key for lookup if needed, or just get the first one
-                                            return $item->section_id;
-                                        })->first();
-        $year = Year::where('name', $student->year->name + $courseOffering->year_level - 1)->first();
+            ->where('section_id', $student->section_id)
+            ->with('course', 'section.studyMode.semesters', 'instructor')
+            ->get()->keyBy(function ($item) {
+                return $item->section_id;
+            })->first();
 
+        $year = Year::where('name', $student->year->name + $courseOffering->year_level - 1)->first();
         $semester = $year->semesters->where('level', $courseOffering->semester_level)->first();
 
         $enrollment = $student->enrollments()
@@ -201,7 +337,7 @@ class GradeController extends Controller
                 ]
             );
         }
-        
+
         $data = [
             'student_id' => $student->id,
             'course_id' => $fields['course_id'],
@@ -214,7 +350,6 @@ class GradeController extends Controller
             'semester_id' => $semester->id ?? null,
             'year_id' => $semester->year_id ?? null,
             'section_id' => $student->section_id ?? null,
-
         ];
 
         try {
@@ -243,7 +378,5 @@ class GradeController extends Controller
 
             return back()->withErrors(['weights' => $e->getMessage()]);
         }
-
-        return redirect()->back()->with('success', 'Grade created successfully.');
     }
 }

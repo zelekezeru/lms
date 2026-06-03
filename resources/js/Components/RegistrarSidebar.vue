@@ -67,6 +67,12 @@ const wrapperClasses = computed(() => {
                     :href="route('registrar.dashboard')"
                     :isCollapsed="!isOpen"
                 />
+                <SidebarItem
+                    :icon="ChartBarIcon"
+                    label="Reports"
+                    :href="route('registrar.reports')"
+                    :isCollapsed="!isOpen"
+                />
                 <SidebarDropdownMenu
                     label="Calendar Structure"
                     :icon="ClockIcon"
@@ -185,6 +191,12 @@ const wrapperClasses = computed(() => {
                     :icon="UsersIcon"
                     :sidebar-visible="isOpen"
                 >
+                    <SidebarItem
+                        :icon="UserGroupIcon"
+                        label="Student Directory"
+                        :href="route('registrar.students')"
+                        :isCollapsed="!isOpen"
+                    />
                     <SidebarItem
                         :icon="UsersIcon"
                         :label="$t('sidebar.all_students')"

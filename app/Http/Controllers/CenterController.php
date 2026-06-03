@@ -15,6 +15,7 @@ use App\Models\Program;
 use App\Models\Section;
 use App\Models\User;
 use App\Models\Student;
+use App\Models\StudyMode;
 use App\Models\Track;
 use Illuminate\Http\Request;
 
@@ -89,13 +90,10 @@ class CenterController extends Controller
             ->unique('id')
             ->values();
 
-        $importableCourses = Program::findOrFail(11)
-            ->tracks()
-            ->with(['courses' => function ($query) {
-                $query->orderBy('name');
-            }])
-            ->first()
-            ?->courses ?? collect();
+        // Courses available for result import at this center: prefer the courses
+        // assigned to the center, otherwise fall back to the courses in the
+        // center students' curriculum tracks.
+        $importableCourses = $courses->isNotEmpty() ? $courses->values() : $allCourses;
 
         if ($center->coordinator) {
             $coordinator = new CoordinatorResource($center->coordinator->load('user'));
@@ -165,12 +163,7 @@ class CenterController extends Controller
             // Check if the center has an associated coordinator
             return redirect()->route('centers.index')->with('error', 'Cannot delete center with an associated coordinator.');
         } else {
-            // Delete the center record
-            $center->students()->detach(); // Detach all students from the center
-            $center->coordinator()->dissociate(); // Dissociate the coordinator
-            $center->image = null; // Clear the image field
-            $center->save(); // Save the changes before deletion
-            // Finally, delete the center
+            // No students and no coordinator at this point — safe to delete.
             $center->delete();
 
             return redirect()->route('centers.index')->with('success', 'Center deleted successfully.');
@@ -197,17 +190,9 @@ class CenterController extends Controller
             'centers' => $centers,
             'totalStudents' => $totalStudents,
             'totalCoordinators' => $totalCoordinators,
-        ]);
-    }
-
-    public function distanceStudents()
-    {
-        $students = StudentResource::collection(
-            Student::where('study_mode', 'distance')->get()
-        );
-
-        return inertia('Centers/DistanceStudents', [
-            'students' => $students,
+            // Id of the DISTANCE study mode, so the dashboard can deep-link to the
+            // filtered student directory (students.index?study_mode=<id>).
+            'distanceStudyModeId' => StudyMode::where('name', 'DISTANCE')->value('id'),
         ]);
     }
 }

@@ -7,7 +7,6 @@ use App\Http\Requests\StudentStoreRequest;
 use App\Http\Requests\StudentUpdateRequest;
 use App\Models\Status;
 use App\Models\Student;
-use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class StudentRegistrationController extends Controller
 
         // Generate student-specific data
         $fields['id_no'] = $this->student_id();
-        $fields['tenant_id'] = Tenant::first()->id; // Assign tenant ID
+        $fields['tenant_id'] = 1; // Default institution (vestigial multi-tenancy column)
         $student_email = $this->student_email($fields);
 
         // Create a new user for the student
@@ -212,9 +211,7 @@ class StudentRegistrationController extends Controller
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two di
 
-        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
-
-        $userUuid = 'SITS-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT).'-'.$year;
+        $userUuid = config('app.institution_code').'-'.str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT).'-'.$year;
 
         return $userUuid;
     }

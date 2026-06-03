@@ -64,7 +64,8 @@ class Student extends Model
                 'courseOffering.classSchedules.courseOffering.course',
                 'courseOffering.classSchedules.courseOffering.instructor',
                 'courseOffering.classSchedules.courseOffering.section.track',
-                'courseOffering.classSchedules.courseOffering.section.studyMode'
+                'courseOffering.classSchedules.courseOffering.section.studyMode',
+                'courseOffering.classSchedules.room'
             )
             ->get()
             ->pluck('courseOffering.classSchedules')
@@ -78,7 +79,8 @@ class Student extends Model
                 'courseOffering.classSessions.courseOffering.course',
                 'courseOffering.classSessions.courseOffering.instructor',
                 'courseOffering.classSessions.courseOffering.section.track',
-                'courseOffering.classSessions.courseOffering.section.studyMode'
+                'courseOffering.classSessions.courseOffering.section.studyMode',
+                'courseOffering.classSessions.room'
             )
             ->get()
             ->pluck('courseOffering.classSessions')

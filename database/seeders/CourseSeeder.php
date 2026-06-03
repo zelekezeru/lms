@@ -13,10 +13,22 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('courses')->insert(array_map(function ($course) {
-            $course['created_at'] = Carbon::now();
-            $course['updated_at'] = Carbon::now();
-            return $course;
+        DB::table('courses')->insert(array_map(function ($row) {
+            return [
+                'name' => $row[0],
+                'code' => $row[1],
+                'credit_hours' => $row[2],
+                'duration' => $row[3],
+                'description' => $row[4],
+                'is_training' => $row[5],
+                'status' => $row[6],
+                'is_deleted' => $row[7],
+                'is_published' => $row[8],
+                'is_approved' => $row[9],
+                'is_completed' => $row[10],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
         }, 
         [
             ['OBBS101 OT Survey (ብሉይ ኪዳን ዳሰሳ ጥናት)', 'CR/068', 3, 4, 'BBS101 OT Survey (ብሉይ ኪዳን ዳሰሳ ጥናት)', 0, 1, 0, 0, 0, 0, '2025-08-10 17:29:09', '2025-08-10 18:46:49'],

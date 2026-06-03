@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { AcademicCapIcon } from "@heroicons/vue/24/solid";
 import { router } from "@inertiajs/vue3";
 import Overview from "./Tabs/Overview.vue";
@@ -38,7 +38,7 @@ const props = defineProps({
 });
 
 const showMobileNav = ref(false);
-const activeTab = ref(route().params.tab ?? "Overview");
+const activeTab = ref(route().params.tab ?? "overview");
 
 const rightMenu = [
     { name: "Overview", key: "overview", icon: AcademicCapIcon },
@@ -46,6 +46,8 @@ const rightMenu = [
     { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
     { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
 ];
+
+const course = computed(() => props.enrollment.courseOffering?.course || props.enrollment.course);
 
 const changeTab = (tabName) => {
     activeTab.value = tabName;
@@ -148,32 +150,23 @@ const changeTab = (tabName) => {
                 <!-- Main Content -->
                 <div class="flex-1">
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl shadow py-6 px-0 sm:px-1 sm:py-2 space-y-4"
+                        class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4"
                     >
-                        <p>
-                            <strong>Description:</strong>
-                            {{
-                                enrollment.course.description ||
-                                "No description available."
-                            }}
-                        </p>
-                        <p>
-                            <strong>Instructor:</strong>
-                            {{ enrollment.instructor.name }}
-                        </p>
-                        <p>
-                            <strong>Course Taken In :</strong>
-                            {{ enrollment.section.name }}
-                            <span class="ml-1 text-gray-500 text-xs"
-                                >({{ enrollment.section.track.name }}
-                                Track)
-                                {{ enrollment.section.studyMode.name }}
+                        <div>
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Instructor</span>
+                            <span class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-1 block">{{ enrollment.instructor?.name || 'TBA' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Section & Track</span>
+                            <span class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-1 block">
+                                {{ enrollment.section?.name || 'N/A' }} 
+                                <span class="text-xs text-gray-400 font-normal">({{ enrollment.section?.track?.name || 'N/A' }} Track)</span>
                             </span>
-                        </p>
-                        <p>
-                            <strong>Credits:</strong>
-                            {{ enrollment.course.credit_hours }}
-                        </p>
+                        </div>
+                        <div>
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Study Mode</span>
+                            <span class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-1 block">{{ enrollment.section?.studyMode?.name || 'N/A' }}</span>
+                        </div>
                     </div>
 
                     <!-- Tab Contents -->

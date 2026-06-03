@@ -46,13 +46,23 @@ class WeightController extends Controller
     {
         $fields = $request->validated();
 
+        // Enforce total weight ≤ 100 on backend
+        $existingTotal = Weight::where('course_id', $fields['course_id'])
+            ->where('section_id', $fields['section_id'])
+            ->where('semester_id', $fields['semester_id'])
+            ->sum('point');
+
+        if ($existingTotal + floatval($fields['point']) > 100) {
+            return back()->withErrors(['point' => 'Total assessment weights cannot exceed 100%.']);
+        }
+
         $instructorId = CourseOffering::where('course_id', $fields['course_id'])
             ->where('section_id', $fields['section_id'])
             ->first()
-            ->instructor_id;
-        $fields['instructor_id'] = $instructorId ?? Auth::id(); // Set the instructor_id to the authenticated user's ID if there is no instructor
+            ?->instructor_id;
+        $fields['instructor_id'] = $instructorId ?? Auth::id();
 
-        $weight = Weight::create($fields);
+        Weight::create($fields);
 
         return redirect()->back()->with('success', 'Weight created successfully.');
     }
@@ -83,10 +93,26 @@ class WeightController extends Controller
             'sections' => $sections,
         ]);
     }
-    
+
     public function update(WeightUpdateRequest $request, Weight $weight)
     {
+        // Guard: cannot edit if results exist for this weight
+        if ($weight->results()->count() > 0) {
+            return back()->withErrors(['point' => 'Cannot edit this assessment weight because student results are already recorded against it. Delete the results first.']);
+        }
+
         $fields = $request->validated();
+
+        // Enforce total weight ≤ 100 on backend (exclude current weight from total)
+        $otherTotal = Weight::where('course_id', $weight->course_id)
+            ->where('section_id', $weight->section_id)
+            ->where('semester_id', $weight->semester_id)
+            ->where('id', '!=', $weight->id)
+            ->sum('point');
+
+        if ($otherTotal + floatval($fields['point']) > 100) {
+            return back()->withErrors(['point' => 'Total assessment weights cannot exceed 100%.']);
+        }
 
         $weight->update($fields);
 
@@ -95,18 +121,14 @@ class WeightController extends Controller
 
     public function destroy(Weight $weight)
     {
-        // Check if the weight has associated course offerings
-        if ($weight->courseOfferings()->count() > 0) {
-            return redirect()->route('weights.index')->with('error', 'Cannot delete weight with associated course offerings.');
-        } elseif ($weight->status === 'active') {
-            return redirect()->route('weights.index')->with('error', 'Cannot delete an active weight.');
-        } elseif ($weight->results()->count() > 0) {
-            return redirect()->route('weights.index')->with('error', 'Cannot delete a weight with results.');
-        } 
-        else {
-            $weight->delete();
-            return redirect()->route('weights.index')->with('error', 'Cannot delete a weight with associated data.');
+        // Guard: cannot delete if results exist for this weight
+        if ($weight->results()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete this assessment weight because student results are already recorded against it. Delete the results first.');
         }
+
+        $weight->delete();
+
+        return redirect()->back()->with('success', 'Weight deleted successfully.');
     }
 
     public function search(Request $request)
@@ -117,7 +139,7 @@ class WeightController extends Controller
             ->orWhere('point', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")
             ->with(['instructor', 'year', 'semester', 'course'])
-            ->paginate(30); // Ensure pagination is used
+            ->paginate(30);
 
         return inertia('Weights/Index', [
             'weights' => $weights,

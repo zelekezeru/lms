@@ -12,17 +12,16 @@ class CoordinatorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'userId' => $this->user->user_uuid,
-            'email' => $this->email,
+            // Identity fields live on the related user.
+            'name' => $this->user?->name,
+            'userId' => $this->user?->user_uuid,
+            'email' => $this->user?->email,
+            'phone' => $this->user?->phone,
             'center' => new CenterResource($this->whenLoaded('center')),
             'user' => new UserResource($this->whenLoaded('user')),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
-
-            'user' => new UserResource($this->whenLoaded('user')),
-
-            'profileImg' => Storage::url($this->user->profile_img),
+            'profileImg' => $this->user?->profile_img ? Storage::url($this->user->profile_img) : null,
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Institution Code
+    |--------------------------------------------------------------------------
+    |
+    | Short code used as the prefix for generated user, student and employee
+    | identifiers (e.g. "SITS" in "SITS-SUP-2003-25").
+    |
+    */
+
+    'institution_code' => env('INSTITUTION_CODE', 'SITS'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

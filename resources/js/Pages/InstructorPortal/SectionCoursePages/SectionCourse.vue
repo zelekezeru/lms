@@ -1,12 +1,22 @@
 <script setup>
 import { ref } from "vue";
-import { AcademicCapIcon } from "@heroicons/vue/24/solid";
+import {
+    AcademicCapIcon,
+    UsersIcon,
+    ClipboardDocumentCheckIcon,
+    BookOpenIcon,
+    CheckCircleIcon,
+    MegaphoneIcon,
+    CalendarIcon,
+    ClockIcon
+} from "@heroicons/vue/24/solid";
 import { router } from "@inertiajs/vue3";
 import Overview from "./Tabs/Overview.vue";
 import Attendance from "./Tabs/Attendance.vue";
 import Assessments from "./Tabs/Assessments.vue";
 import Students from "./Tabs/Students.vue";
 import Announcements from "./Tabs/Announcments.vue";
+import GradeBook from "./Tabs/GradeBook.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ClassSchedules from "./Tabs/ClassSchedules.vue";
 import ClassSessions from "./Tabs/ClassSessions.vue";
@@ -71,10 +81,13 @@ const activeTab = ref(route().params.tab ?? "Overview");
 
 const rightMenu = [
     { name: "Overview", key: "overview", icon: AcademicCapIcon },
-    { name: "Students", key: "students", icon: AcademicCapIcon },
-    { name: "Assessments", key: "assessments", icon: AcademicCapIcon },
-    { name: "Class Schedules", key: "classSchedules", icon: AcademicCapIcon },
-    { name: "Class Sessions", key: "classSessions", icon: AcademicCapIcon },
+    { name: "Students", key: "students", icon: UsersIcon },
+    { name: "Assessments", key: "assessments", icon: ClipboardDocumentCheckIcon },
+    { name: "Grade Book", key: "gradeBook", icon: BookOpenIcon },
+    { name: "Attendance", key: "attendance", icon: CheckCircleIcon },
+    { name: "Announcements", key: "announcements", icon: MegaphoneIcon },
+    { name: "Class Schedules", key: "classSchedules", icon: CalendarIcon },
+    { name: "Class Sessions", key: "classSessions", icon: ClockIcon },
 ];
 
 const changeTab = (tabName) => {
@@ -251,7 +264,29 @@ const changeTab = (tabName) => {
                         />
                         <Attendance
                             v-if="activeTab === 'attendance'"
-                            :attendanceRecords="attendanceRecords"
+                            :course="course"
+                            :section="section"
+                            :students="students"
+                            :class-sessions="classSessions"
+                            :active-semester="semester"
+                        />
+                        <GradeBook
+                            v-if="activeTab === 'gradeBook'"
+                            :course="course"
+                            :section="section"
+                            :semester="semester"
+                            :instructor="instructor"
+                            :weights="weights"
+                            :grades="grades"
+                            :students="students"
+                            :studentResults="studentResults"
+                            :courseOffering="courseOffering"
+                        />
+                        <Announcements
+                            v-if="activeTab === 'announcements'"
+                            :courseOffering="courseOffering"
+                            :course="course"
+                            :instructor="instructor"
                         />
                     </div>
                 </div>

@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('semesters', function (Blueprint $table) {
+            $table->boolean('grades_submitable')->default(false)->after('is_completed');
+        });
+
+        Schema::table('course_offerings', function (Blueprint $table) {
+            $table->boolean('grades_submitable')->default(false)->after('completed');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('semesters', function (Blueprint $table) {
+            $table->dropColumn('grades_submitable');
+        });
+
+        Schema::table('course_offerings', function (Blueprint $table) {
+            $table->dropColumn('grades_submitable');
+        });
+    }
+};

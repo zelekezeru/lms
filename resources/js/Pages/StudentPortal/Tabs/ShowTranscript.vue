@@ -4,6 +4,7 @@ import { Head, Link } from "@inertiajs/vue3";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { ArrowDownTrayIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
     student: { type: Object, required: true },
@@ -92,7 +93,7 @@ function exportPDF() {
         format: "a4",
     });
     const student = props.student;
-    const semesters = sortedSemeters.value;
+    const semesters = sortedSemesters.value;
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const marginLeft = 14;
@@ -316,13 +317,15 @@ function exportPDF() {
             </div>
         </h1>
 
-        <!-- <Link
-            as="button"
-            @click="exportPDF"
-            class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
-        >
-            Export PDF
-        </Link> -->
+        <div class="flex justify-end mb-6">
+            <button
+                @click="exportPDF"
+                class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl shadow-sm hover:shadow-md transition duration-200"
+            >
+                <ArrowDownTrayIcon class="w-4 h-4" />
+                Export Official Transcript PDF
+            </button>
+        </div>
 
         <div
             class="mb-4 text-sm text-gray-600 dark:text-gray-300 grid sm:grid-cols-2 gap-x-8 gap-y-1"
@@ -339,49 +342,53 @@ function exportPDF() {
             <p><strong>Study Mode:</strong> {{ student.studyMode?.name }}</p>
         </div>
 
-        <div v-for="(semester, index) in sortedSemesters" :key="index" class="mb-8">
+        <div v-for="(semester, index) in sortedSemesters" :key="index" class="mb-8 bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-sm">
             <h2
-                class="text-lg font-semibold text-green-700 dark:text-green-400 mb-2"
+                class="text-lg font-bold text-indigo-650 dark:text-indigo-400 mb-4 flex items-center justify-between"
             >
-                {{ semester.year?.name ?? "Unknown Year" }} -
-                {{ semester.name ?? "Unknown Semester" }}
+                <span>
+                    {{ semester.year?.name ?? "Unknown Year" }} -
+                    {{ semester.name ?? "Unknown Semester" }}
+                </span>
+                <span class="text-sm bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full font-bold">
+                    GPA: {{ calculateGPA(semester.grades, student.id) }}
+                </span>
             </h2>
 
-            <div v-if="semester.grades.length > 0">
+            <div v-if="semester.grades.length > 0" class="overflow-x-auto rounded-xl border border-gray-150 dark:border-gray-700">
                 <table
-                    class="min-w-full border rounded bg-white dark:bg-gray-800 shadow"
+                    class="w-full text-left"
                 >
                     <thead
-                        class="bg-gray-100 dark:bg-gray-700 text-sm font-semibold text-gray-800 dark:text-gray-200"
+                        class="bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                     >
                         <tr>
-                            <th class="px-4 py-2 text-left">Course Code</th>
-                            <th class="px-4 py-2 text-left">Course Name</th>
-                            <th class="px-4 py-2 text-center">Credit</th>
-                            <th class="px-4 py-2 text-center">Grade Letter</th>
-                            <th class="px-4 py-2 text-right">Points</th>
+                            <th class="px-4 py-3">Course Code</th>
+                            <th class="px-4 py-3">Course Name</th>
+                            <th class="px-4 py-3 text-center">Credit</th>
+                            <th class="px-4 py-3 text-center">Grade Letter</th>
+                            <th class="px-4 py-3 text-right">Points</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-150 dark:divide-gray-700/50">
                         <tr
-                            v-for="(grade, i) in semester.grades.filter(
+                            v-for="grade in semester.grades.filter(
                                 (g) => g.student_id == student.id
                             )"
                             :key="grade.id"
-                            :class="
-                                i % 2 == 0
-                                    ? 'bg-white dark:bg-gray-800'
-                                    : 'bg-gray-50 dark:bg-gray-700'
-                            "
-                            class="text-sm text-gray-900 dark:text-gray-100"
+                            class="text-sm text-gray-855 dark:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-700/20 transition duration-150"
                         >
-                            <td class="px-4 py-2">{{ grade.course?.code }}</td>
-                            <td class="px-4 py-2">{{ grade.course?.name }}</td>
-                            <td class="px-4 py-2 text-center">
+                            <td class="px-4 py-3.5 font-semibold">{{ grade.course?.code }}</td>
+                            <td class="px-4 py-3.5">{{ grade.course?.name }}</td>
+                            <td class="px-4 py-3.5 text-center">
                                 {{ grade.course?.credit_hours }}
                             </td>
-                            <td class="px-4 py-2 text-center">{{ grade.grade_letter }}</td>
-                            <td class="px-4 py-2 text-right">
+                            <td class="px-4 py-3.5 text-center">
+                                <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+                                    {{ grade.grade_letter }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3.5 text-right font-medium">
                                 {{
                                     (
                                         getGradePointFromLetter(
@@ -395,60 +402,24 @@ function exportPDF() {
                     </tbody>
                     <tfoot>
                         <tr
-                            class="bg-gray-50 dark:bg-gray-800 text-sm font-semibold"
+                            class="bg-gray-50 dark:bg-gray-700/30 text-sm font-semibold border-t border-gray-200 dark:border-gray-700"
                         >
-                            <td class="px-4 py-2 text-right" colspan="3">
-                                <span class="text-gray-700 dark:text-gray-300">
-                                    Semester Totals:
-                                </span>
+                            <td class="px-4 py-3 text-right text-gray-400" colspan="3">
+                                Summary:
                             </td>
-                            <td class="px-4 py-2 text-right">
-                                <p class="text-gray-700 dark:text-gray-300">
-                                    Total Credits:
-                                    <span class="text-green-700 dark:text-green-400">
-                                    {{
-                                        semester.grades
-                                            .filter((g) => g.student_id == student.id)
-                                            .reduce(
-                                                (acc, g) =>
-                                                    acc + parseFloat(g.course?.credit_hours || 0),
-                                                0
-                                            )
-                                    }}
-                                    </span>
-                                </p>
-                                <p class="text-gray-700 dark:text-gray-300">
+                            <td class="px-4 py-3">
+                                <p class="text-xs text-gray-400 font-semibold uppercase">
                                     Semester GPA:
-                                    <span class="text-green-700 dark:text-green-400">
+                                    <span class="text-sm font-bold text-gray-800 dark:text-gray-200 block mt-0.5">
                                         {{ calculateGPA(semester.grades, student.id) }}
                                     </span>
                                 </p>
-                                
                             </td>
-                            <td class="px-4 py-2 text-right">
-                                <p class="text-gray-700 dark:text-gray-300">
-                                    Total Points:
-                                    <span class="text-green-700 dark:text-green-400">
-                                    {{
-                                        semester.grades
-                                            .filter((g) => g.student_id == student.id)
-                                            .reduce(
-                                                (acc, g) =>
-                                                    acc +
-                                                    getGradePointFromLetter(
-                                                        parseFloat(g.grade_point) || 0
-                                                    ) *
-                                                        parseFloat(g.course?.credit_hours || 0),
-                                                0
-                                            )
-                                            .toFixed(2)
-                                    }}
-                                    </span>
-                                </p>
-                                <p class="text-gray-700 dark:text-gray-300">
+                            <td class="px-4 py-3 text-right">
+                                <p class="text-xs text-gray-400 font-semibold uppercase">
                                     Cumulative GPA:
-                                    <span class="text-green-700 dark:text-green-400">
-                                    {{ cumulativeGPAList[index]?.cumulativeGPA || "0.00" }}
+                                    <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400 block mt-0.5">
+                                        {{ cumulativeGPAList[index]?.cumulativeGPA || "0.00" }}
                                     </span>
                                 </p>
                             </td>
@@ -456,10 +427,9 @@ function exportPDF() {
                     </tfoot>
                 </table>
             </div>
-            <div v-else class="italic text-gray-500 dark:text-gray-400">
+            <div v-else class="italic text-gray-500 dark:text-gray-400 text-center py-6">
                 No grades available for this semester.
             </div>
         </div>
-
-        </AppLayout>
+    </AppLayout>
 </template>

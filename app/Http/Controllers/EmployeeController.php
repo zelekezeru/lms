@@ -8,7 +8,6 @@ use App\Http\Requests\EmployeeUpdateRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\UserResource;
 use App\Models\Employee;
-use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -168,9 +167,9 @@ class EmployeeController extends Controller
     {
         $year = substr(Carbon::now()->year, -2); // get current year's last two digits
 
-        $tenant = substr(Tenant::first()->name, -1); // get the first tenant name
+        $prefix = substr(config('app.institution_code'), -1); // last char of the institution code
 
-        $userUuid = $tenant . '/EM/' . str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
+        $userUuid = $prefix . '/EM/' . str_pad(Employee::where()->count() + 1, 3, '0', STR_PAD_LEFT) . '/' . $year;
 
         return $userUuid;
     }

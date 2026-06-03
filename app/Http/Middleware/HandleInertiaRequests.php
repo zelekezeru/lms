@@ -40,9 +40,11 @@ class HandleInertiaRequests extends Middleware
                     'profileImg' => $request->user()->profile_img ? Storage::url($request->user()->profile_img) : null,
                     'loggedInAs' => function () use ($request) {
                         if (! $request->user()->loggedInAs) {
-                            $request->user()->active_role_id = $request->user()->roles->first()->id;
-                            $request->user()->save();
-
+                            $firstRole = $request->user()->roles->first();
+                            if ($firstRole) {
+                                $request->user()->active_role_id = $firstRole->id;
+                                $request->user()->save();
+                            }
                             return $request->user()->loggedInAs;
                         }
 

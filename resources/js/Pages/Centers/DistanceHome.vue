@@ -20,6 +20,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    distanceStudyModeId: {
+        type: [Number, null],
+        default: null,
+    },
 });
 
 function confirmDelete(center) {
@@ -112,7 +116,7 @@ function confirmDelete(center) {
                     class=""
                 >
                     <Link
-                        :href="route('students.index', { study_mode: DISTANCE })"
+                        :href="route('students.index', { study_mode: distanceStudyModeId })"
                         class="flex flex-col items-start bg-white dark:bg-gray-800 rounded-xl p-4 shadow border border-blue-100 dark:border-gray-700 
                                 bg-gradient-to-br from-green-400 via-teal-400 to-blue-400 rounded-xl shadow-lg p-6 flex flex-col items-center justify-between transition hover:scale-105 hover:shadow-2xl duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400"
                     >

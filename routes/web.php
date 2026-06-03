@@ -9,6 +9,7 @@ use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\CenterController;
 use App\Http\Controllers\FinancePortalController;
+use App\Http\Controllers\GradeComplaintController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportController;
@@ -115,7 +116,11 @@ Route::middleware(['auth'])->group(function () {
         // Registrar Dashboard
         Route::get('/', [RegistrarPortalController::class, 'index'])->name('registrar.dashboard');
 
-        Route::get('students', [RegistrarPortalController::class, 'sectionCourseStudents'])->name('registrar.students');
+        // Student directory (search / filter / sort / paginate)
+        Route::get('students', [RegistrarPortalController::class, 'students'])->name('registrar.students');
+
+        // Academic reports & follow-up
+        Route::get('reports', [RegistrarPortalController::class, 'reports'])->name('registrar.reports');
     });
 
 
@@ -239,8 +244,42 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
     Route::post('students/{student}/grades', [GradeController::class, 'storeStudentGrade'])->name('students.grades');
 
+    // Grade Submission Workflow
+    Route::post('/grade-submission/request/{courseOffering}', [GradeController::class, 'requestGradeSubmission'])->name('grade.submission.request');
+    Route::post('/grade-submission/{courseOffering}/approve', [GradeController::class, 'approveGradeSubmission'])->name('grade.submission.approve');
+    Route::post('/grade-submission/{courseOffering}/reject', [GradeController::class, 'rejectGradeSubmission'])->name('grade.submission.reject');
+
+    // Grade Complaint Workflow
+    Route::post('/grade-complaints', [GradeComplaintController::class, 'store'])->name('grade.complaints.store');
+    Route::post('/grade-complaints/{gradeComplaint}/approve', [GradeComplaintController::class, 'approve'])->name('grade.complaints.approve');
+    Route::post('/grade-complaints/{gradeComplaint}/reject', [GradeComplaintController::class, 'reject'])->name('grade.complaints.reject');
+    Route::post('/grade-complaints/{gradeComplaint}/improve', [GradeComplaintController::class, 'improve'])->name('grade.complaints.improve');
+
+    // Grade Submission Toggles & Window Configuration
+    Route::post('/grade-submission/toggle-semester/{semester}', [GradeController::class, 'toggleSemesterGradesSubmitable'])->name('grade.submission.toggle-semester');
+    Route::post('/grade-submission/toggle-offering/{courseOffering}', [GradeController::class, 'toggleCourseOfferingGradesSubmitable'])->name('grade.submission.toggle-offering');
+
+    // Admin/Registrar: Grade Submission Management Page
+    Route::get('/grade-submissions', function () {
+        $offerings = \App\Models\CourseOffering::with(['course', 'section.semester', 'instructor.user', 'gradeSubmissionApprovedBy'])
+            ->orderByDesc('created_at')
+            ->get();
+        $semesters = \App\Models\Semester::with('year')->orderByDesc('created_at')->get();
+        return inertia('Admin/GradeSubmissions/Index', [
+            'offerings' => $offerings,
+            'semesters' => $semesters,
+        ]);
+    })->name('grade.submissions.index');
+
+    // Admin/Registrar: Grade Complaint Management Page
+    Route::get('/grade-complaints-management', function () {
+        $complaints = \App\Models\GradeComplaint::with([
+            'grade', 'student', 'course', 'section', 'filedByUser', 'reviewedByUser'
+        ])->orderByDesc('created_at')->get();
+        return inertia('Admin/GradeSubmissions/GradeComplaintManagement', ['complaints' => $complaints]);
+    })->name('grade.complaints.index');
+
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
-    Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');
     Route::post('/centers/{center}/courses/assign', [AssignmentController::class, 'assignCoursesToCenter'])->name('center-courses.assign');
 
     // Additional Payment Management Routes
@@ -261,7 +300,6 @@ Route::middleware(['auth'])->group(function () {
         'inventoryCategories' => 'inventoryCategory',
         'instructors' => 'instructor',
         'userDocuments' => 'userDocument',
-        'tenants' => 'tenant',
         'studyModes' => 'studyMode',
         'users' => 'user',
         'years' => 'year',

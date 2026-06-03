@@ -224,8 +224,8 @@ class InstructorPortalController extends Controller
         $course = new CourseResource($course);
         $section = new SectionResource($section->load(['user', 'program', 'track', 'students', 'grades']));
         $semester = Semester::where('status', 'Active')->first()->load(['year']); // Current Active semester
-        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->get();
-        $grades = $section->grades()->where('course_id', $course->id)->with('student')->get();
+        $weights = $course->weights()->where('semester_id', $semester->id)->where('course_id', $course->id)->where('section_id', $section->id)->with('results')->withCount('results')->get();
+        $grades = $section->grades()->where('course_id', $course->id)->with('student', 'complaints.filedByUser')->get();
 
         $studentsUnformatted =
             $courseOffering->enrollments->where('status', 'enrolled')->pluck('student');

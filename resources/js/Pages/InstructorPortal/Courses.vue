@@ -4,6 +4,7 @@ import {
     AcademicCapIcon,
     ClockIcon,
     UserGroupIcon,
+    ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 import { Link } from "@inertiajs/vue3";
 
@@ -24,7 +25,7 @@ const props = defineProps({
                 My Courses
             </h1>
             <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                Courses you're teaching in different sections.
+                Courses you're teaching in different sections during this academic semester.
             </p>
         </div>
 
@@ -32,76 +33,59 @@ const props = defineProps({
             <div
                 v-for="course in instructor.courses"
                 :key="course.id"
-                class="p-5 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition"
+                class="group p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700/80 rounded-2xl shadow-sm hover:shadow-lg transition flex flex-col justify-between"
             >
-                <div class="flex items-center gap-3 mb-2">
-                    <AcademicCapIcon class="w-6 h-6 text-indigo-500" />
-                    <div>
-                        <h2
-                            class="text-lg font-semibold text-gray-800 dark:text-white"
-                        >
-                            {{ course.name }}
-                        </h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            {{ course.code }}
-                        </p>
+                <div>
+                    <!-- Course Header -->
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl">
+                            <AcademicCapIcon class="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h2
+                                class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition"
+                            >
+                                {{ course.name }}
+                            </h2>
+                            <p class="text-xs font-semibold text-gray-400 tracking-wider">
+                                {{ course.code }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="mt-4 space-y-3 pt-3 border-t border-gray-100 dark:border-gray-700/60 text-xs text-gray-600 dark:text-gray-300">
+                        <div class="flex items-center gap-2">
+                            <UserGroupIcon class="w-4 h-4 text-emerald-500" />
+                            <span>{{ course.enrolled ?? "N/A" }} students enrolled</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <ClockIcon class="w-4 h-4 text-amber-500" />
+                            <span>Credits: <strong class="text-gray-800 dark:text-gray-200">{{ course.credit_hours || 3 }}</strong></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-3 space-y-2">
-                    <div
-                        class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-                    >
-                        <UserGroupIcon class="w-4 h-4 text-emerald-500" />
-                        {{ course.enrolled ?? "N/A" }} students enrolled
+                <!-- Footer Section Count & Actions -->
+                <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700/60 space-y-4">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <span class="text-gray-400">Assigned Sections</span>
+                        <span class="px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                            {{ course.sectionsCount }} section{{ course.sectionsCount === 1 ? "" : "s" }}
+                        </span>
                     </div>
-                    <div
-                        class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-                    >
-                        <ClockIcon class="w-4 h-4 text-amber-500" />
-                        {{ course.calendar ?? "N/A" }}
-                    </div>
-                </div>
 
-                <div class="mt-4 flex justify-between">
                     <Link
                         :href="
                             route('instructor.courses.detail', {
                                 course: course.id,
                             })
                         "
-                        class="text-sm px-4 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                        class="inline-flex items-center justify-center w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition space-x-2"
                     >
-                        View
+                        <span>View Course Details</span>
+                        <ArrowRightIcon class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
-                    <button
-                        class="text-sm px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                    >
-                        Manage
-                    </button>
-                </div>
-
-                <div class="mt-5 border-t pt-4">
-                    <h3
-                        class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                    >
-                        Sections
-                    </h3>
-
-                    <div class="mt-5 border-t pt-4">
-                        <h3
-                            class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                        >
-                            Sections
-                        </h3>
-
-                        <div class="text-gray-700 dark:text-gray-300 text-sm">
-                            {{ course.sectionsCount }} section{{
-                                course.sectionsCount === 1 ? "" : "s"
-                            }}
-                            assigned
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

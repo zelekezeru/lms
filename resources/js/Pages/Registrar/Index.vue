@@ -1,47 +1,96 @@
 <script setup>
-import { usePage } from "@inertiajs/vue3";
 import {
     AcademicCapIcon,
     UserGroupIcon,
     ClipboardDocumentCheckIcon,
-    Cog6ToothIcon,
     CheckCircleIcon,
     UserPlusIcon,
-    GlobeAltIcon
+    GlobeAltIcon,
+    PresentationChartLineIcon,
+    ExclamationTriangleIcon,
+    GiftIcon,
+    UsersIcon,
+    BookOpenIcon,
+    CalendarDaysIcon,
+    ChartBarIcon,
 } from "@heroicons/vue/24/outline";
 import { ref, onMounted } from "vue";
+import { Link } from "@inertiajs/vue3";
 import Chart from "chart.js/auto";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import en from "@/lang/locales/en";
 
 const props = defineProps({
-    programs: { type: Array, required: true },
     user: { type: Object, required: true },
-    totalStudents: { type: Number, required: true },
-    totalCourses: { type: Number, required: true },
-    enrollments: { type: Object, required: true },
-    courseDistribution: { type: Object, required: true },
-    availablePrograms: { type: Number, required: true },
-    availableCenters: { type: Number, required: true },
-    recentActivities: { type: Array, required: true },
+    totalStudents: { type: Number, default: 0 },
+    totalCourses: { type: Number, default: 0 },
+    totalInstructors: { type: Number, default: 0 },
+    availablePrograms: { type: Number, default: 0 },
+    availableCenters: { type: Number, default: 0 },
+    activeStudents: { type: Number, default: 0 },
+    graduatedStudents: { type: Number, default: 0 },
+    scholarshipStudents: { type: Number, default: 0 },
+    pendingPaymentStudents: { type: Number, default: 0 },
+    unassignedStudents: { type: Number, default: 0 },
+    enrollments: { type: Object, default: () => ({ labels: [], data: [] }) },
+    courseDistribution: { type: Object, default: () => ({ labels: [], data: [] }) },
+    studyModeDistribution: { type: Object, default: () => ({ labels: [], data: [] }) },
+    recentActivities: { type: Array, default: () => [] },
 });
 
 // Chart refs
 const studentsChart = ref(null);
 const coursesChart = ref(null);
+const studyModeChart = ref(null);
+
+// Headline metric cards
+const metrics = [
+    { label: "Total Students", value: props.totalStudents, icon: UserGroupIcon, color: "text-blue-600" },
+    { label: "Total Courses", value: props.totalCourses, icon: AcademicCapIcon, color: "text-green-600" },
+    { label: "Available Programs", value: props.availablePrograms, icon: ClipboardDocumentCheckIcon, color: "text-purple-600" },
+    { label: "Distance Centers", value: props.availableCenters, icon: GlobeAltIcon, color: "text-orange-600" },
+];
+
+// Follow-up cards (actionable). Some link to a filtered student directory.
+const followUps = [
+    { label: "Active Students", value: props.activeStudents, icon: CheckCircleIcon, ring: "bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-300", href: route("registrar.students", { statuses: ["active"] }) },
+    { label: "Pending Payment", value: props.pendingPaymentStudents, icon: ExclamationTriangleIcon, ring: "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300", href: route("registrar.students", { payment: "pending" }) },
+    { label: "Scholarship", value: props.scholarshipStudents, icon: GiftIcon, ring: "bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300", href: route("registrar.students", { payment: "is_scholarship" }) },
+    { label: "Graduated", value: props.graduatedStudents, icon: AcademicCapIcon, ring: "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300", href: route("registrar.students", { statuses: ["graduated"] }) },
+    { label: "Unassigned to Section", value: props.unassignedStudents, icon: UsersIcon, ring: "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-300", href: route("registrar.students") },
+    { label: "Instructors", value: props.totalInstructors, icon: PresentationChartLineIcon, ring: "bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-300", href: route("instructors.index") },
+];
+
+// Quick actions
+const quickActions = [
+    { label: "Student Directory", icon: UsersIcon, href: route("registrar.students"), color: "from-blue-600 to-blue-400" },
+    { label: "Reports", icon: ChartBarIcon, href: route("registrar.reports"), color: "from-purple-600 to-purple-400" },
+    { label: "Manage Courses", icon: BookOpenIcon, href: route("courses.index"), color: "from-green-600 to-green-400" },
+    { label: "Manage Sections", icon: AcademicCapIcon, href: route("sections.index"), color: "from-amber-600 to-amber-400" },
+    { label: "Manage Semesters", icon: CalendarDaysIcon, href: route("semesters.index"), color: "from-rose-600 to-rose-400" },
+    { label: "Add Student", icon: UserPlusIcon, href: route("students.create"), color: "from-teal-600 to-teal-400" },
+];
+
+const palette = [
+    "rgba(34,197,94,0.7)",
+    "rgba(139,92,246,0.7)",
+    "rgba(234,179,8,0.7)",
+    "rgba(59,130,246,0.7)",
+    "rgba(244,63,94,0.7)",
+    "rgba(14,165,233,0.7)",
+];
 
 onMounted(() => {
-    // Students Enrollment Chart (Bar)
+    // Enrollment trend (bar)
     if (studentsChart.value) {
         new Chart(studentsChart.value, {
             type: "bar",
             data: {
-                labels: [props.enrollments.labels[0], props.enrollments.labels[1], props.enrollments.labels[2], props.enrollments.labels[3], props.enrollments.labels[4], props.enrollments.labels[5]],
+                labels: props.enrollments.labels,
                 datasets: [
                     {
                         label: "New Students",
-                        data: [props.enrollments.data[0], props.enrollments.data[1], props.enrollments.data[2], props.enrollments.data[3], props.enrollments.data[4], props.enrollments.data[5]],
-                        backgroundColor: "rgba(37, 99, 235, 0.7)", // blue-600
+                        data: props.enrollments.data,
+                        backgroundColor: "rgba(37, 99, 235, 0.7)",
                         borderRadius: 6,
                     },
                 ],
@@ -49,208 +98,195 @@ onMounted(() => {
             options: {
                 responsive: true,
                 plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 50 } },
-                },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
             },
         });
     }
 
-    // Courses Distribution Pie Chart
+    // Course distribution (doughnut)
     if (coursesChart.value) {
         new Chart(coursesChart.value, {
             type: "doughnut",
             data: {
-                labels: props.courseDistribution.labels.map(label => label),
+                labels: props.courseDistribution.labels,
                 datasets: [
                     {
                         label: "Courses",
-                        data: props.courseDistribution.data.map(item => item),
-                        backgroundColor: [
-                            "rgba(34,197,94, 0.7)", // green-500
-                            "rgba(139,92,246, 0.7)", // purple-500
-                            "rgba(234,179,8, 0.7)", // yellow-400
-                            "rgba(59,130,246, 0.7)", // blue-500
-                        ],
-                        hoverOffset: 30,
+                        data: props.courseDistribution.data,
+                        backgroundColor: palette,
+                        hoverOffset: 20,
                         borderWidth: 0,
                     },
                 ],
             },
-
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { position: "bottom", labels: { color: "#fff" } },
-                },
+                plugins: { legend: { position: "bottom" } },
+            },
+        });
+    }
+
+    // Study mode distribution (horizontal bar)
+    if (studyModeChart.value) {
+        new Chart(studyModeChart.value, {
+            type: "bar",
+            data: {
+                labels: props.studyModeDistribution.labels,
+                datasets: [
+                    {
+                        label: "Students",
+                        data: props.studyModeDistribution.data,
+                        backgroundColor: palette,
+                        borderRadius: 6,
+                    },
+                ],
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
             },
         });
     }
 });
 
-// Sample recent activities with icons & badges
-const recentActivities = props.recentActivities.map(activity => ({
-    icon:
-        activity.type === "New Student"
-            ? UserPlusIcon
-            : activity.type === "Registered new Instructor"
-            ? UserPlusIcon
-            : activity.type === "Created new grade"
-            ? CheckCircleIcon
-            : UserPlusIcon, // fallback icon
-    text: `${activity.type}: ${activity.name}`,
-    time: activity.created_at
-        ? new Date(activity.created_at).toLocaleString()
-        : "",
-    badge:
-        activity.type === "Created new grade"
-            ? "Success"
-            : "New",
-}));
+const iconFor = (type) =>
+    type === "Created new grade" ? CheckCircleIcon : UserPlusIcon;
+
+const formatTime = (value) =>
+    value ? new Date(value).toLocaleString() : "";
+
+const badgeFor = (type) =>
+    type === "Created new grade" ? "Success" : "New";
 </script>
 
 <template>
     <AppLayout>
-        <h1 class="text-2xl font-extrabold mb-6 text-gray-900 dark:text-white">
-            Welcome, {{ user.name }}
-        </h1>
-        
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-            <div
-                class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.03] transition-transform cursor-default"
-            >
-                <UserGroupIcon class="w-10 h-10 text-blue-600" />
-                <div>
-                    <p
-                        class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
-                    >
-                        Total Students
-                    </p>
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ totalStudents }}
-                    </h2>
-                </div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div>
+                <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white">
+                    Welcome, {{ user.name }}
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Registrar dashboard — manage students, academics and reporting.
+                </p>
             </div>
-            <div
-                class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.03] transition-transform cursor-default"
+            <Link
+                :href="route('registrar.reports')"
+                class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-purple-400 px-4 py-2 text-sm font-semibold text-white shadow hover:from-purple-700 hover:to-purple-500 transition"
             >
-                <AcademicCapIcon class="w-10 h-10 text-green-600" />
-                <div>
-                    <p
-                        class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
-                    >
-                        Total Courses
-                    </p>
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ totalCourses }}
-                    </h2>
-                </div>
-            </div>
+                <ChartBarIcon class="w-5 h-5" />
+                View Reports
+            </Link>
+        </div>
+
+        <!-- Headline Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
             <div
-                class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.03] transition-transform cursor-default"
+                v-for="metric in metrics"
+                :key="metric.label"
+                class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.02] transition-transform"
             >
-                <ClipboardDocumentCheckIcon class="w-10 h-10 text-purple-600" />
+                <component :is="metric.icon" class="w-10 h-10" :class="metric.color" />
                 <div>
-                    <p
-                        class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
-                    >
-                        Available Programs
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide">
+                        {{ metric.label }}
                     </p>
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ availablePrograms }}
-                    </h2>
-                </div>
-            </div>
-            <div
-                class="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-lg flex items-center gap-4 transform hover:scale-[1.03] transition-transform cursor-default"
-            >
-                <GlobeAltIcon class="w-10 h-10 text-orange-600" />
-                <div>
-                    <p
-                        class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold tracking-wide"
-                    >
-                        Distance Centers
-                    </p>
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-white"
-                    >
-                        {{ availableCenters }}
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        {{ metric.value }}
                     </h2>
                 </div>
             </div>
         </div>
 
-        <!-- Charts Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <section
-                class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg"
+        <!-- Follow-up Cards -->
+        <h3 class="text-sm font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
+            Follow-up
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+            <Link
+                v-for="item in followUps"
+                :key="item.label"
+                :href="item.href"
+                class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow flex flex-col gap-2 hover:shadow-md hover:-translate-y-0.5 transition"
             >
+                <span class="w-9 h-9 rounded-full flex items-center justify-center" :class="item.ring">
+                    <component :is="item.icon" class="w-5 h-5" />
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ item.value }}</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400 leading-tight">{{ item.label }}</span>
+            </Link>
+        </div>
+
+        <!-- Quick Actions -->
+        <h3 class="text-sm font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
+            Quick Actions
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+            <Link
+                v-for="action in quickActions"
+                :key="action.label"
+                :href="action.href"
+                class="flex flex-col items-center justify-center gap-2 rounded-2xl p-4 text-white text-center font-semibold text-sm shadow bg-gradient-to-br hover:opacity-90 transition"
+                :class="action.color"
+            >
+                <component :is="action.icon" class="w-7 h-7" />
+                {{ action.label }}
+            </Link>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg">
                 <h3 class="font-bold text-gray-900 dark:text-white mb-4">
                     Student Enrollments (Last 6 months)
                 </h3>
-                <canvas ref="studentsChart" class="w-full h-48"></canvas>
+                <canvas ref="studentsChart" class="w-full"></canvas>
             </section>
 
-            <section
-                class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg"
-            >
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg">
                 <h3 class="font-bold text-gray-900 dark:text-white mb-4">
                     Courses Distribution
                 </h3>
-                <canvas ref="coursesChart" class="w-full h-48"></canvas>
+                <canvas ref="coursesChart" class="w-full"></canvas>
             </section>
 
-            <section
-                class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg overflow-y-auto max-h-72"
-            >
+            <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg">
                 <h3 class="font-bold text-gray-900 dark:text-white mb-4">
-                    Recent Activity
+                    Students by Study Mode
                 </h3>
-                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <li
-                        v-for="(activity, index) in recentActivities"
-                        :key="index"
-                        class="flex items-center justify-between py-3"
-                    >
-                        <div class="flex items-center gap-3">
-                            <component
-                                :is="activity.icon"
-                                class="w-6 h-6 text-blue-500 dark:text-blue-400"
-                            />
-                            <p
-                                class="text-gray-700 dark:text-gray-300 font-medium"
-                            >
-                                {{ activity.text }}
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span
-                                class="px-2 py-0.5 rounded-full text-xs font-semibold text-white"
-                                :class="{
-                                    'bg-green-500':
-                                        activity.badge === 'Success',
-                                    'bg-blue-500': activity.badge === 'New',
-                                    'bg-yellow-400':
-                                        activity.badge === 'Update',
-                                }"
-                            >
-                                {{ activity.badge }}
-                            </span>
-                            <time
-                                class="text-xs text-gray-400 dark:text-gray-500"
-                                >{{ activity.time }}</time
-                            >
-                        </div>
-                    </li>
-                </ul>
+                <canvas ref="studyModeChart" class="w-full"></canvas>
             </section>
         </div>
+
+        <!-- Recent Activity -->
+        <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+            <ul v-if="recentActivities.length" class="divide-y divide-gray-200 dark:divide-gray-700">
+                <li
+                    v-for="(activity, index) in recentActivities"
+                    :key="index"
+                    class="flex items-center justify-between py-3"
+                >
+                    <div class="flex items-center gap-3">
+                        <component :is="iconFor(activity.type)" class="w-6 h-6 text-blue-500 dark:text-blue-400" />
+                        <p class="text-gray-700 dark:text-gray-300 font-medium">
+                            {{ activity.type }}: {{ activity.name }}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="px-2 py-0.5 rounded-full text-xs font-semibold text-white"
+                            :class="badgeFor(activity.type) === 'Success' ? 'bg-green-500' : 'bg-blue-500'"
+                        >
+                            {{ badgeFor(activity.type) }}
+                        </span>
+                        <time class="text-xs text-gray-400 dark:text-gray-500">{{ formatTime(activity.created_at) }}</time>
+                    </div>
+                </li>
+            </ul>
+            <p v-else class="text-sm text-gray-500 dark:text-gray-400">No recent activity.</p>
+        </section>
     </AppLayout>
 </template>

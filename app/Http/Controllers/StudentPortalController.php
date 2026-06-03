@@ -26,12 +26,16 @@ class StudentPortalController extends Controller
                 'track',
                 'section',
                 'grades.course',
+                'grades.semester',
                 'enrollments' => function ($q) {
                     $q->where('status', 'enrolled')->where('academic_status', 'in_progress');
                 },
                 'enrollments.courseOffering',
                 'enrollments.courseOffering.section.track',
-                'enrollments.courseOffering.section.studyMode'
+                'enrollments.courseOffering.section.studyMode',
+                'payments.paymentMethod',
+                'payments.paymentType',
+                'payments.semester'
             ]
         ));
 
@@ -166,8 +170,18 @@ class StudentPortalController extends Controller
 
         $activeSemester = $enrollment->semester()->with('year')->first();
 
-        $classSchedules = ClassScheduleResource::collection($enrollment->courseOffering->classSchedules()->where('semester_id', $activeSemester->id)->get());
-        $classSessions = ClassSessionResource::collection($enrollment->courseOffering->classSessions()->where('semester_id', $activeSemester->id)->get());
+        $classSchedules = ClassScheduleResource::collection(
+            $enrollment->courseOffering->classSchedules()
+                ->where('semester_id', $activeSemester->id)
+                ->with('room', 'courseOffering.section.studyMode', 'courseOffering.course', 'courseOffering.instructor')
+                ->get()
+        );
+        $classSessions = ClassSessionResource::collection(
+            $enrollment->courseOffering->classSessions()
+                ->where('semester_id', $activeSemester->id)
+                ->with('room', 'courseOffering.course', 'courseOffering.instructor')
+                ->get()
+        );
 
 
         return Inertia::render('StudentPortal/Enrollments/Show', [
@@ -227,7 +241,7 @@ class StudentPortalController extends Controller
 
     public function profile()
     {
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section.year', 'user'));
 
         return inertia('StudentPortal/Profile', [
             'student' => $student,
@@ -237,7 +251,14 @@ class StudentPortalController extends Controller
     public function result()
     {
 
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+        $student = new StudentResource(request()->user()->student->load([
+            'program',
+            'track',
+            'section',
+            'grades.course',
+            'grades.semester',
+            'results.weight.course'
+        ]));
 
         return inertia('StudentPortal/StudentResults', [
             'student' => $student,
@@ -247,7 +268,14 @@ class StudentPortalController extends Controller
     public function payment()
     {
 
-        $student = new StudentResource(request()->user()->student->load('program', 'track', 'section'));
+        $student = new StudentResource(request()->user()->student->load([
+            'program',
+            'track',
+            'section',
+            'payments.paymentMethod',
+            'payments.paymentType',
+            'payments.semester'
+        ]));
 
         return inertia('StudentPortal/Payment', [
             'student' => $student,
@@ -270,7 +298,7 @@ class StudentPortalController extends Controller
 
         $semester = Semester::where('status', 'Active')->first();
 
-        $grades = $student->grades()->with('result', 'semester', 'course')->get();
+        $grades = $student->grades()->with(['result', 'semester', 'course', 'complaints'])->get();
 
         $results = $student->results()->with('weight', 'grade', 'semester', 'weight.course')->get();
 

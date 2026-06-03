@@ -41,6 +41,10 @@ const props = defineProps({
 });
 
 const showMobileNav = ref(false);
+const isDrawerOpen = ref(false);
+const toggleDrawer = () => {
+    isDrawerOpen.value = !isDrawerOpen.value;
+};
 
 const tabs = [
     { label: "Grades", key: "grades", icon: AcademicCapIcon },
@@ -60,7 +64,7 @@ const showResultsModal = ref(false);
 const showTranscriptsModal = ref(false);
 
 const changeTab = (tab) => {
-    activeTab.value = tab;
+    selectedTab.value = tab;
     showMobileNav.value = false;
 };
 </script>
@@ -135,8 +139,7 @@ const changeTab = (tab) => {
             <!-- 💻 Desktop Tab Nav (hidden on mobile) -->
             <nav
                 ref="tabNav"
-                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
-                :class="isOverflowing ? 'justify-start' : 'justify-center'"
+                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700 justify-start md:justify-center"
             >
                 <div class="flex space-x-4 min-w-max">
                     <button

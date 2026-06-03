@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, computed } from "vue";
 import { Link, router, useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -88,6 +88,24 @@ function hashPassword(password) {
     if (!password) return "";
     return "*".repeat(password.length);
 }
+
+// ── Transfer Credits ──────────────────────────────────────────────────
+const editingTransferCredits = ref(false);
+const transferCreditsForm = useForm({
+    transfer_credits: props.student.transferCredits ?? '',
+});
+
+const saveTransferCredits = () => {
+    transferCreditsForm.patch(
+        route('students.transfer-credits', { student: props.student.id }),
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                editingTransferCredits.value = false;
+            },
+        }
+    );
+};
 </script>
 
 <template>
@@ -314,6 +332,55 @@ function hashPassword(password) {
                             </span>
                         </div>
                         <!-- Closing the div for Default Password -->
+
+                        <!-- Transfer Credits -->
+                        <div class="flex flex-col col-span-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Transfer Credits</span>
+                            <div class="flex items-center gap-3 mt-1">
+                                <span
+                                    v-if="!editingTransferCredits"
+                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
+                                >
+                                    {{ student.transferCredits !== null && student.transferCredits !== undefined ? student.transferCredits : '—' }}
+                                </span>
+                                <template v-if="editingTransferCredits">
+                                    <input
+                                        v-model.number="transferCreditsForm.transfer_credits"
+                                        type="number"
+                                        min="0"
+                                        max="9999"
+                                        step="1"
+                                        class="w-28 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-indigo-500"
+                                        placeholder="0"
+                                    />
+                                    <PrimaryButton
+                                        @click="saveTransferCredits"
+                                        :disabled="transferCreditsForm.processing"
+                                        class="px-3 py-1 h-8 text-sm bg-green-500 hover:bg-green-600"
+                                    >
+                                        Save
+                                    </PrimaryButton>
+                                    <button
+                                        @click="editingTransferCredits = false; transferCreditsForm.reset()"
+                                        class="px-3 py-1 h-8 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <p v-if="transferCreditsForm.errors.transfer_credits" class="text-xs text-red-500">
+                                        {{ transferCreditsForm.errors.transfer_credits }}
+                                    </p>
+                                </template>
+                                <button
+                                    v-if="!editingTransferCredits && userCan('update-students')"
+                                    @click="editingTransferCredits = true; transferCreditsForm.transfer_credits = student.transferCredits ?? ''"
+                                    class="ml-1 text-indigo-600 hover:text-indigo-800"
+                                    title="Edit Transfer Credits"
+                                >
+                                    <PencilSquareIcon class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Closing the div for Transfer Credits -->
 
                         <!-- Create New Section Row -->
                         <transition

@@ -33,6 +33,7 @@ class StudentResource extends JsonResource
             'semesterId' => $this->semester_id,
 
             'paymentCode' => $this->payment_code,
+            'transferCredits' => $this->transfer_credits,
 
             'status' => $this->whenLoaded('status'),
             'church' => $this->whenLoaded('church'),

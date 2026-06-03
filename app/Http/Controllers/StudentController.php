@@ -693,4 +693,20 @@ class StudentController extends Controller
 
         return back()->with('success', 'Course marked as dropped successfully.');
     }
+
+    /**
+     * Update the transfer credits for a student.
+     */
+    public function updateTransferCredits(Request $request, Student $student): RedirectResponse
+    {
+        $request->validate([
+            'transfer_credits' => ['nullable', 'integer', 'min:0', 'max:9999'],
+        ]);
+
+        $student->update([
+            'transfer_credits' => $request->transfer_credits,
+        ]);
+
+        return back()->with('success', 'Transfer credits updated successfully.');
+    }
 }

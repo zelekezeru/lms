@@ -1,206 +1,176 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import {
-    AcademicCapIcon,
     CurrencyDollarIcon,
-    ClipboardDocumentListIcon,
-    BookOpenIcon,
-    ArrowPathIcon,
-    ChartBarIcon,
+    CheckCircleIcon,
+    ClockIcon,
+    ArrowDownTrayIcon,
+    ExclamationTriangleIcon,
     CalendarIcon,
-    CogIcon,
-    QuestionMarkCircleIcon,
 } from "@heroicons/vue/24/outline";
+import { CheckCircleIcon as CheckSolid } from "@heroicons/vue/24/solid";
+
+const props = defineProps({
+    student: { type: Object, required: false },
+    payments: { type: Array, default: () => [] },
+});
+
+// Compute totals from real data if available
+const paidPayments = props.payments.filter(p => p.status === 'completed' || p.status === 'paid');
+const pendingPayments = props.payments.filter(p => p.status === 'pending');
+
+const totalPaid = paidPayments.reduce((acc, p) => acc + parseFloat(p.amount ?? 0), 0);
+const totalPending = pendingPayments.reduce((acc, p) => acc + parseFloat(p.amount ?? 0), 0);
+const lastPayment = paidPayments.at(-1);
+
+const statusStyle = (status) => {
+    if (status === 'completed' || status === 'paid')
+        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400";
+    if (status === 'pending')
+        return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
+    return "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400";
+};
+
+const statusIcon = (status) => {
+    if (status === 'completed' || status === 'paid') return CheckSolid;
+    return ClockIcon;
+};
+
+const fmt = (val) => {
+    const n = parseFloat(val);
+    if (isNaN(n)) return '—';
+    return n.toLocaleString("en-US", { minimumFractionDigits: 2 });
+};
 </script>
 
 <template>
     <AppLayout>
-        <div class="space-y-6">
-            <!-- Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow flex items-center space-x-3"
-                >
-                    <AcademicCapIcon class="h-6 w-6 text-gray-500" />
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Total Paid
-                        </p>
-                        <p class="text-2xl font-bold text-green-500">
-                            $1,200.00
-                        </p>
-                    </div>
+        <div class="pb-24 md:pb-8 max-w-3xl mx-auto px-4 md:px-6 pt-4 space-y-5">
+
+            <!-- Header -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center">
+                    <CurrencyDollarIcon class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow flex items-center space-x-3"
-                >
-                    <CurrencyDollarIcon class="h-6 w-6 text-gray-500" />
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Balance Due
-                        </p>
-                        <p class="text-2xl font-bold text-red-500">$300.00</p>
-                    </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">Payments</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Your payment history &amp; status</p>
                 </div>
-                <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow flex items-center space-x-3"
-                >
-                    <ClipboardDocumentListIcon class="h-6 w-6 text-gray-500" />
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Last Payment
-                        </p>
-                        <p
-                            class="text-2xl font-bold text-gray-900 dark:text-gray-100"
-                        >
-                            April 1, 2025
-                        </p>
+            </div>
+
+            <!-- Summary banner -->
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-white/10 pointer-events-none"></div>
+
+                <p class="text-emerald-100 text-xs font-medium uppercase tracking-wider mb-1">Total Paid</p>
+                <p class="text-3xl font-bold mb-4">
+                    {{ fmt(totalPaid) }} <span class="text-lg font-normal text-emerald-200">ETB</span>
+                </p>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
+                        <p class="text-xs text-emerald-100 mb-0.5">Outstanding</p>
+                        <p class="font-bold text-lg">{{ fmt(totalPending) }}</p>
+                    </div>
+                    <div class="bg-white/15 rounded-xl p-3 backdrop-blur-sm">
+                        <p class="text-xs text-emerald-100 mb-0.5">Last Payment</p>
+                        <p class="font-bold text-sm">{{ lastPayment?.created_at?.split('T')[0] ?? '—' }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Upcoming Payments -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="flex items-center space-x-3">
-                        <BookOpenIcon class="h-6 w-6 text-gray-500" />
-                        <h2
-                            class="text-lg font-semibold text-gray-800 dark:text-gray-100"
-                        >
-                            Upcoming Payments
-                        </h2>
-                    </div>
-                    <button
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                    >
-                        Pay Now
-                    </button>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Next Due
-                        </p>
-                        <p class="text-base font-medium text-yellow-500">
-                            July 1, 2025
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Amount
-                        </p>
-                        <p
-                            class="text-base font-medium text-gray-800 dark:text-gray-100"
-                        >
-                            $300.00
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Payment Type
-                        </p>
-                        <p
-                            class="text-base font-medium text-gray-800 dark:text-gray-100"
-                        >
-                            Tuition
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Status
-                        </p>
-                        <p class="text-base font-medium text-orange-500">
-                            Pending
-                        </p>
-                    </div>
+            <!-- Pending alert -->
+            <div
+                v-if="pendingPayments.length"
+                class="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4"
+            >
+                <ExclamationTriangleIcon class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                    <p class="text-sm font-semibold text-amber-800 dark:text-amber-300">
+                        {{ pendingPayments.length }} pending payment{{ pendingPayments.length !== 1 ? 's' : '' }}
+                    </p>
+                    <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                        Total due: <strong>{{ fmt(totalPending) }} ETB</strong>. Please complete your payment to avoid enrollment suspension.
+                    </p>
                 </div>
             </div>
 
-            <!-- Payment History -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-                <div class="flex items-center space-x-3 mb-4">
-                    <ChartBarIcon class="h-6 w-6 text-gray-500" />
-                    <h2
-                        class="text-lg font-semibold text-gray-800 dark:text-gray-100"
+            <!-- Payment list -->
+            <section>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Payment History</h2>
+
+                <div v-if="payments.length" class="space-y-3">
+                    <div
+                        v-for="payment in [...payments].reverse()"
+                        :key="payment.id"
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden"
                     >
-                        Payment History
-                    </h2>
+                        <div class="flex items-center gap-4 p-4">
+                            <!-- Status icon -->
+                            <div
+                                :class="[
+                                    'w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
+                                    payment.status === 'completed' || payment.status === 'paid'
+                                        ? 'bg-emerald-100 dark:bg-emerald-900/30'
+                                        : 'bg-amber-100 dark:bg-amber-900/30',
+                                ]"
+                            >
+                                <component
+                                    :is="statusIcon(payment.status)"
+                                    :class="[
+                                        'w-5 h-5',
+                                        payment.status === 'completed' || payment.status === 'paid'
+                                            ? 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-amber-600 dark:text-amber-400',
+                                    ]"
+                                />
+                            </div>
+
+                            <!-- Info -->
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {{ payment.paymentType?.name ?? payment.type ?? 'Payment' }}
+                                </p>
+                                <div class="flex flex-wrap items-center gap-2 mt-1">
+                                    <span class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                        <CalendarIcon class="w-3.5 h-3.5" />
+                                        {{ payment.created_at?.split('T')[0] ?? payment.date ?? '—' }}
+                                    </span>
+                                    <span v-if="payment.paymentMethod?.name" class="text-xs text-gray-400">
+                                        · {{ payment.paymentMethod.name }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Amount + badge -->
+                            <div class="text-right shrink-0">
+                                <p
+                                    :class="[
+                                        'text-base font-bold',
+                                        payment.status === 'completed' || payment.status === 'paid'
+                                            ? 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-amber-600 dark:text-amber-400',
+                                    ]"
+                                >
+                                    {{ fmt(payment.amount) }}
+                                </p>
+                                <span :class="['text-xs font-medium rounded-full px-2 py-0.5 mt-1 inline-block', statusStyle(payment.status)]">
+                                    {{ payment.status }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table
-                        class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
-                    >
-                        <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th
-                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300"
-                                >
-                                    Date
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300"
-                                >
-                                    Amount
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300"
-                                >
-                                    Method
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300"
-                                >
-                                    Receipt
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody
-                            class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
-                        >
-                            <tr>
-                                <td
-                                    class="px-4 py-2 text-gray-800 dark:text-gray-100"
-                                >
-                                    25-jun
-                                </td>
-                                <td class="px-4 py-2 text-green-600">$2000</td>
-                                <td
-                                    class="px-4 py-2 text-gray-700 dark:text-gray-300"
-                                >
-                                    Credit
-                                </td>
-                                <td class="px-4 py-2">
-                                    <button
-                                        class="text-blue-600 hover:underline"
-                                    >
-                                        Download
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    class="px-4 py-2 text-gray-800 dark:text-gray-100"
-                                >
-                                    25-jun
-                                </td>
-                                <td class="px-4 py-2 text-green-600">$2000</td>
-                                <td
-                                    class="px-4 py-2 text-gray-700 dark:text-gray-300"
-                                >
-                                    Credit
-                                </td>
-                                <td class="px-4 py-2">
-                                    <button
-                                        class="text-blue-600 hover:underline"
-                                    >
-                                        Download
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- Empty state -->
+                <div v-else class="text-center py-12">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
+                        <CurrencyDollarIcon class="w-7 h-7 text-gray-400" />
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">No payment records found</p>
                 </div>
-            </div>
+            </section>
+
         </div>
     </AppLayout>
 </template>

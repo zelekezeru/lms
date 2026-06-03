@@ -169,7 +169,7 @@ async function exportPDF() {
         doc.text(`Student ID: ${student.idNo}`, infoCol1, infoY);
         doc.text(`Major: ${student.track?.name || "N/A"}`, infoCol2, infoY);
         infoY += 4;
-        doc.text(`Birth Date: ${student.dateOfBirth || "N/A"}`, infoCol1, infoY);
+        doc.text(`Transfer Credits: ${student.transferCredits || "N/A"}`, infoCol1, infoY);
         doc.text(`Graduation Date: ${student.graduationDate || "N/A"}`, infoCol2, infoY);
         infoY += 4;
 
@@ -373,6 +373,11 @@ const handleImageLoad = () => {
         <p><strong>Class of:</strong> {{ student.year?.name }}</p>
         <p><strong>Semester:</strong> {{ student.semester?.name }}</p>
         <p><strong>Study Mode:</strong> {{ student.studyMode?.name }}</p>
+        <!-- Transfer Credits -->
+        <p>
+            <strong>Transfer Credits:</strong>
+            {{ student.transferCredits !== null && student.transferCredits !== undefined ? student.transferCredits : '—' }}
+        </p>
     </div>
 
     <div v-for="(semester, index) in sortedSemesters" :key="index" class="mb-8">

@@ -93,6 +93,7 @@ const changeRole = (roleName) => {
                 :active-role="loggedInAs.name"
                 :is-open="isSidebarOpen"
                 :is-mobile="isMobile"
+                @close="isSidebarOpen = false"
             />
 
             <div
@@ -302,7 +303,7 @@ const changeRole = (roleName) => {
                     </div>
                 </header>
 
-                <main class="flex-1 overflow-y-auto p-4">
+                <main class="flex-1 overflow-y-auto p-4 pb-20 md:pb-4">
                     <slot />
                 </main>
             </div>

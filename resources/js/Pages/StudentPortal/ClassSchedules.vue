@@ -1,223 +1,169 @@
 <script setup>
 import { computed, ref } from "vue";
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
-import { Link } from "@inertiajs/vue3";
-import { DatePicker, Select } from "primevue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import "sweetalert2/dist/sweetalert2.min.css";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import {
+    ClockIcon,
+    MapPinIcon,
+    UserIcon,
+    CalendarDaysIcon,
+    AcademicCapIcon,
+} from "@heroicons/vue/24/outline";
 
 const props = defineProps({
-    student: {
-        type: Object,
-        required: true,
-    },
-    classSchedules: {
-        type: Array,
-        required: true,
-    },
+    student: { type: Object, required: true },
+    classSchedules: { type: Array, required: true },
 });
-const selectedDay = ref("Monday");
-const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+// Default to today's weekday name
+const todayName = () => {
+    const d = new Date().getDay(); // 0=Sun
+    const map = [6, 0, 1, 2, 3, 4, 5]; // Sun=6, Mon=0...Sat=5
+    return days[map[d]];
+};
+
+const selectedDay = ref(
+    props.classSchedules.some((s) => s.dayOfWeek === todayName())
+        ? todayName()
+        : (props.classSchedules[0]?.dayOfWeek ?? days[0])
+);
+
+const filteredSchedules = computed(() =>
+    props.classSchedules.filter((s) => s.dayOfWeek === selectedDay.value)
+);
+
+const formatTime = (t) => {
+    if (!t) return "—";
+    const [h, m] = t.split(":");
+    const hr = parseInt(h);
+    const ampm = hr >= 12 ? "PM" : "AM";
+    const hr12 = hr % 12 || 12;
+    return `${hr12}:${m} ${ampm}`;
+};
+
+const accentColors = [
+    "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/10",
+    "border-sky-500 bg-sky-50 dark:bg-sky-900/10",
+    "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10",
+    "border-rose-500 bg-rose-50 dark:bg-rose-900/10",
+    "border-amber-500 bg-amber-50 dark:bg-amber-900/10",
+    "border-violet-500 bg-violet-50 dark:bg-violet-900/10",
 ];
 
-const filteredClassSchedules = computed(() => {
-    return props.classSchedules.filter(
-        (classSchedule) => classSchedule.dayOfWeek == selectedDay.value
-    );
-});
+const dotColors = [
+    "bg-indigo-500",
+    "bg-sky-500",
+    "bg-emerald-500",
+    "bg-rose-500",
+    "bg-amber-500",
+    "bg-violet-500",
+];
+
+const hasSched = (day) => props.classSchedules.some((s) => s.dayOfWeek === day);
 </script>
+
 <template>
     <AppLayout>
-        <div class="max-w-7xl mx-auto py-10 px-4 space-y-8">
+        <div class="pb-24 md:pb-8 max-w-3xl mx-auto px-4 md:px-6 pt-4 space-y-5">
+
             <!-- Header -->
-            <div class="text-center">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
-                    Your Class Schedules
-                </h1>
-            </div>
-
-            <!-- Day Selector -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
-                <div
-                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-                >
-                    <div class="text-gray-700 dark:text-gray-300 font-semibold">
-                        Select a Day
-                    </div>
-
-                    <!-- Buttons on large screens -->
-                    <div class="hidden sm:flex flex-wrap gap-2">
-                        <Button
-                            v-for="day in days"
-                            :key="day"
-                            :label="day"
-                            :outlined="selectedDay !== day"
-                            :severity="selectedDay === day ? 'primary' : null"
-                            @click="selectedDay = day"
-                            :class="[
-                                selectedDay === day
-                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                    : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:dark:bg-gray-600',
-                                'transition font-medium px-4 py-2 rounded-lg text-sm',
-                            ]"
-                        />
-                    </div>
-
-                    <!-- Dropdown on small screens -->
-                    <div class="sm:hidden">
-                        <Dropdown
-                            v-model="selectedDay"
-                            :options="days"
-                            placeholder="Select a day"
-                            class="w-full"
-                        />
-                    </div>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
+                    <CalendarDaysIcon class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">Class Schedule</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ classSchedules.length }} classes this week</p>
                 </div>
             </div>
 
-            <!-- Selected Day Title -->
-            <h2 class="text-lg font-bold text-gray-700 dark:text-gray-200 mt-4">
-                {{
-                    selectedDay
-                        ? `${selectedDay} Class Schedule`
-                        : "Class Schedule"
-                }}
-            </h2>
-
-            <!-- Schedule Table -->
-            <transition
-                mode="out-in"
-                enter-active-class="transition duration-300 ease-out"
-                enter-to-class="opacity-100 scale-100"
-                leave-active-class="transition duration-200 ease-in"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-75"
-            >
-                <div
-                    :key="selectedDay"
-                    class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-300 dark:border-gray-600"
+            <!-- Day selector — horizontal scrollable pills -->
+            <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                <button
+                    v-for="day in days"
+                    :key="day"
+                    @click="selectedDay = day"
+                    :class="[
+                        'relative flex flex-col items-center gap-0.5 rounded-2xl px-3.5 py-2.5 shrink-0 transition-all duration-200 text-xs font-semibold',
+                        selectedDay === day
+                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/30'
+                            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700',
+                    ]"
                 >
-                    <table class="w-full min-w-[800px] table-fixed">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Course Name
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Time
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Section
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Instructor
-                                </th>
-                                <th
-                                    class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200"
-                                >
-                                    Room (Capacity)
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Schedule Rows -->
-                            <tr
-                                v-if="filteredClassSchedules.length > 0"
-                                v-for="(
-                                    schedule, index
-                                ) in filteredClassSchedules"
-                                :key="schedule.id"
-                                :class="[
-                                    index % 2 === 0
-                                        ? 'bg-white dark:bg-gray-800'
-                                        : 'bg-gray-50 dark:bg-gray-700',
-                                    'border-b border-gray-200 dark:border-gray-600',
-                                ]"
-                            >
-                                <!-- Course Name -->
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{ schedule.course.name }}
-                                </td>
+                    <span>{{ day.slice(0, 3) }}</span>
+                    <!-- Dot indicator if has classes -->
+                    <span
+                        v-if="hasSched(day)"
+                        :class="['w-1 h-1 rounded-full', selectedDay === day ? 'bg-white/70' : 'bg-indigo-500']"
+                    ></span>
+                    <span v-else class="w-1 h-1"></span>
+                </button>
+            </div>
 
-                                <!-- Time -->
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{ schedule.startTime }} -
-                                    {{ schedule.endTime }}
-                                </td>
+            <!-- Schedule for selected day -->
+            <div>
+                <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    {{ selectedDay }}'s Classes
+                    <span class="ml-1.5 text-xs font-normal text-gray-400">({{ filteredSchedules.length }})</span>
+                </h2>
 
-                                <!-- Date Range -->
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{ schedule.section.name }}
-                                    <span class="ml-1 text-gray-500 text-xs"
-                                        >({{ schedule.section.track.name }}
-                                        Track)
-                                        {{ schedule.section.studyMode.name }}
-                                    </span>
-                                </td>
+                <!-- Timeline -->
+                <div v-if="filteredSchedules.length" class="space-y-3">
+                    <div
+                        v-for="(schedule, idx) in filteredSchedules"
+                        :key="schedule.id"
+                        :class="['flex gap-4 group']"
+                    >
+                        <!-- Time column -->
+                        <div class="flex flex-col items-center shrink-0 w-14">
+                            <span class="text-xs font-bold text-gray-900 dark:text-white">{{ formatTime(schedule.startTime) }}</span>
+                            <!-- Vertical line -->
+                            <div class="flex-1 w-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+                            <span class="text-xs text-gray-400">{{ formatTime(schedule.endTime) }}</span>
+                        </div>
 
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    {{
-                                        schedule.instructor
-                                            ? `${schedule.instructor.name} `
-                                            : "TBA"
-                                    }}
-                                </td>
+                        <!-- Card -->
+                        <div :class="['flex-1 rounded-2xl border-l-4 p-4 shadow-sm mb-1', accentColors[idx % accentColors.length]]">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white leading-snug line-clamp-2">
+                                        {{ schedule.course.name }}
+                                    </h3>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ schedule.course.code }}</p>
+                                </div>
+                                <span :class="['w-2.5 h-2.5 rounded-full shrink-0 mt-1', dotColors[idx % dotColors.length]]"></span>
+                            </div>
 
-                                <!-- Room -->
-                                <td
-                                    class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
-                                >
-                                    <span v-if="schedule.room">
-                                        {{ schedule.room.name }} ({{
-                                            schedule.room.capacity
-                                        }})
-                                    </span>
-                                    <span
-                                        v-else
-                                        class="text-gray-500 dark:text-gray-400"
-                                        >TBD</span
-                                    >
-                                </td>
-                            </tr>
-
-                            <!-- No Schedules -->
-                            <tr v-else>
-                                <td
-                                    colspan="4"
-                                    class="text-center px-4 py-6 text-sm text-gray-500 dark:text-gray-300"
-                                >
-                                    No schedules set for {{ selectedDay }}.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                <div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                    <UserIcon class="w-3.5 h-3.5 shrink-0 text-gray-400" />
+                                    {{ schedule.instructor ? schedule.instructor.name : 'TBA' }}
+                                </div>
+                                <div v-if="schedule.room" class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                    <MapPinIcon class="w-3.5 h-3.5 shrink-0 text-gray-400" />
+                                    {{ schedule.room.name }}
+                                    <span class="text-gray-400">(cap. {{ schedule.room.capacity }})</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500">
+                                    <AcademicCapIcon class="w-3.5 h-3.5 shrink-0 text-gray-400" />
+                                    {{ schedule.section?.name }}
+                                    <template v-if="schedule.section?.track"> · {{ schedule.section.track.name }}</template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </transition>
+
+                <!-- Empty state -->
+                <div v-else class="text-center py-14">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
+                        <CalendarDaysIcon class="w-7 h-7 text-gray-400" />
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">No classes on {{ selectedDay }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Enjoy your day off!</p>
+                </div>
+            </div>
         </div>
     </AppLayout>
 </template>

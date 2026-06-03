@@ -1,319 +1,248 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import {
-    AcademicCapIcon,
-    CalendarIcon,
-    ChartBarIcon,
-    UsersIcon,
-    CurrencyDollarIcon,
-} from "@heroicons/vue/24/outline";
+import { ref, computed, onMounted } from "vue";
+import { Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Chart } from "chart.js/auto";
-import { Link } from "@inertiajs/vue3";
+import {
+    BookOpenIcon,
+    ClipboardDocumentListIcon,
+    CalendarDaysIcon,
+    ChartBarIcon,
+    ArrowRightIcon,
+    AcademicCapIcon,
+    ClockIcon,
+} from "@heroicons/vue/24/outline";
+import { CheckCircleIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
-    student: {
-        type: Object,
-        required: true,
-    },
+    student: { type: Object, required: true },
 });
 
-let chart = null;
-const createChart = () => {
+const greetingHour = new Date().getHours();
+const greeting = computed(() => {
+    if (greetingHour < 12) return "Good morning";
+    if (greetingHour < 17) return "Good afternoon";
+    return "Good evening";
+});
+
+const firstName = computed(() => props.student.user.name.split(" ")[0]);
+
+const activeEnrollments = computed(() =>
+    (props.student.enrollments || []).filter((e) => e.status === "enrolled")
+);
+const completedEnrollments = computed(() =>
+    (props.student.enrollments || []).filter((e) => e.status === "completed")
+);
+const recentGrades = computed(() => (props.student.grades || []).slice(0, 5));
+
+const gradeColor = (letter) => {
+    if (!letter) return "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400";
+    const l = letter.toUpperCase();
+    if (l === "A" || l === "A+") return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400";
+    if (l.startsWith("A")) return "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400";
+    if (l.startsWith("B")) return "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400";
+    if (l.startsWith("C")) return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400";
+    return "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400";
+};
+
+// Color palette for course cards
+const cardAccents = [
+    "from-indigo-500 to-purple-600",
+    "from-sky-500 to-blue-600",
+    "from-emerald-500 to-teal-600",
+    "from-rose-500 to-pink-600",
+    "from-amber-500 to-orange-600",
+    "from-violet-500 to-indigo-600",
+];
+
+let gpaChart = null;
+onMounted(() => {
     const ctx = document.getElementById("gpaChart");
-    chart = new Chart(ctx, {
+    if (!ctx) return;
+    gpaChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: [
-                "Spring 2023",
-                "Summer 2023",
-                "Fall 2023",
-                "Spring 2024",
-                "Summer 2024",
-            ],
-            datasets: [
-                {
-                    label: "GPA",
-                    data: [2.0, 4.0, 3.5, 3.75, 4.0],
-                    fill: false,
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    tension: 0.1,
-                },
-            ],
+            labels: ["Sem 1", "Sem 2", "Sem 3", "Sem 4", "Sem 5"],
+            datasets: [{
+                data: [2.0, 3.5, 3.2, 3.75, 4.0],
+                fill: true,
+                borderColor: "#6366f1",
+                backgroundColor: "rgba(99,102,241,0.10)",
+                tension: 0.45,
+                pointBackgroundColor: "#6366f1",
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 2,
+            }],
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true },
+                y: {
+                    beginAtZero: false,
+                    min: 0,
+                    max: 4,
+                    ticks: { color: "#9ca3af", stepSize: 1 },
+                    grid: { color: "rgba(156,163,175,0.15)" },
+                    border: { display: false },
+                },
+                x: {
+                    ticks: { color: "#9ca3af" },
+                    grid: { display: false },
+                    border: { display: false },
+                },
             },
         },
     });
-};
-
-onMounted(createChart);
+});
 </script>
 
 <template>
     <AppLayout>
-        <!-- Dashboard Header -->
-        <div
-            class="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg mb-8"
-        >
-            <div class="absolute inset-0 bg-black bg-opacity-25"></div>
-            <div class="relative p-6 md:p-8 lg:p-10">
-                <h1
-                    class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-dark dark: mb-3"
-                >
-                    Welcome, {{ student.user.name }}
-                </h1>
-                <p class="text-base md:text-lg text-dark dark: max-w-2xl">
-                    Dive into your courses, track your progress, manage
-                    payments, and stay on top of your schedule—all in one place.
+        <!-- Padding bottom for mobile bottom nav -->
+        <div class="pb-20 md:pb-6 space-y-6 px-4 md:px-6 pt-4 max-w-6xl mx-auto">
+
+            <!-- ── Hero greeting ─────────────────────────── -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 p-6 text-white shadow-lg">
+                <!-- Decorative circles -->
+                <div class="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10 pointer-events-none"></div>
+                <div class="absolute bottom-0 right-12 w-24 h-24 rounded-full bg-white/5 pointer-events-none"></div>
+
+                <p class="text-indigo-200 text-sm font-medium mb-1">{{ greeting }},</p>
+                <h1 class="text-2xl md:text-3xl font-bold mb-3 leading-tight">{{ firstName }} 👋</h1>
+                <p class="text-indigo-100 text-sm max-w-md">
+                    You have <strong class="text-white">{{ activeEnrollments.length }} active course{{ activeEnrollments.length !== 1 ? 's' : '' }}</strong> this semester.
+                    Keep it up!
                 </p>
-            </div>
-        </div>
 
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Sidebar omitted (handled by AppLayout) -->
-
-            <div class="col-span-4 space-y-8 px-4">
-                <!-- Enrolled Courses -->
-                <section>
-                    <h2
-                        class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6"
-                    >
-                        My Active Courses
-                    </h2>
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                    >
-                        <div
-                            v-for="enrollment in student.enrollments"
-                            :key="enrollment.id"
-                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow hover:shadow-lg transition duration-300"
-                        >
-                            <Link
-                                :href="
-                                    route(
-                                        'student.enrollments.show',
-                                        enrollment.id
-                                    )
-                                "
-                                class="block"
-                            >
-                                <div
-                                    class="flex items-center justify-between mb-3"
-                                >
-                                    <AcademicCapIcon
-                                        class="h-6 w-6 text-blue-500"
-                                    />
-                                    <span
-                                        class="text-xs text-gray-500 dark:text-gray-400"
-                                        >{{
-                                            enrollment.course.credit_hours
-                                        }}
-                                        credits</span
-                                    >
-                                </div>
-
-                                <h3
-                                    class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
-                                >
-                                    {{ enrollment.course.name }}
-                                    <span class="text-sm text-gray-500"
-                                        >({{ enrollment.course.code }})</span
-                                    >
-                                </h3>
-
-                                <div
-                                    class="text-sm space-y-1 text-gray-700 dark:text-gray-300"
-                                >
-                                    <p>
-                                        <strong>Instructor:</strong>
-                                        {{
-                                            enrollment.instructor
-                                                ? enrollment.instructor.name
-                                                : "TBA"
-                                        }}
-                                    </p>
-                                    <p>
-                                        <strong>Section:</strong>
-                                        {{ enrollment.section.name }}
-                                        <span class="ml-1 text-gray-500 text-xs"
-                                            >({{
-                                                enrollment.section.track.name
-                                            }}
-                                            Track)</span
-                                        >
-                                    </p>
-                                    <p>
-                                        <strong>Study Mode:</strong>
-                                        {{ enrollment.section.studyMode.name }}
-                                    </p>
-                                </div>
-                            </Link>
-                        </div>
+                <!-- Quick stat pills -->
+                <div class="mt-5 flex flex-wrap gap-2">
+                    <div class="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+                        <BookOpenIcon class="w-3.5 h-3.5" />
+                        {{ activeEnrollments.length }} Enrolled
                     </div>
-                </section>
+                    <div class="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+                        <CheckCircleIcon class="w-3.5 h-3.5" />
+                        {{ completedEnrollments.length }} Completed
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+                        <AcademicCapIcon class="w-3.5 h-3.5" />
+                        {{ student.program?.name ?? 'N/A' }}
+                    </div>
+                </div>
+            </div>
 
+            <!-- ── Quick access grid ──────────────────────── -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <Link
+                    v-for="(item, i) in [
+                        { label: 'My Courses', icon: BookOpenIcon, href: route('student.enrollments'), color: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400' },
+                        { label: 'Schedule', icon: CalendarDaysIcon, href: route('student.classSchedules'), color: 'bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400' },
+                        { label: 'Grades', icon: ChartBarIcon, href: route('student.grades'), color: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' },
+                        { label: 'Transcript', icon: ClipboardDocumentListIcon, href: route('student.transcripts'), color: 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' },
+                    ]"
+                    :key="i"
+                    :href="item.href"
+                    :class="['rounded-2xl p-4 flex flex-col items-center gap-2 text-center transition hover:shadow-md active:scale-95 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700']"
+                >
+                    <div :class="['w-10 h-10 rounded-xl flex items-center justify-center', item.color]">
+                        <component :is="item.icon" class="w-5 h-5" />
+                    </div>
+                    <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ item.label }}</span>
+                </Link>
+            </div>
+
+            <!-- ── Active courses ────────────────────────── -->
+            <section v-if="activeEnrollments.length > 0">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-base font-bold text-gray-900 dark:text-white">Active Courses</h2>
+                    <Link :href="route('student.enrollments')" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1 hover:underline">
+                        View all <ArrowRightIcon class="w-3 h-3" />
+                    </Link>
+                </div>
+
+                <!-- Horizontal scroll on mobile, grid on tablet+ -->
+                <div class="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible snap-x snap-mandatory">
+                    <Link
+                        v-for="(enrollment, idx) in activeEnrollments"
+                        :key="enrollment.id"
+                        :href="route('student.enrollments.show', enrollment.id)"
+                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex-shrink-0 w-72 md:w-auto snap-start hover:shadow-md transition group"
+                    >
+                        <!-- Gradient banner -->
+                        <div :class="['h-2 bg-gradient-to-r', cardAccents[idx % cardAccents.length]]"></div>
+                        <div class="p-4">
+                            <div class="flex items-start justify-between gap-2 mb-2">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white text-sm leading-snug line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                                        {{ enrollment.course.name }}
+                                    </h3>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ enrollment.course.code }}</p>
+                                </div>
+                                <span class="shrink-0 text-xs font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg px-2 py-1">
+                                    {{ enrollment.course.credit_hours }} cr
+                                </span>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                    <ClockIcon class="w-3.5 h-3.5 shrink-0" />
+                                    {{ enrollment.instructor ? enrollment.instructor.name : 'TBA' }}
+                                </div>
+                                <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500">
+                                    <AcademicCapIcon class="w-3.5 h-3.5 shrink-0" />
+                                    {{ enrollment.section?.name ?? '' }}
+                                    <span v-if="enrollment.section?.track" class="text-gray-400">· {{ enrollment.section.track.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+            </section>
+
+            <!-- ── GPA Trend + Recent Grades ─────────────── -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- GPA Chart -->
-                <section>
-                    <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
-                    >
-                        Your GPA Results
-                    </h2>
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                    >
-                        <canvas id="gpaChart" class="w-full h-64"></canvas>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-bold text-gray-900 dark:text-white">GPA Trend</h2>
+                        <span class="text-xs text-gray-400">per semester</span>
                     </div>
-                </section>
-
-                <!-- Course Results Table -->
-                <section>
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-300 dark:border-gray-600">
-                        <h2 class="text-xl font-bold mb-4">Course Results</h2>
-                        <table class="w-full">
-                            <thead class="bg-gray-100 dark:bg-gray-700">
-                                <tr>
-                                    <th class="text-left px-3 py-2 font-medium text-xs w-8 text-gray-800 dark:text-gray-200">#</th>
-                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Course Name</th>
-                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Credit Hours</th>
-                                    <th class="text-left px-4 py-2 font-medium text-sm text-gray-800 dark:text-gray-200">Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody v-if="student.grades && student.grades.length > 0">
-                                <tr
-                                    v-for="(grade, index) in student.grades.slice(0, 5)"
-                                    :key="grade.id"
-                                    :class="[
-                                        index % 2 === 0
-                                            ? 'bg-white dark:bg-gray-800'
-                                            : 'bg-gray-50 dark:bg-gray-700',
-                                        'border-b border-gray-200 dark:border-gray-600',
-                                    ]"
-                                >
-                                    <td class="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">{{ index + 1 }}</td>
-                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{{ grade.course.name }}</td>
-                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{{ grade.course.credit_hours }}</td>
-                                    <td class="px-4 py-3 text-md font-bold text-blue-700 dark:text-blue-300">{{ grade.grade_letter }}</td>
-                                </tr>
-                            </tbody>
-                            <tbody v-else>
-                                <tr>
-                                    <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">No grades available.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="h-40">
+                        <canvas id="gpaChart"></canvas>
                     </div>
-                </section>
+                </div>
 
-                <!-- Payment Information -->
-                <!-- <section>
-                    <h2
-                        class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4"
-                    >
-                        Payment Information
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <div
-                            class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition"
-                        >
-                            <div class="flex items-center gap-2 text-green-600">
-                                <CurrencyDollarIcon class="w-6 h-6" />
-                                <p
-                                    class="text-sm font-medium text-gray-500 dark:text-gray-400"
-                                >
-                                    Total Paid
-                                </p>
-                            </div>
-                            <p class="mt-2 text-2xl font-bold text-green-500">
-                                $1,200.00
-                            </p>
-                        </div>
+                <!-- Recent Grades -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-bold text-gray-900 dark:text-white">Recent Grades</h2>
+                        <Link :href="route('student.grades')" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+                            See all
+                        </Link>
+                    </div>
 
+                    <div v-if="recentGrades.length" class="space-y-2">
                         <div
-                            class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition"
+                            v-for="grade in recentGrades"
+                            :key="grade.id"
+                            class="flex items-center gap-3"
                         >
-                            <div
-                                class="flex items-center gap-2 text-yellow-600"
-                            >
-                                <CurrencyDollarIcon class="w-6 h-6" />
-                                <p
-                                    class="text-sm font-medium text-gray-500 dark:text-gray-400"
-                                >
-                                    Balance Due
-                                </p>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">{{ grade.course.name }}</p>
+                                <p class="text-[11px] text-gray-400">{{ grade.course.credit_hours }} credit hrs</p>
                             </div>
-                            <p class="mt-2 text-2xl font-bold text-red-500">
-                                $300.00
-                            </p>
-                        </div>
-
-                        <div
-                            class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition"
-                        >
-                            <div class="flex items-center gap-2 text-gray-600">
-                                <CalendarIcon class="w-6 h-6" />
-                                <p
-                                    class="text-sm font-medium text-gray-500 dark:text-gray-400"
-                                >
-                                    Last Payment
-                                </p>
-                            </div>
-                            <p
-                                class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100"
-                            >
-                                April 1, 2025
-                            </p>
+                            <span :class="['text-xs font-bold px-2.5 py-1 rounded-lg shrink-0', gradeColor(grade.grade_letter)]">
+                                {{ grade.grade_letter ?? '—' }}
+                            </span>
                         </div>
                     </div>
-                    
-                    <div
-                        class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
-                    >
-                        <h3
-                            class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100"
-                        >
-                            Payment History
-                        </h3>
-                        <table
-                            class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400"
-                        >
-                            <thead class="bg-gray-100 dark:bg-gray-700">
-                                <tr>
-                                    <th class="py-3 px-6">Date</th>
-                                    <th class="py-3 px-6">Amount</th>
-                                    <th class="py-3 px-6">Method</th>
-                                    <th class="py-3 px-6">Receipt</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900 transition"
-                                >
-                                    <td class="py-4 px-6">June 25, 2024</td>
-                                    <td
-                                        class="py-4 px-6 text-green-600 font-semibold"
-                                    >
-                                        $2,000.00
-                                    </td>
-                                    <td class="py-4 px-6">Credit Card</td>
-                                    <td class="py-4 px-6">
-                                        <button
-                                            class="text-blue-600 hover:underline"
-                                        >
-                                            Download
-                                        </button>
-                                    </td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </section> -->
+                    <p v-else class="text-sm text-gray-400 text-center py-6">No grades recorded yet.</p>
+                </div>
             </div>
+
         </div>
     </AppLayout>
 </template>

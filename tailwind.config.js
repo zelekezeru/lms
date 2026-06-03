@@ -19,5 +19,19 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [
+        forms,
+        function ({ addUtilities }) {
+            addUtilities({
+                ".scrollbar-none": {
+                    "-ms-overflow-style": "none",
+                    "scrollbar-width": "none",
+                    "&::-webkit-scrollbar": { display: "none" },
+                },
+                ".safe-area-bottom": {
+                    "padding-bottom": "env(safe-area-inset-bottom, 0px)",
+                },
+            });
+        },
+    ],
 };

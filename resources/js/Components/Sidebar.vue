@@ -14,6 +14,8 @@ const props = defineProps({
     isMobile: Boolean,
 });
 
+defineEmits(["close"]);
+
 let sidebarComponent = null;
 
 switch (props.activeRole) {
@@ -46,5 +48,5 @@ switch (props.activeRole) {
 </script>
 
 <template>
-    <component :is="sidebarComponent" :is-open="isOpen" :is-mobile="isMobile" />
+    <component :is="sidebarComponent" :is-open="isOpen" :is-mobile="isMobile" @close="$emit('close')" />
 </template>

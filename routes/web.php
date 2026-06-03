@@ -150,6 +150,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/{user}/update-image', [UserController::class, 'updateProfilePicture'])->name('users.update.image');
 
     Route::post('/students/{student}/payment-code', [StudentController::class, 'generatePaymentCode'])->name('students.payment-code');
+    Route::patch('/students/{student}/transfer-credits', [StudentController::class, 'updateTransferCredits'])->name('students.transfer-credits');
     Route::get('/students/importPaymentcodes', [StudentController::class, 'importPaymentcodes'])->name('students.importPaymentcodes');
 
     // Excel Operation Routes

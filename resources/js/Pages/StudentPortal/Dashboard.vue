@@ -59,6 +59,11 @@ let gpaChart = null;
 onMounted(() => {
     const ctx = document.getElementById("gpaChart");
     if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+    const gradient = canvasContext.createLinearGradient(0, 0, 0, 160);
+    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.25)');
+    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
     gpaChart = new Chart(ctx, {
         type: "line",
         data: {
@@ -67,12 +72,14 @@ onMounted(() => {
                 data: [2.0, 3.5, 3.2, 3.75, 4.0],
                 fill: true,
                 borderColor: "#6366f1",
-                backgroundColor: "rgba(99,102,241,0.10)",
-                tension: 0.45,
+                backgroundColor: gradient,
+                tension: 0.4,
                 pointBackgroundColor: "#6366f1",
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2,
+                pointBorderColor: "#ffffff",
+                pointBorderWidth: 1.5,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                borderWidth: 2.5,
             }],
         },
         options: {
@@ -85,7 +92,7 @@ onMounted(() => {
                     min: 0,
                     max: 4,
                     ticks: { color: "#9ca3af", stepSize: 1 },
-                    grid: { color: "rgba(156,163,175,0.15)" },
+                    grid: { color: "rgba(156,163,175,0.08)" },
                     border: { display: false },
                 },
                 x: {

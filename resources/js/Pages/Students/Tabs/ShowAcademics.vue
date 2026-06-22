@@ -21,7 +21,13 @@ import {
     AcademicCapIcon,
     CheckBadgeIcon,
     PresentationChartBarIcon,
-    EyeSlashIcon
+    EyeSlashIcon,
+    CalendarIcon,
+    BookmarkIcon,
+    ClockIcon,
+    LockClosedIcon,
+    HomeIcon,
+    IdentificationIcon,
 } from "@heroicons/vue/24/outline";
 import ShowSemesters from "./ShowSemesters.vue";
 import ShowResults from "./ShowResults.vue";
@@ -43,6 +49,10 @@ const props = defineProps({
     grades: {
         type: Array,
         required: true,
+    },
+    deletedGrades: {
+        type: Array,
+        default: () => [],
     },
 });
 
@@ -142,259 +152,146 @@ const saveTransferCredits = () => {
             :key="selectedTab"
             class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 border dark:border-gray-700"
         >
-            <div v-if="selectedTab === 'academics'" class="overflow-x-auto">
-                <div class="flex items-center justify-between mb-4">
-                    <h2
-                        class="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center w-full"
-                    >
-                        Academic Information of -
-                        {{ student.firstName }}
-                        {{ student.middleName }}
-                        {{ student.lastName }}
+            <div v-if="selectedTab === 'academics'" class="space-y-6">
+                <!-- Academic Header Info -->
+                <div class="border-b border-gray-100 dark:border-gray-700/60 pb-4">
+                    <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">
+                        Academic Profile
                     </h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Program tracking, section alignment, and transfer records for {{ student.firstName }} {{ student.lastName }}.
+                    </p>
                 </div>
-                
-                <div
-                    class="mt-8 border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
-                >
-                    <!-- Student details -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div v-if="student.program" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Program</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                <Link
-                                    :href="route('programs.show', { program: student.program.id })"
-                                    class="text-indigo-600 hover:underline"
-                                >
+
+                <!-- Academic Grid System -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Program Card -->
+                    <div v-if="student.program" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                            <AcademicCapIcon class="w-5 h-5" />
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Program</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1 truncate">
+                                <Link :href="route('programs.show', { program: student.program.id })" class="hover:text-indigo-600 hover:underline">
                                     {{ student.program.name }}
                                 </Link>
-                            </span>
+                            </p>
                         </div>
-                        <div v-if="student.track" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Track</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                <Link
-                                    :href="route('tracks.show', { track: student.track.id })"
-                                    class="text-indigo-600 hover:underline"
-                                >
+                    </div>
+
+                    <!-- Track Card -->
+                    <div v-if="student.track" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+                            <BookmarkIcon class="w-5 h-5" />
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Track / Major</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1 truncate">
+                                <Link :href="route('tracks.show', { track: student.track.id })" class="hover:text-purple-600 hover:underline">
                                     {{ student.track.name }}
                                 </Link>
-                            </span>
+                            </p>
                         </div>
-                        <div v-if="student.studyMode" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Study Mode</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                    </div>
+
+                    <!-- Study Mode Card -->
+                    <div v-if="student.studyMode" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <ClockIcon class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Study Mode</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
                                 {{ student.studyMode.name }}
-                            </span>
+                            </p>
                         </div>
-                        <div v-if="student.year" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Academic Year</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                    </div>
+
+                    <!-- Academic Year Card -->
+                    <div v-if="student.year" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                            <CalendarIcon class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Academic Year</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
                                 {{ student.year.name }}
-                            </span>
+                            </p>
                         </div>
-                        <!-- Closing the div for Academic Year -->
-                        <div v-if="student.semester" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Semester</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                    </div>
+
+                    <!-- Semester Card -->
+                    <div v-if="student.semester" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                            <PresentationChartBarIcon class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Semester</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
                                 {{ student.semester.name }}
-                            </span>
+                            </p>
                         </div>
-                        <!-- Closing the div for Semester -->
+                    </div>
 
-                        <div v-if="student.section" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Section</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2"
-                            >
-                                <Link
-                                    :href="route('sections.show', { section: student.section.id })"
-                                    class="text-indigo-600 hover:underline"
-                                >
-                                    {{ student.section.name }}
-                                </Link>
-                                <button
-                                    @click="createSection = !createSection"
-                                    class="ml-2 text-indigo-600 hover:text-indigo-800 flex items-center"
-                                    title="Edit Section"
-                                >
-                                    <PencilSquareIcon class="w-5 h-5" />
-                                </button>
-                            </span>
+                    <!-- Center Card -->
+                    <div v-if="student.center" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
+                            <HomeIcon class="w-5 h-5" />
                         </div>
-                        <div v-else class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Section</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100 col"
-                            >
-                                No Section Assigned
-                                <button
-                                    @click="createSection = !createSection"
-                                    class="flex text-indigo-600 hover:text-indigo-800"
-                                >
-                                    <component
-                                        :is="
-                                            createSection
-                                                ? XMarkIcon
-                                                : PlusCircleIcon
-                                        "
-                                        class="w-8 h-8"
-                                    />
-                                    Assign Section
-                                </button>
-                            </span>
-                        </div>
-
-                        <!-- Default Password -->
-                        <div v-if="student.oldId" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Old ID</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
-                                {{ student.oldId }}
-                            </span>
-                        </div>
-                        {{ student.center }}
-                        <!-- Default Password -->
-                        <div v-if="student.center" class="flex flex-col">
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Old ID</span
-                            >
-                            <span
-                                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                            >
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Learning Center</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
                                 {{ student.center.name }}
-                            </span>
+                            </p>
                         </div>
-                        <!-- Default Password -->
-                        <div
-                            v-if="
-                                userCan('default-password') &&
-                                student.user.default_password
-                            "
-                            class="flex flex-col"
-                        >
-                            <span
-                                class="text-sm text-gray-500 dark:text-gray-400"
-                                >Default Password</span
-                            >
-                            <span class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                <span v-if="showPassword">
-                                    {{ student.user.default_password }}
-                                </span>
-                                <span v-else>
-                                    {{ hashPassword(student.user.default_password) }}
-                                </span>
-                                <button
-                                    @click="showPassword = !showPassword"
-                                    class="ml-2 px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
-                                    type="button"
-                                >
-                                    <EyeSlashIcon v-if="showPassword" class="w-4 h-4 inline-block" />
-                                    <EyeIcon v-else class="w-4 h-4 inline-block" />
-                                    {{ showPassword ? 'Hide' : 'Show' }}
-                                </button>
-                            </span>
-                        </div>
-                        <!-- Closing the div for Default Password -->
+                    </div>
 
-                        <!-- Transfer Credits -->
-                        <div class="flex flex-col col-span-2">
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Transfer Credits</span>
-                            <div class="flex items-center gap-3 mt-1">
-                                <span
-                                    v-if="!editingTransferCredits"
-                                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ student.transferCredits !== null && student.transferCredits !== undefined ? student.transferCredits : '—' }}
-                                </span>
-                                <template v-if="editingTransferCredits">
-                                    <input
-                                        v-model.number="transferCreditsForm.transfer_credits"
-                                        type="number"
-                                        min="0"
-                                        max="9999"
-                                        step="1"
-                                        class="w-28 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-100 focus:ring focus:ring-indigo-500"
-                                        placeholder="0"
-                                    />
-                                    <PrimaryButton
-                                        @click="saveTransferCredits"
-                                        :disabled="transferCreditsForm.processing"
-                                        class="px-3 py-1 h-8 text-sm bg-green-500 hover:bg-green-600"
-                                    >
-                                        Save
-                                    </PrimaryButton>
-                                    <button
-                                        @click="editingTransferCredits = false; transferCreditsForm.reset()"
-                                        class="px-3 py-1 h-8 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <p v-if="transferCreditsForm.errors.transfer_credits" class="text-xs text-red-500">
-                                        {{ transferCreditsForm.errors.transfer_credits }}
+                    <!-- Section Card -->
+                    <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md transition duration-300 md:col-span-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 shrink-0">
+                                    <IdentificationIcon class="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Assigned Section</p>
+                                    <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
+                                        <template v-if="student.section">
+                                            <Link :href="route('sections.show', { section: student.section.id })" class="hover:text-teal-600 hover:underline">
+                                                {{ student.section.name }}
+                                            </Link>
+                                        </template>
+                                        <template v-else>
+                                            No Section Assigned
+                                        </template>
                                     </p>
-                                </template>
-                                <button
-                                    v-if="!editingTransferCredits && userCan('update-students')"
-                                    @click="editingTransferCredits = true; transferCreditsForm.transfer_credits = student.transferCredits ?? ''"
-                                    class="ml-1 text-indigo-600 hover:text-indigo-800"
-                                    title="Edit Transfer Credits"
-                                >
-                                    <PencilSquareIcon class="w-4 h-4" />
-                                </button>
+                                </div>
                             </div>
+                            <!-- Actions -->
+                            <button
+                                @click="createSection = !createSection"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition"
+                            >
+                                <component :is="createSection ? XMarkIcon : PencilSquareIcon" class="w-3.5 h-3.5" />
+                                {{ student.section ? 'Change Section' : 'Assign Section' }}
+                            </button>
                         </div>
-                        <!-- Closing the div for Transfer Credits -->
 
-                        <!-- Create New Section Row -->
+                        <!-- Dropdown assign alignment -->
                         <transition
-                            enter-active-class="transition duration-300 ease-out"
+                            enter-active-class="transition duration-200 ease-out"
                             enter-from-class="opacity-0 -translate-y-2"
                             enter-to-class="opacity-100 translate-y-0"
-                            leave-active-class="transition duration-200 ease-in"
+                            leave-active-class="transition duration-150 ease-in"
                             leave-from-class="opacity-100 translate-y-0"
                             leave-to-class="opacity-0 -translate-y-2"
                         >
-                            <div v-if="createSection" class="col-span-2 flex items-center gap-4 mt-2">
+                            <div v-if="createSection" class="pt-2 border-t border-gray-150 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-2">
                                 <select
                                     v-model="sectionForm.section_id"
-                                    class="w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100"
+                                    class="w-full text-xs border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 py-2 px-3"
                                 >
                                     <option value="">Select Section</option>
                                     <option
@@ -402,33 +299,138 @@ const saveTransferCredits = () => {
                                         :key="section.id"
                                         :value="section.id"
                                     >
-                                        {{ section.name }} -
-                                        {{ section.program.name }}
+                                        {{ section.name }} ({{ section.program?.name || 'N/A' }})
                                     </option>
                                 </select>
-                                <PrimaryButton
-                                    class="px-4 py-1 h-9 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                    @click="addSection"
-                                >
-                                    Save
-                                </PrimaryButton>
-                                <button
-                                    @click="createSection = false"
-                                    class="ml-2 px-4 py-1 h-9 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
-                                >
-                                    Cancel
-                                </button>
+                                <div class="flex gap-2 w-full sm:w-auto shrink-0 justify-end">
+                                    <button
+                                        @click="createSection = false"
+                                        class="px-4 py-2 text-xs font-bold bg-gray-100 dark:bg-gray-750 text-gray-700 dark:text-gray-300 hover:bg-gray-200 rounded-xl transition"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <PrimaryButton
+                                        class="px-4 py-2 text-xs font-bold bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
+                                        @click="addSection"
+                                    >
+                                        Assign
+                                    </PrimaryButton>
+                                </div>
                             </div>
                         </transition>
                     </div>
+
+                    <!-- Old ID Card (Optional) -->
+                    <div v-if="student.oldId" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 shrink-0">
+                            <IdentificationIcon class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Old Student ID</p>
+                            <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
+                                {{ student.oldId }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Default Password Card -->
+                    <div v-if="userCan('default-password') && student.user?.default_password" class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-sm hover:shadow-md transition duration-300">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                                <LockClosedIcon class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Portal Access Password</p>
+                                <p class="text-sm font-mono font-bold text-gray-900 dark:text-white mt-1">
+                                    <span v-if="showPassword">{{ student.user.default_password }}</span>
+                                    <span v-else>{{ hashPassword(student.user.default_password) }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            @click="showPassword = !showPassword"
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition"
+                        >
+                            <EyeSlashIcon v-if="showPassword" class="w-3.5 h-3.5" />
+                            <EyeIcon v-else class="w-3.5 h-3.5" />
+                            {{ showPassword ? 'Hide' : 'Reveal' }}
+                        </button>
+                    </div>
+
+                    <!-- Transfer Credits Card -->
+                    <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex flex-col justify-between gap-3 shadow-sm hover:shadow-md transition duration-300 md:col-span-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+                                    <CheckBadgeIcon class="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Transfer Credits</p>
+                                    <p class="text-sm font-bold text-gray-950 dark:text-gray-50 mt-1">
+                                        {{ student.transferCredits !== null && student.transferCredits !== undefined && student.transferCredits !== '' ? student.transferCredits + ' credits' : 'No transfer credits recorded' }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <button
+                                v-if="!editingTransferCredits && userCan('update-students')"
+                                @click="editingTransferCredits = true; transferCreditsForm.transfer_credits = student.transferCredits ?? ''"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition"
+                            >
+                                <PencilSquareIcon class="w-3.5 h-3.5" />
+                                Edit Credits
+                            </button>
+                        </div>
+
+                        <!-- Expand Edit view -->
+                        <transition
+                            enter-active-class="transition duration-200 ease-out"
+                            enter-from-class="opacity-0 -translate-y-2"
+                            enter-to-class="opacity-100 translate-y-0"
+                            leave-active-class="transition duration-150 ease-in"
+                            leave-from-class="opacity-100 translate-y-0"
+                            leave-to-class="opacity-0 -translate-y-2"
+                        >
+                            <div v-if="editingTransferCredits" class="pt-2 border-t border-gray-150 dark:border-gray-800 flex flex-col sm:flex-row items-center gap-2">
+                                <input
+                                    v-model.number="transferCreditsForm.transfer_credits"
+                                    type="number"
+                                    min="0"
+                                    max="999"
+                                    step="1"
+                                    class="w-full text-xs border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 py-2 px-3"
+                                    placeholder="Enter transfer credit hours"
+                                />
+                                <div class="flex gap-2 w-full sm:w-auto shrink-0 justify-end">
+                                    <button
+                                        @click="editingTransferCredits = false; transferCreditsForm.reset()"
+                                        class="px-4 py-2 text-xs font-bold bg-gray-100 dark:bg-gray-755 text-gray-700 dark:text-gray-300 hover:bg-gray-200 rounded-xl transition"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <PrimaryButton
+                                        class="px-4 py-2 text-xs font-bold bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
+                                        @click="saveTransferCredits"
+                                        :disabled="transferCreditsForm.processing"
+                                    >
+                                        Save
+                                    </PrimaryButton>
+                                </div>
+                            </div>
+                        </transition>
+                        <p v-if="transferCreditsForm.errors.transfer_credits" class="text-xs text-red-500 mt-1">
+                            {{ transferCreditsForm.errors.transfer_credits }}
+                        </p>
+                    </div>
+
                 </div>
-                <!-- Closing the div for Academic Information -->
             </div>
             <ShowGrades
                 v-else-if="selectedTab === 'grades'"
                 :student="student"
                 :semesters="semesters"
                 :grades="grades"
+                :deletedGrades="deletedGrades"
                 :activeSemester="activeSemester"
             />
         </div>

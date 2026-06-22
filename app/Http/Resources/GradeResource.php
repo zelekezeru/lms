@@ -31,6 +31,12 @@ class GradeResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
+            // Soft delete metadata (used by the "Deleted Grades" view)
+            'deleted_at' => $this->deleted_at,
+            'delete_reason' => $this->delete_reason,
+            'deleted_by' => $this->deleted_by,
+            'deleted_by_name' => $this->whenLoaded('deletedBy', fn() => $this->deletedBy?->name),
+
             'section' => $this->whenLoaded('section'),
             'course' => $this->whenLoaded('course'),
             'year' => $this->whenLoaded('year'),

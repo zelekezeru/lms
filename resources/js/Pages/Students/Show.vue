@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, Link, router } from "@inertiajs/vue3";
-import { defineProps, onMounted, ref, watch } from "vue";
+import { defineProps, onMounted, ref, watch, computed } from "vue";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import Modal from "@/Components/Modal.vue";
@@ -39,6 +39,7 @@ const props = defineProps({
     paymentTypes: Array,
     semesters: Object,
     grades: Object,
+    deletedGrades: Object,
     activeSemester: Object,
     showVerifyModal: Boolean,
     availableSemesters: Array,
@@ -89,7 +90,7 @@ const tabs = [
     },
     {
         key: "documents",
-        label: "Transcript Documents",
+        label: "Transcript & Documents",
         icon: PaperClipIcon,
         permission: "view-students",
     },
@@ -143,14 +144,177 @@ const deleteStudent = (id) => {
         }
     });
 };
+
+// Helper grade point function
+const getGradePoint = (point) => {
+    const p = parseFloat(point);
+    if (isNaN(p)) return 0;
+    if (p >= 94) return 4.0;
+    if (p >= 90) return 3.7;
+    if (p >= 87) return 3.3;
+    if (p >= 84) return 3.0;
+    if (p >= 80) return 2.7;
+    if (p >= 77) return 2.3;
+    if (p >= 74) return 2.0;
+    if (p >= 70) return 1.7;
+    if (p >= 67) return 1.3;
+    if (p >= 64) return 1.0;
+    if (p >= 60) return 0.7;
+    return 0.0;
+};
+
+// Computed statistics
+const cumulativeGPA = computed(() => {
+    let totalPoints = 0;
+    let totalCredits = 0;
+    const studentGrades = props.student.grades || props.grades || [];
+    studentGrades.forEach((g) => {
+        const gp = getGradePoint(parseFloat(g.grade_point) || 0);
+        const credit = parseFloat(g.course?.credit_hours || 0);
+        totalPoints += gp * credit;
+        totalCredits += credit;
+    });
+    return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : "0.00";
+});
+
+const completedCredits = computed(() => {
+    return (props.student.enrollments || [])
+        .filter(e => e.status === 'completed')
+        .reduce((acc, e) => acc + (parseFloat(e.course?.credit_hours) || 0), 0);
+});
+
+const pendingPaymentsCount = computed(() => {
+    return (props.payments || []).filter(p => p.status === 'pending').length;
+});
 </script>
 
 <template>
-    <Head title="Student Details" />
+    <Head :title="`${student.firstName} ${student.lastName} - Student Details`" />
     <AppLayout>
-        <div class="max-w-8xl mx-auto p-6 relative">
+        <div class="max-w-7xl mx-auto p-4 md:p-6 space-y-6 relative">
+            
+            <!-- ── Profile Header Card ─────────────────────────── -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <!-- Cover Banner Gradient -->
+                <div class="h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 relative">
+                    <!-- Subtle abstract overlays -->
+                    <div class="absolute inset-0 bg-black/10"></div>
+                    <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-white/10 blur-xl"></div>
+                </div>
+
+                <!-- Profile Info Row -->
+                <div class="px-6 pb-6 relative">
+                    <!-- Overlapping Profile Image -->
+                    <div class="-mt-16 mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
+                            <div class="relative group">
+                                <img
+                                    v-if="student.profileImg"
+                                    :src="student.profileImg"
+                                    class="w-28 h-28 rounded-2xl object-cover border-4 border-white dark:border-gray-800 shadow-lg bg-gray-100 dark:bg-gray-700 transform transition duration-300 hover:scale-105"
+                                    :alt="student.firstName"
+                                />
+                                <div
+                                    v-else
+                                    class="w-28 h-28 rounded-2xl border-4 border-white dark:border-gray-800 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg"
+                                >
+                                    <span class="text-white font-bold text-3xl">
+                                        {{ (student.firstName?.[0] || "") + (student.lastName?.[0] || "") }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-1">
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                    <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white">
+                                        {{ student.firstName }} {{ student.middleName }} {{ student.lastName }}
+                                    </h1>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                        Active
+                                    </span>
+                                </div>
+                                <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                    Student ID: {{ student.idNo }}
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ student.program?.name }} • {{ student.track?.name || 'No Track' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Header Quick Action buttons -->
+                        <div class="flex gap-2 self-center sm:self-end">
+                            <Link
+                                v-if="userCan('update-students')"
+                                :href="route('students.edit', { student: student.id })"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-sm"
+                            >
+                                <PencilIcon class="w-3.5 h-3.5 mr-1" />
+                                Edit Student
+                            </Link>
+                            <button
+                                v-if="userCan('delete-students')"
+                                @click="deleteStudent(student.id)"
+                                class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/40 transition shadow-sm"
+                            >
+                                <TrashIcon class="w-3.5 h-3.5 mr-1" />
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-gray-100 dark:border-gray-700/60 my-5"></div>
+
+                    <!-- Quick Stats Grid -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                                <AcademicCapIcon class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Cum. GPA</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ cumulativeGPA }}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                                <BookOpenIcon class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Completed Credits</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ completedCredits }} cr</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                                <UsersIcon class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Academic Period</p>
+                                <p class="text-sm font-bold text-gray-900 dark:text-white leading-snug">
+                                    {{ student.year?.name || 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                <CurrencyDollarIcon class="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Pending Payments</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ pendingPaymentsCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 🔘 Drawer Toggle Button (mobile only) -->
-            <div class="flex justify-end mb-4 md:hidden">
+            <div class="flex justify-end md:hidden mb-4">
                 <button
                     @click="toggleDrawer"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
@@ -214,48 +378,41 @@ const deleteStudent = (id) => {
                 class="fixed inset-0 bg-black bg-opacity-25 z-40 md:hidden"
             ></div>
 
-            <!-- 💻 Desktop Tab Nav (hidden on mobile) -->
+            <!-- 💻 Desktop Tab Nav (segmented control) -->
             <nav
                 ref="tabNav"
-                class="hidden md:flex overflow-x-auto pb-2 mb-6 border-b border-gray-200 dark:border-gray-700"
+                class="hidden md:flex overflow-x-auto p-1.5 mb-6 bg-gray-100/85 dark:bg-gray-900/50 backdrop-blur-md rounded-2xl border border-gray-200/50 dark:border-gray-800/50"
                 :class="isOverflowing ? 'justify-start' : 'justify-center'"
             >
-                <div class="flex space-x-4 min-w-max">
+                <div class="flex space-x-1 min-w-max">
                     <template v-for="tab in tabs" :key="tab.key">
                         <button
                             v-if="userCan(tab.permission)"
                             @click="selectedTab = tab.key"
                             type="button"
-                            class="flex-shrink-0 flex items-center px-4 py-2 space-x-2 text-sm font-medium transition whitespace-nowrap"
+                            class="flex-shrink-0 flex items-center px-4 py-2.5 space-x-2 text-xs font-bold rounded-xl transition-all duration-300 whitespace-nowrap"
                             :class="
                                 selectedTab === tab.key
-                                    ? 'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                    ? 'bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-sm border border-gray-200/25 dark:border-gray-700/50'
+                                    : 'text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
                             "
                         >
-                            <component :is="tab.icon" class="w-5 h-5" />
+                            <component :is="tab.icon" class="w-4 h-4 shrink-0 transition-transform duration-300" :class="selectedTab === tab.key ? 'scale-110 text-indigo-500' : ''" />
                             <span>{{ tab.label }}</span>
                         </button>
                     </template>
                 </div>
             </nav>
-            <!-- 📝 Page Title -->
-            <h1
-                class="text-3xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center"
-            >
-                {{ student.firstName }} {{ student.middleName }}
-                {{ student.lastName }}
-            </h1>
             
             <!-- 🌐 Main Content -->
             <transition
                 mode="out-in"
-                enter-active-class="transition duration-300 ease-out"
-                enter-from-class="opacity-0 scale-75"
-                enter-to-class="opacity-100 scale-100"
-                leave-active-class="transition duration-200 ease-in"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-75"
+                enter-active-class="transition duration-200 ease-out"
+                enter-from-class="opacity-0 translate-y-1"
+                enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition duration-150 ease-in"
+                leave-from-class="opacity-100 translate-y-0"
+                leave-to-class="opacity-0 translate-y-1"
             >
                 <div
                     :key="selectedTab"
@@ -275,6 +432,7 @@ const deleteStudent = (id) => {
                         :sections="sections"
                         :semesters="semesters"
                         :grades="grades"
+                        :deletedGrades="deletedGrades"
                         :activeSemester="activeSemester"
                     />
 

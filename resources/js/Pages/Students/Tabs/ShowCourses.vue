@@ -136,485 +136,90 @@ const dropEnrollment = (enrollmentId) => {
 </script>
 
 <template>
-    <div v-if="userCanAny(['create-students'])">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                Courses
-            </h2>
-            <div class="space-x-4">
-                <button
-                    @click="showAddModal = true"
-                    class="flex items-center text-green-600 hover:text-green-800"
-                >
-                    <PlusCircleIcon class="w-6 h-6 mr-1" /> Add Course
-                </button>
-            </div>
-        </div>
-
-        <!-- Courses waiting for student to finish payment -->
-        <div
-            class="mb-8 border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
-        >
-            <div class="flex items-center gap-3 text-green-600">
-                <ClockIcon class="w-6 h-6" />
-                <h2
-                    v-if="activeSemester && activeSemester.year"
-                    class="text-xl font-semibold dark:text-white text-gray-900"
-                >
-                    Pending Courses For {{ activeSemester.year.name }} Semester
-                    {{ activeSemester.level }}
+    <div v-if="userCanAny(['create-students'])" class="space-y-8">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700/60">
+            <div>
+                <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">
+                    Course Registrations
                 </h2>
-            </div>
-            <div
-                v-if="
-                    student.enrollments.filter(
-                        (enrollment) => enrollment.status == 'pending'
-                    ).length == 0
-                "
-                class="text-center"
-            >
-                <p class="text-gray-500 dark:text-gray-400">
-                    No Pending Courses For This Semester.
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Manage student course enrollment, active schedules, and status records.
                 </p>
             </div>
-
-            <div
-                v-else-if="
-                    student.enrollments.filter(
-                        (enrollment) => enrollment.status == 'pending'
-                    ).length > 0
-                "
-                class="flex flex-col"
+            <button
+                @click="showAddModal = true"
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm transition active:scale-95"
             >
-                <div
-                    class="mt-10 min-w-[100px] overflow-auto border-t border-gray-300 dark:border-gray-600 pt-4 pb-4"
-                >
-                    <table
-                        class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                    >
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700">
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    No.
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Name
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Course Code
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Credit Hours
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Grade
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Status
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(
-                                    enrollment, index
-                                ) in student.enrollments.filter(
-                                    (enrollment) =>
-                                        enrollment.status == 'pending'
-                                )"
-                                :key="enrollment.id"
-                                :class="
-                                    index % 2 === 0
-                                        ? 'bg-white dark:bg-gray-800'
-                                        : 'bg-gray-50 dark:bg-gray-700'
-                                "
-                            >                            
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ index + 1 }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    <Link
-                                        :href="
-                                            route('courses.show', {
-                                                course: enrollment.course.id,
-                                            })
-                                        "
-                                    >
-                                        {{ enrollment.course.name }}
-                                    </Link>
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ enrollment.course.code }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ enrollment.course.credit_hours }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
-                                >
-                                    {{
-                                        student.grades?.find(
-                                            (g) =>
-                                                g.course_id ===
-                                                enrollment.course.id
-                                        )?.grade_letter ?? "Not Graded"
-                                    }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    <span
-                                        :class="
-                                            enrollment.status === 'enrolled'
-                                                ? 'text-green-500'
-                                                : 'text-red-500'
-                                        "
-                                    >
-                                        {{ enrollment.status.toUpperCase() }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 text-sm">
-                                    <button
-                                        @click="dropEnrollment(enrollment.id)"
-                                        class="flex items-center text-red-600 hover:text-red-800"
-                                    >
-                                        <MinusCircleIcon class="w-4 h-4 mr-1" />
-                                        Drop
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <PlusCircleIcon class="w-4 h-4" /> Add Course
+            </button>
+        </div>
+
+        <!-- ── Pending Courses ─────────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-5 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50">
+                <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                    <ClockIcon class="w-4 h-4" />
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+                        Pending Courses
+                    </h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                        Waiting for payment verification
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <!-- Enrolled Courses  -->
-        <div class="border-t border-gray-300 dark:border-gray-600 pt-4 pb-4">
-            <div class="flex items-center gap-3 text-green-600">
-                <BookmarkIcon class="w-6" />
-                <h2 class="text-xl font-semibold dark:text-white text-gray-900">
-                    Enrolled Courses For {{ activeSemester.year.name }} Semester
-                    {{ activeSemester.level }}
-                </h2>
-            </div>
-            <div
-                v-if="
-                    student.enrollments.filter(
-                        (enrollment) => enrollment.status == 'enrolled'
-                    ).length == 0
-                "
-                class="text-center"
-            >
-                <p class="text-gray-500 dark:text-gray-400">
-                    No Enrolled Courses For This Semester.
-                </p>
+            <div v-if="student.enrollments.filter(e => e.status === 'pending').length === 0" class="p-8 text-center">
+                <p class="text-sm text-gray-400 italic">No pending courses for this semester.</p>
             </div>
 
-            <div
-                v-else-if="
-                    student.enrollments.filter(
-                        (enrollment) => enrollment.status == 'enrolled'
-                    ).length > 0
-                "
-                class="flex flex-col"
-            >
-                <div
-                    class="mt-5 min-w-[100px] overflow-auto border-gray-300 dark:border-gray-600 pt-4 pb-4"
-                >
-                    <table
-                        class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                    >
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-700">
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    No.
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Name
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Course Code
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Credit Hours
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Grade
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Status
-                                </th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                                >
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(
-                                    enrollment, index
-                                ) in student.enrollments.filter(
-                                    (enrollment) =>
-                                        enrollment.status == 'enrolled'
-                                )"
-                                :key="enrollment.id"
-                                :class="
-                                    index % 2 === 0
-                                        ? 'bg-white dark:bg-gray-800'
-                                        : 'bg-gray-50 dark:bg-gray-700'
-                                "
-                            >
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ index + 1 }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    <Link
-                                        :href="
-                                            route('courses.show', {
-                                                course: enrollment.course.id,
-                                            })
-                                        "
-                                    >
-                                        {{ enrollment.course.name }}
-                                    </Link>
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ enrollment.course.code }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    {{ enrollment.course.credit_hours }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
-                                >
-                                    {{
-                                        student.grades?.find(
-                                            (g) =>
-                                                g.course_id ===
-                                                enrollment.course.id
-                                        )?.grade_letter ?? "Not Graded"
-                                    }}
-                                </td>
-                                <td
-                                    class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                                >
-                                    <span
-                                        :class="
-                                            enrollment.status === 'enrolled'
-                                                ? 'text-green-500'
-                                                : 'text-red-500'
-                                        "
-                                    >
-                                        {{ enrollment.status.toUpperCase() }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 text-sm">
-                                    <button
-                                        @click="dropEnrollment(enrollment.id)"
-                                        class="flex items-center text-red-600 hover:text-red-800"
-                                    >
-                                        <MinusCircleIcon class="w-4 h-4 mr-1" />
-                                        Drop
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dropped Courses List -->
-        <div class="flex items-center gap-3 mt-8 text-green-600">
-            <XCircleIcon class="w-6 h-6" />
-            <h2 class="text-xl font-semibold dark:text-white text-gray-900">
-                Dropped Courses
-            </h2>
-        </div>
-        <div
-            v-if="
-                student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'dropped'
-                ).length == 0
-            "
-            class="text-center"
-        >
-            <p class="text-gray-500 dark:text-gray-400">No Dropped Courses.</p>
-        </div>
-
-        <div
-            v-else-if="
-                student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'dropped'
-                )
-            "
-            class="flex flex-col"
-        >
-            <div
-                class="mt-8 min-w-[100px] overflow-auto border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
-            >
-                <table
-                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                >
+            <div v-else class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700">
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                No.
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Name
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Course Code
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Credit Hours
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Grade
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Status
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Action
-                            </th>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-16">No.</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Course Name</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Credits</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-750">
                         <tr
-                            v-for="(
-                                enrollment, index
-                            ) in student.enrollments.filter(
-                                (enrollment) => enrollment.status == 'dropped'
-                            )"
+                            v-for="(enrollment, index) in student.enrollments.filter(e => e.status === 'pending')"
                             :key="enrollment.id"
-                            :class="
-                                index % 2 === 0
-                                    ? 'bg-white dark:bg-gray-800'
-                                    : 'bg-gray-50 dark:bg-gray-700'
-                            "
+                            class="hover:bg-gray-50/50 dark:hover:bg-gray-700/10 transition"
                         >
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ index + 1 }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
+                            <td class="px-6 py-4 text-xs font-bold text-gray-400">{{ index + 1 }}</td>
+                            <td class="px-6 py-4">
                                 <Link
-                                    :href="
-                                        route('courses.show', {
-                                            course: enrollment.course.id,
-                                        })
-                                    "
+                                    :href="route('courses.show', { course: enrollment.course.id })"
+                                    class="text-sm font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                                 >
                                     {{ enrollment.course.name }}
                                 </Link>
                             </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ enrollment.course.code }}
+                            <td class="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400">{{ enrollment.course.code }}</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-900 dark:text-gray-100">{{ enrollment.course.credit_hours }} cr</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-500">
+                                {{ student.grades?.find(g => g.course_id === enrollment.course.id)?.grade_letter ?? "—" }}
                             </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ enrollment.course.credit_hours }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
-                            >
-                                {{
-                                    student.grades?.find(
-                                        (g) =>
-                                            g.course_id === enrollment.course.id
-                                    )?.grade_letter ?? "Not Graded"
-                                }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                <span
-                                    :class="
-                                        enrollment.status === 'enrolled'
-                                            ? 'text-green-500'
-                                            : 'text-red-500'
-                                    "
-                                >
-                                    {{ enrollment.status.toUpperCase() }}
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                    PENDING
                                 </span>
                             </td>
-                            <td class="px-4 py-2 text-sm">
+                            <td class="px-6 py-4 text-right">
                                 <button
-                                    @click="addEnrollmentBack(enrollment)"
-                                    class="flex items-center text-green-600 hover:text-green-700"
+                                    @click="dropEnrollment(enrollment.id)"
+                                    class="inline-flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-800 transition"
                                 >
-                                    <PlusCircleIcon class="w-4 h-4 mr-1" />
-                                    Add Back
+                                    <MinusCircleIcon class="w-4 h-4" /> Drop
                                 </button>
                             </td>
                         </tr>
@@ -623,137 +228,205 @@ const dropEnrollment = (enrollmentId) => {
             </div>
         </div>
 
-        <!-- completed Courses List -->
-        <div class="flex items-center gap-3 mt-8 mb-6 text-green-600">
-            <CheckCircleIcon class="w-6 h-6" />
-            <h2 class="text-xl font-semibold dark:text-white text-gray-900">
-                Completed Courses
-            </h2>
-        </div>
-        <div
-            v-if="
-                student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'completed'
-                ).length == 0
-            "
-            class="text-center"
-        >
-            <p class="text-gray-500 dark:text-gray-400">
-                No completed Courses.
-            </p>
-        </div>
+        <!-- ── Enrolled Courses ────────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-5 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50">
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:emerald-400 shrink-0">
+                    <BookmarkIcon class="w-4 h-4" />
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+                        Enrolled Courses
+                    </h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                        Active study schedules
+                    </p>
+                </div>
+            </div>
 
-        <div
-            v-else-if="
-                student.enrollments.filter(
-                    (enrollment) => enrollment.status == 'completed'
-                )
-            "
-            class="flex flex-col"
-        >
-            <div
-                class="mt-8 min-w-[100px] overflow-auto border-t border-b border-gray-300 dark:border-gray-600 pt-4 pb-4"
-            >
-                <table
-                    class="min-w-full table-auto border border-gray-300 dark:border-gray-600"
-                >
+            <div v-if="student.enrollments.filter(e => e.status === 'enrolled').length === 0" class="p-8 text-center">
+                <p class="text-sm text-gray-400 italic">No enrolled courses for this semester.</p>
+            </div>
+
+            <div v-else class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700">
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                No.
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Name
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Course Code
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Credit Hours
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Grade
-                            </th>
-                            <th
-                                class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200"
-                            >
-                                Status
-                            </th>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-16">No.</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Course Name</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Credits</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-750">
                         <tr
-                            v-for="(
-                                enrollment, index
-                            ) in student.enrollments.filter(
-                                (enrollment) => enrollment.status == 'completed'
-                            )"
+                            v-for="(enrollment, index) in student.enrollments.filter(e => e.status === 'enrolled')"
                             :key="enrollment.id"
-                            :class="
-                                index % 2 === 0
-                                    ? 'bg-white dark:bg-gray-800'
-                                    : 'bg-gray-50 dark:bg-gray-700'
-                            "
+                            class="hover:bg-gray-50/50 dark:hover:bg-gray-700/10 transition"
                         >
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ index + 1 }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
+                            <td class="px-6 py-4 text-xs font-bold text-gray-400">{{ index + 1 }}</td>
+                            <td class="px-6 py-4">
                                 <Link
-                                    :href="
-                                        route('courses.show', {
-                                            course: enrollment.course.id,
-                                        })
-                                    "
+                                    :href="route('courses.show', { course: enrollment.course.id })"
+                                    class="text-sm font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                                 >
                                     {{ enrollment.course.name }}
                                 </Link>
                             </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ enrollment.course.code }}
+                            <td class="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400">{{ enrollment.course.code }}</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-900 dark:text-gray-100">{{ enrollment.course.credit_hours }} cr</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-500">
+                                {{ student.grades?.find(g => g.course_id === enrollment.course.id)?.grade_letter ?? "—" }}
                             </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                {{ enrollment.course.credit_hours }}
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                    ENROLLED
+                                </span>
                             </td>
-                            <td
-                                class="px-4 py-2 text-sm font-bold text-gray-600 dark:text-gray-300"
-                            >
-                                {{
-                                    student.grades?.find(
-                                        (g) =>
-                                            g.course_id === enrollment.course.id
-                                    )?.grade_letter ?? "Not Graded"
-                                }}
-                            </td>
-                            <td
-                                class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
-                            >
-                                <span
-                                    :class="
-                                        enrollment.status === 'enrolled'? 'text-green-500'
-                                        : enrollment.status === 'completed' ? 'text-blue-500'
-                                        : 'text-red-500'
-                                    "
+                            <td class="px-6 py-4 text-right">
+                                <button
+                                    @click="dropEnrollment(enrollment.id)"
+                                    class="inline-flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-800 transition"
                                 >
-                                    {{ enrollment.status.toUpperCase() }}
+                                    <MinusCircleIcon class="w-4 h-4" /> Drop
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── Dropped Courses ─────────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-5 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50">
+                <div class="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
+                    <XCircleIcon class="w-4 h-4" />
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+                        Dropped Courses
+                    </h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                        Cancelled or suspended enrollments
+                    </p>
+                </div>
+            </div>
+
+            <div v-if="student.enrollments.filter(e => e.status === 'dropped').length === 0" class="p-8 text-center">
+                <p class="text-sm text-gray-400 italic">No dropped courses recorded.</p>
+            </div>
+
+            <div v-else class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-16">No.</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Course Name</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Credits</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-750">
+                        <tr
+                            v-for="(enrollment, index) in student.enrollments.filter(e => e.status === 'dropped')"
+                            :key="enrollment.id"
+                            class="hover:bg-gray-50/50 dark:hover:bg-gray-700/10 transition"
+                        >
+                            <td class="px-6 py-4 text-xs font-bold text-gray-400">{{ index + 1 }}</td>
+                            <td class="px-6 py-4">
+                                <Link
+                                    :href="route('courses.show', { course: enrollment.course.id })"
+                                    class="text-sm font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                >
+                                    {{ enrollment.course.name }}
+                                </Link>
+                            </td>
+                            <td class="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400">{{ enrollment.course.code }}</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-900 dark:text-gray-100">{{ enrollment.course.credit_hours }} cr</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-500">
+                                {{ student.grades?.find(g => g.course_id === enrollment.course.id)?.grade_letter ?? "—" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400">
+                                    DROPPED
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <button
+                                    @click="addEnrollmentBack(enrollment)"
+                                    class="inline-flex items-center gap-1 text-xs font-bold text-green-600 dark:text-green-400 hover:text-green-800 transition"
+                                >
+                                    <PlusCircleIcon class="w-4 h-4" /> Add Back
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── Completed Courses ───────────────────────────────────── -->
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-5 flex items-center gap-3 border-b border-gray-50 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                    <CheckCircleIcon class="w-4 h-4" />
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+                        Completed Courses
+                    </h3>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                        Courses fully taken and graded
+                    </p>
+                </div>
+            </div>
+
+            <div v-if="student.enrollments.filter(e => e.status === 'completed').length === 0" class="p-8 text-center">
+                <p class="text-sm text-gray-400 italic">No completed courses recorded.</p>
+            </div>
+
+            <div v-else class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider w-16">No.</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Course Name</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Credits</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Grade</th>
+                            <th class="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-750">
+                        <tr
+                            v-for="(enrollment, index) in student.enrollments.filter(e => e.status === 'completed')"
+                            :key="enrollment.id"
+                            class="hover:bg-gray-50/50 dark:hover:bg-gray-700/10 transition"
+                        >
+                            <td class="px-6 py-4 text-xs font-bold text-gray-400">{{ index + 1 }}</td>
+                            <td class="px-6 py-4">
+                                <Link
+                                    :href="route('courses.show', { course: enrollment.course.id })"
+                                    class="text-sm font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                >
+                                    {{ enrollment.course.name }}
+                                </Link>
+                            </td>
+                            <td class="px-6 py-4 text-xs font-semibold text-gray-500 dark:text-gray-400">{{ enrollment.course.code }}</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-900 dark:text-gray-100">{{ enrollment.course.credit_hours }} cr</td>
+                            <td class="px-6 py-4 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                                {{ student.grades?.find(g => g.course_id === enrollment.course.id)?.grade_letter ?? "—" }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400">
+                                    COMPLETED
                                 </span>
                             </td>
                         </tr>
@@ -761,119 +434,104 @@ const dropEnrollment = (enrollmentId) => {
                 </table>
             </div>
         </div>
-    </div>
 
-    <div v-else>Unavalilable!</div>
-    <!-- Add Course Modal -->
+    </div>
+    <div v-else class="p-8 text-center text-gray-500">Unavailable!</div>
+
+    <!-- ── Add Course Modal ────────────────────────────────────── -->
     <Modal
         :show="showAddModal"
         @close="showAddModal = false"
-        :max-width="'4xl'"
+        :max-width="'2xl'"
     >
-        <div class="px-8 py-6">
-            <h3 class="text-lg text-center font-light mb-4">
-                Enroll
-                <span class="font-bold"
-                    >{{ student.firstName }} {{ student.lastName }}</span
-                >
-                to
-                <span class="font-bold underline">
-                    {{
-                        addForm.course_id
-                            ? courses.find(
-                                  (course) => course.id == addForm.course_id
-                              )?.name
-                            : "New Course"
-                    }}
-                </span>
-            </h3>
+        <div class="p-6 space-y-6 bg-gradient-to-br from-white via-indigo-50/20 to-indigo-100/10 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
+            <div>
+                <h3 class="text-lg font-extrabold text-gray-900 dark:text-white">
+                    Add New Enrollment
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Select a course and allocate a study mode and class section for {{ student.firstName }} {{ student.lastName }}.
+                </p>
+            </div>
 
-            <p class="text-red-400">{{ addForm.errors.section_id }}</p>
-            <p class="text-red-400">{{ addForm.errors.course_id }}</p>
-            <!-- Course Selection -->
-            <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-            >
-                Course
-            </label>
-            <p class="text-sm text-gray-500 mb-2">
-                Choose a course the student hasn’t taken yet.
-            </p>
-            <Listbox
-                v-model="addForm.course_id"
-                :options="filteredCoursesList"
-                checkmark
-                optionLabel="name"
-                option-value="id"
-                filter
-                placeholder="Select Course"
-                class="w-full mb-4"
-            />
+            <div class="space-y-4">
+                <p v-if="addForm.errors.section_id" class="text-xs text-red-500">{{ addForm.errors.section_id }}</p>
+                <p v-if="addForm.errors.course_id" class="text-xs text-red-500">{{ addForm.errors.course_id }}</p>
+                
+                <!-- Course Selection -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                        Course Selection
+                    </label>
+                    <Listbox
+                        v-model="addForm.course_id"
+                        :options="filteredCoursesList"
+                        checkmark
+                        optionLabel="name"
+                        option-value="id"
+                        filter
+                        placeholder="Choose a Course..."
+                        class="w-full border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden focus:ring focus:ring-indigo-500"
+                    />
+                </div>
 
-            <!-- Study Mode Selection -->
-            <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-            >
-                Study Mode
-            </label>
-            <p class="text-sm text-gray-500 mb-2">
-                Select how the course will be attended (e.g. regular, weekend).
-            </p>
-            <Select
-                v-model="selectedStudyModeId"
-                :options="props.studyModes"
-                placeholder="Select Study Mode"
-                option-label="name"
-                append-to="self"
-                option-value="id"
-                class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-            />
+                <!-- Study Mode Selection -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                        Study Mode
+                    </label>
+                    <Select
+                        v-model="selectedStudyModeId"
+                        :options="props.studyModes"
+                        placeholder="Select Attendance Mode"
+                        option-label="name"
+                        append-to="self"
+                        option-value="id"
+                        class="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-150 transition"
+                    />
+                </div>
 
-            <!-- Section Selection -->
-            <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-            >
-                Section
-            </label>
-            <p class="text-sm text-gray-500 mb-2">
-                Pick the section where the student will take the given course in
-                the given study mode.
-            </p>
-
-            <Select
-                v-model="addForm.section_id"
-                :options="sectionOptions"
-                :placeholder="`This course is available in (${sectionOptions.length})`"
-                empty-message="no available section!"
-                option-label="name"
-                append-to="self"
-                option-value="id"
-                class="w-full mb-4 px-3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100 transition"
-            >
-                <template #option="slotProps">
-                    {{ slotProps.option.name }} In
-                    {{ slotProps.option.studyMode.name }}
-                    <span class="text-sm">
-                        ({{ slotProps.option.program.name }} in
-                        {{ slotProps.option.track.name }})
-                    </span>
-                </template>
-            </Select>
+                <!-- Section Selection -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                        Class Section
+                    </label>
+                    <Select
+                        v-model="addForm.section_id"
+                        :options="sectionOptions"
+                        :placeholder="`Available Sections (${sectionOptions.length})`"
+                        empty-message="No available sections for selection"
+                        option-label="name"
+                        append-to="self"
+                        option-value="id"
+                        class="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:ring focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-150 transition"
+                    >
+                        <template #option="slotProps">
+                            <span class="text-sm font-semibold">{{ slotProps.option.name }}</span>
+                            <span class="text-xs text-gray-400"> ({{ slotProps.option.program?.name }} - {{ slotProps.option.track?.name || 'No Track' }})</span>
+                        </template>
+                    </Select>
+                </div>
+            </div>
 
             <!-- Action Buttons -->
-            <div class="flex justify-end">
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <button
+                    @click="showAddModal = false"
+                    class="px-4 py-2 text-xs font-bold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl text-gray-700 dark:text-gray-200 transition"
+                >
+                    Cancel
+                </button>
                 <button
                     @click="submitAdd"
                     :disabled="addForm.processing"
-                    class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded mr-3"
+                    class="inline-flex items-center px-4 py-2 text-xs font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-sm transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    {{ addForm.processing ? "Adding..." : "Add" }}
-                </button>
-                <button
-                    @click="showAddModal = false"
-                    class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded"
-                >
-                    Cancel
+                    <svg v-if="addForm.processing" class="animate-spin -ml-1 mr-2 h-3 w-3 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    Enroll Student
                 </button>
             </div>
         </div>

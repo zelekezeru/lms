@@ -140,7 +140,7 @@ const initials = (student) => {
                     <!-- Section header -->
                     <button
                         @click="toggle(section.key)"
-                        class="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition"
+                        class="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-750/30 transition"
                     >
                         <div class="flex items-center gap-3">
                             <div :class="['w-8 h-8 rounded-xl flex items-center justify-center shrink-0', section.bg]">
@@ -162,17 +162,17 @@ const initials = (student) => {
                         leave-from-class="opacity-100"
                         leave-to-class="opacity-0"
                     >
-                        <div v-if="openSection === section.key" class="border-t border-gray-100 dark:border-gray-700 px-5 py-4">
-                            <dl class="space-y-3">
+                        <div v-if="openSection === section.key" class="border-t border-gray-100 dark:border-gray-700 px-5 py-4 bg-gray-50/30 dark:bg-gray-900/10">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 <div
                                     v-for="field in section.fields().filter(f => f.value)"
                                     :key="field.label"
-                                    class="flex items-start justify-between gap-4"
+                                    class="flex flex-col p-3 bg-white dark:bg-gray-850 rounded-xl border border-gray-100 dark:border-gray-750 shadow-sm hover:shadow-md transition duration-300"
                                 >
-                                    <dt class="text-xs text-gray-500 dark:text-gray-400 shrink-0 w-28">{{ field.label }}</dt>
-                                    <dd class="text-sm font-medium text-gray-900 dark:text-white text-right">{{ field.value }}</dd>
+                                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">{{ field.label }}</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white mt-1 break-words">{{ field.value }}</span>
                                 </div>
-                            </dl>
+                            </div>
                         </div>
                     </transition>
                 </div>

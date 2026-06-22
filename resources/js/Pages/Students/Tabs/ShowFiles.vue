@@ -52,96 +52,90 @@ const deleteDocument = (id) => {
 </script>
 
 <template>
-    <Head title="Student Document" />
-        <h2 id="student-documents-heading" class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            Student Documents
-        </h2>
-{{ student.user.documents }}
-        <div class="mb-4">
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
-                <Link
-                    v-if="student && student.user_id"
-                    :href="route('userDocuments.newDocument', { user_id: student.user_id })"
-                    class="inline-flex items-center rounded-md bg-green-600 text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest transition duration-150 ease-in-out hover:bg-green-700 focus:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                    + Add Document
-                </Link>
-                <div v-else class="text-center text-gray-500 dark:text-gray-400 py-2">
-                    <p>Unable to add documents. User ID is missing.</p>
+    <Head title="Student Documents" />
+    <div class="space-y-6">
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700/60">
+            <div>
+                <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">
+                    Verification Documents
+                </h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Manage uploaded forms, ID scans, and certifications.
+                </p>
+            </div>
+            
+            <Link
+                v-if="student && student.user_id"
+                :href="route('userDocuments.newDocument', { user_id: student.user_id })"
+                class="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm transition active:scale-95"
+            >
+                + Add Document
+            </Link>
+        </div>
+
+        <!-- Files Card Grid -->
+        <div v-if="documents && documents.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+                v-for="document in documents"
+                :key="document.id"
+                class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition duration-300 relative group"
+            >
+                <div class="space-y-4">
+                    <!-- File Preview Icon or Image -->
+                    <div class="aspect-video w-full bg-gray-50 dark:bg-gray-900/40 rounded-xl overflow-hidden flex items-center justify-center border border-gray-105 dark:border-gray-750">
+                        <img
+                            v-if="document.file === null && document.image"
+                            :src="document.image"
+                            alt="Preview"
+                            class="w-full h-full object-cover group-hover:scale-[1.02] transition duration-300 animate-fade-in"
+                            @load="handleImageLoad"
+                        />
+                        <div v-else class="flex flex-col items-center gap-2 text-gray-405 dark:text-gray-500">
+                            <ClipboardDocumentListIcon class="w-12 h-12" />
+                            <span class="text-[10px] font-semibold uppercase tracking-wider">File Attachment</span>
+                        </div>
+                    </div>
+
+                    <!-- File Details -->
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-gray-950 dark:text-gray-50 text-sm truncate">
+                            {{ document.title }}
+                        </h3>
+                        <p class="text-xs text-gray-555 dark:text-gray-400 line-clamp-2">
+                            {{ document.description || 'No description provided.' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="mt-5 pt-3 border-t border-gray-50 dark:border-gray-700/60 flex items-center justify-between">
+                    <Link
+                        :href="route('userDocuments.show', { userDocument: document.id })"
+                        class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800"
+                    >
+                        <EyeIcon class="w-4 h-4" />
+                        <span>View Details</span>
+                    </Link>
+                    
+                    <button
+                        v-if="userCan('delete-documents')"
+                        @click="deleteDocument(document.id)"
+                        class="inline-flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-450 hover:text-rose-800"
+                    >
+                        <TrashIcon class="w-4 h-4" />
+                        <span>Delete</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div v-if="documents && documents.length" class="overflow-x-auto">
-            <table class="min-w-full table-auto border border-gray-300 dark:border-gray-600" aria-label="Documents table">
-                <thead class="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                        <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            Document Name
-                        </th>
-                        <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            Description
-                        </th>
-                        <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            Thumbnail
-                        </th>
-                        <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(document, index) in documents"
-                        :key="document.id"
-                        :class="index % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-700'"
-                        class="border-b border-gray-300 dark:border-gray-600"
-                    >
-                        <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-r border-gray-300 dark:border-gray-600">
-                            {{ document.title }}
-                        </td>
-                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-r border-gray-300 dark:border-gray-600">
-                            {{ document.description }}
-                        </td>
-                        <td class="px-4 py-2 text-sm border-r border-gray-300 dark:border-gray-600">
-                            <div v-if="document.file === null" class="flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                <img
-                                    :src="document.image"
-                                    alt="Document Image Preview"
-                                    class="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
-                                    @load="handleImageLoad"
-                                />
-                            </div>
-                            <div v-else-if="document.file !== null" class="flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                <ClipboardDocumentListIcon class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-label="Document file icon" />
-                            </div>
-                            <div v-else class="text-xs text-gray-400 italic">No file</div>
-                        </td>
-                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 flex gap-2">
-                            <Link
-                                :href="route('userDocuments.show', { userDocument: document.id })"
-                                class="text-blue-500 hover:text-blue-700 flex items-center gap-1"
-                                aria-label="View document"
-                            >
-                                <EyeIcon class="w-5 h-5" />
-                                <span>View</span>
-                            </Link>
-                            <button
-                                v-if="userCan('delete-documents')"
-                                @click="deleteDocument(document.id)"
-                                class="text-red-500 hover:text-red-700 flex items-center gap-1"
-                                aria-label="Delete document"
-                            >
-                                <TrashIcon class="w-5 h-5" />
-                                <span>Delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Empty State -->
+        <div v-else class="bg-gray-50 dark:bg-gray-700/20 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-12 text-center">
+            <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-850 flex items-center justify-center mx-auto text-gray-400 mb-3">
+                <ClipboardDocumentListIcon class="w-6 h-6" />
+            </div>
+            <p class="text-sm text-gray-400 dark:text-gray-550 font-medium">No documents uploaded yet.</p>
         </div>
-
-        <div v-else class="text-center text-gray-500 dark:text-gray-400 py-6">
-            <p>No documents available.</p>
-        </div>
+    </div>
 </template>

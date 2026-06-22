@@ -238,6 +238,9 @@ Route::middleware(['auth'])->group(function () {
     // Assessment for specific student in a section
     Route::get('/assessments/section_student/{section}/{student}', [AssessmentController::class, 'section_student'])->name('assessments.section_student');
     Route::post('students/{student}/grades', [GradeController::class, 'storeStudentGrade'])->name('students.grades');
+    // Soft delete (with reason) and restore a student grade
+    Route::delete('grades/{grade}/soft-delete', [GradeController::class, 'softDeleteStudentGrade'])->name('grades.soft-delete');
+    Route::patch('grades/{grade}/restore', [GradeController::class, 'restoreStudentGrade'])->name('grades.restore');
 
     Route::get('/distance-home', [CenterController::class, 'distanceHome'])->name('distance.home');
     Route::get('/distance-students', [CenterController::class, 'distanceStudents'])->name('distance.students');

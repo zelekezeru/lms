@@ -30,7 +30,70 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  deletedGrades: {
+    type: Array,
+    default: () => [],
+  },
 });
+
+// Grade Delete (soft delete with reason) Modal State
+const showGradeDeleteModal = ref(false);
+const deletingGrade = ref(null);
+const showDeletedGrades = ref(false);
+const gradeDeleteForm = useForm({
+    delete_reason: "",
+});
+
+function openGradeDeleteModal(grade) {
+    deletingGrade.value = grade;
+    gradeDeleteForm.reset();
+    gradeDeleteForm.clearErrors();
+    showGradeDeleteModal.value = true;
+}
+
+function closeGradeDeleteModal() {
+    showGradeDeleteModal.value = false;
+    deletingGrade.value = null;
+    gradeDeleteForm.reset();
+}
+
+function submitGradeDelete() {
+    if (!deletingGrade.value) return;
+    gradeDeleteForm.delete(route('grades.soft-delete', { grade: deletingGrade.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            Swal.fire("Deleted", "Grade moved to deleted grades.", "success");
+            closeGradeDeleteModal();
+        },
+        onError: () => {
+            Swal.fire("Error", "Failed to delete grade.", "error");
+        },
+    });
+}
+
+function restoreGrade(grade) {
+    Swal.fire({
+        title: "Restore this grade?",
+        text: "It will become visible again in the transcript and student portal.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, restore",
+        confirmButtonColor: "#16a34a",
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        router.patch(route('grades.restore', { grade: grade.id }), {}, {
+            preserveScroll: true,
+            onSuccess: () => Swal.fire("Restored", "Grade restored successfully.", "success"),
+            onError: () => Swal.fire("Error", "Failed to restore grade.", "error"),
+        });
+    });
+}
+
+function formatDate(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    return isNaN(d) ? value : d.toLocaleString();
+}
 
 // Grade Edit Modal State
 const showGradeEditModal = ref(false);
@@ -176,7 +239,7 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Semester</th>
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Grade Letter</th>
             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Grade Point</th>
-            <th v-if="userCan('edit.grades')" class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+            <th v-if="userCan('edit.grades') || userCan('delete.grades')" class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
@@ -191,15 +254,26 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
             <td class="px-4 py-2 text-green-600 dark:text-green-400 font-semibold">{{ grade.grade_letter || '-' }}</td>
             <td class="px-4 py-2 text-blue-600 dark:text-blue-400 font-semibold">{{ grade.grade_point || '-' }}</td>
             <td class="px-4 py-2">
-              <button
-                v-if="userCan('edit.grades')"
-                :key="`edit-${grade.id}`"
-                class="text-blue-600 dark:text-blue-400 hover:underline ml-2 flex items-center"
-                @click="openGradeEditModal(grade)"
-              >
-                <PencilSquareIcon class="w-5 h-5 mr-1 inline" />
-                Edit
-              </button>
+              <div class="flex items-center gap-3">
+                <button
+                  v-if="userCan('edit.grades')"
+                  :key="`edit-${grade.id}`"
+                  class="text-blue-600 dark:text-blue-400 hover:underline flex items-center"
+                  @click="openGradeEditModal(grade)"
+                >
+                  <PencilSquareIcon class="w-5 h-5 mr-1 inline" />
+                  Edit
+                </button>
+                <button
+                  v-if="userCan('delete.grades')"
+                  :key="`delete-${grade.id}`"
+                  class="text-red-600 dark:text-red-400 hover:underline flex items-center"
+                  @click="openGradeDeleteModal(grade)"
+                >
+                  <TrashIcon class="w-5 h-5 mr-1 inline" />
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -208,6 +282,56 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
 
     <div v-else class="text-center text-gray-500 dark:text-gray-400 mt-10">
       No grade records found for this student.
+    </div>
+
+    <!-- Deleted Grades (recoverable) -->
+    <div v-if="userCan('delete.grades') && deletedGrades && deletedGrades.length > 0" class="mt-10">
+      <button
+        type="button"
+        class="flex items-center gap-2 text-sm font-semibold text-red-700 dark:text-red-400 hover:underline"
+        @click="showDeletedGrades = !showDeletedGrades"
+      >
+        <TrashIcon class="w-5 h-5" />
+        Deleted Grades ({{ deletedGrades.length }})
+        <span class="text-xs text-gray-500">{{ showDeletedGrades ? 'Hide' : 'Show' }}</span>
+      </button>
+
+      <div v-if="showDeletedGrades" class="overflow-x-auto mt-3 border border-red-200 dark:border-red-900 rounded-lg">
+        <table class="min-w-full divide-y divide-red-200 dark:divide-red-900">
+          <thead class="bg-red-50 dark:bg-red-950/40">
+            <tr>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Course</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Semester</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Letter</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Point</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Reason</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Deleted By</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Deleted At</th>
+              <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-900 divide-y divide-red-100 dark:divide-red-900/50">
+            <tr v-for="grade in deletedGrades" :key="`deleted-${grade.id}`" class="hover:bg-red-50/50 dark:hover:bg-red-950/20">
+              <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ grade.course?.name || 'N/A' }}</td>
+              <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ grade.semester?.name || 'N/A' }}</td>
+              <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ grade.grade_letter || '-' }}</td>
+              <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ grade.grade_point || '-' }}</td>
+              <td class="px-4 py-2 text-gray-600 dark:text-gray-400 max-w-xs whitespace-pre-wrap">{{ grade.delete_reason || '—' }}</td>
+              <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ grade.deleted_by_name || '—' }}</td>
+              <td class="px-4 py-2 text-gray-500 dark:text-gray-400 text-sm">{{ formatDate(grade.deleted_at) }}</td>
+              <td class="px-4 py-2">
+                <button
+                  class="text-green-600 dark:text-green-400 hover:underline flex items-center"
+                  @click="restoreGrade(grade)"
+                >
+                  <ArrowPathIcon class="w-5 h-5 mr-1 inline" />
+                  Restore
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -355,6 +479,66 @@ watch(() => gradeCreateForm.grade_point, (newVal) => {
               </svg>
             </span>
             Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </Modal>
+
+  <!-- Delete Grade (soft delete with reason) -->
+  <Modal :show="showGradeDeleteModal" @close="closeGradeDeleteModal">
+    <div class="p-6 space-y-5 bg-white dark:bg-gray-800 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-bold text-red-700 dark:text-red-400 flex items-center gap-2">
+        <TrashIcon class="w-6 h-6" />
+        Delete Grade
+      </h2>
+
+      <p class="text-gray-600 dark:text-gray-300">
+        You are about to delete the grade for
+        <strong class="text-gray-900 dark:text-gray-100">
+          {{ deletingGrade?.course?.name || 'N/A' }}
+        </strong>
+        ({{ deletingGrade?.grade_letter || '-' }} / {{ deletingGrade?.grade_point || '-' }}).
+        It will be hidden from the transcript and student portal but can be restored later.
+      </p>
+
+      <form @submit.prevent="submitGradeDelete" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+            Reason for deletion <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            v-model="gradeDeleteForm.delete_reason"
+            rows="3"
+            required
+            class="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            placeholder="Explain why this grade is being deleted..."
+          ></textarea>
+          <p v-if="gradeDeleteForm.errors.delete_reason" class="text-xs text-red-500 mt-1">
+            {{ gradeDeleteForm.errors.delete_reason }}
+          </p>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-2">
+          <button
+            type="button"
+            @click="closeGradeDeleteModal"
+            class="px-5 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition font-semibold"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            :disabled="gradeDeleteForm.processing"
+            class="px-5 py-2 rounded-lg bg-red-600 text-white font-semibold shadow hover:bg-red-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <span v-if="gradeDeleteForm.processing" class="animate-spin mr-2 inline-block">
+              <svg class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+              </svg>
+            </span>
+            Delete Grade
           </button>
         </div>
       </form>

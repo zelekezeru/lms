@@ -203,6 +203,13 @@ class StudentController extends Controller
             $student->grades()->with(['course', 'section', 'semester'])->get()
         );
 
+        // Soft-deleted grades, recoverable via the "Deleted Grades" view.
+        $deletedGrades = GradeResource::collection(
+            $student->grades()->onlyTrashed()
+                ->with(['course', 'section', 'semester', 'deletedBy'])
+                ->orderByDesc('deleted_at')->get()
+        );
+
         $user = new UserResource($student->user);
 
         $documents = UserDocumentResource::collection($student->user->userDocuments);
@@ -230,6 +237,7 @@ class StudentController extends Controller
             'payments' => $payments,
             'semesters' => $semesters,
             'grades' => $grades,
+            'deletedGrades' => $deletedGrades,
             'activeSemester' => $activeSemester,
             'availableSemesters' => SemesterResource::collection($availableSemesters),
         ]);

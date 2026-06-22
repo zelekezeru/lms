@@ -85,86 +85,343 @@ const gradeLetterColor = (letter) => {
     return "text-rose-600 dark:text-rose-400 font-semibold";
 };
 
-function exportPDF() {
-    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+async function exportPDF() {
+    // Load the logo
+    let logoBase64 = null;
+    try {
+        const logoResponse = await fetch('/img/logo.png');
+        const logoBlob = await logoResponse.blob();
+        logoBase64 = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(logoBlob);
+        });
+    } catch (e) {
+        console.warn('Failed to load logo:', e);
+    }
+
+    // Initialize jsPDF (Portrait)
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+    });
+
+    try {
+        doc.setFont("nyala", "normal");
+    } catch (e) {
+        doc.setFont("times", "normal"); // fallback
+    }
+
     const student = props.student;
     const semesters = sortedSemesters.value;
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const marginLeft = 14, marginRight = 10;
-    const innerWidth = pageWidth - marginLeft - marginRight;
-    const contentStartY = 60;
-    let y = contentStartY;
-    let totalCumulativePoints = 0, totalCumulativeCredits = 0;
 
-    const drawHeader = () => {
-        doc.setFont("times", "normal");
+    // Margins and layout
+    const marginLeft = 10;
+    const marginRight = 10;
+    const innerWidth = pageWidth - marginLeft - marginRight;
+    const colWidth = innerWidth / 2 - 3;
+
+    const contentStartY = 47;
+    let semesterCounter = 0;
+    let columnLeftY = contentStartY;
+    let columnRightY = contentStartY;
+
+    // --- HELPER FUNCTION: Draw Header and Footer ---
+    const drawPageBordersAndInfo = () => {
+        const totalPages = doc.internal.getNumberOfPages();
+        const currentPage = doc.internal.getCurrentPageInfo().pageNumber;
+
+        // ✅ Logo
+        if (logoBase64) {
+            doc.addImage(logoBase64, "PNG", marginLeft + 5, 5, 18, 18);
+        }
+
+        // ✅ Header
         doc.setFontSize(14);
-        doc.text("Shiloh International Theological Seminary", pageWidth / 2, 10, { align: "center" });
-        doc.setFontSize(10);
-        doc.text("Student Official Transcript Record", pageWidth / 2, 15, { align: "center" });
-        doc.setDrawColor(150);
-        doc.line(marginLeft, 17, pageWidth - marginRight, 17);
+        doc.setFont(undefined, "bold");
+        doc.text("Shiloh International Theological Seminary", pageWidth / 2, 12, {
+            align: "center",
+        });
+
+        doc.setFont(undefined, "bold");
+        doc.setFontSize(11);
+        doc.text("Student Record", pageWidth / 2, 17, {
+            align: "center",
+        });
+
+        // ✅ Student Info Block
         let infoY = 22;
-        doc.setFontSize(9);
-        const col1 = marginLeft, col2 = marginLeft + innerWidth / 2 + 5;
-        doc.text(`Name: ${student.firstName} ${student.middleName} ${student.lastName}`, col1, infoY);
-        doc.text(`Program: ${student.program?.name ?? "N/A"}`, col2, infoY); infoY += 5;
-        doc.text(`ID: ${student.idNo}`, col1, infoY);
-        doc.text(`Track: ${student.track?.name ?? "N/A"}`, col2, infoY); infoY += 5;
-        doc.text(`Study Mode: ${student.studyMode?.name ?? "N/A"}`, col2, infoY);
-        doc.line(marginLeft, infoY + 2, pageWidth - marginRight, infoY + 2);
-        const footerY = pageHeight - 20;
+        const infoCol2 = marginLeft + innerWidth / 2 + 5;
+
+        doc.setFontSize(8);
+        
+        // Left Column
+        doc.setFont(undefined, "bold");
+        doc.text("Name:", marginLeft + 5, infoY);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.firstName} ${student.middleName} ${student.lastName}`, marginLeft + 25, infoY);
+        
+        doc.setFont(undefined, "bold");
+        doc.text("Student ID:", marginLeft + 5, infoY + 4);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.idNo}`, marginLeft + 25, infoY + 4);
+        
+        doc.setFont(undefined, "bold");
+        doc.text("Sex:", marginLeft + 5, infoY + 8);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.sex || ""}`, marginLeft + 25, infoY + 8);
+        
+        doc.setFont(undefined, "bold");
+        doc.text("Birth Date:", marginLeft + 5, infoY + 12);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.dateOfBirth || ""}`, marginLeft + 25, infoY + 12);
+
+        // Right Column
+        doc.setFont(undefined, "bold");
+        doc.text("Program of Study:", infoCol2, infoY);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.program?.name || "N/A"}`, infoCol2 + 30, infoY);
+        
+        doc.setFont(undefined, "bold");
+        doc.text("Major:", infoCol2, infoY + 4);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.track?.name || "N/A"}`, infoCol2 + 30, infoY + 4);
+        
+        doc.setFont(undefined, "bold");
+        doc.text("Graduation Date:", infoCol2, infoY + 8);
+        doc.setFont(undefined, "normal");
+        doc.text(`${student.graduationDate || "N/A"}`, infoCol2 + 30, infoY + 8);
+
+        // Top line
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.15);
+        doc.line(marginLeft, infoY + 16, pageWidth - marginRight, infoY + 16);
+
+        // Center dividing line
+        doc.line(pageWidth / 2, infoY + 16, pageWidth / 2, pageHeight - 30);
+
+        // ✅ Footer
+        const footerY = pageHeight - 25;
+        doc.line(marginLeft, footerY - 5, pageWidth - marginRight, footerY - 5);
+
+        doc.setFont(undefined, "bold");
+        doc.setFontSize(6.5);
+        doc.text("Registrar's Signature: ______________________________", marginLeft, footerY);
+        doc.setFont(undefined, "normal");
+
+        doc.text(
+            "This record is valid only with the registrar's signature and the Shiloh International Theological Seminary Grade Points: A = 4.0, A- = 3.7, B+ = 3.3, B = 3.0,",
+            marginLeft,
+            footerY + 4
+        );
+        doc.text(
+            "B- = 2.7, C+ = 2.3, C = 2.0, C- = 1.7, D+ = 1.3, D = 1.0, F = 0.0",
+            marginLeft,
+            footerY + 7
+        );
+        doc.text(
+            "Grading: A = excellent, B = above average, C = satisfactory, D = less than average, F = failing, WP = withdraw pass, WF = withdraw failing, I = incomplete",
+            marginLeft,
+            footerY + 10
+        );
+
         doc.setFontSize(7);
-        doc.line(marginLeft, footerY - 2, pageWidth - marginRight, footerY - 2);
-        doc.text("Grading Scale: A=4.0, A-=3.7, B+=3.3, B=3.0, B-=2.7, C+=2.3, C=2.0, C-=1.7, D+=1.3, D=1.0, F=0.0", marginLeft, footerY);
-        doc.text("Registrar Signature: ____________________", marginLeft, footerY + 5);
-        doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - marginRight, footerY + 5, { align: "right" });
+        doc.text(`Office of the Registrar`, pageWidth - 80, footerY, { align: "left" });
+        doc.text(`P.O Box 1185, Hawassa, Ethiopia`, pageWidth - 80, footerY + 3, { align: "left" });
+        doc.text(`Email: registrar@sits.edu.et`, pageWidth - 80, footerY + 6, { align: "left" });
+        doc.text(
+            `Date of Issue: ${new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            })}`,
+            pageWidth - 80,
+            footerY + 9,
+            { align: "left" }
+        );
     };
 
-    drawHeader();
+    drawPageBordersAndInfo();
+
+    // --- MAIN SEMESTER LOOP ---
+    let totalCumulativePoints = 0;
+    let totalCumulativeCredits = 0;
+
+    // Draw Transfer Credits table if available
+    if (student.transferCredits && student.transferCredits !== "N/A" && parseFloat(student.transferCredits) > 0) {
+        doc.setFontSize(8);
+        doc.setFont(undefined, "bold");
+        doc.text("Credits Transferred from Other Schools", marginLeft, columnLeftY);
+        doc.setFont(undefined, "normal");
+        columnLeftY += 4;
+
+        // Line above table
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.1);
+        doc.line(marginLeft, columnLeftY, marginLeft + colWidth, columnLeftY);
+
+        autoTable(doc, {
+            head: [["Course", "Course Name", "Credits", "Grade", "Points"]],
+            body: [["", "", `${student.transferCredits}`, "--", "--"]],
+            startY: columnLeftY,
+            theme: "horizontal",
+            styles: { fontSize: 7, cellPadding: 0.5, lineColor: [0, 0, 0], lineWidth: 0.1 },
+            headStyles: { fillColor: false, textColor: 0, fontStyle: "bold" },
+            columnStyles: {
+                0: { cellWidth: 12 },
+                1: { cellWidth: colWidth - 42 },
+                2: { cellWidth: 10, halign: "center" },
+                3: { cellWidth: 10, halign: "center" },
+                4: { cellWidth: 10, halign: "right" },
+            },
+            margin: { left: marginLeft },
+            didDrawPage: (data) => {
+                columnLeftY = data.cursor.y;
+            },
+        });
+        
+        columnLeftY = doc.lastAutoTable.finalY;
+        doc.line(marginLeft, columnLeftY, marginLeft + colWidth, columnLeftY);
+        columnLeftY += 8; // Spacing after transfer credits
+    }
 
     semesters.forEach((semester) => {
         const grades = semester.grades.filter((g) => g.student_id == student.id);
         if (!grades.length) return;
-        let semPts = 0, semCreds = 0;
+
+        // Semester calculations
+        let semesterPoints = 0;
+        let semesterCredits = 0;
+
         grades.forEach((g) => {
             const gp = getGradePoint(parseFloat(g.grade_point) || 0);
-            const cr = parseFloat(g.course?.credit_hours || 0);
-            semPts += gp * cr; semCreds += cr;
-            totalCumulativePoints += gp * cr; totalCumulativeCredits += cr;
+            const credit = parseFloat(g.course?.credit_hours || 0);
+            semesterPoints += gp * credit;
+            semesterCredits += credit;
         });
-        const semGPA = semCreds > 0 ? (semPts / semCreds).toFixed(2) : "0.00";
-        const cumGPA = totalCumulativeCredits > 0 ? (totalCumulativePoints / totalCumulativeCredits).toFixed(2) : "0.00";
-        if (y > pageHeight - 50) { doc.addPage(); drawHeader(); y = contentStartY; }
-        doc.setFontSize(10); doc.setFont("times", "bold");
-        doc.text(`${semester.year?.name ?? "Unknown Year"} — ${semester.name ?? "Unknown Semester"}`, marginLeft, y);
-        doc.setFont("times", "normal"); y += 4;
+
+        const semGPA = semesterCredits > 0 ? (semesterPoints / semesterCredits).toFixed(2) : "0.00";
+        totalCumulativePoints += semesterPoints;
+        totalCumulativeCredits += semesterCredits;
+        const cumGPA =
+            totalCumulativeCredits > 0
+                ? (totalCumulativePoints / totalCumulativeCredits).toFixed(2)
+                : "0.00";
+
         const tableData = grades.map((g) => [
-            g.course?.code ?? "N/A", g.course?.name ?? "N/A", `${g.course?.credit_hours ?? 0}`, g.grade_letter ?? "N/A",
-            (getGradePoint(parseFloat(g.grade_point) || 0) * parseFloat(g.course?.credit_hours || 0)).toFixed(2),
+            g.course?.code || "N/A",
+            g.course?.name || "N/A",
+            `${g.course?.credit_hours || 0}`,
+            g.grade_letter || "N/A",
+            (
+                getGradePoint(parseFloat(g.grade_point) || 0) *
+                parseFloat(g.course?.credit_hours || 0)
+            ).toFixed(1),
         ]);
+
+        const cellHeight = 4.2;
+        const estimatedHeight = 4 + 2 + (tableData.length + 1) * cellHeight + 10 + 6;
+        const limitY = pageHeight - 30;
+
+        const isLeftColumn = semesterCounter % 2 === 0;
+        let startX = isLeftColumn ? marginLeft : marginLeft + colWidth + 6;
+        let currentY = isLeftColumn ? columnLeftY : columnRightY;
+
+        if (currentY + estimatedHeight > limitY) {
+            doc.addPage();
+            drawPageBordersAndInfo();
+            columnLeftY = contentStartY;
+            columnRightY = contentStartY;
+            semesterCounter = 0; // reset to left column on new page
+            startX = marginLeft;
+            currentY = contentStartY;
+        }
+
+        // Semester Header
+        doc.setFontSize(8);
+        doc.setFont(undefined, "bold");
+        const semesterTitle = semester.year?.name
+            ? `${semester.year.name} ${semester.name ?? ""}`
+            : `${semester.name ?? "Unknown Semester"}`;
+        doc.text(semesterTitle, startX, currentY);
+        doc.setFont(undefined, "normal");
+        currentY += 4;
+
+        // Line above table
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.1);
+        doc.line(startX, currentY, startX + colWidth, currentY);
+
         autoTable(doc, {
-            head: [["Code", "Course Name", "CR", "Grade", "Points"]],
-            body: tableData, startY: y, theme: "grid",
-            styles: { fontSize: 8, cellPadding: 1 },
-            headStyles: { fillColor: [79, 70, 229], textColor: 255, fontSize: 9 },
-            columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: innerWidth - 75 }, 2: { cellWidth: 15, halign: "center" }, 3: { cellWidth: 20, halign: "center" }, 4: { cellWidth: 20, halign: "right" } },
-            margin: { left: marginLeft, right: marginRight },
-            didDrawPage: () => { y = doc.lastAutoTable.finalY; },
+            head: [["Course", "Course Name", "Credits", "Grade", "Points"]],
+            body: tableData,
+            startY: currentY,
+            theme: "horizontal",
+            styles: { fontSize: 7, cellPadding: 0.5, lineColor: [0, 0, 0], lineWidth: 0.1 },
+            headStyles: { fillColor: false, textColor: 0, fontStyle: "bold" },
+            columnStyles: {
+                0: { cellWidth: 12 },
+                1: { cellWidth: colWidth - 42 },
+                2: { cellWidth: 10, halign: "center" },
+                3: { cellWidth: 10, halign: "center" },
+                4: { cellWidth: 10, halign: "right" },
+            },
+            margin: { left: startX },
+            didDrawPage: (data) => {
+                currentY = data.cursor.y;
+            },
         });
-        y = doc.lastAutoTable.finalY + 4;
-        doc.setFontSize(8); doc.setFont("times", "bold");
-        doc.text(`Sem GPA: ${semGPA}   Cum GPA: ${cumGPA}   Credits: ${semCreds}`, marginLeft, y);
-        y += 10;
+
+        currentY = doc.lastAutoTable.finalY;
+
+        // Draw Semester GPA and Sem Totals
+        doc.setFontSize(7);
+        doc.setFont(undefined, "normal");
+        doc.text(`Semester GPA: ${semGPA}`, startX, currentY + 4);
+        doc.text(`Sem Totals`, startX + colWidth - 34, currentY + 4, { align: "right" });
+        doc.text(`${semesterCredits}`, startX + colWidth - 25, currentY + 4, { align: "center" });
+        doc.text(`--`, startX + colWidth - 15, currentY + 4, { align: "center" });
+        doc.text(`${semesterPoints.toFixed(1)}`, startX + colWidth, currentY + 4, { align: "right" });
+
+        // Draw Cumulative GPA and Cum Totals
+        doc.text(`Cumulative GPA: ${cumGPA}`, startX, currentY + 8);
+        doc.text(`Cum Totals`, startX + colWidth - 34, currentY + 8, { align: "right" });
+        doc.text(`${totalCumulativeCredits}`, startX + colWidth - 25, currentY + 8, { align: "center" });
+        doc.text(`--`, startX + colWidth - 15, currentY + 8, { align: "center" });
+        doc.text(`${totalCumulativePoints.toFixed(1)}`, startX + colWidth, currentY + 8, { align: "right" });
+
+        // Draw line below Cum Totals
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.1);
+        doc.line(startX, currentY + 10, startX + colWidth, currentY + 10);
+
+        currentY += 16;
+
+        // Track column
+        if (semesterCounter % 2 === 0) columnLeftY = currentY;
+        else columnRightY = currentY;
+
+        semesterCounter++;
     });
 
-    const pages = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pages; i++) {
-        doc.setPage(i); doc.setFontSize(7);
-        doc.text(`Page ${i} of ${pages}`, pageWidth - marginRight, pageHeight - 5, { align: "right" });
+    // ✅ Update page numbers on all pages
+    const finalPageCount = doc.internal.getNumberOfPages();
+    const footerY = pageHeight - 25;
+    for (let i = 1; i <= finalPageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(7);
+        doc.setFont(undefined, "normal");
+        doc.text(`Page ${i} of ${finalPageCount}`, pageWidth - 80, footerY + 12, {
+            align: "left",
+        });
     }
-    doc.save(`${student.firstName}_${student.lastName}_Transcript.pdf`);
+
+    // ✅ Download
+    doc.save(`${student.firstName}_${student.middleName}_${student.lastName}_Transcript.pdf`);
 }
 </script>
 

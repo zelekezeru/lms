@@ -149,6 +149,44 @@ class GradeController extends Controller
         return redirect()->route('grades.index')->with('success', 'Grade deleted successfully.');
     }
 
+    /**
+     * Soft delete a student's grade, recording who deleted it and why.
+     * The grade is hidden from the transcript and student portal (SoftDeletes
+     * global scope) but kept recoverable in the "Deleted Grades" view.
+     */
+    public function softDeleteStudentGrade(Request $request, Grade $grade)
+    {
+        $fields = $request->validate([
+            'delete_reason' => ['required', 'string', 'min:3', 'max:1000'],
+        ]);
+
+        $grade->forceFill([
+            'delete_reason' => $fields['delete_reason'],
+            'deleted_by' => Auth::id(),
+        ])->save();
+
+        $grade->delete();
+
+        return back()->with('success', 'Grade deleted successfully and moved to deleted grades.');
+    }
+
+    /**
+     * Restore a previously soft-deleted grade so it becomes visible again.
+     */
+    public function restoreStudentGrade(int $grade)
+    {
+        $trashed = Grade::onlyTrashed()->findOrFail($grade);
+
+        $trashed->restore();
+
+        $trashed->forceFill([
+            'delete_reason' => null,
+            'deleted_by' => null,
+        ])->save();
+
+        return back()->with('success', 'Grade restored successfully.');
+    }
+
     public function search(Request $request)
     {
         $query = $request->input('query');

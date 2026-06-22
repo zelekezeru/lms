@@ -134,11 +134,9 @@ async function exportPDF() {
         format: "a4",
     });
 
-    try {
-        doc.setFont("nyala", "normal");
-    } catch (e) {
-        doc.setFont("times", "normal"); // fallback
-    }
+    // Use built-in 'times' — jsPDF does not include 'nyala' and will silently
+    // corrupt the font context (not throw), causing autoTable to crash.
+    doc.setFont("times", "normal");
 
     const student = props.student;
     const semesters = sortedSemesters.value;
@@ -311,7 +309,7 @@ async function exportPDF() {
             },
         });
         
-        columnLeftY = doc.lastAutoTable.finalY;
+        columnLeftY = doc.lastAutoTable?.finalY ?? columnLeftY;
         doc.line(marginLeft, columnLeftY, marginLeft + colWidth, columnLeftY);
         columnLeftY += 8; // Spacing after transfer credits
     }
@@ -403,7 +401,7 @@ async function exportPDF() {
             },
         });
 
-        currentY = doc.lastAutoTable.finalY;
+        currentY = doc.lastAutoTable?.finalY ?? currentY;
 
         // Draw Semester GPA and Sem Totals
         doc.setFontSize(7);

@@ -134,9 +134,10 @@ async function exportPDF() {
         format: "a4",
     });
 
-    // Use built-in 'times' — jsPDF does not include 'nyala' and will silently
-    // corrupt the font context (not throw), causing autoTable to crash.
-    doc.setFont("times", "normal");
+    // helvetica is jsPDF's default built-in font with full bold/italic metrics.
+    // setFont(undefined, ...) literally stores undefined as the font name,
+    // which autoTable cannot look up and crashes with 'Cannot read .table'.
+    doc.setFont("helvetica", "normal");
 
     const student = props.student;
     const semesters = sortedSemesters.value;
@@ -166,12 +167,12 @@ async function exportPDF() {
 
         // ✅ Header
         doc.setFontSize(14);
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Shiloh International Theological Seminary", pageWidth / 2, 12, {
             align: "center",
         });
 
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
         doc.text("Student Record", pageWidth / 2, 17, {
             align: "center",
@@ -184,40 +185,40 @@ async function exportPDF() {
         doc.setFontSize(8);
         
         // Left Column
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Name:", marginLeft + 5, infoY);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.firstName} ${student.middleName} ${student.lastName}`, marginLeft + 25, infoY);
         
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Student ID:", marginLeft + 5, infoY + 4);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.idNo}`, marginLeft + 25, infoY + 4);
         
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Sex:", marginLeft + 5, infoY + 8);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.sex || ""}`, marginLeft + 25, infoY + 8);
         
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Birth Date:", marginLeft + 5, infoY + 12);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.dateOfBirth || ""}`, marginLeft + 25, infoY + 12);
 
         // Right Column
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Program of Study:", infoCol2, infoY);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.program?.name || "N/A"}`, infoCol2 + 30, infoY);
         
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Major:", infoCol2, infoY + 4);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.track?.name || "N/A"}`, infoCol2 + 30, infoY + 4);
         
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Graduation Date:", infoCol2, infoY + 8);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`${student.graduationDate || "N/A"}`, infoCol2 + 30, infoY + 8);
 
         // Top line
@@ -232,10 +233,10 @@ async function exportPDF() {
         const footerY = pageHeight - 25;
         doc.line(marginLeft, footerY - 5, pageWidth - marginRight, footerY - 5);
 
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(6.5);
         doc.text("Registrar's Signature: ______________________________", marginLeft, footerY);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
 
         doc.text(
             "This record is valid only with the registrar's signature and the Shiloh International Theological Seminary Grade Points: A = 4.0, A- = 3.7, B+ = 3.3, B = 3.0,",
@@ -279,9 +280,9 @@ async function exportPDF() {
     // Draw Transfer Credits table if available
     if (student.transferCredits && student.transferCredits !== "N/A" && parseFloat(student.transferCredits) > 0) {
         doc.setFontSize(8);
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         doc.text("Credits Transferred from Other Schools", marginLeft, columnLeftY);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         columnLeftY += 4;
 
         // Line above table
@@ -368,12 +369,12 @@ async function exportPDF() {
 
         // Semester Header
         doc.setFontSize(8);
-        doc.setFont(undefined, "bold");
+        doc.setFont("helvetica", "bold");
         const semesterTitle = semester.year?.name
             ? `${semester.year.name} ${semester.name ?? ""}`
             : `${semester.name ?? "Unknown Semester"}`;
         doc.text(semesterTitle, startX, currentY);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         currentY += 4;
 
         // Line above table
@@ -405,7 +406,7 @@ async function exportPDF() {
 
         // Draw Semester GPA and Sem Totals
         doc.setFontSize(7);
-        doc.setFont(undefined, "normal");
+        doc.setFont("helvetica", "normal");
         doc.text(`Semester GPA: ${semGPA}`, startX, currentY + 4);
         doc.text(`Sem Totals`, startX + colWidth - 34, currentY + 4, { align: "right" });
         doc.text(`${semesterCredits}`, startX + colWidth - 25, currentY + 4, { align: "center" });
